@@ -830,7 +830,7 @@ buildChips();render();
 (function(){
   var VPA="maheshwari1382-1@okaxis", PN="Pawan Maheshwari";
   /* >>> set this to the address that should RECEIVE new subscriber emails <<< */
-  var DELIVERY_EMAIL="your-email@example.com";
+  var DELIVERY_EMAIL="maheshwari1382@gmail.com";
 
   var amt=99;
   function $(id){return document.getElementById(id);}
@@ -885,13 +885,17 @@ buildChips();render();
     var btn=$("subBtn"); btn.disabled=true; note("Subscribing\u2026","");
     try{
       var r=await fetch("https://formsubmit.co/ajax/"+encodeURIComponent(DELIVERY_EMAIL),{
-        method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({email:email,_subject:"New AIShorts subscriber",source:"AIShorts daily digest"})
+        method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},
+        body:JSON.stringify({email:email,_subject:"New AIShorts subscriber",_template:"table",source:"AIShorts daily digest"})
       });
-      if(!r.ok) throw new Error("HTTP "+r.status);
-      note("You\u2019re on the list \u2014 the daily digest will arrive in your inbox.","ok");
-      e.value="";
-    }catch(err){ note("Couldn\u2019t subscribe right now. Please try again later.","err"); }
+      var d={}; try{ d=await r.json(); }catch(_e){}
+      if(r.ok || String(d.success)==="true"){
+        note("You\u2019re on the list \u2014 the daily digest will arrive in your inbox.","ok");
+        e.value="";
+      } else {
+        note((d&&d.message)?d.message:"Couldn\u2019t subscribe right now. Please try again.","err");
+      }
+    }catch(err){ note("Network error \u2014 please try again in a moment.","err"); }
     finally{ btn.disabled=false; }
   }
   var sb=$("subBtn"); if(sb)sb.onclick=subscribe;
