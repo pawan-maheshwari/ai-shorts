@@ -39,7 +39,7 @@
   }
 
   .wire{
-    position:relative;margin:0 auto;width:100%;max-width:460px;height:100dvh;
+    position:relative;margin:0 auto;width:100%;max-width:460px;height:100vh;height:100dvh;
     display:flex;flex-direction:column;background:var(--paper);
     box-shadow:0 0 0 1px var(--rule),0 24px 70px rgba(0,0,0,.32);
   }
@@ -47,7 +47,7 @@
   /* ---- masthead (NYT nameplate) ---- */
   .masthead{flex:0 0 auto;background:var(--paper);}
   .utility{
-    display:flex;align-items:center;justify-content:space-between;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;row-gap:6px;
     padding:8px 16px;border-bottom:1px solid var(--rule);
   }
   .live{
@@ -72,6 +72,11 @@
   .refresh .spin{display:inline-block;}
   .refresh.loading .spin{animation:rot 1s linear infinite;}
   @keyframes rot{to{transform:rotate(360deg);}}
+  .util-right{display:flex;align-items:center;gap:12px;margin-left:auto;}
+  .visits{font-family:"Libre Franklin",sans-serif;font-size:10.5px;font-weight:600;
+    letter-spacing:.4px;text-transform:uppercase;color:var(--meta);white-space:nowrap;}
+  .visits b{color:var(--ink);font-weight:800;}
+  .vbar{color:var(--rule);margin:0 6px;font-weight:400;}
 
   .nameplate{padding:12px 16px 9px;text-align:center;border-bottom:1px solid var(--rule);}
   .wordmark{
@@ -106,7 +111,7 @@
 
   /* ---- deck (swipe feed) ---- */
   .deck{
-    flex:1 1 auto;overflow-y:auto;overflow-x:hidden;
+    flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
     scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;
     scrollbar-width:none;position:relative;background:var(--paper);
   }
@@ -114,7 +119,7 @@
 
   .card{
     height:100%;min-height:100%;scroll-snap-align:start;scroll-snap-stop:always;
-    display:flex;flex-direction:column;padding:16px 16px 12px;
+    display:flex;flex-direction:column;overflow:hidden;padding:16px 16px 12px;
   }
   /* hero "art" — generated, restrained newsprint plate */
   .plate{
@@ -146,7 +151,8 @@
     text-transform:uppercase;color:var(--meta);
   }
 
-  .body{flex:1 1 auto;display:flex;flex-direction:column;padding-top:13px;min-height:0;}
+  .body{flex:1 1 auto;display:flex;flex-direction:column;padding-top:13px;min-height:0;overflow:hidden;}
+  .bodyinner{margin:auto 0;display:flex;flex-direction:column;width:100%;max-height:100%;min-height:0;}
   .kicker{
     font-family:"Libre Franklin",sans-serif;font-size:11px;font-weight:800;
     letter-spacing:1.3px;text-transform:uppercase;margin-bottom:8px;
@@ -159,12 +165,12 @@
   }
   .summary{
     font-family:Georgia,serif;font-size:16px;line-height:1.55;color:var(--body);
-    margin:0;overflow-y:auto;scrollbar-width:none;
+    margin:0;flex:0 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;
   }
   .summary::-webkit-scrollbar{display:none;}
 
   .source{
-    margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);
+    margin-top:13px;padding-top:12px;border-top:1px solid var(--rule);
     display:flex;align-items:flex-end;gap:10px;
   }
   .source .by{
@@ -231,6 +237,26 @@
     .headline{font-size:24px;}
     .summary{font-size:15px;}
     .chips{gap:14px;}
+    .visits{font-size:9.5px;}
+    .util-right{gap:8px;}
+    .vbar{margin:0 4px;}
+  }
+  @media (max-height:680px){
+    .utility{padding:6px 16px;}
+    .nameplate{padding:8px 16px 6px;}
+    .wordmark{font-size:34px;}
+    .slogan{display:none;}
+    .dateline{padding:5px 16px;}
+    .card{padding:12px 16px 10px;}
+    .plate{flex:0 0 26%;}
+    .headline{font-size:22px;line-height:1.08;margin-bottom:8px;}
+    .summary{font-size:14.5px;}
+  }
+  @media (max-height:520px){
+    .plate{display:none;}
+    .nameplate{padding:6px 16px 4px;}
+    .wordmark{font-size:26px;}
+    .dateline{display:none;}
   }
 </style>
 </head>
@@ -239,9 +265,14 @@
   <header class="masthead">
     <div class="utility">
       <span class="live"><span class="dot"></span>Live</span>
-      <button class="refresh" id="refresh" title="Fetch the latest AI news from across the web">
-        <span class="spin">&#8635;</span>&nbsp;Pull the wire
-      </button>
+      <div class="util-right">
+        <div class="visits" id="visits" title="Reader visits — today and all-time">
+          <b id="vToday">··</b>&nbsp;today<span class="vbar">|</span><b id="vTotal">··</b>&nbsp;total
+        </div>
+        <button class="refresh" id="refresh" title="Fetch the latest AI news from across the web">
+          <span class="spin">&#8635;</span>&nbsp;Pull the wire
+        </button>
+      </div>
     </div>
     <div class="nameplate">
       <div class="wordmark">AIShorts</div>
@@ -417,12 +448,14 @@ function card(n){
       <figcaption class="credit">AIShorts illustration &middot; ${cat}</figcaption>
     </figure>
     <div class="body">
-      <div class="kicker" style="color:${m.k}"><span class="sq" style="background:${m.k}"></span>${cat}</div>
-      <h2 class="headline">${esc(n.headline)}</h2>
-      <p class="summary">${esc(n.summary)}</p>
-      <div class="source">
-        <div class="by">By <b>${esc(n.source||"Unknown")}</b> &middot; ${fmtDate(n.date)}${n.note?`<br><span class="note">${esc(n.note)}</span>`:""}</div>
-        ${link}
+      <div class="bodyinner">
+        <div class="kicker" style="color:${m.k}"><span class="sq" style="background:${m.k}"></span>${cat}</div>
+        <h2 class="headline">${esc(n.headline)}</h2>
+        <p class="summary">${esc(n.summary)}</p>
+        <div class="source">
+          <div class="by">By <b>${esc(n.source||"Unknown")}</b> &middot; ${fmtDate(n.date)}${n.note?`<br><span class="note">${esc(n.note)}</span>`:""}</div>
+          ${link}
+        </div>
       </div>
     </div>
   </article>`;
@@ -644,6 +677,40 @@ async function fetchHN(){
 }
 refreshB.onclick=pullWire;
 
+/* ----- cross-visitor counter (today | total) -----
+   Static hosts have no backend, so shared counts use a free, CORS-enabled
+   hit counter (Abacus). Two keys: all-time total + one stamped with today.
+   Increments once per page load; hides itself if the service is unreachable
+   (e.g. inside the sandboxed preview). Swap the base URL for your own. */
+async function hitCounter(ns,key){
+  const r=await fetchT("https://abacus.jasoncameron.dev/hit/"+ns+"/"+key,{},8000);
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  const d=await r.json();
+  return d && typeof d.value==="number" ? d.value : null;
+}
+async function countVisit(){
+  const box=document.getElementById("visits");
+  const ns="aishorts_"+((location.hostname||"local").replace(/[^A-Za-z0-9_.-]/g,"_").slice(0,40)||"local");
+  const day="day_"+new Date().toISOString().slice(0,10).replace(/-/g,"_");
+  let shown=false;
+  try{
+    const res=await Promise.allSettled([hitCounter(ns,"total"),hitCounter(ns,day)]);
+    if(res[1].status==="fulfilled"&&res[1].value!=null){
+      const e=document.getElementById("vToday"); if(e){e.textContent=res[1].value.toLocaleString();shown=true;}
+    }
+    if(res[0].status==="fulfilled"&&res[0].value!=null){
+      const e=document.getElementById("vTotal"); if(e){e.textContent=res[0].value.toLocaleString();shown=true;}
+    }
+  }catch(e){ console.info("[aishorts] visit counter:",e.message); }
+  if(!shown && box) box.style.display="none";
+}
+
+function setWireHeight(){var w=document.querySelector('.wire');if(w)w.style.height=window.innerHeight+'px';}
+var _rt;function onResize(){setWireHeight();clearTimeout(_rt);_rt=setTimeout(function(){if(typeof goTo==='function')goTo(idx);},150);}
+setWireHeight();
+countVisit();
+window.addEventListener('resize',onResize);
+window.addEventListener('orientationchange',function(){setTimeout(onResize,250);});
 buildChips();render();
 </script>
 </body>
