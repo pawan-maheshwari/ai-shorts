@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AIShorts — All the AI That’s Fit to Print</title>
+<meta name="description" content="AIShorts is a swipe-through wire of the day’s most important artificial-intelligence news from around the world, with a link to every original source.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AIShorts — the AI news wire">
+<meta property="og:description" content="The day’s AI news, one swipe at a time. All the AI that’s fit to print.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23121212'/%3E%3Ctext x='50%25' y='55%25' font-family='Georgia,serif' font-size='30' font-weight='700' fill='%23ffffff' text-anchor='middle' dominant-baseline='middle'%3EAI%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ffffff;          /* newsprint white */
+    --paper-2:#f7f7f5;        /* panel / plate base */
+    --ink:#121212;            /* headline near-black */
+    --body:#333333;           /* body serif text */
+    --meta:#666666;           /* captions, datelines */
+    --meta-2:#8a8a8a;
+    --rule:#dcdcd6;           /* hairline */
+    --rule-strong:#121212;    /* nameplate rules */
+    --link:#326891;           /* NYT link blue */
+    --live:#d0021b;           /* NYT breaking red */
+  }
+  :root{ --link-dark:#21506f; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    background:#e8e8e3;       /* desk grey behind the page */
+    color:var(--body);
+    font-family:Georgia,"Times New Roman",serif;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+
+  .wire{
+    position:relative;margin:0 auto;width:100%;max-width:460px;height:100dvh;
+    display:flex;flex-direction:column;background:var(--paper);
+    box-shadow:0 0 0 1px var(--rule),0 24px 70px rgba(0,0,0,.32);
+  }
+
+  /* ---- masthead (NYT nameplate) ---- */
+  .masthead{flex:0 0 auto;background:var(--paper);}
+  .utility{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:8px 16px;border-bottom:1px solid var(--rule);
+  }
+  .live{
+    display:flex;align-items:center;gap:6px;
+    font-family:"Libre Franklin",sans-serif;font-size:11px;font-weight:700;
+    letter-spacing:1px;text-transform:uppercase;color:var(--live);
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--live);
+    box-shadow:0 0 0 0 rgba(208,2,27,.5);animation:pulse 2.4s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(208,2,27,.5);}70%{box-shadow:0 0 0 7px rgba(208,2,27,0);}100%{box-shadow:0 0 0 0 rgba(208,2,27,0);}}
+
+  .refresh{
+    appearance:none;border:1px solid var(--ink);background:var(--paper);
+    color:var(--ink);font-family:"Libre Franklin",sans-serif;font-weight:700;
+    font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;
+    padding:6px 11px;border-radius:0;cursor:pointer;white-space:nowrap;
+    transition:background .18s,color .18s,transform .1s;
+  }
+  .refresh:hover{background:var(--ink);color:var(--paper);}
+  .refresh:active{transform:translateY(1px);}
+  .refresh:disabled{opacity:.5;cursor:wait;}
+  .refresh .spin{display:inline-block;}
+  .refresh.loading .spin{animation:rot 1s linear infinite;}
+  @keyframes rot{to{transform:rotate(360deg);}}
+
+  .nameplate{padding:12px 16px 9px;text-align:center;border-bottom:1px solid var(--rule);}
+  .wordmark{
+    font-family:"UnifrakturCook","Libre Franklin",serif;font-weight:700;
+    font-size:46px;line-height:.92;color:var(--ink);letter-spacing:.5px;
+  }
+  .slogan{
+    font-family:Georgia,serif;font-style:italic;font-size:12px;color:var(--meta);
+    margin-top:7px;
+  }
+  .dateline{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    padding:7px 16px;border-bottom:2px solid var(--rule-strong);
+    font-family:"Libre Franklin",sans-serif;font-size:10px;font-weight:600;
+    letter-spacing:1.4px;text-transform:uppercase;color:var(--ink);
+  }
+
+  /* ---- section nav (chips) ---- */
+  .chips{
+    flex:0 0 auto;display:flex;gap:18px;overflow-x:auto;scrollbar-width:none;
+    padding:9px 16px;border-bottom:1px solid var(--rule);background:var(--paper);
+  }
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:0 0 auto;border:0;background:transparent;cursor:pointer;
+    font-family:"Libre Franklin",sans-serif;font-size:12px;font-weight:600;
+    letter-spacing:.5px;text-transform:uppercase;color:var(--meta);
+    padding:3px 0 6px;border-bottom:2px solid transparent;transition:.15s;
+  }
+  .chip:hover{color:var(--ink);}
+  .chip.active{color:var(--ink);font-weight:800;border-bottom-color:var(--ink);}
+
+  /* ---- deck (swipe feed) ---- */
+  .deck{
+    flex:1 1 auto;overflow-y:auto;overflow-x:hidden;
+    scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;position:relative;background:var(--paper);
+  }
+  .deck::-webkit-scrollbar{display:none;}
+
+  .card{
+    height:100%;min-height:100%;scroll-snap-align:start;scroll-snap-stop:always;
+    display:flex;flex-direction:column;padding:16px 16px 12px;
+  }
+  /* hero "art" — generated, restrained newsprint plate */
+  .plate{
+    position:relative;flex:0 0 37%;margin:0;overflow:hidden;
+    background:linear-gradient(160deg,#efeeea,#dcdbd3);
+    border:1px solid var(--rule);border-top:3px solid var(--ink);
+    display:flex;align-items:flex-end;
+  }
+  .plate::before{
+    content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(0,0,0,.12) 1px,transparent 1.3px);
+    background-size:8px 8px;opacity:.55;
+  }
+  .plate .glyph{
+    position:absolute;right:-4px;bottom:-30px;
+    font-family:Georgia,serif;font-weight:700;font-size:175px;line-height:1;
+    color:rgba(0,0,0,.07);user-select:none;
+  }
+  .plate .region{
+    position:absolute;top:10px;left:10px;z-index:1;
+    font-family:"Libre Franklin",sans-serif;font-size:9.5px;font-weight:700;
+    letter-spacing:1.4px;text-transform:uppercase;color:#fff;background:var(--ink);
+    padding:3px 7px;
+  }
+  .plate .credit{
+    position:relative;z-index:1;margin:0;padding:6px 10px;width:100%;
+    background:linear-gradient(0deg,rgba(255,255,255,.92),rgba(255,255,255,0));
+    font-family:"Libre Franklin",sans-serif;font-size:9px;letter-spacing:.6px;
+    text-transform:uppercase;color:var(--meta);
+  }
+
+  .body{flex:1 1 auto;display:flex;flex-direction:column;padding-top:13px;min-height:0;}
+  .kicker{
+    font-family:"Libre Franklin",sans-serif;font-size:11px;font-weight:800;
+    letter-spacing:1.3px;text-transform:uppercase;margin-bottom:8px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .kicker .sq{width:8px;height:8px;display:inline-block;}
+  .headline{
+    font-family:Georgia,"Times New Roman",serif;font-weight:700;
+    font-size:27px;line-height:1.1;letter-spacing:-.3px;color:var(--ink);margin:0 0 11px;
+  }
+  .summary{
+    font-family:Georgia,serif;font-size:16px;line-height:1.55;color:var(--body);
+    margin:0;overflow-y:auto;scrollbar-width:none;
+  }
+  .summary::-webkit-scrollbar{display:none;}
+
+  .source{
+    margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);
+    display:flex;align-items:flex-end;gap:10px;
+  }
+  .source .by{
+    font-family:"Libre Franklin",sans-serif;font-size:11px;color:var(--meta);
+    line-height:1.5;min-width:0;letter-spacing:.3px;text-transform:uppercase;
+  }
+  .source .by b{color:var(--ink);font-weight:700;}
+  .source .by .note{text-transform:none;font-style:italic;color:var(--meta-2);font-family:Georgia,serif;}
+  .read{
+    margin-left:auto;flex:0 0 auto;appearance:none;cursor:pointer;
+    border:0;background:transparent;color:var(--link);
+    font-family:"Libre Franklin",sans-serif;font-size:12.5px;font-weight:700;
+    letter-spacing:.2px;text-decoration:none;padding:6px 0 6px 8px;
+    display:inline-flex;align-items:center;gap:5px;border-bottom:2px solid var(--link);
+    transition:.15s;
+  }
+  .read:hover{color:var(--link-dark);border-bottom-color:var(--link-dark);}
+
+  /* ---- footer rail ---- */
+  .rail{
+    flex:0 0 auto;border-top:2px solid var(--rule-strong);background:var(--paper);
+    padding:9px 16px;display:flex;align-items:center;gap:12px;
+    font-family:"Libre Franklin",sans-serif;
+  }
+  .count{font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--ink);text-transform:uppercase;white-space:nowrap;}
+  .count .sep{color:var(--meta-2);}
+  .progress{flex:1 1 auto;height:2px;background:var(--rule);overflow:hidden;}
+  .progress span{display:block;height:100%;background:var(--ink);width:0;transition:width .25s ease;}
+  .nav{display:flex;gap:6px;}
+  .nav button{
+    appearance:none;width:30px;height:30px;border-radius:0;cursor:pointer;
+    border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+    font-size:12px;line-height:1;transition:.15s;
+  }
+  .nav button:hover{background:var(--ink);color:var(--paper);}
+  .nav button:disabled{opacity:.3;cursor:default;}
+  .nav button:disabled:hover{background:var(--paper);color:var(--ink);}
+  .hint{font-size:9px;font-weight:600;letter-spacing:1px;color:var(--meta-2);text-transform:uppercase;}
+
+  .status{
+    position:absolute;left:0;right:0;bottom:0;z-index:5;
+    font-family:"Libre Franklin",sans-serif;font-size:10.5px;font-weight:600;
+    letter-spacing:.4px;text-align:center;padding:8px;background:var(--ink);
+    color:#fff;transform:translateY(100%);transition:transform .3s;
+  }
+  .status.show{transform:translateY(0);}
+  .status.err{background:var(--live);}
+
+  .empty{
+    height:100%;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:30px;color:var(--meta);
+  }
+  .empty .glyph{font-family:Georgia,serif;font-size:60px;color:var(--rule);margin-bottom:12px;}
+  .empty p{font-family:"Libre Franklin",sans-serif;font-size:12px;letter-spacing:.4px;line-height:1.7;}
+
+  :focus-visible{outline:2px solid var(--link);outline-offset:2px;}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .deck{scroll-behavior:auto;}
+  }
+  @media (max-width:380px){
+    .wordmark{font-size:40px;}
+    .headline{font-size:24px;}
+    .summary{font-size:15px;}
+    .chips{gap:14px;}
+  }
+</style>
+</head>
+<body>
+<div class="wire">
+  <header class="masthead">
+    <div class="utility">
+      <span class="live"><span class="dot"></span>Live</span>
+      <button class="refresh" id="refresh" title="Fetch the latest AI news from across the web">
+        <span class="spin">&#8635;</span>&nbsp;Pull the wire
+      </button>
+    </div>
+    <div class="nameplate">
+      <div class="wordmark">AIShorts</div>
+      <div class="slogan">&ldquo;All the AI That&rsquo;s Fit to Print&rdquo;</div>
+    </div>
+    <div class="dateline" id="dateline">AI Edition</div>
+  </header>
+
+  <nav class="chips" id="chips"></nav>
+
+  <div class="deck" id="deck"></div>
+
+  <footer class="rail">
+    <div class="count">PG&nbsp;<span id="cur">00</span><span class="sep"> / </span><span id="tot">00</span></div>
+    <div class="progress"><span id="bar"></span></div>
+    <div class="nav">
+      <button id="prev" aria-label="Previous story">&#9650;</button>
+      <button id="next" aria-label="Next story">&#9660;</button>
+    </div>
+    <div class="hint">swipe</div>
+  </footer>
+
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   AIShorts — seeded with real AI news (mid-June 2026), refreshable
+   live from the web. Hero images are generated category plates so
+   the hub stays self-contained and never shows a broken image.
+----------------------------------------------------------------*/
+const SEED = [
+  {headline:"Apple makes Siri run on Gemini — and adds Claude as an option",
+   summary:"At Tim Cook's final WWDC keynote, Apple unveiled a Gemini-powered Siri and a new Extensions system letting users pick which model handles Apple Intelligence: ChatGPT, Gemini, or Claude. Gemini is the default, ending OpenAI's iPhone exclusivity and making Claude an on-device choice for the first time.",
+   source:"BuildFastWithAI", url:"https://www.buildfastwithai.com/blogs/ai-news-today-june-8-2026",
+   category:"Business", region:"US", date:"2026-06-08"},
+
+  {headline:"US orders Anthropic to cut global access to Fable 5 and Mythos 5",
+   summary:"Washington issued an export-control order forcing Anthropic to shut off worldwide access to its Fable 5 and Mythos 5 models over alleged jailbreak risks. Anthropic is complying but pushing back publicly, calling the order a misunderstanding and saying it is working to restore access.",
+   source:"Reuters", url:"https://llm-stats.com/ai-news",
+   category:"Policy", region:"Global", date:"2026-06-13"},
+
+  {headline:"Moonshot open-sources Kimi K2.7-Code with leaner reasoning",
+   summary:"China's Moonshot AI released Kimi K2.7-Code under a modified MIT license. The agentic, coding-focused model builds on K2.6, ships a 256K-token context window, and claims roughly 30% lower reasoning-token usage — sharpening the open-weight challenge to Western coding models.",
+   source:"VentureBeat", url:"https://llm-stats.com/ai-news",
+   category:"Models", region:"Asia", date:"2026-06-12"},
+
+  {headline:"Anthropic warns its own models may soon be too powerful to control",
+   summary:"In a rare public statement, Anthropic cautioned that frontier systems it is building could approach a point where they become difficult to control, urging stronger safeguards. The warning lands amid a fierce capability race and tightening government scrutiny of advanced AI.",
+   source:"BuildFastWithAI", url:"https://www.buildfastwithai.com/blogs/ai-news-today-june-7-2026",
+   category:"Safety", region:"US", date:"2026-06-07"},
+
+  {headline:"Microsoft's Foundry catalog crosses 11,000 models",
+   summary:"At Build 2026, Microsoft said its Azure Foundry catalog now offers 11,000+ models through one endpoint and one bill — frontier systems including Claude Opus 4.8, GPT-5.5 and Gemini, open-weight models via Fireworks, plus Microsoft's own MAI family and specialised vision and time-series models.",
+   source:"BuildFastWithAI", url:"https://www.buildfastwithai.com/blogs/ai-news-today-june-8-2026",
+   category:"Business", region:"US", date:"2026-06-08"},
+
+  {headline:"Bezos returns as CEO of Prometheus, raises $12B for a manufacturing AI",
+   summary:"Jeff Bezos has taken the CEO seat at a new venture, Prometheus, closing a $12B Series B at a $41B valuation. The startup aims to build an 'Artificial General Engineer' to design and run physical manufacturing — one of the largest funding rounds yet for applied industrial AI.",
+   source:"AI Weekly", url:"https://aiweekly.co/",
+   category:"Business", region:"US", date:"2026-06-11"},
+
+  {headline:"OpenAI in talks for a 10-gigawatt Ohio data center",
+   summary:"OpenAI is negotiating to lease a 10-gigawatt Ohio data center from SoftBank's SB Energy, with financial backing from Nvidia. The scale underscores how compute build-out has become the defining constraint — and the defining cost — of the frontier-model race.",
+   source:"AI Weekly", url:"https://aiweekly.co/",
+   category:"Infrastructure", region:"US", date:"2026-06-12"},
+
+  {headline:"Pentagon tests OpenAI and Google models to replace Claude",
+   summary:"The US Defense Department confirmed it is evaluating OpenAI and Google models as potential replacements for Anthropic's Claude in classified systems. The review signals intensifying competition for sensitive government contracts as agencies diversify their AI suppliers.",
+   source:"BuildFastWithAI", url:"https://www.buildfastwithai.com/blogs/ai-news-today-june-8-2026",
+   category:"Policy", region:"US", date:"2026-06-08"},
+
+  {headline:"Self-replicating worm spread through AI coding tools to 73 Microsoft repos",
+   summary:"A self-replicating worm propagated via AI coding assistants and reached 73 of Microsoft's own GitHub repositories. The incident is an early, vivid example of how agentic developer tools can become a vector for software supply-chain attacks at scale.",
+   source:"AI Weekly", url:"https://aiweekly.co/",
+   category:"Safety", region:"Global", date:"2026-06-10"},
+
+  {headline:"Wayve's self-driving tech is heading to Stellantis cars in the US",
+   summary:"UK firm Wayve will put its learning-based self-driving system into US vehicles built by Stellantis. The deal moves Wayve's 'embodied AI' approach from demos toward mass-market deployment and pits it against camera-and-neural-net rivals in the autonomy market.",
+   source:"AI Weekly", url:"https://aiweekly.co/",
+   category:"Robotics", region:"Europe", date:"2026-06-09"},
+
+  {headline:"Anthropic and Gates Foundation pledge $200M to put Claude in global health",
+   summary:"Anthropic and the Gates Foundation committed $200M to embed Claude inside global health and development tools, an 'AI for Good' push aimed at frontline workers in lower-income countries. It is one of the larger philanthropic bets on applying frontier models to public-health problems.",
+   source:"AI Weekly", url:"https://aiweekly.co/",
+   category:"Research", region:"Global", date:"2026-05-26"},
+
+  {headline:"Stanford AI predicts disease risk from a single night's sleep",
+   summary:"Stanford researchers built an AI that forecasts future disease risk using physiological signals from just one night of sleep. The system mines subtle patterns in the data that clinicians cannot easily see, pointing toward cheap, at-home early screening.",
+   source:"ScienceDaily", url:"https://www.sciencedaily.com/news/computers_math/artificial_intelligence/",
+   category:"Research", region:"US", date:"2026-06-11"},
+
+  {headline:"Gemini 3.5 Flash goes GA — now the default in Search's AI Mode",
+   summary:"Google's Gemini 3.5 Flash is generally available after launching at I/O 2026. It is already the default in the Gemini app and in Search's AI Mode, with API pricing at $1.50 input and $9.00 output per million tokens — aggressive economics for a fast frontier-class model.",
+   source:"WaveSpeed", url:"https://wavespeed.ai/blog/posts/june-2026-ai-launch-wave/",
+   category:"Models", region:"US", date:"2026-05-19"},
+
+  {headline:"June's model window opens: Gemini 3.5 Pro and Claude Sonnet 4.8 expected",
+   summary:"The industry's June release wave is underway, with Google's Gemini 3.5 Pro and a rumoured Claude Sonnet 4.8 both expected before month's end, alongside xAI's long-delayed Grok 5. Most of the noise, builders are warned, won't change day-to-day work this month.",
+   source:"WaveSpeed", url:"https://wavespeed.ai/blog/posts/june-2026-ai-launch-wave/",
+   category:"Models", region:"Global", date:"2026-06-01"},
+
+  {headline:"Huawei's HarmonyOS 7 ships an 'agent-friendly' architecture",
+   summary:"Huawei unveiled HarmonyOS 7 with an architecture built for AI agents, connecting to more than 2,000 specialised agents and an upgraded voice assistant. The move bakes agentic AI into the operating-system layer across Huawei's device ecosystem.",
+   source:"South China Morning Post", url:"https://llm-stats.com/ai-news",
+   category:"Business", region:"Asia", date:"2026-06-12"},
+
+  {headline:"Microsoft and Google chase Anthropic and OpenAI in AI coding",
+   summary:"Coding tools have become the hottest AI battleground. Microsoft lined up coding announcements at Build, following Google's developer-conference push, as both try to close the gap on Anthropic — whose lead analysts attribute largely to Claude Code — and OpenAI.",
+   source:"CNBC", url:"https://www.cnbc.com/2026/06/01/microsoft-and-google-take-on-anthropic-and-openai-in-ai-coding-models.html",
+   category:"Business", region:"US", date:"2026-06-01"}
+];
+
+const CATS = ["All","Models","Business","Policy","Research","Safety","Robotics","Infrastructure"];
+const CAT_META = {
+  Models:        {k:"#4B3FBF",g:"\u25C8"},
+  Business:      {k:"#9A6B1F",g:"$"},
+  Policy:        {k:"#1E5C75",g:"\u00A7"},
+  Research:      {k:"#1E6F4C",g:"\u2726"},
+  Safety:        {k:"#A3301F",g:"\u26A0"},
+  Robotics:      {k:"#1C6E7C",g:"\u2B21"},
+  Infrastructure:{k:"#44506A",g:"\u25A6"},
+  _default:      {k:"#444444",g:"\u25CF"}
+};
+const meta = c => CAT_META[c] || CAT_META._default;
+
+let news = SEED.slice();
+let activeCat = "All";
+let idx = 0;
+
+const $ = id => document.getElementById(id);
+const deck=$("deck"), chipsEl=$("chips"), curEl=$("cur"), totEl=$("tot"),
+      bar=$("bar"), prevB=$("prev"), nextB=$("next"), statusEl=$("status"),
+      refreshB=$("refresh");
+
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const filtered = () => activeCat==="All" ? news : news.filter(n=>n.category===activeCat);
+
+function fmtDate(d){
+  const t=new Date(d+"T00:00:00");
+  if(isNaN(t)) return d||"";
+  return t.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"});
+}
+(function setDateline(){
+  const today=new Date().toLocaleDateString("en-US",
+    {weekday:"long",month:"long",day:"numeric",year:"numeric"});
+  const el=$("dateline"); if(el) el.textContent="AI Edition \u00b7 "+today;
+})();
+
+function buildChips(){
+  chipsEl.innerHTML="";
+  CATS.forEach(c=>{
+    const b=document.createElement("button");
+    b.className="chip"+(c===activeCat?" active":"");
+    b.textContent = c==="All" ? "All" : c;
+    b.onclick=()=>{activeCat=c;buildChips();render();};
+    chipsEl.appendChild(b);
+  });
+}
+
+function card(n){
+  const m=meta(n.category);
+  const cat=esc(n.category||"News");
+  const url=(n.url||"").trim();
+  const link = url
+    ? `<a class="read" href="${esc(url)}" target="_blank" rel="noopener noreferrer">Read the full story &rarr;</a>`
+    : `<span class="read" style="opacity:.45;cursor:default;border-bottom-color:transparent">No link</span>`;
+  return `
+  <article class="card">
+    <figure class="plate" style="border-top-color:${m.k}">
+      <span class="glyph">${m.g}</span>
+      <span class="region">${esc(n.region||"Global")}</span>
+      <figcaption class="credit">AIShorts illustration &middot; ${cat}</figcaption>
+    </figure>
+    <div class="body">
+      <div class="kicker" style="color:${m.k}"><span class="sq" style="background:${m.k}"></span>${cat}</div>
+      <h2 class="headline">${esc(n.headline)}</h2>
+      <p class="summary">${esc(n.summary)}</p>
+      <div class="source">
+        <div class="by">By <b>${esc(n.source||"Unknown")}</b> &middot; ${fmtDate(n.date)}${n.note?`<br><span class="note">${esc(n.note)}</span>`:""}</div>
+        ${link}
+      </div>
+    </div>
+  </article>`;
+}
+
+function render(){
+  const list=filtered();
+  if(!list.length){
+    deck.innerHTML=`<div class="empty"><div class="glyph">\u2014</div>
+      <p>No dispatches in this section yet.<br>Try another category or pull the wire.</p></div>`;
+    totEl.textContent="00";curEl.textContent="00";bar.style.width="0";
+    prevB.disabled=nextB.disabled=true;return;
+  }
+  deck.innerHTML=list.map(card).join("");
+  idx=0;deck.scrollTop=0;updateRail();
+}
+
+function updateRail(){
+  const list=filtered();const total=list.length;
+  curEl.textContent=String(Math.min(idx+1,total)).padStart(2,"0");
+  totEl.textContent=String(total).padStart(2,"0");
+  bar.style.width=total? ((idx+1)/total*100)+"%" : "0";
+  prevB.disabled=idx<=0;nextB.disabled=idx>=total-1;
+}
+
+function goTo(i){
+  const cards=deck.querySelectorAll(".card");
+  if(!cards.length)return;
+  idx=Math.max(0,Math.min(i,cards.length-1));
+  cards[idx].scrollIntoView({behavior:"smooth",block:"start"});
+  updateRail();
+}
+const next=()=>goTo(idx+1), prev=()=>goTo(idx-1);
+
+// keep index in sync when the user swipes/scrolls
+let scrollT;
+deck.addEventListener("scroll",()=>{
+  clearTimeout(scrollT);
+  scrollT=setTimeout(()=>{
+    const cards=deck.querySelectorAll(".card");if(!cards.length)return;
+    let best=0,bestD=1e9;
+    cards.forEach((c,i)=>{const d=Math.abs(c.getBoundingClientRect().top-deck.getBoundingClientRect().top);
+      if(d<bestD){bestD=d;best=i;}});
+    if(best!==idx){idx=best;updateRail();}
+  },60);
+},{passive:true});
+
+prevB.onclick=prev;nextB.onclick=next;
+window.addEventListener("keydown",e=>{
+  if(e.key==="ArrowDown"||e.key==="j"){e.preventDefault();next();}
+  else if(e.key==="ArrowUp"||e.key==="k"){e.preventDefault();prev();}
+  else if(e.key==="Enter"||e.key==="o"){
+    const a=deck.querySelectorAll(".card")[idx]?.querySelector("a.read");if(a)a.click();
+  }
+});
+
+let statusT;
+function setStatus(msg,isErr){
+  statusEl.textContent=msg;
+  statusEl.className="status show"+(isErr?" err":"");
+  clearTimeout(statusT);
+  statusT=setTimeout(()=>statusEl.className="status"+(isErr?" err":""),isErr?5200:3200);
+}
+
+const KNOWN=new Set(CATS.slice(1));
+function normCat(c){
+  if(!c)return "Business";
+  c=String(c).trim();
+  if(KNOWN.has(c))return c;
+  const map={Hardware:"Infrastructure",Security:"Safety","AI for Good":"Research",
+    Product:"Business",Products:"Business",Funding:"Business",Compute:"Infrastructure",
+    Regulation:"Policy",Government:"Policy",Healthcare:"Research",Science:"Research"};
+  return map[c] || (KNOWN.has(c)?c:"Business");
+}
+function normRegion(r){
+  if(!r)return "Global";
+  r=String(r).trim();
+  const ok=["US","Europe","Asia","Global","UK","Middle East","Africa","Americas"];
+  return ok.includes(r)?r:"Global";
+}
+
+/* ----- live refresh via Anthropic API ----- */
+
+// fetch with an abort timeout so a blocked tier fails fast (e.g. on a
+// static host where the Anthropic API isn't reachable) instead of hanging.
+function fetchT(url,opts,ms){
+  const c=new AbortController();
+  const id=setTimeout(()=>c.abort(),ms||10000);
+  return fetch(url,Object.assign({},opts,{signal:c.signal}))
+    .finally(()=>clearTimeout(id));
+}
+
+// Pull complete {...} objects out of text even if the array was cut off
+// mid-stream by the token limit (the old version failed on truncated JSON).
+function extractItems(text){
+  if(!text) return [];
+  let t=text.replace(/```json/gi,"").replace(/```/g,"").trim();
+  const a=t.indexOf("["), b=t.lastIndexOf("]");
+  const slice=(a>=0 && b>a) ? t.slice(a,b+1) : t;
+  try{ const v=JSON.parse(slice); if(Array.isArray(v)) return v; }catch(e){}
+  const objs=[]; let depth=0,start=-1,inStr=false,prev="";
+  for(let i=0;i<slice.length;i++){
+    const ch=slice[i];
+    if(inStr){ if(ch==='"'&&prev!=="\\") inStr=false; }
+    else if(ch==='"'){ inStr=true; }
+    else if(ch==='{'){ if(depth===0) start=i; depth++; }
+    else if(ch==='}'){ depth--; if(depth===0&&start>=0){ try{objs.push(JSON.parse(slice.slice(start,i+1)));}catch(e){} start=-1; } }
+    prev=ch;
+  }
+  return objs;
+}
+
+function mapItems(raw,note){
+  return (Array.isArray(raw)?raw:[]).filter(o=>o&&o.headline&&o.summary).map(o=>({
+    headline:String(o.headline),summary:String(o.summary),
+    source:String(o.source||"Wire"),url:String(o.url||"").trim(),
+    category:normCat(o.category),region:normRegion(o.region),
+    date:String(o.date||new Date().toISOString().slice(0,10)),
+    note:note||null
+  }));
+}
+
+async function callClaude(useSearch){
+  const promptSearch=
+    "You are the wire editor for AIShorts, a global AI-news ticker. Use web search to find the "+
+    "6 most important artificial-intelligence stories from the last 7 days worldwide, across models, "+
+    "business, policy, research, safety, robotics and infrastructure, from varied regions. "+
+    "Reply with ONLY a JSON array (no prose, no markdown) of 6 objects, keys: headline (<=11 words), "+
+    "summary (30-45 words, factual, neutral), source (publication name), url (the direct article link), "+
+    "category (Models|Business|Policy|Research|Safety|Robotics|Infrastructure), "+
+    "region (US|Europe|Asia|Global), date (YYYY-MM-DD). JSON array only.";
+  const promptMem=
+    "Without browsing, list the 6 most notable recent artificial-intelligence stories you know of, "+
+    "across models, business, policy, research, safety, robotics and infrastructure. "+
+    "Reply with ONLY a JSON array (no prose, no markdown) of 6 objects, keys: headline (<=11 words), "+
+    "summary (30-45 words, factual, neutral), source (publication name), "+
+    "url (ONLY the publication's home page, e.g. https://techcrunch.com — never a guessed article path), "+
+    "category (Models|Business|Policy|Research|Safety|Robotics|Infrastructure), "+
+    "region (US|Europe|Asia|Global), date (YYYY-MM-DD). JSON array only.";
+  const body={model:"claude-sonnet-4-6",max_tokens:1000,
+    messages:[{role:"user",content:useSearch?promptSearch:promptMem}]};
+  if(useSearch) body.tools=[{type:"web_search_20250305",name:"web_search"}];
+  const res=await fetchT("https://api.anthropic.com/v1/messages",{
+    method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)},12000);
+  if(!res.ok) throw new Error("HTTP "+res.status);
+  const data=await res.json();
+  if(data && data.error) throw new Error(data.error.message||"api error");
+  const text=(Array.isArray(data.content)?data.content:[])
+    .filter(b=>b&&b.type==="text").map(b=>b.text||"").join("\n");
+  return mapItems(extractItems(text), useSearch?null:"from Claude\u2019s desk");
+}
+
+async function pullWire(){
+  if(refreshB.classList.contains("loading"))return;
+  refreshB.classList.add("loading");refreshB.disabled=true;
+  setStatus("Filing fresh dispatches from the wire\u2026");
+
+  let items=[], tag="";
+  // tier 1 — Anthropic API + live web search (works on claude.ai web)
+  try{ items=await callClaude(true); }
+  catch(e){ console.info("[aishorts] live web wire:", e.message); }
+  // tier 2 — Anthropic API, model knowledge (home-page links)
+  if(!items.length){
+    try{ items=await callClaude(false); if(items.length) tag=" \u00b7 from Claude\u2019s desk"; }
+    catch(e){ console.info("[aishorts] Claude desk:", e.message); }
+  }
+  // tier 3 — public AI wire via Hacker News (no key, works on mobile too)
+  if(!items.length){
+    setStatus("Tapping the public AI wire\u2026");
+    try{ items=await fetchHN(); if(items.length) tag=" \u00b7 via Hacker News"; }
+    catch(e){ console.info("[aishorts] public wire:", e.message); }
+  }
+
+  refreshB.classList.remove("loading");refreshB.disabled=false;
+
+  if(items.length){
+    news=items;activeCat="All";idx=0;buildChips();render();
+    setStatus("\u2713 "+items.length+" dispatches filed"+tag);
+  }else{
+    setStatus("Couldn\u2019t reach a live source just now \u2014 showing today\u2019s curated batch.",false);
+  }
+}
+
+/* Live AI stories from Hacker News' Algolia search — public, CORS-enabled,
+   no API key. Each story keeps its real source URL for the Read button. */
+function guessCat(t){
+  t=t.toLowerCase();
+  if(/(robot|humanoid|autonom|self.?driv|drone|embodied)/.test(t))return"Robotics";
+  if(/(data ?cent(er|re)|gpu|chip|nvidia|compute|cluster|silicon|fab)/.test(t))return"Infrastructure";
+  if(/(regulat|policy|\blaw\b|\bban\b|government|eu ai act|congress|court|lawsuit|export|antitrust)/.test(t))return"Policy";
+  if(/(safety|alignment|jailbreak|\brisk\b|misuse|guardrail|security|hack|breach|worm|deepfake)/.test(t))return"Safety";
+  if(/(research|paper|study|benchmark|arxiv|scientist|universit|dataset)/.test(t))return"Research";
+  if(/(model|\bgpt\b|claude|gemini|llama|\bllm\b|release|fine.?tun|open.?source|weights)/.test(t))return"Models";
+  return"Business";
+}
+async function fetchHN(){
+  const url="https://hn.algolia.com/api/v1/search?query=artificial%20intelligence&tags=story"+
+            "&numericFilters=points%3E40&hitsPerPage=50";
+  const res=await fetchT(url,{},10000);
+  if(!res.ok) throw new Error("HN HTTP "+res.status);
+  const data=await res.json();
+  const kw=/\b(ai|a\.i\.|artificial intelligence|\bllm\b|\bgpt\b|claude|gemini|openai|anthropic|deepmind|machine learning|neural|chatbot|\bagent|\bmodel)\b/i;
+  const seen=new Set(), out=[];
+  for(const h of (data.hits||[])){
+    if(!h.title||!h.url||!kw.test(h.title))continue;
+    const key=h.title.toLowerCase();if(seen.has(key))continue;seen.add(key);
+    let host="the source";try{host=new URL(h.url).hostname.replace(/^www\./,"");}catch(e){}
+    out.push({
+      headline:h.title,
+      summary:"Trending on Hacker News \u2014 "+(h.points||0)+" points, "+(h.num_comments||0)+
+              " comments. Open the original report at "+host+" for the full story.",
+      source:host,url:h.url,category:guessCat(h.title),region:"Global",
+      date:(h.created_at||"").slice(0,10),note:"via Hacker News"
+    });
+    if(out.length>=10)break;
+  }
+  if(!out.length) throw new Error("no AI stories");
+  return out;
+}
+refreshB.onclick=pullWire;
+
+buildChips();render();
+</script>
+</body>
+</html>
