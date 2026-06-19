@@ -524,7 +524,15 @@ const deck=$("deck"), chipsEl=$("chips"), curEl=$("cur"), totEl=$("tot"),
       refreshB=$("refresh");
 
 const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const filtered = () => activeCat==="All" ? news : news.filter(n=>n.category===activeCat);
+function filtered(){
+  var list = (activeCat==="All") ? news.slice() : news.filter(function(n){return n.category===activeCat;});
+  // always show newest first, then by source for ties
+  list.sort(function(a,b){
+    var d=String(b.date||"").localeCompare(String(a.date||""));
+    return d!==0 ? d : String(a.source||"").localeCompare(String(b.source||""));
+  });
+  return list;
+}
 
 function fmtDate(d){
   const t=new Date(d+"T00:00:00");
@@ -722,6 +730,15 @@ async function callClaude(useSearch){
 function stripTags(s){return String(s||"").replace(/<[^>]*>/g," ").replace(/&[a-z#0-9]+;/gi," ").replace(/\s+/g," ").trim();}
 function clipWords(s,n){s=String(s||"");var w=s.split(" ");return w.length>n?w.slice(0,n).join(" ")+"\u2026":s;}
 function normDate(s){var t=new Date(s);return isNaN(t)?new Date().toISOString().slice(0,10):t.toISOString().slice(0,10);}
+function freshOnly(items,days){
+  var cutoff=Date.now()-days*86400000, arr=[];
+  for(var i=0;i<items.length;i++){
+    var t=new Date(String(items[i].date||"")+"T00:00:00").getTime();
+    if(isNaN(t)||t>=cutoff) arr.push(items[i]);
+  }
+  arr.sort(function(a,b){return String(b.date||"").localeCompare(String(a.date||""));});
+  return arr;
+}
 
 /* category guess (shared by RSS + HN) */
 function guessCat(t){
@@ -736,7 +753,7 @@ function guessCat(t){
 }
 
 /* 4-hour localStorage cache (guarded so sandboxes that block storage don't throw) */
-var CACHE_KEY="aishorts_feed_v1", CACHE_TTL=4*60*60*1000;
+var CACHE_KEY="aishorts_feed_v2", CACHE_TTL=4*60*60*1000;
 var API_BASE=(window.AISHORTS_API_BASE||"").replace(/\/+$/,"");
 async function fetchWorker(){
   if(!API_BASE) throw new Error("no api base");
@@ -758,7 +775,7 @@ function readCache(){try{var raw=lsGet(CACHE_KEY);if(!raw)return null;var o=JSON
 function writeCache(items){lsSet(CACHE_KEY,JSON.stringify({ts:Date.now(),items:items}));}
 
 /* source 1: Google News AI RSS (multi-source, genuinely current) */
-var RSS_FEED="https://news.google.com/rss/search?q="+encodeURIComponent("artificial intelligence when:3d")+"&hl=en-US&gl=US&ceid=US:en";
+var RSS_FEED="https://news.google.com/rss/search?q="+encodeURIComponent("artificial intelligence when:5d")+"&hl=en-US&gl=US&ceid=US:en";
 function mapRSS(items){
   var out=[],seen={};
   for(var i=0;i<items.length && out.length<12;i++){
@@ -789,30 +806,42 @@ function parseFeedXML(xml){
   }catch(e){return [];}
 }
 async function fetchRSS(){
-  try{
-    var r=await fetchT("https://api.rss2json.com/v1/api.json?count=20&rss_url="+encodeURIComponent(RSS_FEED),{},9000);
-    if(r.ok){var d=await r.json(); if(d&&d.status==="ok"&&d.items&&d.items.length){var x=mapRSS(d.items); if(x.length)return x;}}
-  }catch(e){console.info("[aishorts] rss2json:",e.message);}
-  try{
-    var r2=await fetchT("https://api.allorigins.win/raw?url="+encodeURIComponent(RSS_FEED),{},10000);
-    if(r2.ok){var xml=await r2.text(); var y=parseFeedXML(xml); if(y.length)return y;}
-  }catch(e){console.info("[aishorts] allorigins:",e.message);}
+  var attempts=[
+    {u:"https://api.rss2json.com/v1/api.json?count=25&rss_url="+encodeURIComponent(RSS_FEED),kind:"rss2json"},
+    {u:"https://corsproxy.io/?url="+encodeURIComponent(RSS_FEED),kind:"xml"},
+    {u:"https://api.allorigins.win/get?url="+encodeURIComponent(RSS_FEED),kind:"aojson"},
+    {u:"https://api.allorigins.win/raw?url="+encodeURIComponent(RSS_FEED),kind:"xml"}
+  ];
+  for(var i=0;i<attempts.length;i++){
+    try{
+      var r=await fetchT(attempts[i].u,{},9000);
+      if(!r.ok) continue;
+      var items=[];
+      if(attempts[i].kind==="rss2json"){ var d=await r.json(); if(d&&d.items) items=mapRSS(d.items); }
+      else if(attempts[i].kind==="aojson"){ var j=await r.json(); if(j&&j.contents) items=parseFeedXML(j.contents); }
+      else { var xml=await r.text(); items=parseFeedXML(xml); }
+      items=freshOnly(items,7);
+      if(items.length>=3) return items;
+    }catch(e){ console.info("[aishorts] rss "+attempts[i].kind+":",e.message); }
+  }
   throw new Error("rss unavailable");
 }
 
 /* source 2: Hacker News (search_by_date = most recent, AI keyword filtered) */
 async function fetchHN(){
-  var url="https://hn.algolia.com/api/v1/search_by_date?query="+encodeURIComponent("AI OR LLM OR OpenAI OR Anthropic")+
-          "&tags=story&hitsPerPage=80";
+  var since=Math.floor(Date.now()/1000)-4*86400;
+  var url="https://hn.algolia.com/api/v1/search_by_date?query="+encodeURIComponent("AI")+
+          "&tags=story&numericFilters="+encodeURIComponent("created_at_i>"+since+",points>15")+"&hitsPerPage=100";
   var res=await fetchT(url,{},10000);
   if(!res.ok) throw new Error("HN HTTP "+res.status);
   var data=await res.json();
-  var kw=/\b(a\.?i|artificial intelligence|llm|gpt|claude|gemini|grok|openai|anthropic|deepmind|mistral|llama|machine learning|neural|chatbot|agent|model|robot)\b/i;
+  var kw=/\b(a\.?i|artificial intelligence|llm|gpt|claude|gemini|grok|openai|anthropic|deepmind|mistral|llama|machine learning|neural net|chatbot|agentic|agents?|models?|diffusion|inference)\b/i;
   var seen={}, out=[], hits=data.hits||[];
   for(var i=0;i<hits.length;i++){
     var h=hits[i];
-    if(!h.title||!h.url||!kw.test(h.title))continue;
-    if((h.points||0)<8 && (h.num_comments||0)<3) continue;
+    if(!h.title||!h.url) continue;
+    if(/^(launch hn|ask hn)/i.test(h.title)) continue;
+    if(!kw.test(h.title)) continue;
     var key=h.title.toLowerCase(); if(seen[key])continue; seen[key]=1;
     var host="the source"; try{host=new URL(h.url).hostname.replace(/^www\./,"");}catch(e){}
     out.push({headline:h.title,
@@ -820,9 +849,10 @@ async function fetchHN(){
               " comments. Open the original report at "+host+" for the full story.",
       source:host,url:h.url,category:guessCat(h.title),region:"Global",
       date:normDate(h.created_at),note:"via Hacker News"});
-    if(out.length>=10)break;
+    if(out.length>=12)break;
   }
-  if(!out.length) throw new Error("no AI stories");
+  out=freshOnly(out,5);
+  if(out.length<3) throw new Error("no fresh AI stories");
   return out;
 }
 
