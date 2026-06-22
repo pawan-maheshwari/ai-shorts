@@ -322,6 +322,35 @@
   .qr-cap{font-family:"Libre Franklin",sans-serif;font-size:10px;letter-spacing:.3px;
     color:var(--meta);margin-top:8px;}
   @media (max-height:520px){ .topbar{display:none;} }
+  /* ---- engagement (Quiz / Poll) ---- */
+  .engage{flex:0 0 auto;display:flex;gap:10px;padding:8px 16px;border-bottom:1px solid var(--rule);background:var(--paper-2);}
+  .eng-btn{flex:1 1 0;cursor:pointer;border:1px solid var(--ink);background:#fff;color:var(--ink);
+    font-family:"Libre Franklin",sans-serif;font-size:11px;font-weight:700;letter-spacing:.6px;
+    text-transform:uppercase;padding:9px 6px;border-radius:0;}
+  .eng-btn:hover{background:var(--ink);color:#fff;}
+  /* ---- colophon ---- */
+  .colophon{flex:0 0 auto;text-align:center;padding:7px 12px;border-top:1px solid var(--rule);background:var(--paper);
+    font-family:"Libre Franklin",sans-serif;font-size:10px;letter-spacing:.3px;color:var(--meta);line-height:1.5;}
+  .colophon a{color:var(--ink);font-weight:700;text-decoration:none;border-bottom:1px solid var(--rule);}
+  .colophon a:hover{color:var(--link);border-bottom-color:var(--link);}
+  /* ---- quiz / poll widgets ---- */
+  .opt{display:block;width:100%;text-align:left;border:1px solid var(--rule);background:#fff;cursor:pointer;
+    font-family:"Libre Franklin",sans-serif;font-size:14px;padding:11px 13px;margin-bottom:8px;border-radius:0;color:var(--ink);}
+  .opt:hover{border-color:var(--ink);}
+  .opt[disabled]{cursor:default;}
+  .opt.correct{border-color:#1E6F4C;background:#eafaf1;color:#1E6F4C;font-weight:700;}
+  .opt.wrong{border-color:var(--live);background:#fdeeea;color:var(--live);}
+  .opt.chosen{font-weight:700;}
+  .bar{margin-bottom:10px;}
+  .bar .lab{display:flex;justify-content:space-between;font-family:"Libre Franklin",sans-serif;font-size:12px;margin-bottom:3px;color:var(--ink);}
+  .bar .track{height:9px;background:var(--rule);}
+  .bar .fill{height:100%;background:var(--ink);transition:width .4s ease;}
+  .bar.mine .fill{background:var(--link);}
+  .poll-prev{border-top:1px solid var(--rule);margin-top:16px;padding-top:14px;}
+  .poll-prev h4{font-family:"Libre Franklin",sans-serif;font-size:11px;font-weight:800;letter-spacing:1px;
+    text-transform:uppercase;color:var(--meta);margin:0 0 8px;}
+  .poll-prev .pq{font-family:Georgia,serif;font-size:15px;color:var(--ink);margin-bottom:10px;}
+  @media (max-height:600px){ .engage,.colophon{display:none;} }
 </style>
 </head>
 <body>
@@ -359,6 +388,11 @@
 
   <nav class="chips" id="chips"></nav>
 
+  <div class="engage">
+    <button class="eng-btn" id="openQuiz">AI Quiz of the Day</button>
+    <button class="eng-btn" id="openPoll">AI Poll of the Day</button>
+  </div>
+
   <div class="deck" id="deck"></div>
 
   <footer class="rail">
@@ -370,8 +404,32 @@
     </div>
     <div class="hint">swipe</div>
   </footer>
+  <div class="colophon">
+    &copy; <span id="cyear">2026</span> AIShorts &middot; All rights reserved &middot; Moderated by <a href="https://www.linkedin.com/in/pawan-maheshwari-4b9b4715" target="_blank" rel="noopener noreferrer">Pawan Maheshwari</a>
+  </div>
 
   <div class="status" id="status"></div>
+
+  <div class="modal" id="quizModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="AI Quiz of the Day">
+      <button class="modal-x" data-close aria-label="Close">&times;</button>
+      <div class="modal-kicker">AI Quiz of the Day</div>
+      <h3 class="modal-title" id="quizQ">Loading…</h3>
+      <div id="quizBody"></div>
+      <div class="form-note" id="quizNote"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="pollModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="AI Poll of the Day">
+      <button class="modal-x" data-close aria-label="Close">&times;</button>
+      <div class="modal-kicker">AI Poll of the Day</div>
+      <h3 class="modal-title" id="pollQ">Loading…</h3>
+      <div id="pollBody"></div>
+      <div class="form-note" id="pollNote"></div>
+      <div class="poll-prev" id="pollPrev"></div>
+    </div>
+  </div>
 
   <div class="modal" id="subModal">
     <div class="modal-card" role="dialog" aria-modal="true" aria-label="Subscribe to AIShorts">
@@ -1015,6 +1073,152 @@ initFeed();
   }
   var sb=$("subBtn"); if(sb)sb.onclick=subscribe;
   var se=$("subEmail"); if(se)se.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();subscribe();}});
+
+  /* =================== AI Quiz + Poll of the Day =================== */
+  var host=((location.hostname||"local").replace(/[^A-Za-z0-9]/g,"")||"local").slice(0,30);
+  var ABA="https://abacus.jasoncameron.dev";
+
+  var QUIZ=[
+   {q:"What does \u201cLLM\u201d stand for?",o:["Large Language Model","Linear Learning Machine","Layered Logic Module","Long Latency Memory"],a:0,e:"LLM = Large Language Model \u2014 networks trained on vast text to predict the next token."},
+   {q:"Which company builds the Claude family of models?",o:["Anthropic","OpenAI","Meta","Amazon"],a:0,e:"Claude is built by Anthropic."},
+   {q:"In \u201cGPT\u201d, the \u201cT\u201d stands for\u2026",o:["Transformer","Transfer","Training","Token"],a:0,e:"GPT = Generative Pre-trained Transformer."},
+   {q:"Which method aligns models using human feedback?",o:["RLHF","Dropout","Bagging","Back-prop"],a:0,e:"RLHF = Reinforcement Learning from Human Feedback."},
+   {q:"A \u201ctoken\u201d is best described as\u2026",o:["A chunk of text","A pixel","A database row","A network packet"],a:0,e:"Models read and write text in tokens \u2014 sub-word chunks."},
+   {q:"\u201cRAG\u201d in AI systems stands for\u2026",o:["Retrieval-Augmented Generation","Random Access Gradient","Recurrent Attention Gate","Rapid AI Growth"],a:0,e:"RAG retrieves documents to ground a model\u2019s answers."},
+   {q:"Which architecture underpins most modern LLMs?",o:["Transformer","CNN","RNN","SVM"],a:0,e:"The Transformer (attention) architecture powers modern LLMs."},
+   {q:"\u201cFine-tuning\u201d a model means\u2026",o:["Further training on specific data","Deleting weights","Compressing files","Encrypting data"],a:0,e:"Fine-tuning continues training on a narrower dataset."},
+   {q:"A model \u201challucination\u201d is\u2026",o:["A confident but false output","A hardware fault","A type of GPU","A dataset"],a:0,e:"Hallucination = plausible-sounding but incorrect generated content."},
+   {q:"\u201cMultimodal\u201d AI can handle\u2026",o:["Multiple data types (text, image, audio)","Only text","Only images","Only numbers"],a:0,e:"Multimodal models process more than one kind of input."},
+   {q:"Model size is loosely measured by\u2026",o:["Number of parameters","Screen resolution","Clock speed","RAM colour"],a:0,e:"Parameter count is a rough proxy for model scale."},
+   {q:"A \u201cprompt\u201d is\u2026",o:["The input instruction to a model","A loss function","A GPU type","A file format"],a:0,e:"The prompt is what you give the model to act on."}
+  ];
+  var POLL=[
+   {q:"Which AI assistant do you use most?",o:["Claude","ChatGPT","Gemini","Other"]},
+   {q:"Will AI create more jobs than it replaces?",o:["Yes","No","Unsure"]},
+   {q:"Most exciting AI frontier right now?",o:["AI agents","Robotics","Healthcare","Coding"]},
+   {q:"Should frontier AI be more tightly regulated?",o:["Yes","No","It depends"]},
+   {q:"How often do you use AI tools?",o:["Daily","Weekly","Rarely","Never"]},
+   {q:"Which AI risk worries you most?",o:["Misinformation","Job loss","Safety / alignment","Privacy"]},
+   {q:"Open-weight or closed models?",o:["Open","Closed","A mix"]},
+   {q:"Will AGI arrive before 2030?",o:["Yes","No","Maybe"]},
+   {q:"AI in education is a net\u2026",o:["Positive","Negative","Mixed bag"]},
+   {q:"Do you read AI news every day?",o:["Yes","Sometimes","No"]},
+   {q:"Your main AI use case?",o:["Writing","Coding","Research","Creative"]},
+   {q:"Most important AI value?",o:["Helpfulness","Safety","Transparency","Speed"]}
+  ];
+
+  var DAY=Math.floor(Date.now()/86400000);
+  function ymd(off){var d=new Date(Date.now()-(off||0)*86400000);return ""+d.getFullYear()+("0"+(d.getMonth()+1)).slice(-2)+("0"+d.getDate()).slice(-2);}
+  var TID=ymd(0), YID=ymd(1);
+  var quizT=QUIZ[DAY%QUIZ.length];
+  var pollT=POLL[DAY%POLL.length];
+  var pollY=POLL[((DAY-1)%POLL.length+POLL.length)%POLL.length];
+
+  function abaHit(ns,key){return fetchT(ABA+"/hit/"+ns+"/"+key,{},8000).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(d){return (d&&d.value)||0;});}
+  function abaGet(ns,key){return fetchT(ABA+"/get/"+ns+"/"+key,{},8000).then(function(r){return r.ok?r.json():{value:0};}).then(function(d){return (d&&d.value)||0;}).catch(function(){return 0;});}
+  function esc2(s){return String(s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+
+  /* ---- Quiz ---- */
+  function renderQuiz(){
+    var qEl=$("quizQ"), body=$("quizBody"), note=$("quizNote");
+    qEl.textContent=quizT.q;
+    var prior=lsGet("aishorts_quiz_"+TID);
+    var html="";
+    for(var i=0;i<quizT.o.length;i++){
+      var cls="opt";
+      if(prior!==null){
+        if(i===quizT.a) cls+=" correct";
+        if(String(i)===String(prior) && i!==quizT.a) cls+=" wrong";
+        if(String(i)===String(prior)) cls+=" chosen";
+      }
+      html+='<button class="'+cls+'" data-qi="'+i+'"'+(prior!==null?" disabled":"")+'>'+esc2(quizT.o[i])+'</button>';
+    }
+    body.innerHTML=html;
+    if(prior!==null){
+      note.className="form-note";
+      note.innerHTML="<b>You had already participated for today!</b> "+esc2(quizT.e);
+      showQuizStats();
+    } else {
+      note.className="form-note";
+      note.textContent="Pick one \u2014 a single attempt per day.";
+      body.querySelectorAll(".opt").forEach(function(b){
+        b.onclick=function(){ answerQuiz(parseInt(b.getAttribute("data-qi"),10)); };
+      });
+    }
+  }
+  function answerQuiz(i){
+    if(lsGet("aishorts_quiz_"+TID)!==null) return;
+    lsSet("aishorts_quiz_"+TID, String(i));
+    abaHit("aishortsquiz_"+host, "q"+TID+"_"+(i===quizT.a?"correct":"wrong")).catch(function(){});
+    renderQuiz();
+  }
+  function showQuizStats(){
+    var ns="aishortsquiz_"+host, note=$("quizNote");
+    Promise.all([abaGet(ns,"q"+TID+"_correct"),abaGet(ns,"q"+TID+"_wrong")]).then(function(v){
+      var c=v[0],w=v[1],t=c+w;
+      if(t>0) note.innerHTML+=' <span style="color:var(--meta)">('+Math.round(c/t*100)+"% of readers got it right)</span>";
+    });
+  }
+
+  /* ---- Poll ---- */
+  function renderPoll(){
+    var qEl=$("pollQ"), body=$("pollBody"), note=$("pollNote");
+    qEl.textContent=pollT.q;
+    var prior=lsGet("aishorts_poll_"+TID);
+    if(prior!==null){
+      note.className="form-note";
+      note.innerHTML="<b>You had already participated for today!</b> Here is the live trend:";
+      showPollResults(body, "aishortspoll_"+host, TID, pollT, parseInt(prior,10));
+    } else {
+      note.className="form-note";
+      note.textContent="One vote per day \u2014 tap your choice.";
+      var html="";
+      for(var i=0;i<pollT.o.length;i++) html+='<button class="opt" data-pi="'+i+'">'+esc2(pollT.o[i])+'</button>';
+      body.innerHTML=html;
+      body.querySelectorAll(".opt").forEach(function(b){
+        b.onclick=function(){ votePoll(parseInt(b.getAttribute("data-pi"),10)); };
+      });
+    }
+    renderPrevPoll();
+  }
+  function votePoll(i){
+    if(lsGet("aishorts_poll_"+TID)!==null) return;
+    lsSet("aishorts_poll_"+TID, String(i));
+    var ns="aishortspoll_"+host;
+    $("pollNote").textContent="Recording your vote\u2026";
+    abaHit(ns,"d"+TID+"_o"+i).then(function(){
+      $("pollNote").textContent="Thanks for voting! Live results:";
+      showPollResults($("pollBody"), ns, TID, pollT, i);
+    }).catch(function(){
+      $("pollNote").textContent="Vote saved on this device (live tally unavailable right now).";
+      showPollResults($("pollBody"), ns, TID, pollT, i);
+    });
+  }
+  function showPollResults(container, ns, id, poll, mine){
+    container.innerHTML='<div class="form-note">Loading results\u2026</div>';
+    var gets=[]; for(var i=0;i<poll.o.length;i++) gets.push(abaGet(ns,"d"+id+"_o"+i));
+    Promise.all(gets).then(function(vals){
+      var total=0,k; for(k=0;k<vals.length;k++) total+=vals[k];
+      var html="";
+      for(k=0;k<poll.o.length;k++){
+        var pct= total>0 ? Math.round(vals[k]/total*100) : 0;
+        html+='<div class="bar'+(k===mine?" mine":"")+'"><div class="lab"><span>'+esc2(poll.o[k])+(k===mine?" \u2713":"")+'</span><span>'+pct+'% \u00b7 '+vals[k]+'</span></div><div class="track"><div class="fill" style="width:'+pct+'%"></div></div></div>';
+      }
+      html+='<div class="form-note">'+total+' vote'+(total===1?"":"s")+'</div>';
+      container.innerHTML=html;
+    });
+  }
+  function renderPrevPoll(){
+    var prev=$("pollPrev");
+    prev.innerHTML='<h4>Yesterday\u2019s poll</h4><div class="pq">'+esc2(pollY.q)+'</div><div id="prevBars"></div>';
+    showPollResults($("prevBars"), "aishortspoll_"+host, YID, pollY, -1);
+  }
+
+  /* openers + colophon year */
+  var oq=$("openQuiz"), op=$("openPoll");
+  if(oq) oq.onclick=function(){ renderQuiz(); openM("quizModal"); };
+  if(op) op.onclick=function(){ renderPoll(); openM("pollModal"); };
+  var cy=document.getElementById("cyear"); if(cy) cy.textContent=new Date().getFullYear();
 })();
 </script>
 </body>
