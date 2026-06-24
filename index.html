@@ -123,7 +123,7 @@
   }
   /* hero "art" — generated, restrained newsprint plate */
   .plate{
-    position:relative;flex:0 0 37%;margin:0;overflow:hidden;
+    position:relative;flex:0 0 33%;margin:0;overflow:hidden;
     background:linear-gradient(160deg,#efeeea,#dcdbd3);
     border:1px solid var(--rule);border-top:3px solid var(--ink);
     display:flex;align-items:flex-end;
@@ -152,7 +152,7 @@
   }
 
   .body{flex:1 1 auto;display:flex;flex-direction:column;padding-top:13px;min-height:0;overflow:hidden;}
-  .bodyinner{margin:auto 0;display:flex;flex-direction:column;width:100%;max-height:100%;min-height:0;}
+  .bodyinner{margin:0;display:flex;flex-direction:column;width:100%;height:100%;min-height:0;}
   .kicker{
     font-family:"Libre Franklin",sans-serif;font-size:11px;font-weight:800;
     letter-spacing:1.3px;text-transform:uppercase;margin-bottom:8px;
@@ -161,16 +161,16 @@
   .kicker .sq{width:8px;height:8px;display:inline-block;}
   .headline{
     font-family:Georgia,"Times New Roman",serif;font-weight:700;
-    font-size:27px;line-height:1.1;letter-spacing:-.3px;color:var(--ink);margin:0 0 11px;
+    font-size:20px;line-height:1.14;letter-spacing:-.2px;color:var(--ink);margin:0 0 9px;
   }
   .summary{
     font-family:Georgia,serif;font-size:16px;line-height:1.55;color:var(--body);
-    margin:0;flex:0 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;
+    margin:0;flex:1 1 auto;min-height:0;overflow-y:auto;scrollbar-width:none;
   }
   .summary::-webkit-scrollbar{display:none;}
 
   .source{
-    margin-top:13px;padding-top:12px;border-top:1px solid var(--rule);
+    margin-top:auto;flex:0 0 auto;padding-top:10px;border-top:1px solid var(--rule);
     display:flex;align-items:flex-end;gap:10px;
   }
   .source .by{
@@ -238,14 +238,14 @@
     .card{padding:22px 26px 16px;}
     .plate{align-self:center;width:100%;max-width:660px;}
     .bodyinner{align-self:center;max-width:660px;}
-    .headline{font-size:32px;line-height:1.08;}
+    .headline{font-size:25px;line-height:1.1;}
     .summary{font-size:17px;line-height:1.6;}
     .wordmark{font-size:54px;}
   }
   @media (max-width:380px){
     .wordmark{font-size:40px;}
-    .headline{font-size:24px;}
-    .summary{font-size:15px;}
+    .headline{font-size:18px;}
+    .summary{font-size:14px;}
     .chips{gap:14px;}
     .visits{font-size:9.5px;}
     .util-right{gap:8px;}
@@ -259,7 +259,7 @@
     .dateline{padding:5px 16px;}
     .card{padding:12px 16px 10px;}
     .plate{flex:0 0 26%;}
-    .headline{font-size:22px;line-height:1.08;margin-bottom:8px;}
+    .headline{font-size:18px;line-height:1.1;margin-bottom:7px;}
     .summary{font-size:14.5px;}
   }
   @media (max-height:520px){
@@ -351,13 +351,66 @@
     text-transform:uppercase;color:var(--meta);margin:0 0 8px;}
   .poll-prev .pq{font-family:Georgia,serif;font-size:15px;color:var(--ink);margin-bottom:10px;}
   @media (max-height:600px){ .engage,.colophon{display:none;} }
+
+  /* ---- AI Market Leaders (Top 5 AI companies by market cap, daily rank tracking) ---- */
+  .market{flex:0 0 auto;background:var(--paper-2);border-bottom:1px solid var(--rule);
+    padding:10px 16px 12px;font-family:"Libre Franklin",sans-serif;}
+  .market-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+  .market-kicker{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--link);}
+  .market-head h4{margin:0;font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--ink);}
+  .market-date{font-size:10px;color:var(--meta);white-space:nowrap;}
+  .refresh-mini{appearance:none;border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+    font-size:11px;padding:1px 7px;border-radius:0;cursor:pointer;line-height:1.1;}
+  .refresh-mini:hover{background:var(--ink);color:var(--paper);}
+  .market-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
+  .market-table th,.market-table td{padding:5px 6px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:middle;}
+  .market-table th{font-weight:700;color:var(--meta);font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;padding-bottom:5px;}
+  .market-table td.rank{font-weight:800;color:var(--ink);width:38px;text-align:center;font-size:14px;}
+  .market-table .company{font-weight:600;color:var(--ink);}
+  .market-table .ticker{font-size:9.5px;color:var(--meta);margin-left:3px;font-weight:400;}
+  .market-table .cap{font-family:Georgia,serif;font-weight:700;color:var(--ink);text-align:right;white-space:nowrap;}
+  .market-table .status{text-align:center;width:28px;font-size:15px;line-height:1;}
+  .status-up{color:#1E6F4C;font-weight:700;} /* green up rank */
+  .status-down{color:#d0021b;font-weight:700;} /* red down rank */
+  .status-flat{color:#326891;font-weight:700;} /* blue no change */
+  .market-foot{font-size:9px;color:var(--meta-2);margin-top:6px;text-align:right;letter-spacing:.2px;}
+  .market-foot a{color:var(--meta);}
+  /* ---- breaking news banner ---- */
+  .breaking{flex:0 0 auto;display:flex;align-items:center;gap:10px;background:var(--live);color:#fff;padding:7px 12px;}
+  .breaking[hidden]{display:none;}
+  .brk-label{font-family:"Libre Franklin",sans-serif;font-size:9.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;background:#fff;color:var(--live);padding:2px 7px;flex:0 0 auto;}
+  .brk-text{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:Georgia,serif;font-size:13px;font-weight:700;color:#fff;text-decoration:none;}
+  .brk-text:hover{text-decoration:underline;}
+  .brk-x{flex:0 0 auto;appearance:none;border:0;background:transparent;color:#fff;font-size:20px;line-height:1;cursor:pointer;opacity:.85;}
+  .brk-x:hover{opacity:1;}
+  /* ---- market collapse + ticker ---- */
+  .market-toggle{appearance:none;border:1px solid var(--ink);background:var(--paper);color:var(--ink);font-size:12px;line-height:1;padding:1px 7px;border-radius:0;cursor:pointer;}
+  .market-toggle:hover{background:var(--ink);color:var(--paper);}
+  .market.collapsed .market-table,.market.collapsed .market-foot{display:none;}
+  .market:not(.collapsed) .market-ticker{display:none;}
+  .market-ticker{display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;white-space:nowrap;font-family:"Libre Franklin",sans-serif;font-size:11.5px;color:var(--ink);padding-top:1px;}
+  .market-ticker::-webkit-scrollbar{display:none;}
+  .market-ticker .mt{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;}
+  .market-ticker .mt .cap{font-family:Georgia,serif;color:var(--meta);}
+  .market-ticker .up{color:#1E6F4C;}
+  .market-ticker .down{color:#d0021b;}
+  .market-ticker .flat{color:#326891;}
+  @media (max-height:520px){ .breaking{display:none!important;} }
+  .market-table th,.market-table td{padding:4px 5px;}
+  .market-table .cap{font-size:12.5px;}
+  @media (max-width:380px){ .market-table{font-size:12px;} .market-table .ticker{display:none;} .market-table .cap{font-size:12px;} }
 </style>
 </head>
 <body>
 <div class="wire">
+  <div class="breaking" id="breaking" hidden>
+    <span class="brk-label">Breaking</span>
+    <a class="brk-text" id="brkText" href="#" target="_blank" rel="noopener noreferrer"></a>
+    <button class="brk-x" id="brkClose" aria-label="Dismiss">&times;</button>
+  </div>
   <div class="topbar">
     <div class="tb-left">
-      <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="AIShorts"><defs><path id="ais-ring" d="M50,12 a38,38 0 1,1 -0.01,0"/></defs><circle cx="50" cy="50" r="48" fill="#121212"/><circle cx="50" cy="50" r="43.5" fill="none" stroke="#fff" stroke-width="1" opacity=".45"/><text fill="#fff" opacity=".88" font-family="'Libre Franklin',sans-serif" font-size="7" font-weight="700" letter-spacing="1.5"><textPath href="#ais-ring" startOffset="1%">AISHORTS · THE AI WIRE · AISHORTS · THE AI WIRE · </textPath></text><text x="50" y="60.5" text-anchor="middle" fill="#fff" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="31" letter-spacing="-1">AI</text><path d="M24 71 H41 l3.5 -7 4 14 3.5 -7 H76" fill="none" stroke="#E8B04B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="AIShorts — The AI Wire"><defs><radialGradient id="aisFace" cx="50%" cy="36%" r="72%"><stop offset="0%" stop-color="#2b303b"/><stop offset="55%" stop-color="#15171c"/><stop offset="100%" stop-color="#090a0d"/></radialGradient><linearGradient id="aisRim" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eef1f5"/><stop offset="34%" stop-color="#9aa3ad"/><stop offset="56%" stop-color="#5b626b"/><stop offset="100%" stop-color="#cfd4da"/></linearGradient><linearGradient id="aisGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#c79a33"/><stop offset="50%" stop-color="#f6d877"/><stop offset="100%" stop-color="#b3801f"/></linearGradient><path id="ais-ring" d="M50,13.5 a36.5,36.5 0 1,1 -0.01,0"/></defs><circle cx="50" cy="50" r="49" fill="url(#aisRim)"/><circle cx="50" cy="50" r="44.5" fill="url(#aisFace)" stroke="#070809" stroke-width="0.6"/><circle cx="50" cy="50" r="40.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity=".22"/><text fill="#f3f4f6" font-family="'Libre Franklin',sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.8"><textPath href="#ais-ring" startOffset="0">THE AI WIRE · AISHORTS · THE AI WIRE · AISHORTS · </textPath></text><text x="50" y="58.5" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="29.5" letter-spacing="-1" fill="#ffffff">AI</text><path d="M26 70 H42 l3 -8 4.5 16 3 -8 H74" fill="none" stroke="url(#aisGold)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span class="tb-est">Est. MMXXVI</span>
     </div>
     <div class="tb-right">
@@ -391,6 +444,36 @@
   <div class="engage">
     <button class="eng-btn" id="openQuiz">AI Quiz of the Day</button>
     <button class="eng-btn" id="openPoll">AI Poll of the Day</button>
+  </div>
+
+  <!-- Top 5 AI Companies by Market Cap with daily rank-change tracking -->
+  <div class="market collapsed" id="marketSection">
+    <div class="market-head">
+      <div>
+        <span class="market-kicker">MARKET PULSE</span>
+        <h4>Top 5 AI Companies by Market Cap</h4>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="market-date" id="marketDate">—</span>
+        <button class="refresh-mini" id="refreshMarket" title="Refresh live market caps &amp; re-rank">↻</button>
+        <button class="market-toggle" id="marketToggle" aria-expanded="false" title="Expand / collapse Market Pulse">&#9656;</button>
+      </div>
+    </div>
+    <div class="market-ticker" id="marketTicker"></div>
+    <table class="market-table">
+      <thead>
+        <tr>
+          <th style="width:38px;">Rank</th>
+          <th>Company</th>
+          <th style="text-align:right;">Market Cap</th>
+          <th style="width:28px;text-align:center;">Status</th>
+        </tr>
+      </thead>
+      <tbody id="marketBody">
+        <!-- populated by JS -->
+      </tbody>
+    </table>
+    <div class="market-foot">Live via Yahoo Finance • Ranks vs previous trading day • <span id="marketNote"></span></div>
   </div>
 
   <div class="deck" id="deck"></div>
@@ -648,10 +731,10 @@ function render(){
     deck.innerHTML=`<div class="empty"><div class="glyph">\u2014</div>
       <p>No dispatches in this section yet.<br>Try another category or pull the wire.</p></div>`;
     totEl.textContent="00";curEl.textContent="00";bar.style.width="0";
-    prevB.disabled=nextB.disabled=true;return;
+    prevB.disabled=nextB.disabled=true;updateBreaking();return;
   }
   deck.innerHTML=list.map(card).join("");
-  idx=0;deck.scrollTop=0;updateRail();
+  idx=0;deck.scrollTop=0;updateRail();updateBreaking();
 }
 
 function updateRail(){
@@ -661,6 +744,23 @@ function updateRail(){
   bar.style.width=total? ((idx+1)/total*100)+"%" : "0";
   prevB.disabled=idx<=0;nextB.disabled=idx>=total-1;
 }
+
+/* ---- Breaking News banner: newest story across all sections, dismissible ---- */
+var brkDismissed=null; try{ brkDismissed=localStorage.getItem("aishorts_brk_dismissed"); }catch(e){}
+function updateBreaking(){
+  var el=document.getElementById("breaking"), tx=document.getElementById("brkText");
+  if(!el||!tx) return;
+  var newest=null,best="";
+  for(var i=0;i<news.length;i++){ var d=String(news[i].date||""); if(!newest||d>best){best=d;newest=news[i];} }
+  if(!newest||!newest.headline){ el.hidden=true; return; }
+  if(brkDismissed && brkDismissed===newest.headline){ el.hidden=true; return; }
+  tx.textContent=newest.headline; tx.setAttribute("href", newest.url||"#"); el.hidden=false;
+}
+(function(){ var bx=document.getElementById("brkClose"); if(bx) bx.onclick=function(){
+  var tx=document.getElementById("brkText"); brkDismissed = tx ? tx.textContent : "1";
+  try{ localStorage.setItem("aishorts_brk_dismissed", brkDismissed); }catch(e){}
+  var el=document.getElementById("breaking"); if(el) el.hidden=true;
+}; })();
 
 function goTo(i){
   const cards=deck.querySelectorAll(".card");
@@ -1213,6 +1313,215 @@ initFeed();
     prev.innerHTML='<h4>Yesterday\u2019s poll</h4><div class="pq">'+esc2(pollY.q)+'</div><div id="prevBars"></div>';
     showPollResults($("prevBars"), "aishortspoll_"+host, YID, pollY, -1);
   }
+
+  /* =================== Top 5 AI Market Leaders (live caps + daily rank delta) =================== */
+  var AI_COMPANIES = [
+    {ticker:"NVDA", name:"NVIDIA"},
+    {ticker:"GOOGL", name:"Alphabet"},
+    {ticker:"MSFT", name:"Microsoft"},
+    {ticker:"AMZN", name:"Amazon"},
+    {ticker:"META", name:"Meta Platforms"}
+  ];
+
+  function fmtMarketCap(n){
+    if(!n || n<=0) return "—";
+    if(n >= 1e12) return "$" + (n/1e12).toFixed(2) + "T";
+    if(n >= 1e9) return "$" + (n/1e9).toFixed(1) + "B";
+    return "$" + n.toLocaleString();
+  }
+
+  function getTodayStr(){ return new Date().toISOString().slice(0,10); }
+
+  async function fetchMarketCaps(){
+    var tickers = AI_COMPANIES.map(function(c){return c.ticker;}).join(",");
+    var hosts = ["https://query1.finance.yahoo.com","https://query2.finance.yahoo.com"];
+    var proxies = [
+      function(u){ return u; },
+      function(u){ return "https://api.allorigins.win/raw?url=" + encodeURIComponent(u); },
+      function(u){ return "https://api.allorigins.win/get?url=" + encodeURIComponent(u); },
+      function(u){ return "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(u); },
+      function(u){ return "https://corsproxy.io/?url=" + encodeURIComponent(u); },
+      function(u){ return "https://thingproxy.freeboard.io/fetch/" + u; }
+    ];
+    for(var hi=0; hi<hosts.length; hi++){
+      var apiUrl = hosts[hi] + "/v7/finance/quote?symbols=" + tickers;
+      for(var pi=0; pi<proxies.length; pi++){
+        try{
+          var r = await fetchT(proxies[pi](apiUrl), {headers:{"Accept":"application/json"}}, 8000);
+          if(!r.ok) continue;
+          var txt = await r.text();
+          var data; try{ data = JSON.parse(txt); }catch(e){ continue; }
+          if(data && typeof data.contents === "string"){ try{ data = JSON.parse(data.contents); }catch(e){ continue; } }
+          var arr = (data && data.quoteResponse && data.quoteResponse.result) || [];
+          if(arr.length >= 3){
+            var out = {};
+            arr.forEach(function(q){ if(q && q.symbol && q.marketCap){ out[q.symbol] = {cap:q.marketCap, name:q.shortName||q.longName||q.symbol}; } });
+            if(Object.keys(out).length >= 3) return out;
+          }
+        }catch(e){ /* next proxy */ }
+      }
+    }
+    // Fallback: Yahoo chart price (more CORS-permissive) x approx shares outstanding
+    try{
+      var sharesOut = {NVDA:24.4e9, GOOGL:12.2e9, MSFT:7.43e9, AMZN:10.6e9, META:2.55e9};
+      var out2 = {}, ok = 0;
+      for(var ci=0; ci<AI_COMPANIES.length; ci++){
+        var sym = AI_COMPANIES[ci].ticker;
+        var curl = "https://query1.finance.yahoo.com/v8/finance/chart/" + sym + "?range=1d&interval=1d";
+        var purls = [
+          "https://api.allorigins.win/raw?url=" + encodeURIComponent(curl),
+          "https://api.codetabs.com/v1/proxy/?quest=" + encodeURIComponent(curl)
+        ];
+        for(var qi=0; qi<purls.length; qi++){
+          try{
+            var rr = await fetchT(purls[qi], {}, 7000);
+            if(!rr.ok) continue;
+            var cd = await rr.json();
+            var res = cd && cd.chart && cd.chart.result && cd.chart.result[0];
+            var px = res && res.meta && res.meta.regularMarketPrice;
+            if(px && sharesOut[sym]){ out2[sym] = {cap: px*sharesOut[sym], name: AI_COMPANIES[ci].name}; ok++; break; }
+          }catch(e){}
+        }
+      }
+      if(ok >= 3) return out2;
+    }catch(e){}
+    throw new Error("live market unavailable");
+  }
+  
+  function loadPrevMarket(){
+    try{
+      var raw = localStorage.getItem("aishorts_market_prev");
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  function savePrevMarket(data){
+    try{ localStorage.setItem("aishorts_market_prev", JSON.stringify(data)); }catch(e){}
+  }
+
+  function renderMarket(currentData, prevData, note){
+    var tbody = document.getElementById("marketBody");
+    var dateEl = document.getElementById("marketDate");
+    var noteEl = document.getElementById("marketNote");
+    if(!tbody) return;
+
+    var today = getTodayStr();
+    dateEl.textContent = new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+
+    // Build current ranked list (sorted desc by cap)
+    var list = AI_COMPANIES.map(function(c){
+      var raw = currentData[c.ticker];
+      var d = (raw && typeof raw === "object") ? raw : {cap: raw || 0, name: c.name};
+      return {ticker:c.ticker, name:c.name, cap: d.cap || 0};
+    }).sort(function(a,b){ return b.cap - a.cap; });
+
+    // Compute current ranks
+    var curRanks = {};
+    list.forEach(function(item, i){ curRanks[item.ticker] = i+1; });
+
+    // Determine prev ranks if available and from previous day
+    var prevRanks = {};
+    var hasPrev = false;
+    if(prevData && prevData.date && prevData.date !== today && prevData.ranks){
+      hasPrev = true;
+      prevRanks = prevData.ranks;
+    }
+
+    tbody.innerHTML = "";
+    list.forEach(function(item, idx){
+      var rank = idx + 1;
+      var prevRank = hasPrev ? (prevRanks[item.ticker] || rank) : rank;
+      var delta = hasPrev ? (prevRank - rank) : 0; // positive = improved (moved up)
+
+      var statusHTML = "";
+      if(!hasPrev || delta === 0){
+        statusHTML = '<span class="status-flat" title="No change in rank">■</span>';
+      } else if(delta > 0){
+        statusHTML = '<span class="status-up" title="Rank improved ▲">▲</span>';
+      } else {
+        statusHTML = '<span class="status-down" title="Rank fell ▼">▼</span>';
+      }
+
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td class="rank">'+rank+'</td>'+
+        '<td class="company">'+item.name+'<span class="ticker">('+item.ticker+')</span></td>'+
+        '<td class="cap">'+fmtMarketCap(item.cap)+'</td>'+
+        '<td class="status">'+statusHTML+'</td>';
+      tbody.appendChild(tr);
+    });
+
+    var tickEl = document.getElementById("marketTicker");
+    if(tickEl){
+      tickEl.innerHTML = list.map(function(item, ti){
+        var rnk=ti+1, pr=hasPrev?(prevRanks[item.ticker]||rnk):rnk, dl=hasPrev?(pr-rnk):0;
+        var sym=(!hasPrev||dl===0)?'<span class="flat">\u25A0</span>':(dl>0?'<span class="up">\u25B2</span>':'<span class="down">\u25BC</span>');
+        return '<span class="mt"><b>'+item.name.split(" ")[0]+'</b> <span class="cap">'+fmtMarketCap(item.cap)+'</span> '+sym+'</span>';
+      }).join("");
+    }
+    if(noteEl){
+      noteEl.textContent = note || (hasPrev ? "compared to "+prevData.date : "initial load");
+    }
+
+    // Save today's data as new prev for tomorrow
+    var toSave = {date: today, ranks: curRanks, caps: {}};
+    list.forEach(function(it){ toSave.caps[it.ticker] = it.cap; });
+    savePrevMarket(toSave);
+  }
+
+  async function initMarket(forceRefresh){
+    var section = document.getElementById("marketSection");
+    if(!section) return;
+
+    var prev = loadPrevMarket();
+    var today = getTodayStr();
+
+    // If we have today's data cached and not forcing, just render (no live fetch)
+    if(!forceRefresh && prev && prev.date === today && prev.caps){
+      // Re-render using cached caps but recompute ranks in case
+      renderMarket(prev.caps, prev, "cached");
+      return;
+    }
+
+    // Otherwise fetch live
+    var btn = document.getElementById("refreshMarket");
+    if(btn) btn.disabled = true;
+
+    try{
+      var live = await fetchMarketCaps();
+      if(Object.keys(live).length < 3) throw new Error("incomplete");
+      renderMarket(live, prev, "live");
+    }catch(err){
+      console.info("[aishorts market]", err.message);
+      // Fallback to previous or static seed
+      var fallback = {};
+      // approximate June 2026 values from public data (used only if live fails)
+      var SEED_CAPS = {NVDA:4845000000000, GOOGL:4223000000000, MSFT:2777000000000, AMZN:2518000000000, META:1427000000000};
+      AI_COMPANIES.forEach(function(c){ if(SEED_CAPS[c.ticker]) fallback[c.ticker]={cap:SEED_CAPS[c.ticker], name:c.name}; });
+      renderMarket(fallback, prev, "indicative snapshot");
+    }finally{
+      if(btn) btn.disabled = false;
+    }
+  }
+
+  /* wire up refresh button and initial load */
+  var rM = document.getElementById("refreshMarket");
+  if(rM) rM.onclick = function(){ initMarket(true); };
+  /* expand / collapse Market Pulse — default collapsed so News stays the focus */
+  var mTog=document.getElementById("marketToggle"), mSec=document.getElementById("marketSection");
+  function setMarketOpen(open){
+    if(!mSec||!mTog) return;
+    if(open){ mSec.classList.remove("collapsed"); mTog.textContent="\u25BE"; mTog.setAttribute("aria-expanded","true"); }
+    else { mSec.classList.add("collapsed"); mTog.textContent="\u25B8"; mTog.setAttribute("aria-expanded","false"); }
+    try{ localStorage.setItem("aishorts_market_open", open?"1":"0"); }catch(e){}
+  }
+  if(mTog){
+    var msv="0"; try{ msv=localStorage.getItem("aishorts_market_open")||"0"; }catch(e){}
+    setMarketOpen(msv==="1");
+    mTog.onclick=function(){ setMarketOpen(mSec.classList.contains("collapsed")); };
+  }
+
+  // Auto init market leaders (after other inits)
+  setTimeout(function(){ initMarket(false); }, 120);
 
   /* openers + colophon year */
   var oq=$("openQuiz"), op=$("openPoll");
