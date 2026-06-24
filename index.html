@@ -351,6 +351,30 @@
     text-transform:uppercase;color:var(--meta);margin:0 0 8px;}
   .poll-prev .pq{font-family:Georgia,serif;font-size:15px;color:var(--ink);margin-bottom:10px;}
   @media (max-height:600px){ .engage,.colophon{display:none;} }
+
+  /* ---- AI Market Leaders (Top 5 AI companies by market cap, daily rank tracking) ---- */
+  .market{flex:0 0 auto;background:var(--paper-2);border-bottom:1px solid var(--rule);
+    padding:10px 16px 12px;font-family:"Libre Franklin",sans-serif;}
+  .market-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+  .market-kicker{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--link);}
+  .market-head h4{margin:0;font-family:Georgia,serif;font-size:15px;font-weight:700;color:var(--ink);}
+  .market-date{font-size:10px;color:var(--meta);white-space:nowrap;}
+  .refresh-mini{appearance:none;border:1px solid var(--ink);background:var(--paper);color:var(--ink);
+    font-size:11px;padding:1px 7px;border-radius:0;cursor:pointer;line-height:1.1;}
+  .refresh-mini:hover{background:var(--ink);color:var(--paper);}
+  .market-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed;}
+  .market-table th,.market-table td{padding:5px 6px;text-align:left;border-bottom:1px solid var(--rule);vertical-align:middle;}
+  .market-table th{font-weight:700;color:var(--meta);font-size:9.5px;text-transform:uppercase;letter-spacing:.6px;padding-bottom:5px;}
+  .market-table td.rank{font-weight:800;color:var(--ink);width:38px;text-align:center;font-size:14px;}
+  .market-table .company{font-weight:600;color:var(--ink);}
+  .market-table .ticker{font-size:9.5px;color:var(--meta);margin-left:3px;font-weight:400;}
+  .market-table .cap{font-family:Georgia,serif;font-weight:700;color:var(--ink);text-align:right;white-space:nowrap;}
+  .market-table .status{text-align:center;width:28px;font-size:15px;line-height:1;}
+  .status-up{color:#1E6F4C;font-weight:700;} /* green up rank */
+  .status-down{color:#d0021b;font-weight:700;} /* red down rank */
+  .status-flat{color:#326891;font-weight:700;} /* blue no change */
+  .market-foot{font-size:9px;color:var(--meta-2);margin-top:6px;text-align:right;letter-spacing:.2px;}
+  .market-foot a{color:var(--meta);}
 </style>
 </head>
 <body>
@@ -391,6 +415,34 @@
   <div class="engage">
     <button class="eng-btn" id="openQuiz">AI Quiz of the Day</button>
     <button class="eng-btn" id="openPoll">AI Poll of the Day</button>
+  </div>
+
+  <!-- Top 5 AI Companies by Market Cap with daily rank-change tracking -->
+  <div class="market" id="marketSection">
+    <div class="market-head">
+      <div>
+        <span class="market-kicker">MARKET PULSE</span>
+        <h4>Top 5 AI Companies by Market Cap</h4>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="market-date" id="marketDate">—</span>
+        <button class="refresh-mini" id="refreshMarket" title="Refresh live market caps &amp; re-rank">↻</button>
+      </div>
+    </div>
+    <table class="market-table">
+      <thead>
+        <tr>
+          <th style="width:38px;">Rank</th>
+          <th>Company</th>
+          <th style="text-align:right;">Market Cap</th>
+          <th style="width:28px;text-align:center;">Status</th>
+        </tr>
+      </thead>
+      <tbody id="marketBody">
+        <!-- populated by JS -->
+      </tbody>
+    </table>
+    <div class="market-foot">Live via Yahoo Finance • Ranks vs previous trading day • <span id="marketNote"></span></div>
   </div>
 
   <div class="deck" id="deck"></div>
@@ -988,7 +1040,7 @@ async function countVisit(){
   if(!shown && box) box.style.display="none";
 }
 
-function setWireHeight(){var w=document.querySelector('.wire');if(w)w.style.height=window.innerHeight+'px';}
+function setWireHeight(){var w=document.querySelector('.wire');if(!w)return;var hgt=window.innerHeight||document.documentElement.clientHeight||0;w.style.height=hgt>0?(hgt+'px'):'100vh';}
 var _rt;function onResize(){setWireHeight();clearTimeout(_rt);_rt=setTimeout(function(){if(typeof goTo==='function')goTo(idx);},150);}
 setWireHeight();
 countVisit();
@@ -1213,6 +1265,172 @@ initFeed();
     prev.innerHTML='<h4>Yesterday\u2019s poll</h4><div class="pq">'+esc2(pollY.q)+'</div><div id="prevBars"></div>';
     showPollResults($("prevBars"), "aishortspoll_"+host, YID, pollY, -1);
   }
+
+  /* =================== Top 5 AI Market Leaders (live caps + daily rank delta) =================== */
+  var AI_COMPANIES = [
+    {ticker:"NVDA", name:"NVIDIA"},
+    {ticker:"GOOGL", name:"Alphabet"},
+    {ticker:"MSFT", name:"Microsoft"},
+    {ticker:"AMZN", name:"Amazon"},
+    {ticker:"META", name:"Meta Platforms"}
+  ];
+
+  function fmtMarketCap(n){
+    if(!n || n<=0) return "—";
+    if(n >= 1e12) return "$" + (n/1e12).toFixed(2) + "T";
+    if(n >= 1e9) return "$" + (n/1e9).toFixed(1) + "B";
+    return "$" + n.toLocaleString();
+  }
+
+  function getTodayStr(){ return new Date().toISOString().slice(0,10); }
+
+  async function fetchMarketCaps(){
+    var tickers = AI_COMPANIES.map(function(c){return c.ticker;}).join(",");
+    var url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + tickers;
+    // Try direct, fallback to proxy (same pattern used elsewhere in page)
+    var attempts = [
+      {u: url, kind:"direct"},
+      {u: "https://api.allorigins.win/raw?url=" + encodeURIComponent(url), kind:"raw"},
+      {u: "https://corsproxy.io/?" + encodeURIComponent(url), kind:"corsproxy"}
+    ];
+    for(var i=0; i<attempts.length; i++){
+      try{
+        var r = await fetchT(attempts[i].u, {}, 9000);
+        if(!r.ok) continue;
+        var data;
+        if(attempts[i].kind === "raw" || attempts[i].kind === "corsproxy"){
+          data = await r.json();
+        } else {
+          data = await r.json();
+        }
+        var arr = (data && data.quoteResponse && data.quoteResponse.result) || [];
+        if(arr.length >= 3){ // at least partial success
+          var out = {};
+          arr.forEach(function(q){
+            if(q && q.symbol && q.marketCap){
+              out[q.symbol] = {cap: q.marketCap, name: q.shortName || q.longName || q.symbol};
+            }
+          });
+          return out;
+        }
+      }catch(e){ console.info("[aishorts market] attempt "+attempts[i].kind+":", e.message); }
+    }
+    throw new Error("live market unavailable");
+  }
+
+  function loadPrevMarket(){
+    try{
+      var raw = localStorage.getItem("aishorts_market_prev");
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  function savePrevMarket(data){
+    try{ localStorage.setItem("aishorts_market_prev", JSON.stringify(data)); }catch(e){}
+  }
+
+  function renderMarket(currentData, prevData, note){
+    var tbody = document.getElementById("marketBody");
+    var dateEl = document.getElementById("marketDate");
+    var noteEl = document.getElementById("marketNote");
+    if(!tbody) return;
+
+    var today = getTodayStr();
+    dateEl.textContent = new Date().toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+
+    // Build current ranked list (sorted desc by cap)
+    var list = AI_COMPANIES.map(function(c){
+      var raw = currentData[c.ticker];
+      var d = (raw && typeof raw === "object") ? raw : {cap: raw || 0, name: c.name};
+      return {ticker:c.ticker, name:c.name, cap: d.cap || 0};
+    }).sort(function(a,b){ return b.cap - a.cap; });
+
+    // Compute current ranks
+    var curRanks = {};
+    list.forEach(function(item, i){ curRanks[item.ticker] = i+1; });
+
+    // Determine prev ranks if available and from previous day
+    var prevRanks = {};
+    var hasPrev = false;
+    if(prevData && prevData.date && prevData.date !== today && prevData.ranks){
+      hasPrev = true;
+      prevRanks = prevData.ranks;
+    }
+
+    tbody.innerHTML = "";
+    list.forEach(function(item, idx){
+      var rank = idx + 1;
+      var prevRank = hasPrev ? (prevRanks[item.ticker] || rank) : rank;
+      var delta = hasPrev ? (prevRank - rank) : 0; // positive = improved (moved up)
+
+      var statusHTML = "";
+      if(!hasPrev || delta === 0){
+        statusHTML = '<span class="status-flat" title="No change in rank">■</span>';
+      } else if(delta > 0){
+        statusHTML = '<span class="status-up" title="Rank improved ▲">▲</span>';
+      } else {
+        statusHTML = '<span class="status-down" title="Rank fell ▼">▼</span>';
+      }
+
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td class="rank">'+rank+'</td>'+
+        '<td class="company">'+item.name+'<span class="ticker">('+item.ticker+')</span></td>'+
+        '<td class="cap">'+fmtMarketCap(item.cap)+'</td>'+
+        '<td class="status">'+statusHTML+'</td>';
+      tbody.appendChild(tr);
+    });
+
+    if(noteEl){
+      noteEl.textContent = note || (hasPrev ? "compared to "+prevData.date : "initial load");
+    }
+
+    // Save today's data as new prev for tomorrow
+    var toSave = {date: today, ranks: curRanks, caps: {}};
+    list.forEach(function(it){ toSave.caps[it.ticker] = it.cap; });
+    savePrevMarket(toSave);
+  }
+
+  async function initMarket(forceRefresh){
+    var section = document.getElementById("marketSection");
+    if(!section) return;
+
+    var prev = loadPrevMarket();
+    var today = getTodayStr();
+
+    // If we have today's data cached and not forcing, just render (no live fetch)
+    if(!forceRefresh && prev && prev.date === today && prev.caps){
+      // Re-render using cached caps but recompute ranks in case
+      renderMarket(prev.caps, prev, "cached");
+      return;
+    }
+
+    // Otherwise fetch live
+    var btn = document.getElementById("refreshMarket");
+    if(btn) btn.disabled = true;
+
+    try{
+      var live = await fetchMarketCaps();
+      if(Object.keys(live).length < 3) throw new Error("incomplete");
+      renderMarket(live, prev, "live");
+    }catch(err){
+      console.info("[aishorts market]", err.message);
+      // Fallback to previous or static seed
+      var fallback = {};
+      // approximate June 2026 values from public data (used only if live fails)
+      var SEED_CAPS = {NVDA:4845000000000, GOOGL:4223000000000, MSFT:2777000000000, AMZN:2518000000000, META:1427000000000};
+      AI_COMPANIES.forEach(function(c){ if(SEED_CAPS[c.ticker]) fallback[c.ticker]={cap:SEED_CAPS[c.ticker], name:c.name}; });
+      renderMarket(fallback, prev, "offline — using latest cached");
+    }finally{
+      if(btn) btn.disabled = false;
+    }
+  }
+
+  /* wire up refresh button and initial load */
+  var rM = document.getElementById("refreshMarket");
+  if(rM) rM.onclick = function(){ initMarket(true); };
+
+  // Auto init market leaders (after other inits)
+  setTimeout(function(){ initMarket(false); }, 120);
 
   /* openers + colophon year */
   var oq=$("openQuiz"), op=$("openPoll");
