@@ -399,6 +399,17 @@
   .market-table th,.market-table td{padding:4px 5px;}
   .market-table .cap{font-size:12.5px;}
   @media (max-width:380px){ .market-table{font-size:12px;} .market-table .ticker{display:none;} .market-table .cap{font-size:12px;} }
+  /* Market Leader: static compact strip; value on hover/tap (no expanding table) */
+  .market-toggle{display:none!important;}
+  .market .market-table,.market .market-foot{display:none!important;}
+  .market .market-ticker{display:flex!important;}
+  .market-ticker{gap:15px;padding-top:4px;align-items:center;}
+  .market-ticker .mt{position:relative;cursor:default;display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;font-size:12px;outline:none;}
+  .market-ticker .mt b{font-weight:700;color:var(--meta);font-family:"Libre Franklin",sans-serif;font-size:10.5px;}
+  .market-ticker .mt .nm{font-weight:600;color:var(--ink);}
+  .market-ticker .mv{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);margin-bottom:6px;background:var(--ink);color:#fff;font-family:Georgia,serif;font-size:12px;padding:3px 8px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;z-index:6;}
+  .market-ticker .mv:after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--ink);}
+  .market-ticker .mt:hover .mv,.market-ticker .mt:focus .mv,.market-ticker .mt.show .mv{opacity:1;}
 </style>
 </head>
 <body>
@@ -410,7 +421,7 @@
   </div>
   <div class="topbar">
     <div class="tb-left">
-      <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="AIShorts — The AI Wire"><defs><radialGradient id="aisFace" cx="50%" cy="36%" r="72%"><stop offset="0%" stop-color="#2b303b"/><stop offset="55%" stop-color="#15171c"/><stop offset="100%" stop-color="#090a0d"/></radialGradient><linearGradient id="aisRim" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eef1f5"/><stop offset="34%" stop-color="#9aa3ad"/><stop offset="56%" stop-color="#5b626b"/><stop offset="100%" stop-color="#cfd4da"/></linearGradient><linearGradient id="aisGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#c79a33"/><stop offset="50%" stop-color="#f6d877"/><stop offset="100%" stop-color="#b3801f"/></linearGradient><path id="ais-ring" d="M50,13.5 a36.5,36.5 0 1,1 -0.01,0"/></defs><circle cx="50" cy="50" r="49" fill="url(#aisRim)"/><circle cx="50" cy="50" r="44.5" fill="url(#aisFace)" stroke="#070809" stroke-width="0.6"/><circle cx="50" cy="50" r="40.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity=".22"/><text fill="#f3f4f6" font-family="'Libre Franklin',sans-serif" font-size="6.4" font-weight="700" letter-spacing="1.8"><textPath href="#ais-ring" startOffset="0">THE AI WIRE · AISHORTS · THE AI WIRE · AISHORTS · </textPath></text><text x="50" y="58.5" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="29.5" letter-spacing="-1" fill="#ffffff">AI</text><path d="M26 70 H42 l3 -8 4.5 16 3 -8 H74" fill="none" stroke="url(#aisGold)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="AIShorts — The AI Wire"><defs><radialGradient id="aisFace" cx="50%" cy="36%" r="72%"><stop offset="0%" stop-color="#2b303b"/><stop offset="55%" stop-color="#15171c"/><stop offset="100%" stop-color="#090a0d"/></radialGradient><linearGradient id="aisRim" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eef1f5"/><stop offset="34%" stop-color="#9aa3ad"/><stop offset="56%" stop-color="#5b626b"/><stop offset="100%" stop-color="#cfd4da"/></linearGradient><linearGradient id="aisGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#c79a33"/><stop offset="50%" stop-color="#f6d877"/><stop offset="100%" stop-color="#b3801f"/></linearGradient><path id="ais-ring" d="M50,13.5 a36.5,36.5 0 1,1 -0.01,0"/></defs><circle cx="50" cy="50" r="49" fill="url(#aisRim)"/><circle cx="50" cy="50" r="44.5" fill="url(#aisFace)" stroke="#070809" stroke-width="0.6"/><circle cx="50" cy="50" r="40.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity=".22"/><text fill="#f3f4f6" font-family="'Libre Franklin',sans-serif" font-size="5.0" font-weight="700" letter-spacing="1.1"><textPath href="#ais-ring" startOffset="0">THE AI WIRE · AISHORTS · THE AI WIRE · AISHORTS · </textPath></text><text x="50" y="58.5" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="29.5" letter-spacing="-1" fill="#ffffff">AI</text><path d="M26 70 H42 l3 -8 4.5 16 3 -8 H74" fill="none" stroke="url(#aisGold)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span class="tb-est">Est. MMXXVI</span>
     </div>
     <div class="tb-right">
@@ -524,7 +535,7 @@
         <input type="email" id="subEmail" placeholder="you@example.com" autocomplete="email" inputmode="email">
         <button class="btn-primary" id="subBtn">Subscribe</button>
       </div>
-      <div class="form-note" id="subNote">Free. One email a day. Unsubscribe anytime.</div>
+      <div class="form-note" id="subNote">Free. A curated AI digest each morning. Unsubscribe anytime.</div>
     </div>
   </div>
 
@@ -1101,6 +1112,8 @@ initFeed();
   var VPA="maheshwari1382-1@okaxis", PN="Pawan Maheshwari";
   /* >>> set this to the address that should RECEIVE new subscriber emails <<< */
   var DELIVERY_EMAIL="maheshwari1382@gmail.com";
+  /* >>> paste your Google Apps Script Web App /exec URL here to switch ON the 9 AM IST daily digest <<< */
+  var SUBSCRIBE_ENDPOINT="";
 
   var amt=99;
   function $(id){return document.getElementById(id);}
@@ -1150,23 +1163,32 @@ initFeed();
     var e=$("subEmail"); var email=(e.value||"").trim();
     if(!valid(email)){ note("Please enter a valid email address.","err"); return; }
     var API=(window.AISHORTS_API_BASE||"").replace(/\/+$/,"");
-    if(!API && (!DELIVERY_EMAIL || DELIVERY_EMAIL.indexOf("example.com")>=0)){
-      note("Sign-ups go live once the owner sets a delivery email in the code.","err"); return;
+    var GS=(window.AISHORTS_SUBSCRIBE_ENDPOINT||SUBSCRIBE_ENDPOINT||"").trim();
+    if(!API && !GS && (!DELIVERY_EMAIL || DELIVERY_EMAIL.indexOf("example.com")>=0)){
+      note("Sign-ups go live once the owner connects the digest backend.","err"); return;
     }
     var btn=$("subBtn"); btn.disabled=true; note("Subscribing\u2026","");
     try{
-      var r = API
-        ? await fetch(API+"/subscribe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email})})
-        : await fetch("https://formsubmit.co/ajax/"+encodeURIComponent(DELIVERY_EMAIL),{
-            method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},
-            body:JSON.stringify({email:email,_subject:"New AIShorts subscriber",_template:"table",source:"AIShorts daily digest"})
-          });
-      var d={}; try{ d=await r.json(); }catch(_e){}
-      if(r.ok || String(d.success)==="true" || d.ok===true){
-        note("You\u2019re on the list \u2014 the daily digest will arrive in your inbox.","ok");
+      if(GS){
+        try{ await fetch(GS,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/x-www-form-urlencoded;charset=UTF-8"},body:"email="+encodeURIComponent(email)}); }catch(_e){}
+      }
+      var ok=false;
+      try{
+        var r = API
+          ? await fetch(API+"/subscribe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email})})
+          : ((DELIVERY_EMAIL && DELIVERY_EMAIL.indexOf("example.com")<0)
+              ? await fetch("https://formsubmit.co/ajax/"+encodeURIComponent(DELIVERY_EMAIL),{
+                  method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},
+                  body:JSON.stringify({email:email,_subject:"New AIShorts subscriber",_template:"table",source:"AIShorts daily digest"})
+                })
+              : null);
+        if(r){ var d={}; try{ d=await r.json(); }catch(_e){} ok = r.ok || String(d.success)==="true" || d.ok===true; }
+      }catch(_e){}
+      if(GS || ok){
+        note(GS ? "You\u2019re on the list \u2014 your first 9\u202fAM IST digest is on its way." : "You\u2019re on the list. Thanks for subscribing!","ok");
         e.value="";
       } else {
-        note((d&&d.message)?d.message:"Couldn\u2019t subscribe right now. Please try again.","err");
+        note("Couldn\u2019t subscribe right now. Please try again.","err");
       }
     }catch(err){ note("Network error \u2014 please try again in a moment.","err"); }
     finally{ btn.disabled=false; }
@@ -1323,6 +1345,9 @@ initFeed();
     {ticker:"META", name:"Meta Platforms"}
   ];
 
+  /* >>> paste your Cloudflare Worker URL here for reliable live Top 5 (it proxies Yahoo Finance with CORS) <<< */
+  var MARKET_PROXY="";
+
   function fmtMarketCap(n){
     if(!n || n<=0) return "—";
     if(n >= 1e12) return "$" + (n/1e12).toFixed(2) + "T";
@@ -1334,6 +1359,22 @@ initFeed();
 
   async function fetchMarketCaps(){
     var tickers = AI_COMPANIES.map(function(c){return c.ticker;}).join(",");
+    /* Preferred: your own Cloudflare Worker (reliable, CORS-enabled). Returns {ok,items:[{symbol,name,cap}]} */
+    var MP=(window.AISHORTS_MARKET_PROXY||MARKET_PROXY||"").trim();
+    if(MP){
+      try{
+        var rp = await fetchT(MP + (MP.indexOf("?")>=0?"&":"?") + "symbols=" + tickers, {headers:{"Accept":"application/json"}}, 8000);
+        if(rp.ok){
+          var jp = await rp.json();
+          var items = (jp && jp.items) || [];
+          if(items.length){
+            var po = {};
+            items.forEach(function(it){ if(it && it.symbol && it.cap){ po[it.symbol] = {cap:it.cap, name:it.name||it.symbol}; } });
+            if(Object.keys(po).length >= 3) return po;
+          }
+        }
+      }catch(e){ /* fall through to public proxies */ }
+    }
     var hosts = ["https://query1.finance.yahoo.com","https://query2.finance.yahoo.com"];
     var proxies = [
       function(u){ return u; },
@@ -1454,8 +1495,14 @@ initFeed();
     if(tickEl){
       tickEl.innerHTML = list.map(function(item, ti){
         var rnk=ti+1, pr=hasPrev?(prevRanks[item.ticker]||rnk):rnk, dl=hasPrev?(pr-rnk):0;
-        var sym=(!hasPrev||dl===0)?'<span class="flat">\u25A0</span>':(dl>0?'<span class="up">\u25B2</span>':'<span class="down">\u25BC</span>');
-        return '<span class="mt"><b>'+item.name.split(" ")[0]+'</b> <span class="cap">'+fmtMarketCap(item.cap)+'</span> '+sym+'</span>';
+        var cls=(!hasPrev||dl===0)?"flat":(dl>0?"up":"down");
+        var arrow=(!hasPrev||dl===0)?"\u25A0":(dl>0?"\u25B2":"\u25BC");
+        var move=(!hasPrev||dl===0)?"no change":(dl>0?("up "+dl):("down "+Math.abs(dl)));
+        var tip=item.name+" \u2014 "+fmtMarketCap(item.cap)+" \u00b7 "+move+" vs prev close";
+        return '<span class="mt" tabindex="0" title="'+tip.replace(/"/g,"&quot;")+'">'
+          + '<b>'+rnk+'</b><span class="nm">'+item.name.split(" ")[0]+'</span>'
+          + '<span class="'+cls+'">'+arrow+'</span>'
+          + '<span class="mv">'+fmtMarketCap(item.cap)+'</span></span>';
       }).join("");
     }
     if(noteEl){
@@ -1519,6 +1566,17 @@ initFeed();
     setMarketOpen(msv==="1");
     mTog.onclick=function(){ setMarketOpen(mSec.classList.contains("collapsed")); };
   }
+  (function(){
+    var tk=document.getElementById("marketTicker");
+    if(!tk) return;
+    tk.addEventListener("click",function(ev){
+      var mt=ev.target.closest ? ev.target.closest(".mt") : null;
+      var willShow = mt && !mt.classList.contains("show");
+      var shown=tk.querySelectorAll(".mt.show");
+      for(var i=0;i<shown.length;i++) shown[i].classList.remove("show");
+      if(willShow) mt.classList.add("show");
+    });
+  })();
 
   // Auto init market leaders (after other inits)
   setTimeout(function(){ initMarket(false); }, 120);
