@@ -438,38 +438,48 @@
   @keyframes aduniGlow{0%,100%{box-shadow:0 0 4px 1px rgba(232,201,138,.25)}50%{box-shadow:0 0 14px 4px rgba(232,201,138,.7)}}
   @keyframes aduniShine{0%{background-position:130% 0}55%,100%{background-position:-40% 0}}
   @media (prefers-reduced-motion:reduce){ .aduni-icowrap,.aduni-ico,.aduni-icowrap::after{animation:none;} }
-  /* ===== Front-page intro: Top 5, Daily-Prophet style ===== */
+  /* ===== Front page: single lead report, living-photo (Daily-Prophet) style ===== */
   .intro{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    background:radial-gradient(120% 90% at 50% 30%,#241c12 0%,#120d08 60%,#050403 100%);overflow:hidden;transition:opacity .6s ease;}
+    background:radial-gradient(120% 90% at 50% 25%,#241c12,#120d08 60%,#050403);overflow:hidden;transition:opacity .6s ease;}
   .intro.hide{opacity:0;pointer-events:none;}
   .intro::before{content:"";position:absolute;inset:0;background:#fff;opacity:0;animation:introFlash .6s ease-out forwards;pointer-events:none;}
-  .intro::after{content:"";position:absolute;inset:-20%;background:radial-gradient(circle at 50% 38%,rgba(232,201,138,.16),transparent 55%);animation:introGlow 5s ease-in-out infinite;pointer-events:none;}
-  .intro-paper{position:relative;width:min(86vw,560px);max-height:76vh;overflow:hidden;padding:30px 26px 26px;text-align:center;
-    background:linear-gradient(180deg,#f6efe0,#efe6d2);color:#1a1206;
-    box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 0 0 1px rgba(120,90,40,.25);
-    animation:introPaperIn 1s cubic-bezier(.2,.7,.2,1) both;}
-  .intro-kicker{font:700 8.5px/1 "Libre Franklin",sans-serif;letter-spacing:3px;text-transform:uppercase;color:#7a5a26;}
-  .intro-name{font-family:"UnifrakturCook","Times New Roman",serif;font-weight:700;font-size:39.3px;line-height:1;margin:8px 0 2px;color:#16100a;
-    animation:introNameIn 1.1s ease-out both;text-shadow:0 2px 10px rgba(0,0,0,.18);}
-  .intro-tag{font:italic 600 12px/1 Georgia,serif;color:#5b4422;border-bottom:2px solid #1a1206;padding-bottom:10px;margin-bottom:4px;}
-  .intro-list{list-style:none;margin:14px 0 0;padding:0;text-align:left;}
-  .intro-list li{display:flex;gap:12px;align-items:flex-start;padding:9px 2px;border-bottom:1px solid rgba(120,90,40,.25);
-    animation:introItemIn .9s cubic-bezier(.2,.7,.2,1) both;}
-  .intro-list .in-num{font-family:Georgia,serif;font-weight:700;font-size:17.1px;color:#8a1a22;flex:0 0 auto;line-height:1.25;}
-  .intro-list .in-hed{font-family:Georgia,serif;font-weight:700;font-size:14.1px;line-height:1.22;color:#1a1206;}
-  .intro-skip{position:absolute;bottom:24px;right:22px;z-index:2;appearance:none;cursor:pointer;color:#f2e7cf;
-    background:rgba(255,255,255,.1);border:1px solid rgba(242,231,207,.5);font:700 10.3px/1 "Libre Franklin",sans-serif;
-    letter-spacing:1px;padding:10px 16px;border-radius:2px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
+  .intro-paper{position:relative;width:min(88vw,460px);max-height:88vh;overflow:auto;padding:20px 22px 22px;text-align:center;color:#1c1a17;
+    background:#e9e0c8;background-image:radial-gradient(rgba(0,0,0,.05) 15%,transparent 16%),radial-gradient(rgba(0,0,0,.05) 15%,transparent 16%);
+    background-size:46px 46px;background-position:0 0,23px 23px;border:2px solid #36322b;
+    box-shadow:0 30px 80px rgba(0,0,0,.6),inset 0 0 90px rgba(0,0,0,.18);animation:introPaperIn 1s cubic-bezier(.2,.7,.2,1) both;}
+  .intro-masthead{font-family:"UnifrakturCook","Times New Roman",serif;font-weight:700;font-size:34px;line-height:.9;color:#16100a;
+    border-bottom:5px double #1c1a17;padding-bottom:6px;}
+  .intro-meta{display:flex;justify-content:space-between;gap:6px;font:700 7.4px/1 "Libre Franklin",sans-serif;letter-spacing:1px;
+    text-transform:uppercase;border-bottom:2px solid #1c1a17;padding:4px 2px;margin-bottom:12px;color:#3a342a;}
+  .intro-kicker{font:800 8.4px/1 "Libre Franklin",sans-serif;letter-spacing:2.5px;text-transform:uppercase;color:#8a1a22;margin-bottom:4px;}
+  .intro-headline{font-family:Georgia,"Times New Roman",serif;font-weight:700;font-size:22px;line-height:1.05;text-transform:uppercase;
+    letter-spacing:-.3px;margin:0 0 12px;color:#16100a;animation:introNameIn 1s ease-out both;
+    display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+  .mphoto{border:6px double #1c1a17;padding:6px;background:#d8cbab;margin:0 auto 10px;position:relative;overflow:hidden;
+    box-shadow:inset 0 0 15px rgba(0,0,0,.15);cursor:pointer;animation:mphotoIn .9s ease-out both;}
+  .mphoto-img{width:100%;aspect-ratio:3/2;display:block;overflow:hidden;position:relative;
+    filter:grayscale(100%) contrast(125%) sepia(22%);animation:mphotoShift 12s ease-in-out infinite alternate;will-change:transform;}
+  .mphoto-img svg{width:100%;height:100%;display:block;}
+  .mphoto:hover .mphoto-img{filter:grayscale(85%) contrast(135%) sepia(30%) brightness(1.08);animation:mphotoMagic 4s ease-in-out infinite alternate;}
+  .mphoto:active .mphoto-img{animation:mphotoMagic 1.2s ease-in-out;}
+  .mphoto-cap{font:italic 600 11px/1.3 Georgia,serif;color:#3a2f1c;margin-top:7px;border-top:1px dashed #1c1a17;padding-top:5px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .mphoto-credit{font:700 6.6px/1 "Libre Franklin",sans-serif;letter-spacing:1px;text-transform:uppercase;color:#7a6a48;margin-top:4px;}
+  .intro-byline{font:700 8px/1.2 "Libre Franklin",sans-serif;letter-spacing:.6px;text-transform:uppercase;color:#4a4030;margin-top:9px;}
+  .intro-skip{position:absolute;bottom:20px;right:18px;z-index:2;appearance:none;cursor:pointer;color:#f2e7cf;
+    background:rgba(255,255,255,.1);border:1px solid rgba(242,231,207,.5);font:700 10px/1 "Libre Franklin",sans-serif;
+    letter-spacing:1px;padding:9px 14px;border-radius:2px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);}
   .intro-skip:hover{background:rgba(255,255,255,.2);}
   .intro-progress{position:absolute;left:0;bottom:0;width:100%;height:3px;background:rgba(255,255,255,.12);}
   .intro-progress i{display:block;height:100%;width:100%;transform-origin:left;background:#e8c98a;animation:introBar 15s linear forwards;}
   @keyframes introFlash{0%{opacity:.85}100%{opacity:0}}
-  @keyframes introGlow{0%,100%{opacity:.3}50%{opacity:.55}}
-  @keyframes introPaperIn{0%{opacity:0;transform:scale(1.08) rotate(-1.2deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
-  @keyframes introNameIn{0%{opacity:0;transform:scale(.7);filter:blur(6px)}60%{opacity:1}100%{opacity:1;transform:scale(1);filter:blur(0)}}
-  @keyframes introItemIn{0%{opacity:0;transform:translateY(16px) scale(1.28);filter:blur(7px)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
+  @keyframes introPaperIn{0%{opacity:0;transform:scale(1.06) rotate(-1deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+  @keyframes introNameIn{0%{opacity:0;transform:translateY(8px);filter:blur(5px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
+  @keyframes mphotoIn{0%{opacity:0;transform:scale(.95)}100%{opacity:1;transform:scale(1)}}
+  @keyframes mphotoShift{0%{transform:scale(1.02) translate(0,0) rotate(0)}50%{transform:scale(1.05) translate(-2px,3px) rotate(-.4deg)}100%{transform:scale(1.03) translate(2px,-2px) rotate(.4deg)}}
+  @keyframes mphotoMagic{0%{transform:scale(1.05) translate(0,0) rotate(0)}25%{transform:scale(1.09) translate(-5px,4px) rotate(-1deg)}50%{transform:scale(1.06) translate(4px,-4px) rotate(.8deg)}75%{transform:scale(1.09) translate(-3px,5px) rotate(-.6deg)}100%{transform:scale(1.07) translate(3px,-3px) rotate(0)}}
   @keyframes introBar{0%{transform:scaleX(1)}100%{transform:scaleX(0)}}
-  @media (prefers-reduced-motion:reduce){ .intro-paper,.intro-name,.intro-list li{animation-duration:.01s!important;} .intro::before,.intro::after{animation:none!important;} }
+  @media (prefers-reduced-motion:reduce){ .mphoto-img,.intro-paper,.intro-headline,.mphoto{animation:none!important;} .intro::before{animation:none!important;} }
   /* moved LIVE/visits/Pull-the-wire cluster into the top bar */
   .topbar{flex-wrap:wrap;column-gap:8px;row-gap:4px;padding:5px 12px;}
   .tb-mid{display:flex;align-items:center;gap:9px;flex:1 1 auto;justify-content:center;min-width:0;}
@@ -484,6 +494,8 @@
   html,body{min-height:100dvh;}
   body{overscroll-behavior:none;}
   .deck{overscroll-behavior:contain;}
+  .mphoto-img.has-photo{filter:contrast(108%) saturate(112%) sepia(6%);}
+  .mphoto-img img{width:100%;height:100%;object-fit:cover;display:block;}
 </style>
 </head>
 <body>
@@ -493,12 +505,18 @@
   <span class="aduni-name">AI UNIVERSITY</span>
   <span class="aduni-sub">Dean’s Programme</span>
 </a>
-<div class="intro" id="intro" role="dialog" aria-label="Top 5 AI stories">
+<div class="intro" id="intro" role="dialog" aria-label="AIShorts front page">
   <div class="intro-paper">
-    <div class="intro-kicker">The AI Wire · Special Edition</div>
-    <div class="intro-name">AIShorts</div>
-    <div class="intro-tag">Today’s Top 5 Stories</div>
-    <ol class="intro-list" id="introList"></ol>
+    <div class="intro-masthead">AIShorts</div>
+    <div class="intro-meta"><span>Special Edition</span><span id="introDate">Today</span><span>Front Page</span></div>
+    <div class="intro-kicker" id="introKicker">Lead Story</div>
+    <h1 class="intro-headline" id="introHeadline">Loading the wire&hellip;</h1>
+    <figure class="mphoto" id="introFrame">
+      <div class="mphoto-img" id="introPhoto"></div>
+      <figcaption class="mphoto-cap" id="introCap"></figcaption>
+      <div class="mphoto-credit" id="introCredit">AIShorts illustration</div>
+    </figure>
+    <div class="intro-byline" id="introBy"></div>
   </div>
   <button class="intro-skip" id="introSkip">Skip intro &rarr;</button>
   <div class="intro-progress"><i id="introBar"></i></div>
@@ -1028,6 +1046,14 @@ function writeCache(items){lsSet(CACHE_KEY,JSON.stringify({ts:Date.now(),items:i
 
 /* source 1: Google News AI RSS (multi-source, genuinely current) */
 var RSS_FEED="https://news.google.com/rss/search?q="+encodeURIComponent("artificial intelligence when:5d")+"&hl=en-US&gl=US&ceid=US:en";
+function pickImg(it){
+  if(it.image && /^https?:/.test(it.image)) return it.image;
+  if(it.thumbnail && /^https?:/.test(it.thumbnail)) return it.thumbnail;
+  if(it.enclosure && it.enclosure.link && /^https?:/i.test(it.enclosure.link) && /image|\.(jpg|jpeg|png|webp|gif)/i.test((it.enclosure.type||"")+it.enclosure.link)) return it.enclosure.link;
+  var html=String(it.content||"")+String(it.description||"");
+  var mm=html.match(/<img[^>]+src=["']([^"']+)["']/i);
+  return mm?mm[1]:"";
+}
 function mapRSS(items){
   var out=[],seen={};
   for(var i=0;i<items.length && out.length<12;i++){
@@ -1040,7 +1066,7 @@ function mapRSS(items){
     var desc=stripTags(it.description);
     var sum=clipWords(desc||title,42);
     if(sum.length<36) sum=title+". Open the full report for the complete story.";
-    out.push({headline:title,summary:sum,source:source,url:it.link||it.guid||"",
+    out.push({headline:title,summary:sum,source:source,url:it.link||it.guid||"",image:pickImg(it),
       category:guessCat(title+" "+desc),region:"Global",date:normDate(it.pubDate),note:"via Google News"});
   }
   return out.filter(function(x){return x.headline&&x.url;});
@@ -1052,7 +1078,10 @@ function parseFeedXML(xml){
     for(var i=0;i<nodes.length;i++){
       var n=nodes[i];
       var g=function(t){var e=n.getElementsByTagName(t)[0];return e?e.textContent:"";};
-      arr.push({title:g("title"),description:g("description"),link:g("link"),pubDate:g("pubDate"),author:g("source")});
+      var ga=function(t,a){var e=n.getElementsByTagName(t)[0];return (e&&e.getAttribute)?(e.getAttribute(a)||""):"";};
+      var img=ga("media:content","url")||ga("media:thumbnail","url");
+      if(!img){var enc=n.getElementsByTagName("enclosure")[0]; if(enc&&enc.getAttribute){var ty=enc.getAttribute("type")||"",eu=enc.getAttribute("url")||""; if(/image/i.test(ty)||/\.(jpg|jpeg|png|webp|gif)/i.test(eu)) img=eu;}}
+      arr.push({title:g("title"),description:g("description"),link:g("link"),pubDate:g("pubDate"),author:g("source"),image:img});
     }
     return mapRSS(arr);
   }catch(e){return [];}
@@ -1190,30 +1219,61 @@ window.addEventListener('resize',onResize);
 window.addEventListener('orientationchange',function(){setTimeout(onResize,250);});
 initFeed();
 
-/* ---- Front-page intro: Top 5 headlines, 15s or Skip ---- */
+/* ---- Front page: feature a report that HAS an image; living-photo animation ---- */
 (function(){
   var INTRO_SECONDS=15;
   var intro=document.getElementById("intro");
-  if(!intro){ return; }
-  var listEl=document.getElementById("introList");
-  var top=news.slice().sort(function(a,b){return String(b.date||"").localeCompare(String(a.date||""));}).slice(0,5);
-  if(listEl && top.length){
-    listEl.innerHTML=top.map(function(n,i){
-      var delay=(1.1 + i*0.55).toFixed(2);
-      return '<li style="animation-delay:'+delay+'s"><span class="in-num">'+(i+1)+'</span><span class="in-hed">'+esc(n.headline)+'</span></li>';
-    }).join("");
-  } else { intro.style.display="none"; return; }
-  var done=false;
-  function endIntro(){
-    if(done) return; done=true;
-    intro.classList.add("hide");
-    setTimeout(function(){ intro.style.display="none"; }, 650);
-    document.removeEventListener("keydown", keyskip, true);
-    try{ setWireHeight(); }catch(e){}
+  if(!intro) return;
+  var cands=news.slice().sort(function(a,b){return String(b.date||"").localeCompare(String(a.date||""));}).slice(0,6);
+  if(!cands.length){ intro.style.display="none"; return; }
+  var photoEl=document.getElementById("introPhoto");
+  function svgFor(n){
+    var m=(typeof meta==="function")?meta(n.category):{k:"#8a1a22",g:"AI"};
+    return '<svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">'
+      +'<defs><pattern id="ipdots" width="11" height="11" patternUnits="userSpaceOnUse"><circle cx="2.2" cy="2.2" r="1.3" fill="rgba(0,0,0,.16)"/></pattern>'
+      +'<linearGradient id="ipbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d3cbb4"/><stop offset="1" stop-color="#b0a685"/></linearGradient>'
+      +'<radialGradient id="ipvig" cx="50%" cy="40%" r="78%"><stop offset="58%" stop-color="rgba(0,0,0,0)"/><stop offset="100%" stop-color="rgba(0,0,0,.5)"/></radialGradient></defs>'
+      +'<rect width="600" height="400" fill="url(#ipbg)"/><rect width="600" height="400" fill="url(#ipdots)"/>'
+      +'<text x="565" y="335" text-anchor="end" font-family="Georgia,serif" font-weight="700" font-size="350" fill="rgba(0,0,0,.10)">'+esc(m.g||"AI")+'</text>'
+      +'<path d="M30 250 H225 l26 -70 36 140 24 -70 H575" fill="none" stroke="'+(m.k||"#8a1a22")+'" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".5"/>'
+      +'<rect width="600" height="400" fill="url(#ipvig)"/></svg>';
   }
+  function setText(id,t){var el=document.getElementById(id);if(el)el.textContent=t;}
+  function feature(n){
+    var cat=esc(n.category||"News");
+    setText("introHeadline", n.headline||"Today\u2019s Lead Story");
+    setText("introKicker", cat);
+    setText("introCap", n.summary||"");
+    setText("introCredit", n._img ? ("Photo \u00b7 "+(n.source||"")) : ("AIShorts illustration \u00b7 "+cat));
+    setText("introBy", "By "+(n.source||"Newsroom")+" \u00b7 "+((typeof fmtDate==="function")?fmtDate(n.date):""));
+    setText("introDate", (typeof fmtDate==="function")?fmtDate(n.date):"Today");
+    if(photoEl && !n._img){ photoEl.classList.remove("has-photo"); photoEl.innerHTML=svgFor(n); }
+  }
+  function applyImage(n,src){
+    if(!src||!photoEl) return;
+    var im=new Image();
+    im.onload=function(){ n._img=src; feature(n); photoEl.classList.add("has-photo"); photoEl.innerHTML='<img src="'+String(src).replace(/"/g,"&quot;")+'" alt="">'; };
+    im.src=src;
+  }
+  feature(cands[0]);
+  (async function(){
+    var tries=0;
+    for(var i=0;i<cands.length;i++){
+      var n=cands[i];
+      if(n.image){ applyImage(n,n.image); return; }
+      if(!n.url || tries>=4) continue;
+      tries++;
+      try{
+        var r=await fetchT("https://api.microlink.io/?url="+encodeURIComponent(n.url)+"&palette=false&audio=false&video=false",{headers:{"Accept":"application/json"}},6500);
+        if(r.ok){ var j=await r.json(); var u=j&&j.data&&j.data.image&&j.data.image.url; if(u){ applyImage(n,u); return; } }
+      }catch(e){}
+    }
+  })();
+  var done=false;
+  function endIntro(){ if(done)return; done=true; intro.classList.add("hide"); setTimeout(function(){intro.style.display="none";},650); document.removeEventListener("keydown",keyskip,true); try{setWireHeight();}catch(e){} }
   function keyskip(e){ if(e.key==="Escape"||e.key==="Enter"||e.key===" "){ e.stopPropagation(); e.preventDefault(); endIntro(); } }
   var sk=document.getElementById("introSkip");
-  if(sk) sk.addEventListener("click", function(e){ e.stopPropagation(); endIntro(); });
+  if(sk) sk.addEventListener("click",function(e){ e.stopPropagation(); endIntro(); });
   intro.addEventListener("click", endIntro);
   document.addEventListener("keydown", keyskip, true);
   setTimeout(endIntro, INTRO_SECONDS*1000);
