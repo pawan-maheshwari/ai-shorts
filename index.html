@@ -123,7 +123,7 @@
   }
   /* hero "art" — generated, restrained newsprint plate */
   .plate{
-    position:relative;flex:0 0 33%;margin:0;overflow:hidden;
+    position:relative;flex:0 0 22%;margin:0;overflow:hidden;
     background:linear-gradient(160deg,#efeeea,#dcdbd3);
     border:1px solid var(--rule);border-top:3px solid var(--ink);
     display:flex;align-items:flex-end;
@@ -139,17 +139,19 @@
     color:rgba(0,0,0,.07);user-select:none;
   }
   .plate .region{
-    position:absolute;top:10px;left:10px;z-index:1;
-    font-family:"Libre Franklin",sans-serif;font-size:8.2px;font-weight:700;
-    letter-spacing:1.4px;text-transform:uppercase;color:#fff;background:var(--ink);
-    padding:3px 7px;
+    flex:0 0 auto;z-index:1;
+    font-family:"Libre Franklin",sans-serif;font-size:7.8px;font-weight:700;
+    letter-spacing:1.2px;text-transform:uppercase;color:#fff;background:var(--ink);
+    padding:2px 6px;
   }
   .plate .credit{
-    position:relative;z-index:1;margin:0;padding:6px 10px;width:100%;
+    position:relative;z-index:1;margin:0;padding:5px 9px;width:100%;
+    display:flex;align-items:center;gap:8px;
     background:linear-gradient(0deg,rgba(255,255,255,.92),rgba(255,255,255,0));
     font-family:"Libre Franklin",sans-serif;font-size:7.7px;letter-spacing:.6px;
     text-transform:uppercase;color:var(--meta);
   }
+  .plate .credit .credit-txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
 
   .body{flex:1 1 auto;display:flex;flex-direction:column;padding-top:13px;min-height:0;overflow:hidden;}
   .bodyinner{margin:0;display:flex;flex-direction:column;width:100%;height:100%;min-height:0;}
@@ -258,7 +260,7 @@
     .slogan{display:none;}
     .dateline{padding:5px 16px;}
     .card{padding:12px 16px 10px;}
-    .plate{flex:0 0 26%;}
+    .plate{flex:0 0 18%;}
     .headline{font-size:15.4px;line-height:1.1;margin-bottom:7px;}
     .summary{font-size:12.4px;}
   }
@@ -801,8 +803,7 @@ function card(n){
   <article class="card">
     <figure class="plate" style="border-top-color:${m.k}">
       <span class="glyph">${m.g}</span>
-      <span class="region">${esc(n.region||"Global")}</span>
-      <figcaption class="credit">AIShorts illustration &middot; ${cat}</figcaption>
+      <figcaption class="credit"><span class="region">${esc(n.region||"Global")}</span><span class="credit-txt">AIShorts illustration &middot; ${cat}</span></figcaption>
     </figure>
     <div class="body">
       <div class="bodyinner">
