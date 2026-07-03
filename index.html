@@ -721,8 +721,12 @@
   .listen-ctrls{display:flex;gap:8px;flex-wrap:wrap;}
   .listen-ctrls button{appearance:none;cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:#fff;font:700 11px "Libre Franklin",sans-serif;letter-spacing:.6px;padding:10px 14px;}
   .listen-ctrls #listenStop{background:var(--paper);color:var(--ink);}
-  .listen-note{font:italic 400 11px/1.4 Georgia,serif;color:var(--meta);min-height:14px;margin:0;}
-  .watch-wrap{position:relative;width:100%;aspect-ratio:9/13;max-height:52vh;border:1px solid var(--ink);background:#0b0c0e;}
+  .listen-note{font:italic 400 11px/1.4 Georgia,serif;color:var(--meta);min-height:0;margin:0;}
+  .ai-actions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
+  .ai-act{appearance:none;cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:#fff;font:700 10px/1 "Libre Franklin",sans-serif;letter-spacing:.5px;text-transform:uppercase;padding:9px 11px;flex:1 1 auto;}
+  .ai-act.is-stop,.ai-act:hover{background:var(--paper);color:var(--ink);}
+  .watch-wrap{position:relative;width:100%;aspect-ratio:9/13;max-height:48vh;border:1px solid var(--ink);background:#0b0c0e;margin-bottom:8px;}
+  .watch-wrap[hidden]{display:none;}
   .watch-frame{position:absolute;inset:0;width:100%;height:100%;border:0;display:block;}
   .ai-foot{border-top:1px solid var(--rule);padding:6px 10px;font:400 9px/1.3 "Libre Franklin",sans-serif;color:var(--meta);text-align:center;}
   .colophon a{color:inherit;}
@@ -774,14 +778,20 @@
   <div class="ai-head">
     <div class="ai-tabs">
       <button class="ai-tab is-on" data-tab="ask">Assistant</button>
-      <button class="ai-tab" data-tab="dash">Dashboards</button>
-      <button class="ai-tab" data-tab="listen">Listen</button>
-      <button class="ai-tab" data-tab="watch">Watch</button>
     </div>
     <button class="ai-x" id="aiClose" aria-label="Close">&times;</button>
   </div>
   <div class="ai-body">
     <section class="ai-view" id="view-ask">
+      <div class="ai-actions">
+        <button class="ai-act" id="listenPlay">&#9654;&nbsp; Listen to today&rsquo;s AI news</button>
+        <button class="ai-act is-stop" id="listenStop" hidden>&#9632;&nbsp; Stop listening</button>
+        <button class="ai-act" id="watchToggle">&#9655;&nbsp; Watch today&rsquo;s AI news</button>
+      </div>
+      <p class="listen-note" id="listenNow"></p>
+      <div class="watch-wrap" id="watchWrap" hidden>
+        <iframe id="anchorFrame" class="watch-frame" data-src="assets/news-anchor.html" title="AIShorts AI news anchor" allow="autoplay" loading="lazy"></iframe>
+      </div>
       <div class="ai-chips">
         <button class="ai-chip">Summarize today&rsquo;s AI news</button>
         <button class="ai-chip">What happened at OpenAI this week?</button>
@@ -789,26 +799,6 @@
       </div>
       <div class="ai-log" id="aiLog"></div>
       <div class="ai-input"><input id="aiQ" type="text" placeholder="Ask about today&rsquo;s AI news&hellip;" autocomplete="off"><button id="aiSend">Ask</button></div>
-    </section>
-    <section class="ai-view" id="view-dash" hidden>
-      <div class="dash-panel"><h4>AI Funding Today</h4><ul id="dashFund"></ul></div>
-      <div class="dash-panel"><h4>New Model Releases</h4><ul id="dashModel"></ul></div>
-      <div class="dash-panel"><h4>Global AI Events</h4><ul id="dashEvent"></ul></div>
-    </section>
-    <section class="ai-view" id="view-listen" hidden>
-      <p class="listen-lead">A quick audio rundown of today&rsquo;s top AI stories, read aloud.</p>
-      <div class="listen-ctrls">
-        <button id="listenPlay">&#9654;&nbsp; Listen to today&rsquo;s AI news</button>
-        <button id="listenStop" hidden>&#9632;&nbsp; Stop</button>
-      </div>
-      <p class="listen-note" id="listenNow"></p>
-    </section>
-    <section class="ai-view" id="view-watch" hidden>
-      <p class="listen-lead">Your AI anchor presents today&rsquo;s top stories on video.</p>
-      <div class="watch-wrap">
-        <iframe id="anchorFrame" class="watch-frame" data-src="assets/news-anchor.html" title="AIShorts AI news anchor" allow="autoplay" loading="lazy"></iframe>
-      </div>
-      <p class="listen-note">Anchor video &middot; headlines ride the ticker live from today&rsquo;s wire.</p>
     </section>
   </div>
   <div class="ai-foot">Answers come from the stories loaded in AIShorts &middot; on-device, private.</div>
@@ -1836,7 +1826,7 @@ initFeed();
   if(playBtn) playBtn.onclick=function(){
     if(!synth){ if(nowEl) nowEl.textContent="Your browser doesn\u2019t support speech."; return; }
     var txt=topText(); if(!txt){ if(nowEl) nowEl.textContent="No stories loaded yet."; return; }
-    synth.cancel(); var u=new SpeechSynthesisUtterance(txt); u.rate=1; u.pitch=1; u.onend=stopVoice; u.onerror=stopVoice;
+    synth.cancel(); pauseAnchor(); var u=new SpeechSynthesisUtterance(txt); u.rate=1; u.pitch=1; u.onend=stopVoice; u.onerror=stopVoice;
     playBtn.hidden=true; stopBtn.hidden=false; if(nowEl) nowEl.textContent="Reading "+Math.min(6,topNews().length)+" top stories\u2026"; synth.speak(u);
   };
   if(stopBtn) stopBtn.onclick=stopVoice;
@@ -1844,26 +1834,22 @@ initFeed();
   function closeP(){ panel.hidden=true; stopVoice(); var fr=document.getElementById("anchorFrame"); if(fr&&fr.dataset.ready){ try{ fr.contentWindow.postMessage({type:"aishorts-pause"},"*"); }catch(e){} } }
   fab.onclick=function(){ if(panel.hidden) openP(); else closeP(); };
   document.getElementById("aiClose").onclick=closeP;
-  [].forEach.call(panel.querySelectorAll(".ai-tab"),function(tab){
-    tab.onclick=function(){
-      [].forEach.call(panel.querySelectorAll(".ai-tab"),function(t){t.classList.remove("is-on");});
-      tab.classList.add("is-on");
-      var name=tab.getAttribute("data-tab");
-      panel.querySelector("#view-ask").hidden = name!=="ask";
-      panel.querySelector("#view-dash").hidden = name!=="dash";
-      panel.querySelector("#view-listen").hidden = name!=="listen";
-      panel.querySelector("#view-watch").hidden = name!=="watch";
-      if(name==="dash") dashFill();
-      if(name!=="listen") stopVoice();
-      var fr=document.getElementById("anchorFrame");
-      if(name==="watch"&&fr){
-        if(!fr.src) fr.src=fr.getAttribute("data-src");           /* lazy-load video only on first open */
-        var send=function(){ try{ fr.contentWindow.postMessage({type:"aishorts-headlines",items:topNews().slice(0,6).map(function(n){return {headline:n.headline,source:n.source||""};})},"*"); }catch(e){} };
-        if(fr.dataset.ready) send(); else fr.onload=function(){ fr.dataset.ready="1"; send(); };
-      }
-      if(name!=="watch"&&fr&&fr.dataset.ready){ try{ fr.contentWindow.postMessage({type:"aishorts-pause"},"*"); }catch(e){} }
-    };
-  });
+  /* ----- Watch today's AI news: inline collapsible anchor player ----- */
+  var watchBtn=document.getElementById("watchToggle"), watchWrap=document.getElementById("watchWrap");
+  function pauseAnchor(){ var fr=document.getElementById("anchorFrame"); if(fr&&fr.dataset.ready){ try{ fr.contentWindow.postMessage({type:"aishorts-pause"},"*"); }catch(e){} } }
+  if(watchBtn&&watchWrap) watchBtn.onclick=function(){
+    var opening=watchWrap.hidden;
+    watchWrap.hidden=!opening;
+    watchBtn.innerHTML=opening?"&#9651;&nbsp; Hide the news anchor":"&#9655;&nbsp; Watch today\u2019s AI news";
+    var fr=document.getElementById("anchorFrame");
+    if(opening&&fr){
+      stopVoice();
+      if(!fr.src) fr.src=fr.getAttribute("data-src");             /* lazy-load video only on first open */
+      var send=function(){ try{ fr.contentWindow.postMessage({type:"aishorts-headlines",items:topNews().slice(0,6).map(function(n){return {headline:n.headline,source:n.source||""};})},"*"); fr.contentWindow.postMessage({type:"aishorts-play"},"*"); }catch(e){} };
+      if(fr.dataset.ready) send(); else fr.onload=function(){ fr.dataset.ready="1"; send(); };
+    }
+    if(!opening) pauseAnchor();
+  };
   push("a","Hi \u2014 I\u2019m the AIShorts desk assistant. Ask me to summarize today\u2019s news, what happened at a company, or to compare stories. I answer from the stories loaded right now.");
 })();
 </script>
