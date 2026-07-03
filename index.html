@@ -1835,6 +1835,21 @@ initFeed();
   fab.onclick=function(){ if(panel.hidden) openP(); else closeP(); };
   document.getElementById("aiClose").onclick=closeP;
   /* ----- Watch today's AI news: inline collapsible anchor player ----- */
+  /* ----- Build a broadcast script from the live wire ----- */
+  function anchorScript(){
+    var t=topNews().slice(0,5); if(!t.length) return null;
+    var d=new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+    var lines=["Good day \u2014 this is your AIShorts brief for "+d+". Here are today\u2019s top "+t.length+" stories in AI."];
+    t.forEach(function(n,i){
+      var s=n.headline;
+      if(n.source) s+=" \u2014 that\u2019s reported by "+n.source+".";
+      else s+=".";
+      lines.push("Story "+(i+1)+": "+s);
+      if(n.summary&&String(n.summary).trim()){ var m=String(n.summary).trim().match(/^[^.!?]{10,220}[.!?]/); if(m) lines.push(m[0]); }
+    });
+    lines.push("That\u2019s the wire for now. Full stories are on the front page \u2014 this has been your AIShorts AI anchor.");
+    return lines;
+  }
   var watchBtn=document.getElementById("watchToggle"), watchWrap=document.getElementById("watchWrap");
   function pauseAnchor(){ var fr=document.getElementById("anchorFrame"); if(fr&&fr.dataset.ready){ try{ fr.contentWindow.postMessage({type:"aishorts-pause"},"*"); }catch(e){} } }
   if(watchBtn&&watchWrap) watchBtn.onclick=function(){
@@ -1845,7 +1860,11 @@ initFeed();
     if(opening&&fr){
       stopVoice();
       if(!fr.src) fr.src=fr.getAttribute("data-src");             /* lazy-load video only on first open */
-      var send=function(){ try{ fr.contentWindow.postMessage({type:"aishorts-headlines",items:topNews().slice(0,6).map(function(n){return {headline:n.headline,source:n.source||""};})},"*"); fr.contentWindow.postMessage({type:"aishorts-play"},"*"); }catch(e){} };
+      var send=function(){ try{
+        fr.contentWindow.postMessage({type:"aishorts-headlines",items:topNews().slice(0,6).map(function(n){return {headline:n.headline,source:n.source||""};})},"*");
+        var sc=anchorScript(); if(sc) fr.contentWindow.postMessage({type:"aishorts-script",lines:sc},"*");
+        fr.contentWindow.postMessage({type:"aishorts-play"},"*");
+      }catch(e){} };
       if(fr.dataset.ready) send(); else fr.onload=function(){ fr.dataset.ready="1"; send(); };
     }
     if(!opening) pauseAnchor();

@@ -62,22 +62,35 @@
   var qs=new URLSearchParams(location.search).get("h");
   if(qs) setTicker(qs.split("|"));
 
-  var scriptLines=null;
+  var scriptLines=null, capTimer=null, capIdx=0;
+  function stopScript(){ if(capTimer){clearTimeout(capTimer);capTimer=null;} vid.loop=false; }
+  function lineMs(s){ var words=String(s).split(/\s+/).length; return Math.max(3200, Math.min(9000, words*380)); }  /* ~160 wpm, clamped */
+  function playScript(lines){
+    stopScript();
+    scriptLines=lines; capIdx=0;
+    vid.loop=true;                                   /* loop the clip until the script finishes */
+    cap.classList.add("on");
+    (function next(){
+      if(capIdx>=scriptLines.length){                /* script done */
+        cap.classList.remove("on"); stopScript();
+        parent.postMessage({type:"aishorts-anchor-ended"},"*");
+        vid.pause();
+        return;
+      }
+      var line=scriptLines[capIdx];
+      cap.innerHTML="<small style='opacity:.65'>"+(capIdx+1)+"/"+scriptLines.length+"</small>&nbsp; "+esc(line);
+      capTimer=setTimeout(function(){capIdx++;next();},lineMs(line));
+    })();
+  }
   window.addEventListener("message",function(e){
     var d=e.data||{};
     if(d.type==="aishorts-headlines") setTicker(d.items||[]);
-    if(d.type==="aishorts-script"&&Array.isArray(d.lines)&&d.lines.length){ scriptLines=d.lines; cap.textContent=scriptLines[0]; cap.classList.add("on"); }
-    if(d.type==="aishorts-pause"&&!vid.paused) vid.pause();
-    if(d.type==="aishorts-play") vid.play().catch(function(){});
+    if(d.type==="aishorts-script"&&Array.isArray(d.lines)&&d.lines.length) playScript(d.lines);
+    if(d.type==="aishorts-pause"){ if(!vid.paused) vid.pause(); if(capTimer){clearTimeout(capTimer);capTimer=null;} }
+    if(d.type==="aishorts-play"){ vid.play().catch(function(){}); if(scriptLines&&capIdx<scriptLines.length&&!capTimer) playScript(scriptLines.slice(capIdx)); }
   });
 
-  /* Spread scripted caption lines evenly across the video duration */
-  vid.addEventListener("timeupdate",function(){
-    if(!scriptLines||!vid.duration) return;
-    var idx=Math.min(scriptLines.length-1,Math.floor(vid.currentTime/vid.duration*scriptLines.length));
-    cap.textContent=scriptLines[idx];
-  });
-  vid.addEventListener("ended",function(){ parent.postMessage({type:"aishorts-anchor-ended"},"*"); });
+  vid.addEventListener("ended",function(){ if(!vid.loop) parent.postMessage({type:"aishorts-anchor-ended"},"*"); });
 })();
 </script>
 </body>
