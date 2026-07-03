@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AIShorts — AI News Anchor</title>
+<style>
+  :root{--ink:#111;--paper:#f7f5ef;--paper-2:#efece3;--rule:#c9c4b4;--meta:#6b675c;--gold:#b3801f;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Georgia,"Times New Roman",serif;height:100%;}
+  .wrap{display:flex;flex-direction:column;height:100%;box-sizing:border-box;}
+  .head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;border-bottom:2px solid var(--ink);background:var(--paper-2);}
+  .kicker{font:800 10px/1 "Libre Franklin",Arial,sans-serif;letter-spacing:1.4px;text-transform:uppercase;}
+  .kicker .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#c11;margin-right:5px;animation:blink 1.2s infinite;}
+  @keyframes blink{50%{opacity:.25;}}
+  .date{font:italic 400 10px/1 Georgia,serif;color:var(--meta);}
+  .stage{position:relative;flex:1 1 auto;min-height:0;background:#0b0c0e;display:flex;align-items:center;justify-content:center;}
+  video{max-width:100%;max-height:100%;display:block;}
+  .caption{position:absolute;left:8px;right:8px;bottom:8px;background:rgba(10,10,12,.72);color:#fff;font:700 12px/1.45 "Libre Franklin",Arial,sans-serif;padding:7px 10px;border-left:3px solid #f6d877;display:none;}
+  .caption.on{display:block;}
+  .ticker{border-top:2px solid var(--ink);background:var(--ink);color:#fff;overflow:hidden;white-space:nowrap;flex:0 0 auto;}
+  .ticker .lbl{display:inline-block;background:#c11;color:#fff;font:800 9px/1 "Libre Franklin",Arial,sans-serif;letter-spacing:1px;padding:6px 8px;vertical-align:middle;}
+  .track{display:inline-block;padding:6px 0;font:600 11px/1 "Libre Franklin",Arial,sans-serif;letter-spacing:.3px;animation:roll 40s linear infinite;vertical-align:middle;}
+  .track span{margin:0 18px;}
+  .track b{color:#f6d877;margin-right:6px;}
+  @keyframes roll{from{transform:translateX(20%);}to{transform:translateX(-100%);}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <span class="kicker"><span class="dot"></span>AIShorts&nbsp;News&nbsp;Desk</span>
+    <span class="date" id="dt"></span>
+  </div>
+  <div class="stage">
+    <video id="vid" src="anchor-news.mp4" poster="anchor-poster.jpg" controls playsinline preload="metadata"></video>
+    <div class="caption" id="cap"></div>
+  </div>
+  <div class="ticker"><span class="lbl">TOP&nbsp;AI&nbsp;NEWS</span><span class="track" id="track"><span>Waiting for today&rsquo;s wire&hellip;</span></span></div>
+</div>
+<script>
+(function(){
+  var vid=document.getElementById("vid"), track=document.getElementById("track"), cap=document.getElementById("cap");
+  document.getElementById("dt").textContent=new Date().toLocaleDateString(undefined,{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+  function esc(s){return String(s||"").replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+
+  /* Headlines can arrive two ways:
+     1) ?h=Headline one|Headline two|...   (URL param)
+     2) postMessage from parent:
+        {type:"aishorts-headlines", items:[{headline,source},...]}
+        {type:"aishorts-script", lines:["..."]}   -> timed captions over the video
+        {type:"aishorts-pause"}                    -> pause playback            */
+  function setTicker(items){
+    if(!items||!items.length) return;
+    track.innerHTML=items.map(function(n,i){
+      var h=typeof n==="string"?n:(n.headline||"");
+      var s=typeof n==="object"&&n.source?(" — "+n.source):"";
+      return "<span><b>"+(i+1)+".</b>"+esc(h)+esc(s)+"</span>";
+    }).join("");
+    var secs=Math.max(25,items.length*8);
+    track.style.animationDuration=secs+"s";
+  }
+  var qs=new URLSearchParams(location.search).get("h");
+  if(qs) setTicker(qs.split("|"));
+
+  var scriptLines=null;
+  window.addEventListener("message",function(e){
+    var d=e.data||{};
+    if(d.type==="aishorts-headlines") setTicker(d.items||[]);
+    if(d.type==="aishorts-script"&&Array.isArray(d.lines)&&d.lines.length){ scriptLines=d.lines; cap.textContent=scriptLines[0]; cap.classList.add("on"); }
+    if(d.type==="aishorts-pause"&&!vid.paused) vid.pause();
+    if(d.type==="aishorts-play") vid.play().catch(function(){});
+  });
+
+  /* Spread scripted caption lines evenly across the video duration */
+  vid.addEventListener("timeupdate",function(){
+    if(!scriptLines||!vid.duration) return;
+    var idx=Math.min(scriptLines.length-1,Math.floor(vid.currentTime/vid.duration*scriptLines.length));
+    cap.textContent=scriptLines[idx];
+  });
+  vid.addEventListener("ended",function(){ parent.postMessage({type:"aishorts-anchor-ended"},"*"); });
+})();
+</script>
+</body>
+</html>
