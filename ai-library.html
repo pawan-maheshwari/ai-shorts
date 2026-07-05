@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The AI Athenaeum — A Library of Artificial Intelligence</title>
+<meta name="description" content="World-class AI literature for every age — read, listen, and learn with a live librarian. Curated by Pawan Maheshwari · Conceptualized by Bhavin Maheshwari.">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="%231E3A2F"/><path d="M32 18c-4-3.4-10-4.6-16-3.6v28c6-1 12 .2 16 3.6 4-3.4 10-4.6 16-3.6v-28c-6-1-12 .2-16 3.6z" fill="%23F6EFDF"/><path d="M32 18v28" stroke="%231E3A2F" stroke-width="2.4"/><circle cx="32" cy="30" r="4.6" fill="none" stroke="%23C9962E" stroke-width="2.2"/><path d="M32 21.5v4M32 34.5v4M23.5 30h4M36.5 30h4M26 24l2.8 2.8M38 36l-2.8-2.8M38 24l-2.8 2.8M26 36l2.8-2.8" stroke="%23C9962E" stroke-width="2.2" stroke-linecap="round"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Archivo:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#1E3A2F;        /* reading-room green   */
+  --green-deep:#14291F;
+  --paper:#F6EFDF;        /* aged paper           */
+  --paper-warm:#EFE4CC;
+  --oxblood:#7A2222;      /* leather spines       */
+  --brass:#C9962E;        /* lamp & plaques       */
+  --brass-soft:#E4C878;
+  --ink:#241F19;
+  --ink-soft:#5C5344;
+  --navy:#22304A;
+  --shadow:0 18px 40px rgba(20,25,18,.28);
+  --serif-display:'Cormorant Garamond',Georgia,serif;
+  --serif-body:'Source Serif 4',Georgia,serif;
+  --sans:'Archivo',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--serif-body);line-height:1.65;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--oxblood)}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- top bar ---------- */
+.topbar{position:sticky;top:0;z-index:60;background:var(--green);color:var(--paper);
+  display:flex;align-items:center;gap:.9rem;padding:.65rem 1.2rem;border-bottom:3px solid var(--brass)}
+.topbar .mark{width:34px;height:34px;flex:0 0 auto}
+.topbar .wordmark{font-family:var(--serif-display);font-weight:700;font-size:1.25rem;letter-spacing:.02em}
+.topbar .wordmark small{display:block;font-family:var(--sans);font-weight:600;font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:var(--brass-soft)}
+.topbar nav{margin-left:auto;display:flex;gap:.3rem}
+.topbar nav button,.topbar nav a.nav-link{background:none;border:none;color:var(--paper);font-family:var(--sans);font-weight:600;
+  font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;padding:.55rem .8rem;border-radius:4px;
+  text-decoration:none;display:inline-flex;align-items:center;line-height:1}
+.topbar nav button:hover,.topbar nav button.active,.topbar nav a.nav-link:hover{background:rgba(201,150,46,.18);color:var(--brass-soft)}
+.topbar nav a.nav-link.accent{color:var(--brass-soft)}
+
+/* ---------- hero : the reading room ---------- */
+.hero{position:relative;background:
+  radial-gradient(ellipse 60% 46% at 50% 30%, rgba(228,200,120,.30), transparent 70%),
+  linear-gradient(180deg,var(--green-deep) 0%,var(--green) 78%,#4a3a22 100%);
+  color:var(--paper);padding:4.4rem 1.4rem 0;overflow:hidden;text-align:center}
+.hero .eyebrow{font-family:var(--sans);font-weight:600;font-size:.7rem;letter-spacing:.42em;text-transform:uppercase;color:var(--brass-soft)}
+.hero h1{font-family:var(--serif-display);font-weight:600;font-size:clamp(2.6rem,7vw,4.8rem);line-height:1.04;margin:.7rem auto .9rem;max-width:14ch}
+.hero h1 em{font-style:italic;color:var(--brass-soft)}
+.hero p.lede{max-width:52ch;margin:0 auto 1.6rem;font-size:1.06rem;color:#E8E0CC;font-style:italic}
+.hero .cta-row{display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.btn{font-family:var(--sans);font-weight:600;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;
+  padding:.85rem 1.5rem;border-radius:4px;border:1px solid var(--brass);transition:transform .15s ease, box-shadow .15s ease}
+.btn-brass{background:var(--brass);color:var(--green-deep)}
+.btn-ghost{background:transparent;color:var(--brass-soft)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+
+/* hero shelf */
+.shelf-scene{max-width:880px;margin:0 auto;position:relative}
+.lamp{position:absolute;left:50%;top:-58px;transform:translateX(-50%);width:120px;pointer-events:none;filter:drop-shadow(0 0 26px rgba(228,200,120,.55))}
+.shelf{display:flex;align-items:flex-end;justify-content:center;gap:5px;padding:0 26px;position:relative;z-index:2}
+.spine{width:44px;border-radius:3px 3px 0 0;position:relative;display:flex;align-items:flex-end;justify-content:center;
+  box-shadow:inset -5px 0 8px rgba(0,0,0,.35), inset 2px 0 3px rgba(255,255,255,.12);
+  transition:transform .22s ease;transform-origin:bottom center;cursor:pointer;border:none;padding:0}
+.spine span{writing-mode:vertical-rl;transform:rotate(180deg);font-family:var(--sans);font-weight:600;
+  font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,223,.92);padding:10px 0;pointer-events:none;
+  overflow:hidden;max-height:100%;text-overflow:ellipsis;white-space:nowrap}
+.spine:hover{transform:rotate(-6deg) translateY(-8px)}
+.spine::after{content:"";position:absolute;inset:8px 6px auto 6px;height:2px;background:var(--brass);opacity:.7}
+.shelf-board{height:16px;background:linear-gradient(180deg,#6b4a24,#3f2b13);border-radius:3px;box-shadow:0 14px 26px rgba(0,0,0,.5);position:relative;z-index:1}
+.shelf-board::after{content:"";position:absolute;inset:auto 8% -10px 8%;height:10px;background:rgba(0,0,0,.35);filter:blur(8px)}
+.hero .plate{display:inline-block;margin:1.3rem auto 2.6rem;font-family:var(--sans);font-size:.62rem;font-weight:600;
+  letter-spacing:.3em;text-transform:uppercase;color:var(--green-deep);background:linear-gradient(180deg,var(--brass-soft),var(--brass));
+  padding:.4rem 1.2rem;border-radius:3px;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+
+/* ---------- sections ---------- */
+.section{max-width:1080px;margin:0 auto;padding:3.6rem 1.4rem}
+.sec-head{display:flex;align-items:baseline;gap:1rem;border-bottom:2px solid var(--ink);padding-bottom:.6rem;margin-bottom:1.8rem}
+.sec-head h2{font-family:var(--serif-display);font-weight:700;font-size:clamp(1.7rem,3.5vw,2.4rem)}
+.sec-head .kicker{font-family:var(--sans);font-weight:600;font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--oxblood)}
+
+/* wing plaque + shelves */
+.wing{margin-bottom:3.2rem}
+.wing-plaque{display:flex;align-items:center;gap:.9rem;margin-bottom:1.1rem}
+.wing-plaque .plaque{background:linear-gradient(180deg,var(--brass-soft),var(--brass));color:var(--green-deep);
+  font-family:var(--sans);font-weight:700;font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;
+  padding:.45rem 1.1rem;border-radius:3px;box-shadow:0 2px 5px rgba(0,0,0,.25)}
+.wing-plaque .ages{font-style:italic;color:var(--ink-soft);font-size:.95rem}
+.wing-desc{max-width:62ch;color:var(--ink-soft);margin-bottom:1.4rem}
+.book-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:1.4rem}
+.book-card{background:none;border:none;text-align:left;display:flex;flex-direction:column;gap:.7rem}
+.cover{aspect-ratio:2/3;border-radius:4px 10px 10px 4px;position:relative;padding:1.1rem .95rem;display:flex;flex-direction:column;
+  color:var(--paper);box-shadow:var(--shadow);transition:transform .2s ease, box-shadow .2s ease;overflow:hidden}
+.cover::before{content:"";position:absolute;top:0;bottom:0;left:10px;width:2px;background:rgba(0,0,0,.35)}
+.cover::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,rgba(255,255,255,.14),transparent 42%)}
+.book-card:hover .cover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 26px 48px rgba(20,25,18,.4)}
+.cover .rule{width:42px;height:2px;background:var(--brass-soft);margin:.55rem 0}
+.cover h3{font-family:var(--serif-display);font-weight:600;font-size:1.22rem;line-height:1.15}
+.cover .c-kicker{font-family:var(--sans);font-weight:600;font-size:.55rem;letter-spacing:.26em;text-transform:uppercase;opacity:.85}
+.cover .c-author{margin-top:auto;font-style:italic;font-size:.82rem;opacity:.9}
+.cover .badge{position:absolute;right:.7rem;top:.7rem;background:rgba(0,0,0,.28);border:1px solid var(--brass-soft);
+  color:var(--brass-soft);font-family:var(--sans);font-size:.52rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  padding:.22rem .5rem;border-radius:20px}
+.book-meta .t{font-weight:600;font-size:.95rem;line-height:1.3}
+.book-meta .s{font-size:.8rem;color:var(--ink-soft)}
+.open-hint{font-family:var(--sans);font-weight:600;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--oxblood)}
+
+/* subscription strip */
+.sub-strip{background:var(--navy);color:var(--paper)}
+.sub-inner{max-width:1080px;margin:0 auto;padding:2.6rem 1.4rem;display:grid;grid-template-columns:1.2fr 1fr;gap:2rem;align-items:center}
+.sub-inner h2{font-family:var(--serif-display);font-size:1.9rem;font-weight:600;margin-bottom:.5rem}
+.sub-inner p{color:#CFD6E4;font-size:.98rem}
+.price-card{background:var(--paper);color:var(--ink);border-radius:6px;padding:1.5rem;box-shadow:var(--shadow);border-top:5px solid var(--brass)}
+.price-card .amount{font-family:var(--serif-display);font-size:2.6rem;font-weight:700}
+.price-card .amount small{font-size:1rem;font-family:var(--serif-body);font-style:italic;color:var(--ink-soft)}
+.price-card ul{list-style:none;margin:.8rem 0 1rem}
+.price-card li{padding:.28rem 0 .28rem 1.4rem;position:relative;font-size:.92rem}
+.price-card li::before{content:"❧";position:absolute;left:0;color:var(--brass)}
+.btn-navy{background:var(--navy);color:var(--paper);border-color:var(--navy);width:100%}
+
+/* ---------- about ---------- */
+.about-mission{font-family:var(--serif-display);font-size:clamp(1.3rem,2.6vw,1.7rem);font-weight:500;font-style:italic;
+  max-width:58ch;border-left:4px solid var(--brass);padding-left:1.2rem;margin-bottom:2.4rem;line-height:1.5}
+.founders{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.6rem}
+.f-card{background:#FDFAF2;border:1px solid #E2D7BC;border-radius:6px;padding:1.7rem;box-shadow:0 8px 22px rgba(20,25,18,.08)}
+.f-top{display:flex;gap:1.1rem;align-items:center;margin-bottom:1rem}
+.f-photo{width:86px;height:86px;border-radius:50%;flex:0 0 auto;overflow:hidden;border:3px solid var(--brass);
+  background:var(--green);color:var(--brass-soft);display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif-display);font-size:2rem;font-weight:700}
+.f-photo img{width:100%;height:100%;object-fit:cover}
+.f-name{font-family:var(--serif-display);font-size:1.4rem;font-weight:700;line-height:1.1}
+.f-role{font-family:var(--sans);font-weight:600;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:var(--oxblood);margin-top:.3rem}
+.f-card p{font-size:.92rem;color:#463E31}
+.f-card p + p{margin-top:.6rem}
+.about-note{margin-top:2rem;font-size:.85rem;color:var(--ink-soft);font-style:italic}
+
+/* ---------- footer ---------- */
+footer{background:var(--green-deep);color:#C9C2AD;text-align:center;padding:2.2rem 1.4rem;font-size:.85rem}
+footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.05rem;color:var(--brass-soft);margin-bottom:.4rem}
+
+/* ================= READER ================= */
+.reader{position:fixed;inset:0;z-index:100;display:none;grid-template-rows:auto 1fr;background:var(--paper)}
+.reader.open{display:grid}
+.reader[data-theme="sepia"]{--pg:#F3E7CF;--pg-ink:#3A3020}
+.reader[data-theme="paper"]{--pg:#FBF7EC;--pg-ink:#241F19}
+.reader[data-theme="night"]{--pg:#1B211D;--pg-ink:#D8D2BE}
+.r-top{display:flex;align-items:center;gap:.6rem;background:var(--green);color:var(--paper);padding:.55rem .9rem;border-bottom:3px solid var(--brass);flex-wrap:wrap}
+.r-top .r-title{font-family:var(--serif-display);font-weight:600;font-size:1.02rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.icon-btn{background:rgba(246,239,223,.08);border:1px solid rgba(246,239,223,.25);color:var(--paper);
+  border-radius:4px;padding:.42rem .6rem;font-family:var(--sans);font-size:.72rem;font-weight:600;letter-spacing:.06em;display:inline-flex;align-items:center;gap:.35rem}
+.icon-btn:hover{background:rgba(201,150,46,.25);border-color:var(--brass)}
+.icon-btn.active{background:var(--brass);color:var(--green-deep);border-color:var(--brass)}
+.r-body{display:grid;grid-template-columns:1fr;overflow:hidden;position:relative;background:var(--pg,#FBF7EC)}
+.r-body.with-panel{grid-template-columns:1fr min(400px,90vw)}
+.r-page-wrap{overflow-y:auto;display:flex;justify-content:center;padding:2.2rem 1.2rem 5.5rem}
+.r-page{max-width:640px;width:100%;color:var(--pg-ink,#241F19)}
+.r-page .ch-kicker{font-family:var(--sans);font-weight:600;font-size:.64rem;letter-spacing:.3em;text-transform:uppercase;color:var(--brass);margin-bottom:.5rem}
+.r-page h2{font-family:var(--serif-display);font-weight:600;font-size:2rem;margin-bottom:1.2rem;line-height:1.15}
+.r-page p{margin-bottom:1.05em;text-align:justify;hyphens:auto}
+.r-page p.speaking{background:rgba(201,150,46,.22);border-radius:3px;box-shadow:0 0 0 6px rgba(201,150,46,.22)}
+.r-page .drop::first-letter{font-family:var(--serif-display);font-size:3.2em;float:left;line-height:.82;padding:.06em .12em 0 0;color:var(--oxblood)}
+.reader[data-theme="night"] .r-page .drop::first-letter{color:var(--brass-soft)}
+.src-note{margin-top:2rem;padding:1rem 1.2rem;border:1px dashed var(--brass);border-radius:4px;font-size:.88rem;font-style:italic}
+.r-nav{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;gap:1rem;justify-content:center;
+  padding:.7rem;background:linear-gradient(180deg,transparent,var(--pg,#FBF7EC) 40%)}
+.pg-btn{background:var(--green);color:var(--paper);border:1px solid var(--brass);border-radius:4px;
+  font-family:var(--sans);font-weight:600;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;padding:.6rem 1.1rem}
+.pg-btn:disabled{opacity:.35;cursor:default}
+.progress{font-family:var(--sans);font-size:.7rem;font-weight:600;letter-spacing:.12em;color:var(--pg-ink,#241F19);opacity:.75}
+.prog-bar{position:absolute;top:0;left:0;height:3px;background:var(--brass);width:0%;transition:width .3s ease;z-index:5}
+
+/* chapters drawer */
+.drawer{position:absolute;top:0;bottom:0;left:0;width:min(320px,85vw);background:var(--green);color:var(--paper);
+  transform:translateX(-105%);transition:transform .25s ease;z-index:8;padding:1.2rem;overflow-y:auto;box-shadow:var(--shadow)}
+.drawer.open{transform:translateX(0)}
+.drawer h3{font-family:var(--serif-display);font-size:1.2rem;margin-bottom:.8rem;color:var(--brass-soft)}
+.drawer button.ch{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid rgba(246,239,223,.15);
+  color:var(--paper);padding:.7rem .3rem;font-family:var(--serif-body);font-size:.92rem}
+.drawer button.ch:hover,.drawer button.ch.cur{color:var(--brass-soft)}
+
+/* listen bar */
+.listen-bar{display:none;align-items:center;gap:.7rem;background:var(--green-deep);color:var(--paper);
+  padding:.5rem .9rem;flex-wrap:wrap;border-bottom:1px solid rgba(201,150,46,.4)}
+.listen-bar.open{display:flex}
+.listen-bar select,.listen-bar input[type=range]{accent-color:var(--brass)}
+.listen-bar select{background:var(--paper);color:var(--ink);border:none;border-radius:3px;padding:.35rem .4rem;font-family:var(--sans);font-size:.74rem;max-width:200px}
+.listen-bar label{font-family:var(--sans);font-size:.64rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-soft)}
+
+/* librarian panel */
+.panel{background:var(--green-deep);color:var(--paper);display:none;flex-direction:column;border-left:3px solid var(--brass);min-width:0}
+.r-body.with-panel .panel{display:flex}
+.panel-head{padding:.9rem 1.1rem;border-bottom:1px solid rgba(201,150,46,.35);display:flex;align-items:center;gap:.6rem}
+.panel-head .p-title{font-family:var(--serif-display);font-weight:600;font-size:1.1rem}
+.panel-head .p-sub{font-size:.72rem;color:#B7B096;font-style:italic}
+.chat{flex:1;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:.8rem}
+.msg{max-width:88%;padding:.7rem .9rem;border-radius:8px;font-size:.9rem;line-height:1.55;white-space:pre-wrap}
+.msg.user{align-self:flex-end;background:var(--brass);color:var(--green-deep);border-radius:8px 8px 2px 8px}
+.msg.bot{align-self:flex-start;background:rgba(246,239,223,.1);border:1px solid rgba(246,239,223,.18);border-radius:8px 8px 8px 2px}
+.msg.bot.thinking{font-style:italic;color:#B7B096}
+.quick{display:flex;gap:.4rem;flex-wrap:wrap;padding:0 1rem .6rem}
+.quick button{background:none;border:1px solid rgba(201,150,46,.6);color:var(--brass-soft);border-radius:20px;
+  font-family:var(--sans);font-size:.64rem;font-weight:600;letter-spacing:.08em;padding:.35rem .7rem}
+.quick button:hover{background:rgba(201,150,46,.2)}
+.chat-input{display:flex;gap:.5rem;padding:.8rem;border-top:1px solid rgba(201,150,46,.35)}
+.chat-input textarea{flex:1;resize:none;background:rgba(246,239,223,.08);border:1px solid rgba(246,239,223,.25);
+  border-radius:6px;color:var(--paper);font-family:var(--serif-body);font-size:.9rem;padding:.6rem .7rem;height:3rem}
+.chat-input button{background:var(--brass);border:none;color:var(--green-deep);border-radius:6px;padding:0 1rem;font-family:var(--sans);font-weight:700;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase}
+
+/* enchanted cover page */
+.hp-scene{display:flex;justify-content:center;padding:.6rem 0 2rem;perspective:1400px}
+.hp-frame{position:relative;width:min(430px,90vw);aspect-ratio:5/7;border-radius:8px 18px 18px 8px;
+  padding:2.4rem 1.8rem;display:flex;flex-direction:column;align-items:center;text-align:center;
+  color:var(--paper);transform-style:preserve-3d;transition:transform .12s ease-out;
+  box-shadow:0 30px 70px rgba(10,14,10,.55), inset 0 0 60px rgba(0,0,0,.45), inset 2px 0 4px rgba(255,255,255,.12);
+  overflow:hidden;will-change:transform}
+.hp-frame::before{content:"";position:absolute;inset:12px;border:2px solid rgba(228,200,120,.85);
+  border-radius:6px 12px 12px 6px;pointer-events:none;
+  box-shadow:inset 0 0 0 4px transparent, inset 0 0 22px rgba(228,200,120,.25)}
+.hp-frame::after{content:"";position:absolute;inset:19px;border:1px solid rgba(228,200,120,.45);
+  border-radius:4px 10px 10px 4px;pointer-events:none}
+.hp-corner{position:absolute;font-size:1.5rem;color:var(--brass-soft);text-shadow:0 0 8px rgba(228,200,120,.7);pointer-events:none;z-index:3}
+.hp-crest{margin-top:1.6rem;width:74px;height:74px;filter:drop-shadow(0 0 14px rgba(228,200,120,.55));
+  animation:hpFloat 4.5s ease-in-out infinite;z-index:2}
+.hp-kicker{margin-top:1.2rem;font-family:var(--sans);font-weight:600;font-size:.58rem;letter-spacing:.42em;
+  text-transform:uppercase;color:var(--brass-soft);z-index:2}
+.hp-title{font-family:var(--serif-display);font-weight:700;font-size:clamp(1.9rem,6vw,2.7rem);line-height:1.08;margin-top:.7rem;z-index:2;
+  background:linear-gradient(100deg,#8a6a1c 0%,#f4dd8e 30%,#c9962e 50%,#fdf0bf 70%,#8a6a1c 100%);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:hpShimmer 4s linear infinite;text-shadow:none}
+.hp-sub{font-style:italic;font-size:1rem;margin-top:.5rem;color:rgba(246,239,223,.9);z-index:2}
+.hp-orn{margin:.9rem 0 .3rem;color:var(--brass-soft);letter-spacing:.7em;font-size:.9rem;z-index:2}
+.hp-author{font-family:var(--serif-display);font-size:1.05rem;font-style:italic;color:rgba(246,239,223,.85);z-index:2}
+.hp-seal{margin-top:auto;margin-bottom:.4rem;width:112px;height:112px;border-radius:50%;border:3px solid var(--brass-soft);
+  background:radial-gradient(circle at 34% 30%, #a03636, #6d1717 60%, #4c0e0e);color:#F8E9B0;
+  font-family:var(--sans);font-weight:700;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  line-height:1.4;padding:.6rem;z-index:2;box-shadow:0 6px 18px rgba(0,0,0,.5), inset 0 2px 6px rgba(255,255,255,.25), 0 0 22px rgba(228,200,120,.35);
+  animation:hpPulse 2.6s ease-in-out infinite;transition:transform .15s ease}
+.hp-seal:hover{transform:scale(1.07) rotate(-3deg)}
+.hp-wingtag{font-family:var(--sans);font-weight:600;font-size:.56rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--brass-soft);margin-bottom:1.2rem;z-index:2}
+.hp-star{position:absolute;color:#F8E9B0;text-shadow:0 0 10px rgba(248,233,176,.9);pointer-events:none;
+  animation:hpTwinkle 3s ease-in-out infinite;z-index:1}
+.hp-hint{text-align:center;font-style:italic;font-size:.85rem;color:var(--pg-ink,#241F19);opacity:.65;margin-top:-.8rem}
+@keyframes hpShimmer{to{background-position:220% center}}
+@keyframes hpTwinkle{0%,100%{opacity:.15;transform:scale(.7)}50%{opacity:1;transform:scale(1.15)}}
+@keyframes hpFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes hpPulse{0%,100%{box-shadow:0 6px 18px rgba(0,0,0,.5), inset 0 2px 6px rgba(255,255,255,.25), 0 0 14px rgba(228,200,120,.25)}
+  50%{box-shadow:0 6px 18px rgba(0,0,0,.5), inset 0 2px 6px rgba(255,255,255,.25), 0 0 34px rgba(228,200,120,.65)}}
+.hp-open .hp-frame{animation:hpOpen .55s ease forwards}
+@keyframes hpOpen{to{transform:rotateY(-78deg) translateX(-16%);opacity:0}}
+
+/* views */
+.view{display:none}
+.view.active{display:block}
+
+@media (max-width:760px){
+  .sub-inner{grid-template-columns:1fr}
+  .spine{width:32px}
+  .spine span{font-size:.48rem}
+  .r-body.with-panel{grid-template-columns:1fr}
+  .r-body.with-panel .r-page-wrap{display:none}
+  .topbar .wordmark small{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#14291F"/><path d="M32 18c-4-3.4-10-4.6-16-3.6v28c6-1 12 .2 16 3.6 4-3.4 10-4.6 16-3.6v-28c-6-1-12 .2-16 3.6z" fill="#F6EFDF"/><path d="M32 18v28" stroke="#14291F" stroke-width="2.4"/><circle cx="32" cy="30" r="4.6" fill="none" stroke="#C9962E" stroke-width="2.2"/><path d="M32 21.5v4M32 34.5v4M23.5 30h4M36.5 30h4M26 24l2.8 2.8M38 36l-2.8-2.8M38 24l-2.8 2.8M26 36l2.8-2.8" stroke="#C9962E" stroke-width="2.2" stroke-linecap="round"/></svg>
+  <div class="wordmark">The AI Athenaeum<small>A Library of Artificial Intelligence</small></div>
+  <nav>
+    <button data-nav="library" class="active">Library</button>
+    <button data-nav="about">About Us</button>
+    <a href="ai-odyssey.html" class="nav-link accent">AI&nbsp;Odyssey&nbsp;↗</a>
+    <a href="index.html" class="nav-link">AI&nbsp;Shorts&nbsp;↗</a>
+  </nav>
+</header>
+
+<!-- =============== LIBRARY VIEW =============== -->
+<main id="view-library" class="view active">
+  <section class="hero">
+    <p class="eyebrow">Open · Curated · Read Aloud · Explained Live</p>
+    <h1>Every great mind on AI, <em>on one shelf.</em></h1>
+    <p class="lede">The world's finest freely available AI literature, arranged by age and ambition — with a living librarian who reads to you, and explains as you go.</p>
+    <div class="cta-row">
+      <button class="btn btn-brass" onclick="document.getElementById('wings').scrollIntoView()">Browse the Shelves</button>
+      <button class="btn btn-ghost" data-nav="about">Our Story</button>
+    </div>
+    <div class="shelf-scene">
+      <svg class="lamp" viewBox="0 0 120 90" aria-hidden="true">
+        <ellipse cx="60" cy="30" rx="44" ry="14" fill="#0F5E43"/>
+        <ellipse cx="60" cy="27" rx="44" ry="13" fill="#14795A"/>
+        <rect x="56" y="38" width="8" height="34" rx="3" fill="#C9962E"/>
+        <ellipse cx="60" cy="76" rx="26" ry="7" fill="#C9962E"/>
+        <ellipse cx="60" cy="36" rx="30" ry="7" fill="#E4C878" opacity=".85"/>
+      </svg>
+      <div class="shelf" id="hero-shelf" aria-label="Featured books"></div>
+      <div class="shelf-board"></div>
+    </div>
+    <span class="plate">Est. 2026 · Bengaluru · For Readers Everywhere</span>
+  </section>
+
+  <section class="section" id="wings">
+    <div class="sec-head"><span class="kicker">The Four Wings</span><h2>Find your reading room</h2></div>
+    <div id="wings-mount"></div>
+  </section>
+
+  <section class="sub-strip">
+    <div class="sub-inner">
+      <div>
+        <h2>World-class literature. A very small price.</h2>
+        <p>Every book in this library is legally free to the world — our subscription pays for what surrounds it: the Kindle-quality reading room, the narrated voices, and a live librarian who never tires of your questions. We believe the best writing on AI should cost less than a cup of coffee a month.</p>
+      </div>
+      <div class="price-card">
+        <div class="c-kicker" style="font-family:var(--sans);font-weight:700;font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--oxblood)">Reader's Membership</div>
+        <div class="amount">₹99 <small>/ month · first shelf free forever</small></div>
+        <ul>
+          <li>All four wings, every guided edition</li>
+          <li>Read-aloud in premium male &amp; female voices</li>
+          <li>Live librarian — explains any concept, any age</li>
+          <li>Sepia, paper &amp; night reading themes</li>
+        </ul>
+        <button class="btn btn-navy">Begin Reading Free</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- =============== ABOUT VIEW =============== -->
+<main id="view-about" class="view">
+  <section class="section">
+    <div class="sec-head"><span class="kicker">About Us</span><h2>Why this library exists</h2></div>
+    <p class="about-mission">"Our single focus is to bring world-class AI literature to every reader — at a low-cost subscription, with a reading experience of uncompromising quality. Knowledge of AI should be a public staircase, not a private elevator."</p>
+    <div class="founders" id="founders-mount"></div>
+    <p class="about-note">The AI Athenaeum is a sister initiative of <a href="https://dishacareerlab.com" target="_blank" rel="noopener">DISHA Career Lab</a> — where career guidance is a right, not a privilege — and of <a href="https://ai-university.co.in" target="_blank" rel="noopener">AI University</a> and <a href="https://aishorts.biz" target="_blank" rel="noopener">AI Shorts</a>.</p>
+  </section>
+</main>
+
+<footer>
+  <p class="colophon">"A room without books is like a body without a soul."</p>
+  <p>© 2026 The AI Athenaeum · Curated by Pawan Maheshwari · Conceptualized by Bhavin Maheshwari<br>All titles listed are legally free publications by their respective authors; guided editions are original companions written for this library.</p>
+</footer>
+
+<!-- =============== READER =============== -->
+<div class="reader" id="reader" data-theme="paper" role="dialog" aria-modal="true" aria-label="Book reader">
+  <div>
+    <div class="r-top">
+      <button class="icon-btn" id="btn-close" title="Back to library">← Library</button>
+      <button class="icon-btn" id="btn-toc" title="Chapters">☰</button>
+      <div class="r-title" id="r-title">—</div>
+      <button class="icon-btn" id="btn-font-minus" title="Smaller text">A−</button>
+      <button class="icon-btn" id="btn-font-plus" title="Larger text">A+</button>
+      <button class="icon-btn" id="btn-theme" title="Reading theme">◐ Theme</button>
+      <button class="icon-btn" id="btn-listen" title="Listen">▷ Listen</button>
+      <button class="icon-btn" id="btn-panel" title="Ask the librarian">✦ Librarian</button>
+    </div>
+    <div class="listen-bar" id="listen-bar">
+      <label for="voice-f">Female</label><select id="voice-f"></select>
+      <label for="voice-m">Male</label><select id="voice-m"></select>
+      <label>Narrator</label>
+      <button class="icon-btn active" id="use-f">♀</button>
+      <button class="icon-btn" id="use-m">♂</button>
+      <label for="rate">Pace</label><input type="range" id="rate" min="0.75" max="1.3" step="0.05" value="0.95">
+      <button class="icon-btn" id="tts-play">▶ Read this chapter</button>
+      <button class="icon-btn" id="tts-pause">⏸</button>
+      <button class="icon-btn" id="tts-stop">■</button>
+    </div>
+  </div>
+  <div class="r-body" id="r-body">
+    <div class="prog-bar" id="prog-bar"></div>
+    <div class="drawer" id="drawer"><h3>Chapters</h3><div id="toc-mount"></div></div>
+    <div class="r-page-wrap" id="page-wrap">
+      <article class="r-page" id="r-page"></article>
+    </div>
+    <div class="r-nav">
+      <button class="pg-btn" id="prev-ch">‹ Previous</button>
+      <span class="progress" id="prog-label"></span>
+      <button class="pg-btn" id="next-ch">Next ›</button>
+    </div>
+    <aside class="panel" id="panel">
+      <div class="panel-head">
+        <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#C9962E"/><path d="M32 20c-3-2.4-7.4-3.3-12-2.6v22c4.6-.7 9 .2 12 2.6 3-2.4 7.4-3.3 12-2.6v-22c-4.6-.7-9 .2-12 2.6z" fill="#14291F"/></svg>
+        <div><div class="p-title">The Librarian</div><div class="p-sub" id="p-sub">At your side as you read</div></div>
+      </div>
+      <div class="chat" id="chat"></div>
+      <div class="quick" id="quick"></div>
+      <div class="chat-input">
+        <textarea id="chat-text" placeholder="Ask about anything on this page…" aria-label="Message the librarian"></textarea>
+        <button id="chat-send">Ask</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG =================
+   Paste photo URLs from the DISHA Career Lab About section here.
+   Leave blank to show elegant monogram medallions instead.      */
+const TEAM_PHOTOS = {
+  pawan:  "data:image/jpeg;base64,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",
+  bhavin: "data:image/jpeg;base64,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"
+};
+
+const FOUNDERS = [
+  {
+    key:"pawan", name:"Pawan Maheshwari", role:"Curator & Librarian-in-Chief",
+    bio:[
+      "An AI Transformation Lead with more than two decades in enterprise technology across Tata Consultancy Services, Tech Mahindra and Thomson Reuters, Pawan has spent his career translating frontier technology into things ordinary people can actually use.",
+      "Author of “AI Odyssey: The Complete Master Edition” and builder of AI University and AI Shorts, he curates every shelf in this library personally — choosing only works that are legally free, intellectually honest, and worth a reader's evening."
+    ],
+    links:[["Website","https://pawan-maheshwari.co.in"],["LinkedIn","https://www.linkedin.com/in/pawan-maheshwari-4b9b4715"]]
+  },
+  {
+    key:"bhavin", name:"Bhavin Maheshwari", role:"Conceptualizer & Voice of the Young Reader",
+    bio:[
+      "A Class 11 student with his sights set on India's finest institutions of mathematics and statistics, Bhavin imagined a library where a fourteen-year-old and a forty-year-old could walk in the same door and each find a shelf that speaks their language.",
+      "He shapes the Young Readers and Teen Scholars wings — insisting that nothing here should ever talk down to a curious mind, only up to it."
+    ],
+    links:[["DISHA Career Lab","https://dishacareerlab.com"]]
+  }
+];
+
+/* ================= CATALOG ================= */
+const WINGS = [
+{
+  id:"young", plaque:"Young Readers' Wing", ages:"Ages 8–12",
+  desc:"First encounters with thinking machines — told in stories, questions and wonder. Original Library Editions written for young minds.",
+  voiceHint:"a curious child aged 8 to 12; use simple words, short sentences, playful analogies",
+  books:[
+  { id:"yr1", color:"#7A2222", title:"What Is AI?", sub:"My First Book of Thinking Machines", author:"A Library Edition", badge:"Library Edition", free:null,
+    chapters:[
+      {t:"A Machine That Learns", p:[
+        "Imagine you have a puppy. On the first day, the puppy does not know its name. But every time you call it and give it a treat, something changes inside its little head. After a week, the puppy comes running the moment you call. Nobody opened the puppy's head and wrote instructions inside. The puppy learned.",
+        "Artificial Intelligence — we call it AI for short — is our way of helping computers learn a little bit like that puppy. Instead of telling a computer every single rule, we show it lots and lots of examples, and it slowly figures out the pattern by itself.",
+        "Think about how you learned to tell cats from dogs. Nobody gave you a rulebook that said 'cats have triangle ears.' You simply saw hundreds of cats and dogs in real life, in books, and in cartoons — and one day you just knew. AI learns from examples in almost the same way.",
+        "So here is our first big idea, and it is worth remembering: AI is not a robot with a spooky brain. AI is a computer program that gets better at a job by learning from examples, the way you got better at riding a bicycle by practising."
+      ]},
+      {t:"Where AI Hides Around You", p:[
+        "AI is a little shy. It rarely walks around in a shiny robot body. Instead, it hides inside everyday things, working quietly like a helpful elf.",
+        "When your family watches a film and the app says 'you might also like this one' — that is AI, remembering what you enjoyed before. When a phone camera draws a yellow square around your face before a photo — that is AI, which has seen millions of faces and knows what one looks like.",
+        "When you speak to a voice assistant and ask for a song, AI turns the sound of your voice into words, understands what you want, and finds the song — all in less than a second. That is faster than you can blink twice!",
+        "Tonight, try to be an AI detective at home. Count how many times a machine seems to 'know' something — a suggestion, a correction, a face, a voice. You will be surprised how many quiet helpers you find."
+      ]},
+      {t:"Being the Boss of the Machine", p:[
+        "Here is the most important chapter in this whole book, so sit up straight like a captain. AI is clever, but it is not wise. It can find patterns, but it does not truly understand kindness, fairness or truth. Those jobs belong to humans — to you.",
+        "Sometimes AI makes mistakes. If it only ever saw pictures of red apples, it might think a green apple is not an apple at all! Grown-up scientists call this a 'bias', which is a fancy word for learning from examples that were not fair or complete.",
+        "That is why every AI needs a human boss. The human decides what the AI should learn, checks its answers, and says 'no, that's not right' when it stumbles. A good scientist never lets the machine be the boss.",
+        "So dream big, young reader. Maybe one day you will teach machines new tricks. But always remember the library's golden rule: machines compute, humans decide."
+      ]}
+    ]},
+  { id:"yr2", color:"#8A5A16", title:"Robots, Brains & You", sub:"How Machines Copy Our Minds", author:"A Library Edition", badge:"Library Edition", free:null,
+    chapters:[
+      {t:"Your Amazing Brain", p:[
+        "Inside your head sits the most wonderful machine ever built — and no factory built it. Your brain has about eighty-six billion tiny cells called neurons. Each neuron is like a tiny friend who passes little electric notes to other friends.",
+        "When you catch a ball, thousands of these tiny friends pass notes at lightning speed: 'Ball coming! Move hand left! Close fingers NOW!' You never hear the notes, but the catch happens.",
+        "Scientists looked at this note-passing brain and had a bold thought: what if we built a pretend brain inside a computer, with pretend neurons passing pretend notes? They tried it — and it worked. They called it a neural network, which simply means 'a net of neurons'.",
+        "A computer's neural network is much, much simpler than your brain — like a paper aeroplane next to a real jet. But even a paper aeroplane can teach you how flying works."
+      ]},
+      {t:"Teaching a Robot to See", p:[
+        "Let us teach a pretend robot to recognise your drawing of a smiley face. First, we show it thousands of smiley faces drawn by thousands of children. Wobbly ones, tiny ones, giant ones with square eyes.",
+        "Each time, the robot guesses: 'Smiley? Not smiley?' At first it guesses terribly — worse than your baby cousin. But after every wrong guess, it adjusts its tiny pretend neurons a little, like turning thousands of very small volume knobs.",
+        "Guess, check, adjust. Guess, check, adjust. A million times. Slowly, the robot stops guessing and starts knowing. This loop is called training, and it is the heartbeat of all modern AI.",
+        "Here is a secret grown-ups sometimes forget: this is exactly how you learn too. You tried, you wobbled, you fell off the bicycle, you adjusted — and one day you were flying down the street. Training is just practice, wearing a lab coat."
+      ]},
+      {t:"What Robots Still Cannot Do", p:[
+        "A robot can beat the world champion at chess, yet it cannot tidy your toy shelf half as well as you. Strange, isn't it? Chess has clear rules; your bedroom does not.",
+        "Robots struggle with things you find easy: understanding a joke, comforting a sad friend, inventing a brand-new game, or knowing that a drawing of a dragon is exciting rather than dangerous. These need imagination and feelings — human superpowers.",
+        "Scientists call this puzzle 'common sense', and it turns out common sense is the hardest thing in the world to teach a machine. You collected yours from years of living, playing, falling and hugging. A computer has done none of those things.",
+        "So when someone tells you machines will do everything one day, smile like a wise librarian. Machines are becoming brilliant assistants. But being human — curious, kind, imaginative — is a job that stays yours forever."
+      ]}
+    ]},
+  { id:"yr3", color:"#22304A", title:"The Curious Coder's ABC of AI", sub:"Twenty-Six Little Doors into Big Ideas", author:"A Library Edition", badge:"Library Edition", free:null,
+    chapters:[
+      {t:"A to H — From Algorithms to Humans", p:[
+        "A is for Algorithm — a recipe for a computer. Just as a cake recipe says 'mix, pour, bake', an algorithm says exactly what steps to follow. Every AI begins as a recipe.",
+        "B is for Bias, the wonky lesson learned from wonky examples. C is for Chatbot, a program that talks by predicting which word most likely comes next — like finishing a friend's sentence, billions of times over. D is for Data, the food AI eats: pictures, sounds, words and numbers.",
+        "E is for Error — every mistake is a step in learning, for machines and for you. F is for Feedback, the little nudge that says 'warmer!' or 'colder!'. G is for Generalise, the skill of using an old lesson on a brand-new problem.",
+        "And H is for Human — the letter that matters most, because every algorithm, every dataset and every chatbot exists because a human imagined it first."
+      ]},
+      {t:"I to Q — From Input to Questions", p:[
+        "I is for Input, whatever goes into the machine, and it is joined by O for Output, whatever comes out. J is for Judgment, which machines borrow from us. K is for Knowledge, which is data that has been understood.",
+        "L is for Learning, the star of our whole alphabet. M is for Model — the finished pretend-brain after training, like a cake after baking. N is for Neural Network, our net of tiny note-passing neurons.",
+        "P is for Pattern. AI is really a champion pattern-spotter: the pattern of your handwriting, the pattern of rain before a storm, the pattern of notes in your favourite song.",
+        "Q is for Question — the most powerful tool ever invented, and it fits inside your head. Scientists who built AI were once children who would not stop asking 'but why?'"
+      ]},
+      {t:"R to Z — From Robots to Zeal", p:[
+        "R is for Robot, a machine with a body; remember that most AI has no body at all. S is for Smart Speaker, and also for Safety — the seatbelt every powerful invention needs.",
+        "T is for Training, our guess-check-adjust heartbeat. U is for Understanding, which humans do deeply and machines only imitate. V is for Voice, which computers can now hear and even copy — so trust your ears carefully.",
+        "W is for Wonder, X is for eXplaining (good AI should be able to show its working, like maths homework), and Y is for You — the reader this whole library was built for.",
+        "Z is for Zeal: burning enthusiasm. Keep yours lit. The child who finishes an alphabet today may write the next chapter of AI tomorrow."
+      ]}
+    ]}
+]},
+{
+  id:"teen", plaque:"Teen Scholars' Wing", ages:"Ages 13–17",
+  desc:"Real foundations without the fog — for students who want to know how it actually works, and whether it should.",
+  voiceHint:"a bright teenager aged 13 to 17; be clear and precise, define terms, use school-level maths analogies",
+  books:[
+  { id:"ts1", color:"#1E3A2F", title:"Elements of AI", sub:"A Guided Companion", author:"After the Univ. of Helsinki course", badge:"Free Original + Guide", free:{label:"Read the full free course at elementsofai.com", url:"https://www.elementsofai.com"},
+    chapters:[
+      {t:"What AI Is — and Is Not", p:[
+        "The University of Helsinki opened its famous 'Elements of AI' course to the entire world, free of charge, and millions have taken it. This companion walks you through its central ideas, wing by wing, before you read the original.",
+        "The course begins by attacking a myth: that AI is one single, magical thing. It is not. AI is a collection of techniques — search, probability, machine learning — each good at a narrow slice of problems. A chess engine cannot drive a car; a translation model cannot play chess.",
+        "A useful definition emerges: AI is the ability of a machine to perform tasks that, when humans do them, seem to require intelligence. Notice the careful wording — 'seem to require'. The machine may reach the answer by a completely different road than a human mind would.",
+        "The companion's first exercise: pick three headlines about AI from this week's news, and ask of each — which narrow technique is really at work here? You will find the word 'AI' is doing a lot of heavy, vague lifting."
+      ]},
+      {t:"Probability: The Grammar of Uncertainty", p:[
+        "The real world is foggy. Sensors are noisy, people are unpredictable, and data is incomplete. The course's boldest lesson is that intelligent behaviour under fog is not about certainty — it is about handling uncertainty gracefully. The mathematics of that grace is probability.",
+        "Consider a spam filter. No single word proves an email is spam. But the word 'lottery' shifts the odds a little, 'urgent transfer' shifts them more, and your bank's genuine address shifts them back. Bayes' rule — a formula from the 1700s — tells us exactly how to combine such clues into one updated belief.",
+        "This idea, updating beliefs as evidence arrives, is arguably the most important thinking tool you will ever learn, with or without computers. Weather forecasts, medical tests and cricket win-predictors all speak this same grammar.",
+        "Try it in daily life: instead of saying 'it will rain' or 'it won't', say 'I'd give it a 70 percent chance'. You have just started thinking like both a scientist and a machine."
+      ]},
+      {t:"Machine Learning and Its Limits", p:[
+        "The course's final movement introduces machine learning: instead of programming the rules, we program the ability to learn rules from data. Show a model ten thousand labelled photographs, and it discovers, on its own, which pixel-patterns tend to mean 'bicycle'.",
+        "But the authors are honest about the limits, and this honesty is why the course is world-class. A model is only as good as its data. Feed it history, and it learns history's prejudices. Feed it examples from one country, and it stumbles in another.",
+        "They also caution against both 'AI hype' and 'AI doom'. The machine is neither about to become your all-knowing overlord nor a passing fad. It is a powerful, flawed tool — and societies, meaning voters like the adult you will soon be, must decide how it is used.",
+        "When you finish this companion, go and take the real course — it is free, it is gentle, and a certificate from the University of Helsinki looks rather fine on a young scholar's shelf."
+      ]}
+    ]},
+  { id:"ts2", color:"#7A2222", title:"Machine Learning:", sub:"A Teen's Field Guide", author:"A Library Edition", badge:"Library Edition", free:null,
+    chapters:[
+      {t:"The Line Through the Points", p:[
+        "Every grand tower of machine learning rests on a foundation you already know from school: fitting a line through scattered points. Suppose you record hours studied against marks scored for your whole class and plot them. A trend appears — noisy, but real.",
+        "Draw a straight line through that cloud so it passes as close as possible to every point. Congratulations: you have just trained a model. The line's slope and intercept are its 'parameters', and 'as close as possible' is measured by an error score — typically, the sum of squared vertical misses.",
+        "Training, formally, is nothing more than a search: nudge the parameters, check whether the error fell, keep the nudge if it did. Repeat until no nudge helps. The famous algorithm that does this nudging cleverly is called gradient descent — 'walking downhill on the error mountain'.",
+        "Deep learning models do exactly this, except instead of two parameters they may have billions, and instead of a line they bend a wildly flexible curve through data with thousands of dimensions. The mountain is vaster; the walk downhill is the same."
+      ]},
+      {t:"Overfitting: The Student Who Memorised", p:[
+        "Meet two students before an exam. The first understands the ideas; the second memorises last year's question paper, word for word. On last year's paper, the memoriser scores a perfect hundred. On this year's, the memoriser collapses — and the understander shines.",
+        "Machine learning has exactly this disease, and its name is overfitting. A model with enormous flexibility can 'memorise' its training data — wiggling its curve through every single point, noise and all — while learning nothing that transfers to new data.",
+        "The cure is beautifully simple: hide some data. Split your points into a training set the model may study and a test set it never sees. Judge the model only on the hidden test set. A model that aces training but fails testing has memorised, not learned.",
+        "Hold onto this idea beyond computing. Whenever anyone shows you a claim proven on the same data that inspired it, ask the field guide's question: 'Yes — but how does it do on data it has never seen?'"
+      ]},
+      {t:"Features, Labels and the Craft of Data", p:[
+        "Practitioners will tell you a quiet truth: most of machine learning is not exotic mathematics but careful handling of data. A 'feature' is any measurable property — a pixel's brightness, a song's tempo, the number of exclamation marks in an email. A 'label' is the answer we want predicted.",
+        "Choosing features used to be an art called feature engineering. To detect spam you might hand-craft features like 'contains the word free' or 'sender unknown'. Deep learning's revolution was letting the network invent its own features, layer by layer — edges, then shapes, then whole objects.",
+        "But garbage in, garbage out remains the iron law. Mislabelled examples, missing values, and unrepresentative samples silently poison every model built on them. The best engineers spend more time staring at their data than at their code.",
+        "Your field exercise: design, on paper, a model to predict which library books a student will love. What features would you collect? What labels? And — the scholar's question — what could go ethically wrong with the data you just chose?"
+      ]}
+    ]},
+  { id:"ts3", color:"#22304A", title:"AI Ethics for Young Thinkers", sub:"Power, Fairness and the Machines We Make", author:"A Library Edition", badge:"Library Edition", free:null,
+    chapters:[
+      {t:"The Mirror Problem", p:[
+        "In 2018, researchers tested commercial face-recognition systems and found they erred far more often on darker-skinned women than on lighter-skinned men. The machines were not malicious. They were mirrors — trained on photo collections in which some faces barely appeared.",
+        "This is the mirror problem, and it is the beginning of AI ethics: a system trained on the world as it was will reproduce the world as it was, including its injustices, at industrial speed and with a misleading air of mathematical neutrality.",
+        "A hiring model trained on a company's past 'successful' employees learns whom that company used to hire — not who would truly excel. A loan model trained on old lending records inherits old lending prejudice. The data is history, and history is not neutral.",
+        "The young thinker's first habit: whenever a machine judges a human, ask 'what did it learn from, and who was missing from that lesson?'"
+      ]},
+      {t:"Who Is Responsible?", p:[
+        "A self-driving car brakes late; a medical model misses a tumour; a chatbot gives a teenager dangerous advice. Who answers for it — the programmer, the company, the user, the machine? This is the accountability question, and 'the algorithm did it' is not an acceptable answer in any courtroom or conscience.",
+        "Philosophers offer a useful principle: responsibility follows power and knowledge. Those who chose the training data, set the objectives, and profited from deployment hold the duty of care. A machine can cause harm, but it cannot bear guilt — that weight is reserved for those who can choose.",
+        "This is why laws now emerging worldwide — including India's DPDP Act for data and the EU's AI Act for high-risk systems — demand transparency, human oversight and the right to explanation. Regulation is not the enemy of innovation; seatbelts did not end the motorcar.",
+        "Debate it aloud with a friend: if an AI tutor grades your exam unfairly, what exactly should you be entitled to? An explanation? A human re-check? Both? Notice you are no longer studying ethics — you are doing it."
+      ]},
+      {t:"Your Attention Is the Product", p:[
+        "The most powerful AI systems most teenagers meet are not robots — they are recommendation feeds. Every scroll trains a model whose objective is brutally simple: keep you watching. Not keep you informed, not keep you happy. Watching.",
+        "There is nothing evil about recommendation itself; this library uses it to suggest your next book. The ethical question is the objective. A system optimised purely for attention discovers, on its own, that outrage, envy and endless novelty are excellent fuel.",
+        "Understanding this changes you. The feed is not a window on the world; it is a mirror angled to hold your gaze. Once you know the objective, you can outplay it — curate ruthlessly, follow curiosity rather than outrage, and put the machine back in its place as a tool.",
+        "The wing's closing thought: every generation gets one great technology to tame. Your grandparents got the atom, your parents the internet. Yours is the learning machine. Read widely — you will be its keeper."
+      ]}
+    ]}
+]},
+{
+  id:"scholar", plaque:"Scholars' Wing", ages:"Ages 18+ · University",
+  desc:"The canonical free texts of the field — each with an original guided companion, and a door to the full work.",
+  voiceHint:"a university-level adult learner; be rigorous, use correct terminology, assume comfort with basic calculus and probability",
+  books:[
+  { id:"sc1", color:"#1E3A2F", title:"Neural Networks and Deep Learning", sub:"A Guided Companion", author:"After Michael Nielsen", badge:"Free Original + Guide", free:{label:"Read Nielsen's full free book at neuralnetworksanddeeplearning.com", url:"http://neuralnetworksanddeeplearning.com"},
+    chapters:[
+      {t:"Perceptrons to Sigmoid Neurons", p:[
+        "Michael Nielsen's freely published book remains, a decade on, the most humane entrance to deep learning ever written. This companion traces its arc so you arrive at the original prepared.",
+        "Nielsen begins with the perceptron: a unit that takes weighted inputs, sums them, and outputs one if the sum crosses a threshold, zero otherwise. Stack enough of these and you can, in principle, compute any logical function. But there is a flaw: a perceptron's output flips abruptly, so tiny changes in weights can cause violent changes in behaviour — hopeless for gradual learning.",
+        "His fix is the sigmoid neuron, which replaces the cliff with a smooth slope: output varies continuously between zero and one. Smoothness is everything, because it means a small nudge to any weight produces a small, predictable nudge to the output — and calculus can now tell us which nudges help.",
+        "The lesson beneath the lesson: progress in deep learning has repeatedly come not from making models cleverer, but from making them smoother, so that simple optimisation can find its way."
+      ]},
+      {t:"Learning as Descending a Landscape", p:[
+        "Define a cost function: a single number measuring how wrong the network currently is across the training data. Learning is now reframed as pure geometry — the cost is a landscape over the space of all possible weights, and training is walking downhill.",
+        "Gradient descent computes, for every weight, the slope of the cost with respect to that weight, then steps each weight slightly against its slope. Nielsen's gift is showing that backpropagation — the algorithm that computes all those millions of slopes efficiently — is nothing more mysterious than the chain rule of calculus, applied with exquisite bookkeeping, layer by layer, backwards from the error.",
+        "He is candid about the craft: learning rates that are too large overshoot the valley; too small, and training crawls. Stochastic gradient descent — estimating the slope from small random batches rather than all data — trades a little accuracy per step for enormous speed, and in practice the noise even helps escape poor valleys.",
+        "Work through his interactive demonstrations in the free original; watching a network's decision boundary bend, epoch by epoch, will teach your intuition what no summary can."
+      ]},
+      {t:"Why Depth Wins", p:[
+        "A celebrated theorem says a network with a single hidden layer can approximate any continuous function. So why go deep? Nielsen's answer, developed across the book's later chapters, is about efficiency of representation, not raw possibility.",
+        "Deep networks build hierarchies: early layers learn edges, middle layers combine edges into motifs, later layers combine motifs into objects. Many natural functions are compositional in exactly this way, and expressing them with a shallow network can require exponentially more neurons.",
+        "But depth brought its own plagues — vanishing gradients, where the learning signal fades to nothing as it propagates backwards through many layers. The community's remedies, better activation functions, careful initialisation, and architectural innovations, are the true story of the deep learning revolution of the 2010s.",
+        "Finish the companion, then read Nielsen cover to cover — it is short, free, and written by someone who believes, as this library does, that explanation is an art form."
+      ]}
+    ]},
+  { id:"sc2", color:"#7A2222", title:"Reinforcement Learning", sub:"A Guided Companion", author:"After Sutton & Barto", badge:"Free Original + Guide", free:{label:"The authors host the complete book free at incompleteideas.net/book", url:"http://incompleteideas.net/book/the-book-2nd.html"},
+    chapters:[
+      {t:"Learning from Consequences", p:[
+        "Sutton and Barto's 'Reinforcement Learning: An Introduction' is the undisputed scripture of its field, and the authors, in the finest academic tradition, host the complete second edition free online. This companion maps its territory.",
+        "Reinforcement learning studies an agent acting in an environment: at each step it observes a state, chooses an action, and receives a reward. No teacher supplies correct answers; the agent must discover, by trial, which behaviour yields the most reward over time. It is learning as a child learns fire — from consequences.",
+        "The framework's power lies in its generality. A chess move, a thermostat adjustment, a robot's motor command and an ad placement are all 'actions'; a win, a comfortable room, a completed step and a click are all 'rewards'. One theory covers them all: the Markov decision process.",
+        "Central is the tension the book returns to relentlessly: exploration versus exploitation. Exploit what you know and you may never find the better restaurant two streets away; explore forever and you never enjoy dinner. Intelligence lives in the balance."
+      ]},
+      {t:"Value: The Idea That Organises Everything", p:[
+        "The book's conceptual heart is the value function: an estimate, for every state, of the total future reward obtainable from it. Reward is immediate; value is far-sighted. A chess sacrifice has negative reward now but enormous value.",
+        "The Bellman equation expresses a self-consistency: a state's value equals the expected immediate reward plus the discounted value of wherever you land next. Nearly every algorithm in the book is a way of pushing estimates towards satisfying this equation.",
+        "Temporal-difference learning, the field's crown jewel, updates a state's value the moment the next state is glimpsed — learning from a guess about a guess, without waiting for the episode's end. It sounds circular; the book proves it converges, and neuroscientists later found dopamine signals in the brain behaving remarkably like its error term.",
+        "From these pieces came Q-learning, and, once neural networks were bolted on as function approximators, the systems that mastered Atari games and defeated world champions at Go."
+      ]},
+      {t:"Reading the Original Well", p:[
+        "The free original is generous but dense; here is a scholar's route through it. Read Part I slowly — bandits, MDPs, dynamic programming — because every later chapter stands on this ground. Implement the gridworld examples yourself in fifty lines of Python; the book's exercises are where its knowledge actually transfers.",
+        "Part II's chapters on Monte Carlo and temporal-difference methods can be read as a single sustained argument about the bias-variance trade-off in estimating value. Sutton's own n-step and eligibility-trace methods then unify the two extremes.",
+        "Be alert to the 'deadly triad' the authors flag: function approximation, bootstrapping and off-policy learning, individually safe, can destabilise training when combined — a warning that modern deep RL engineers relearn expensively every year.",
+        "Close with the final chapters on psychology and neuroscience. It is rare that a technical field can point at the brain and say 'we may have found the same algorithm' — savour it."
+      ]}
+    ]},
+  { id:"sc3", color:"#22304A", title:"AI: Foundations of Computational Agents", sub:"A Guided Companion", author:"After Poole & Mackworth", badge:"Free Original + Guide", free:{label:"Read the complete book free at artint.info", url:"https://artint.info"},
+    chapters:[
+      {t:"The Agent View of Intelligence", p:[
+        "David Poole and Alan Mackworth's Cambridge textbook — published in full, free, at artint.info — offers what most modern treatments skip: a unifying architecture for the whole of AI, not just its machine-learning province.",
+        "Their organising idea is the agent: anything that perceives an environment and acts on it towards goals, under constraints of limited computation and imperfect information. A thermostat is a trivial agent; a hospital-scheduling system a sophisticated one. Intelligence becomes a design space, not a mystery.",
+        "The book arranges this space along dimensions of complexity — flat versus hierarchical reasoning, deterministic versus stochastic worlds, single versus multiple agents, knowledge given versus knowledge learned. Every AI system you will ever meet sits somewhere on this map.",
+        "This companion recommends the agent view as a corrective to fashion: when the world talks as if AI equals large language models, the scholar remembers that planning, constraint reasoning and knowledge representation still schedule the airlines and route the parcels."
+      ]},
+      {t:"Search, Constraints and Planning", p:[
+        "Much of classical AI is the disciplined study of search: exploring a space of possibilities for a path to a goal. The book builds from breadth-first and depth-first search to A*, whose admissible heuristics guarantee optimal paths while pruning vast wastelands of the search space.",
+        "Constraint satisfaction reframes problems declaratively: state the variables, their domains, and the constraints — timetables, Sudoku, chip layout — and let general algorithms of propagation and backtracking do the labour. It is a different philosophy of programming: describe the 'what', not the 'how'.",
+        "Planning extends search across time: given actions with preconditions and effects, compose a sequence achieving a goal. The representations here — and their brittleness in open worlds — explain both the triumphs of classical AI and why learning-based methods rose to complement them.",
+        "The exercise this companion sets: model your own week as a constraint problem. Variables, domains, constraints. You will never see a calendar the same way again."
+      ]},
+      {t:"Reasoning Under Uncertainty, Acting With Values", p:[
+        "The book's later movements bring probability and utility into the agent's head. Belief networks represent how variables influence one another, letting an agent update beliefs coherently as evidence arrives — diagnosis, tracking, prediction, all as inference.",
+        "Utility theory then closes the loop from believing to acting: a rational agent chooses actions maximising expected utility. Sequential decisions under uncertainty return us to Markov decision processes, uniting this book's world with Sutton and Barto's.",
+        "Distinctively, Poole and Mackworth end where many texts refuse to go: the social dimension. Whose utility? Fairness, transparency, and the human systems around the computational ones are treated as part of the engineering, not an appendix to it.",
+        "Read the free original with its online interactive tools; a textbook that a great university press gives to the world is precisely the literature this Athenaeum was founded to shelve."
+      ]}
+    ]}
+]},
+{
+  id:"pract", plaque:"Practitioners' Wing", ages:"Professionals",
+  desc:"For engineers, analysts and leaders who build with these ideas on Monday morning — the working canon, free and complete.",
+  voiceHint:"an experienced technology professional; be direct, technically precise, and connect ideas to engineering practice",
+  books:[
+  { id:"pr1", color:"#4A3A22", title:"Dive into Deep Learning", sub:"A Guided Companion", author:"After Zhang, Lipton, Li & Smola", badge:"Free Original + Guide", free:{label:"The full interactive book is free at d2l.ai", url:"https://d2l.ai"},
+    chapters:[
+      {t:"The Book That Runs", p:[
+        "'Dive into Deep Learning' (d2l.ai) made a radical editorial decision: every concept ships as runnable code. Adopted by hundreds of universities, it is free, current, and executable in PyTorch, JAX and TensorFlow. This companion orients the practitioner.",
+        "Its thesis is that deep learning is learned through the fingers. Reading about attention is one thing; stepping through a working attention head with real tensors, watching shapes transform, is where understanding sets. The book is a laboratory disguised as literature.",
+        "For the working engineer, its early chapters double as the missing manual of tensor programming: broadcasting, automatic differentiation, GPU memory discipline — the unglamorous fluency that separates practitioners who ship from those who quote papers.",
+        "A practical reading contract: never turn a page without running its notebook. Modify one thing per cell — a learning rate, a layer width — and predict the effect before executing. Prediction, not execution, is the exercise."
+      ]},
+      {t:"From Convolutions to Attention", p:[
+        "The book's middle arc is the modern architectural canon. Convolutional networks encode a prior — nearby pixels relate, patterns repeat across space — and this inductive bias bought a decade of computer-vision dominance with modest data.",
+        "Recurrent networks encoded a different prior for sequences, carrying state through time, but their sequential nature resisted parallel hardware and long-range memory. The field's answer, developed patiently in the book's later chapters, is attention: let every position directly query every other, weighting by learned relevance.",
+        "The transformer distils this into a stack of attention and feed-forward blocks, discarding recurrence entirely. The book's treatment is unusually honest about costs: attention's quadratic scaling in sequence length is the tax that an entire research industry now labours to reduce.",
+        "The practitioner's takeaway is architectural literacy: each design is a bet about the structure of data. Choosing a model is choosing which bets your problem justifies."
+      ]},
+      {t:"The Discipline of Training at Scale", p:[
+        "The book's most transferable chapters are the least cited at dinner parties: optimisation, regularisation, and computational performance. Adam versus SGD, learning-rate schedules, weight decay, dropout, batch normalisation — the difference between a model that converges and a costly cloud invoice.",
+        "It treats hardware as a first-class concern: minibatch sizing against GPU memory, mixed precision, data pipelines that keep accelerators fed. In production, the bottleneck is rarely the mathematics; it is the input queue.",
+        "Its final sections on fine-tuning and pretrained representations describe the economic reality of the field: almost nobody trains from scratch. The craft has shifted to adapting foundation models — choosing what to freeze, what to tune, and how to evaluate honestly.",
+        "Keep d2l.ai open in a browser tab permanently, as a working reference. It is updated continually by its authors — a living book, freely given, which is the practitioner's shelf at its best."
+      ]}
+    ]},
+  { id:"pr2", color:"#1E3A2F", title:"Understanding Deep Learning", sub:"A Guided Companion", author:"After Simon J. D. Prince", badge:"Free Original + Guide", free:{label:"The full PDF is free at udlbook.github.io/udlbook", url:"https://udlbook.github.io/udlbook/"},
+    chapters:[
+      {t:"A Theory Book for Builders", p:[
+        "Simon Prince's 'Understanding Deep Learning' (MIT Press, with the complete PDF freely offered by the author) is the book for the practitioner who can train models but wants to understand why they train. This companion charts its spine.",
+        "Prince's craft is visual: hundreds of meticulous figures that make abstractions concrete — loss surfaces you can see, activations you can follow, distributions you can watch transform. Where equations appear, a picture has usually prepared the ground.",
+        "The early chapters rebuild supervised learning with unusual clarity: models as families of functions, loss as negative log-likelihood, training as optimisation. Framing losses probabilistically pays off across the whole book — regression, classification and generation become one story.",
+        "The reader this companion imagines has shipped a model or two on borrowed intuition. Prince replaces borrowed intuition with owned understanding, chapter by patient chapter."
+      ]},
+      {t:"The Puzzles of Why It Works", p:[
+        "The book's boldest service is refusing to pretend the field understands itself. Deep networks have more parameters than training examples; classical theory predicts catastrophic overfitting; in practice they generalise. Prince presents the honest state of this puzzle rather than a folk explanation.",
+        "He examines the geometry of high-dimensional loss landscapes — why the local minima that terrify low-dimensional intuition are largely benign at scale, and how overparameterisation smooths the descent. Double descent, where test error falls again beyond the interpolation threshold, gets a lucid treatment.",
+        "Implicit regularisation — the way stochastic gradient descent itself biases solutions towards simpler functions — emerges as a central character. The optimiser, it turns out, is part of the model.",
+        "For the practitioner, these chapters convert superstition into judgment: when to add data versus parameters, what early stopping is really doing, and why a model that memorises can still generalise."
+      ]},
+      {t:"Generative Models and the Ethics Chapter", p:[
+        "The book's later arc surveys the generative families powering the current era: variational autoencoders, normalising flows, diffusion models and transformer-based language models — each presented as a different answer to one question: how do you learn a probability distribution rich enough to sample new worlds from?",
+        "Diffusion receives an especially clean telling: corrupt data gradually into noise, then learn to reverse each small step. That such a simple recipe yields photorealism is presented with appropriate wonder and appropriate mathematics.",
+        "Unusually for a technical text, Prince closes with a serious chapter on ethics — bias, misuse, labour, and the responsibilities of the people who build these systems — written for engineers rather than at them.",
+        "Download the free PDF, but budget for slowness: this is a book to be read with a pencil. The practitioner who finishes it stops being a user of deep learning and becomes a student of it, in the best sense."
+      ]}
+    ]},
+  { id:"pr3", color:"#22304A", title:"Patterns, Predictions, and Actions", sub:"A Guided Companion", author:"After Hardt & Recht", badge:"Free Original + Guide", free:{label:"Read the complete book free at mlstory.org", url:"https://mlstory.org"},
+    chapters:[
+      {t:"Machine Learning as Statistical Decision-Making", p:[
+        "Moritz Hardt and Benjamin Recht's 'Patterns, Predictions, and Actions' — free in full at mlstory.org — is the thinking practitioner's book: a course on machine learning that never lets you forget predictions exist to drive decisions in a social world.",
+        "It opens by planting ML firmly in the century-old soil of statistical decision theory: populations, risks, and the fundamental trade-offs of deciding under uncertainty. Supervised learning is presented not as a bag of algorithms but as risk minimisation with an honest accounting of what can and cannot be guaranteed.",
+        "This framing dissolves tool-worship. Logistic regression, boosting and deep networks become points in one space of estimators, compared by the only currencies that matter: risk on the population you will actually face, and the cost of being wrong.",
+        "For professionals who must defend models to regulators, auditors or their own conscience, this vocabulary — populations, distributions, risks — is the language in which defensible answers are written."
+      ]},
+      {t:"Benchmarks, Leakage and the Sociology of Progress", p:[
+        "The book's most quietly radical chapters examine how the field measures itself. The benchmark — a fixed dataset with a leaderboard — powered decades of progress, yet repeated evaluation on the same test sets should, in theory, corrupt them. Hardt and Recht examine the surprising evidence on when it does and doesn't.",
+        "They give the finest available treatment of the quiet killers of applied ML: distribution shift, where the deployed world drifts from the training world; and leakage, where information from the future or the label seeps into features and produces beautiful, worthless validation scores.",
+        "Causality then enters as the boundary line: patterns suffice for prediction, but actions change the world, and only causal reasoning tells you what happens after you intervene. A model that predicts which customers churn does not, by itself, tell you what will stop them.",
+        "Every professional who has watched a model ace offline evaluation and stumble in production will find these chapters uncomfortably autobiographical — and clarifying."
+      ]},
+      {t:"When Predictions Meet People", p:[
+        "The book's closing movement — sequential decisions, and the social consequences of prediction — is where its title earns its third word. Deploy a model on people and the people respond: they adapt, game, and are changed by the classifications imposed on them.",
+        "Their treatment of fairness is mathematically serious: competing formal criteria, the impossibility results showing they cannot all hold at once, and the conclusion that fairness is ultimately a question about the decision system and its context, not a property a loss function can certify alone.",
+        "Feedback loops receive due dread: a predictive-policing model that directs patrols generates the very arrest data that confirms it. The practitioner learns to ask not 'is my model accurate?' but 'what world does my model, deployed, create?'",
+        "Read it free at mlstory.org alongside your production work. It will not make you faster this sprint; it will make you right over your career — the trade this wing exists to offer."
+      ]}
+    ]}
+]},
+{
+  id:"teacher", plaque:"Teachers' Wing", ages:"Educators",
+  desc:"For the people who multiply knowledge — practical upskilling so every teacher walks into the AI-era classroom confident, not cornered.",
+  voiceHint:"a working school or college teacher upskilling in AI; be practical, classroom-focused, respectful of their pedagogical expertise, with ready-to-use examples",
+  books:[
+  { id:"tw1", color:"#5C1F3A", title:"The AI-Ready Classroom", sub:"A Teacher's Handbook", author:"A Library Edition", badge:"Library Edition", free:null,
+    chapters:[
+      {t:"What Every Teacher Needs to Know First", p:[
+        "You do not need to become a programmer to teach in the age of AI, any more than you needed to become a mechanic when the school bought its first bus. But you do need a driver's understanding: what the machine does, what it cannot do, and where the brakes are. This handbook is that understanding.",
+        "Modern AI systems, including the chatbots your students already use, are prediction machines. A language model has read a vast library and learned, statistically, which word most plausibly follows the words before it. It does not look facts up; it reconstructs plausible text. This single fact explains both its fluency and its most dangerous flaw — the confident fabrication teachers now call the 'hallucinated citation'.",
+        "Understand this and your classroom stance writes itself. The model is a brilliant, tireless, occasionally unreliable teaching assistant — superb at drafting, rephrasing, translating and generating practice material, and never to be trusted as a final authority on facts, marks or children.",
+        "Your first exercise is disarmingly simple: ask an AI chatbot a question about your own subject, on a topic you know deeply — then find its errors. Ten minutes of this builds more professional judgment than any webinar, because you are assessing the student you will be supervising all year."
+      ]},
+      {t:"Your New Teaching Assistant", p:[
+        "Here is the honest arithmetic of teaching: the scarcest resource in your week is not knowledge, it is time. Used well, AI returns time — and every returned hour belongs to the parts of teaching no machine can do: noticing the quiet child, rescuing a lost one, lighting a fire in a bored one.",
+        "Start with the low-risk, high-return tasks. Ask AI to draft three versions of tomorrow's worksheet at three difficulty levels. To turn your syllabus topic into five discussion questions, two real-world examples, and a quick exit-ticket quiz. To rewrite a dense textbook paragraph for a struggling reader, or translate an instruction sheet for a parent who reads only Hindi or Kannada.",
+        "The professional habit that separates masters from dabblers: treat every AI output as a first draft from an eager student teacher. You review, you correct, you localise — the mango replaces the apple, the local river replaces the Mississippi — and you sign it. The accountability line never moves: the machine drafts, the teacher decides.",
+        "Keep a 'prompt diary' for one month. Each time an AI-assisted task saves you real time, note the prompt that worked. By term's end you will own a personal toolkit no training programme could have sold you — because it is fitted exactly to your classroom."
+      ]},
+      {t:"Integrity, Assessment and the Long Game", p:[
+        "Every teacher's first fear is the same: 'they will use it to cheat'. The fear is reasonable; the popular remedy is not. AI-detection tools are unreliable and biased — they flag honest work, especially from non-native English writers, and miss lightly edited machine text. Do not build justice on an unjust instrument.",
+        "The durable answer is to redesign the assessment, not to police the tool. Move weight toward what machines cannot counterfeit: in-class writing, oral defence of submitted work, drafts with visible revision history, personal and local connections ('interview your grandmother', 'measure our own playground'), and process journals alongside products.",
+        "Then do the braver thing: bring the tool into the light. Set an assignment where students must use AI, then critique it — find its errors, improve its draft, and disclose exactly how they used it. A student who can out-edit a machine has demonstrated more mastery than one who merely avoided it.",
+        "The long game is this: your students will spend their working lives beside these systems. The school that bans thinking about AI graduates the least prepared cohort in the district. The teacher who models skilful, honest, critical use is teaching the century's core literacy — and that teacher can be you, this term."
+      ]}
+    ]},
+  { id:"tw2", color:"#1E3A2F", title:"Prompting for Pedagogy", sub:"Lesson Design with AI, Step by Step", author:"A Library Edition", badge:"Library Edition", free:null,
+    chapters:[
+      {t:"The Anatomy of a Teaching Prompt", p:[
+        "A prompt is a lesson plan for the machine — and teachers, of all professionals, already know how to write those. The difference between a useless AI answer and a classroom-ready one is rarely the model. It is the brief.",
+        "A strong teaching prompt has five parts. Role: 'You are an experienced Class 8 science teacher in India.' Task: 'Create a 40-minute lesson on photosynthesis.' Audience: 'for a mixed-ability class of 45, many of whom speak English as a second language.' Constraints: 'no lab equipment beyond leaves, jars and sunlight; align to the NCERT chapter.' Format: 'as a table with timings, teacher actions and student actions.'",
+        "Compare the outputs of 'explain photosynthesis' and that five-part brief, and you will see the machine did not get smarter — you did. Vague requests harvest generic text; specific briefs harvest usable drafts. The craft is entirely transferable from the lesson-planning skill you already own.",
+        "One more professional move: iterate out loud. 'Good, now make the examples rural.' 'Shorter sentences.' 'Add two misconception checks.' The first answer is the machine's opening bid, never its best. Teachers who treat prompting as a dialogue, not a slot machine, get triple the value."
+      ]},
+      {t:"Differentiation at the Speed of Typing", p:[
+        "Differentiation is the ideal every teacher believes in and the workload almost none can sustain: three reading levels, scaffolds for strugglers, extensions for sprinters, support for the child with dyslexia — multiplied by five classes. This is precisely the labour AI collapses from hours to minutes.",
+        "Take any passage and ask: 'Rewrite this at three reading levels — Class 4, Class 7 and Class 10 — keeping all key facts identical.' Then: 'Create a word bank of the ten hardest terms with simple definitions.' Then: 'Write two extension questions requiring inference for advanced students.' Fifteen minutes of prompting produces a differentiation pack that once cost a weekend.",
+        "Language support may be the deepest gift for Indian classrooms. Ask for the same explanation in English and Hindi side by side; for instructions a first-generation learner's parents can read; for a glossary that respects the child's mother tongue. Every version still passes across your desk for review — you remain the guarantor of accuracy and tone.",
+        "The quiet consequence deserves saying aloud: differentiation used to be rationed to the schools with the smallest classes and richest staffing. A teacher with a free AI tool and this chapter's prompts can now give a government-school class what elite schools sold. That is not a productivity gain; that is equity."
+      ]},
+      {t:"Rubrics, Feedback and Keeping the Judgment", p:[
+        "Assessment design is prompt-friendly territory. Ask for a five-question quiz with one misconception-based distractor per question and an answer key with explanations. Ask for a four-criterion rubric for a history essay, with descriptors at four levels, in language a fourteen-year-old understands. Draft in minutes; refine with your red pen as always.",
+        "Feedback is where care is most needed. AI can turn your shorthand — 'good argument, weak evidence, para 2 off-topic' — into a warm, specific paragraph for a student. What it must never do is form the judgment itself. The machine has not read this child all year; you have. Grade first, then let the tool help you say it well.",
+        "Two firm rules keep you professionally safe. Never paste identifiable student information — names, marks tied to names, medical or family details — into a public AI tool; that is a data-protection duty under laws like India's DPDP Act, not a suggestion. And never let a model assign the final mark; every jurisdiction, and every conscience, holds the certified teacher accountable.",
+        "Close the loop by teaching what you practise. Show the class your prompt, the machine's draft, and your corrections. In one honest demonstration you have taught prompt craft, critical reading and academic integrity — the three literacies of the decade — without a single extra lesson on the timetable."
+      ]}
+    ]},
+  { id:"tw3", color:"#22304A", title:"AI and Education", sub:"A Guided Companion", author:"After UNESCO's global guidance", badge:"Free Original + Guide", free:{label:"UNESCO's full guidance for policy-makers and educators is free at unesdoc.unesco.org", url:"https://unesdoc.unesco.org/ark:/48223/pf0000376709"},
+    chapters:[
+      {t:"The Global Picture Every Educator Should See", p:[
+        "UNESCO — the United Nations' education arm — has published freely available global guidance on artificial intelligence and education, and this companion distils its landscape for the working educator, before you read the original.",
+        "The guidance frames a double duty that no national debate should skip. Education must harness AI: for personalised learning, for supporting teachers, for reaching learners that stretched systems currently fail. And education must prepare humans for AI: the citizens, workers and voters who will live among these systems deserve to understand them.",
+        "It is bracingly honest about risk. Unequal access could deepen divides between and within countries; commercial systems could quietly set pedagogy; data gathered on children could follow them for life. The guidance insists on a humanistic principle: AI in education must serve human capabilities and human dignity, never the reverse.",
+        "For the individual teacher, the orientation is empowering rather than alarming: worldwide, the considered position is not 'replace teachers with machines' but 'augment teachers, and let no system enter a classroom without them'. You are the guidance's central character, not its casualty."
+      ]},
+      {t:"Competencies: What Students — and Teachers — Must Learn", p:[
+        "The heart of the global framework is a shift in curriculum thinking: AI literacy is becoming a basic competency, alongside reading, writing and arithmetic. Not coding for all — literacy for all: knowing what these systems are, what they optimise for, where they fail, and what rights a person has before them.",
+        "For students, that unpacks into three strands. A conceptual strand: data, algorithms, learning from examples, bias. A practical strand: using AI tools effectively and honestly for study and creation. An ethical strand: privacy, fairness, manipulation, and the habit of asking who benefits from any given system.",
+        "For teachers, the framework is candid: none of this reaches children except through you, so teacher upskilling is the system's true bottleneck and its best investment. The competencies asked of educators are precisely this wing's syllabus — foundational understanding, tool fluency, assessment redesign, and the confidence to lead classroom conversations about ethics.",
+        "India's own initiatives, from school AI curricula to teacher programmes like AI Samarth, map closely onto this global picture. A teacher who works through this wing is not chasing a fashion; she is walking a road the world's education ministries have already surveyed."
+      ]},
+      {t:"Equity, Data and the Teacher's Voice", p:[
+        "The guidance's most sobering chapters concern equity. The learners with the most to gain from AI — in under-resourced schools, remote regions, marginalised communities — are the least likely to receive it well. Technology parachuted in without electricity, connectivity, local language support or trained teachers does not close gaps; it decorates them.",
+        "Data protection for minors is treated as non-negotiable. Systems that monitor children generate intimate records — attention, errors, emotions — and the guidance calls for strict limits on collection, commercial use and retention. When your school evaluates any AI product, the first questions are a teacher's questions: what does it collect, where does it go, and who profits?",
+        "Perhaps the most important message is about voice. Policy is being written now, in ministries and school boards, and the guidance explicitly calls for educators at that table — because those who face the classroom see what procurement documents cannot.",
+        "Read the original, freely given to the world, and carry it into your next staff meeting. A teacher armed with the global evidence is very hard to steamroll — and very easy to follow. That is the leader this wing hopes to shelve books for."
+      ]}
+    ]}
+]}
+];
+
+/* ================= LIBRARY RENDER ================= */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const allBooks = WINGS.flatMap(w=>w.books.map(b=>({...b,wing:w})));
+
+function shade(hex,f){const n=parseInt(hex.slice(1),16),r=(n>>16)&255,g=(n>>8)&255,b=n&255;
+  return `rgb(${Math.round(r*f)},${Math.round(g*f)},${Math.round(b*f)})`;}
+
+/* hero shelf spines */
+(function(){
+  const shelf=$("#hero-shelf");
+  const hs=[150,190,165,205,175,160,195,170,185,158,200,168];
+  allBooks.forEach((b,i)=>{
+    const s=document.createElement("button");
+    s.className="spine";s.style.height=hs[i%hs.length]+"px";
+    s.style.background=`linear-gradient(180deg,${b.color},${shade(b.color,.65)})`;
+    s.innerHTML=`<span>${b.title}</span>`;s.title=b.title+" — open";
+    s.addEventListener("click",()=>openBook(b.id));
+    shelf.appendChild(s);
+  });
+})();
+
+/* wings + covers */
+(function(){
+  const mount=$("#wings-mount");
+  WINGS.forEach(w=>{
+    const div=document.createElement("div");div.className="wing";
+    div.innerHTML=`<div class="wing-plaque"><span class="plaque">${w.plaque}</span><span class="ages">${w.ages}</span></div>
+      <p class="wing-desc">${w.desc}</p><div class="book-row"></div>`;
+    const row=div.querySelector(".book-row");
+    w.books.forEach(b=>{
+      const c=document.createElement("button");c.className="book-card";
+      c.innerHTML=`<div class="cover" style="background:linear-gradient(160deg,${b.color},${shade(b.color,.6)})">
+          <span class="badge">${b.badge}</span>
+          <span class="c-kicker">The AI Athenaeum</span><div class="rule"></div>
+          <h3>${b.title}</h3><p style="font-size:.8rem;font-style:italic;opacity:.9;margin-top:.3rem">${b.sub}</p>
+          <span class="c-author">${b.author}</span></div>
+        <div class="book-meta"><div class="t">${b.title}: ${b.sub}</div>
+        <div class="s">${b.chapters.length} chapters · ~${b.chapters.length*6} min read</div>
+        <div class="open-hint">Open in reader →</div></div>`;
+      c.addEventListener("click",()=>openBook(b.id));
+      row.appendChild(c);
+    });
+    mount.appendChild(div);
+  });
+})();
+
+/* founders */
+(function(){
+  const mount=$("#founders-mount");
+  FOUNDERS.forEach(f=>{
+    const url=TEAM_PHOTOS[f.key];
+    const photo=url?`<img src="${url}" alt="${f.name}">`:f.name.split(" ").map(x=>x[0]).join("");
+    const card=document.createElement("div");card.className="f-card";
+    card.innerHTML=`<div class="f-top"><div class="f-photo">${photo}</div>
+      <div><div class="f-name">${f.name}</div><div class="f-role">${f.role}</div></div></div>
+      ${f.bio.map(p=>`<p>${p}</p>`).join("")}
+      <p style="margin-top:.9rem">${f.links.map(([t,u])=>`<a href="${u}" target="_blank" rel="noopener">${t}</a>`).join(" · ")}</p>`;
+    mount.appendChild(card);
+  });
+})();
+
+/* nav */
+$$("[data-nav]").forEach(b=>b.addEventListener("click",()=>{
+  const v=b.dataset.nav;
+  $$(".view").forEach(x=>x.classList.remove("active"));
+  $("#view-"+v).classList.add("active");
+  $$(".topbar nav button").forEach(x=>x.classList.toggle("active",x.dataset.nav===v));
+  window.scrollTo({top:0});
+}));
+
+/* ================= READER ================= */
+let cur={book:null,ch:0,font:1.06};
+const reader=$("#reader"), page=$("#r-page");
+const themes=["paper","sepia","night"];
+
+function openBook(id){
+  cur.book=allBooks.find(b=>b.id===id);cur.ch=-1; /* -1 = enchanted cover */
+  reader.classList.add("open");document.body.style.overflow="hidden";
+  $("#r-title").textContent=cur.book.title+": "+cur.book.sub;
+  $("#p-sub").textContent="Reading with you: "+cur.book.title;
+  buildTOC();renderChapter();resetChat();
+}
+
+/* ---- enchanted cover ---- */
+const STAR_POS=[[6,10],[88,8],[12,42],[90,38],[8,72],[86,70],[48,5],[50,92],[20,88],[78,90],[30,16],[68,14]];
+function renderCover(){
+  const b=cur.book;
+  const stars=STAR_POS.map(([x,y],i)=>
+    `<span class="hp-star" style="left:${x}%;top:${y}%;font-size:${.6+(i%3)*.28}rem;animation-delay:${(i*.37).toFixed(2)}s">✦</span>`).join("");
+  page.innerHTML=`<div class="hp-scene"><div class="hp-frame" id="hp-frame"
+      style="background:radial-gradient(ellipse at 50% 22%, ${shade(b.color,1.35)}, ${b.color} 45%, ${shade(b.color,.45)})">
+      ${stars}
+      <span class="hp-corner" style="left:20px;top:14px">❧</span>
+      <span class="hp-corner" style="right:20px;top:14px;transform:scaleX(-1)">❧</span>
+      <span class="hp-corner" style="left:20px;bottom:14px;transform:scaleY(-1)">❧</span>
+      <span class="hp-corner" style="right:20px;bottom:14px;transform:scale(-1)">❧</span>
+      <svg class="hp-crest" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 14c-5-4.2-12.5-5.8-20-4.5v35c7.5-1.3 15 .3 20 4.5 5-4.2 12.5-5.8 20-4.5v-35c-7.5-1.3-15 .3-20 4.5z" fill="none" stroke="#E4C878" stroke-width="2.4"/><path d="M32 14v35" stroke="#E4C878" stroke-width="2"/><circle cx="32" cy="30" r="5" fill="none" stroke="#E4C878" stroke-width="2"/><path d="M32 21v4.4M32 34.6v4.4M23 30h4.4M36.6 30h4.4" stroke="#E4C878" stroke-width="2" stroke-linecap="round"/></svg>
+      <div class="hp-kicker">The AI Athenaeum Presents</div>
+      <h2 class="hp-title">${b.title}</h2>
+      <div class="hp-sub">${b.sub}</div>
+      <div class="hp-orn">❦ ⁂ ❦</div>
+      <div class="hp-author">${b.author}</div>
+      <button class="hp-seal" id="hp-seal">✦<br>Open<br>the Book</button>
+      <div class="hp-wingtag">${b.wing.plaque} · ${b.wing.ages}</div>
+    </div></div>
+    <p class="hp-hint">Move your cursor across the cover… then break the seal.</p>`;
+  const frame=$("#hp-frame"), scene=frame.parentElement;
+  scene.addEventListener("mousemove",e=>{
+    const r=frame.getBoundingClientRect();
+    const rx=((e.clientY-r.top)/r.height-.5)*-10, ry=((e.clientX-r.left)/r.width-.5)*12;
+    frame.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg)`;
+  });
+  scene.addEventListener("mouseleave",()=>frame.style.transform="");
+  $("#hp-seal").addEventListener("click",()=>{
+    scene.classList.add("hp-open");
+    setTimeout(()=>{cur.ch=0;renderChapter();},480);
+  });
+  $("#page-wrap").scrollTop=0;
+  $("#prev-ch").disabled=true;
+  $("#next-ch").disabled=false;
+  $("#prog-label").textContent="Enchanted Cover";
+  $("#prog-bar").style.width="0%";
+  $$("#toc-mount .ch").forEach(x=>x.classList.remove("cur"));
+}
+$("#btn-close").addEventListener("click",()=>{
+  stopTTS();reader.classList.remove("open");document.body.style.overflow="";
+});
+
+function buildTOC(){
+  const m=$("#toc-mount");m.innerHTML="";
+  cur.book.chapters.forEach((c,i)=>{
+    const b=document.createElement("button");b.className="ch";
+    b.textContent=`Chapter ${i+1} — ${c.t}`;
+    b.addEventListener("click",()=>{cur.ch=i;renderChapter();$("#drawer").classList.remove("open");});
+    m.appendChild(b);
+  });
+}
+$("#btn-toc").addEventListener("click",()=>$("#drawer").classList.toggle("open"));
+
+function renderChapter(){
+  stopTTS();
+  if(cur.ch<0){renderCover();return;}
+  const b=cur.book,c=b.chapters[cur.ch];
+  page.style.fontSize=cur.font+"rem";
+  let html=`<div class="ch-kicker">${b.title} · Chapter ${cur.ch+1} of ${b.chapters.length}</div><h2>${c.t}</h2>`;
+  html+=c.p.map((t,i)=>`<p class="${i===0?"drop":""}" data-p="${i}">${t}</p>`).join("");
+  if(b.free) html+=`<div class="src-note">❧ This is an original guided companion. ${b.free.label}: <a href="${b.free.url}" target="_blank" rel="noopener">${b.free.url}</a></div>`;
+  else html+=`<div class="src-note">❧ An original Library Edition, written for The AI Athenaeum and free to read here forever.</div>`;
+  page.innerHTML=html;
+  $("#page-wrap").scrollTop=0;
+  $("#prev-ch").disabled=false; /* chapter 1 goes back to the cover */
+  $("#next-ch").disabled=cur.ch===b.chapters.length-1;
+  $("#prog-label").textContent=`Chapter ${cur.ch+1} / ${b.chapters.length}`;
+  $("#prog-bar").style.width=((cur.ch+1)/b.chapters.length*100)+"%";
+  $$("#toc-mount .ch").forEach((x,i)=>x.classList.toggle("cur",i===cur.ch));
+}
+$("#prev-ch").addEventListener("click",()=>{if(cur.ch>-1){cur.ch--;renderChapter();}});
+$("#next-ch").addEventListener("click",()=>{if(cur.ch<cur.book.chapters.length-1){cur.ch++;renderChapter();}});
+document.addEventListener("keydown",e=>{
+  if(!reader.classList.contains("open"))return;
+  if(e.key==="ArrowRight")$("#next-ch").click();
+  if(e.key==="ArrowLeft")$("#prev-ch").click();
+  if(e.key==="Escape")$("#btn-close").click();
+});
+$("#btn-font-plus").addEventListener("click",()=>{cur.font=Math.min(1.5,cur.font+.08);page.style.fontSize=cur.font+"rem";});
+$("#btn-font-minus").addEventListener("click",()=>{cur.font=Math.max(.85,cur.font-.08);page.style.fontSize=cur.font+"rem";});
+$("#btn-theme").addEventListener("click",()=>{
+  const t=themes[(themes.indexOf(reader.dataset.theme)+1)%themes.length];
+  reader.dataset.theme=t;
+});
+
+/* ================= LISTEN (TTS) ================= */
+const synth=window.speechSynthesis;
+let voices=[],speaking=false,paused=false,useFemale=true,pIndex=0,utter=null;
+
+function loadVoices(){
+  voices=synth?synth.getVoices().filter(v=>v.lang.toLowerCase().startsWith("en")):[];
+  const femaleHints=/female|samantha|zira|susan|karen|victoria|serena|moira|tessa|joanna|aria|jenny|sonia|kate|fiona|allison|ava|emma|libby|neerja|heera/i;
+  const maleHints=/male|daniel|david|george|james|alex|fred|oliver|thomas|guy|ryan|matthew|brian|arthur|william|prabhat|ravi|rishi/i;
+  const f=voices.filter(v=>femaleHints.test(v.name)&&!maleHints.test(v.name));
+  const m=voices.filter(v=>maleHints.test(v.name)&&!femaleHints.test(v.name));
+  const rest=voices.filter(v=>!f.includes(v)&&!m.includes(v));
+  fill($("#voice-f"),f.length?f:rest);fill($("#voice-m"),m.length?m:rest);
+  function fill(sel,list){
+    sel.innerHTML="";
+    list.forEach(v=>{const o=document.createElement("option");o.value=v.name;
+      o.textContent=v.name.replace(/Microsoft |Google |Online \(Natural\) - /g,"")+" ("+v.lang+")";
+      sel.appendChild(o);});
+    /* prefer natural/online neural voices when present */
+    const nat=[...sel.options].find(o=>/natural|neural|online/i.test(o.value));
+    if(nat)sel.value=nat.value;
+  }
+}
+if(synth){loadVoices();synth.onvoiceschanged=loadVoices;}
+
+$("#btn-listen").addEventListener("click",()=>{
+  $("#listen-bar").classList.toggle("open");
+  $("#btn-listen").classList.toggle("active");
+});
+$("#use-f").addEventListener("click",()=>{useFemale=true;$("#use-f").classList.add("active");$("#use-m").classList.remove("active");});
+$("#use-m").addEventListener("click",()=>{useFemale=false;$("#use-m").classList.add("active");$("#use-f").classList.remove("active");});
+
+function speakParagraph(i){
+  const ps=$$("#r-page p[data-p]");
+  if(i>=ps.length){stopTTS();return;}
+  pIndex=i;
+  ps.forEach(p=>p.classList.remove("speaking"));
+  ps[i].classList.add("speaking");
+  ps[i].scrollIntoView({block:"center",behavior:"smooth"});
+  utter=new SpeechSynthesisUtterance(ps[i].textContent);
+  const name=(useFemale?$("#voice-f"):$("#voice-m")).value;
+  const v=voices.find(x=>x.name===name);if(v)utter.voice=v;
+  utter.rate=parseFloat($("#rate").value);
+  utter.onend=()=>{if(speaking&&!paused)speakParagraph(i+1);};
+  synth.speak(utter);
+}
+$("#tts-play").addEventListener("click",()=>{
+  if(!synth){alert("This browser does not support speech synthesis.");return;}
+  if(cur.ch<0){cur.ch=0;renderChapter();} /* turn past the cover */
+  stopTTS();speaking=true;paused=false;
+  const title=cur.book.chapters[cur.ch].t;
+  const intro=new SpeechSynthesisUtterance(cur.book.title+". Chapter "+(cur.ch+1)+". "+title+".");
+  const name=(useFemale?$("#voice-f"):$("#voice-m")).value;
+  const v=voices.find(x=>x.name===name);if(v)intro.voice=v;
+  intro.rate=parseFloat($("#rate").value);
+  intro.onend=()=>{if(speaking)speakParagraph(0);};
+  synth.speak(intro);
+});
+$("#tts-pause").addEventListener("click",()=>{
+  if(!speaking)return;
+  if(!paused){synth.pause();paused=true;$("#tts-pause").textContent="⏵";}
+  else{synth.resume();paused=false;$("#tts-pause").textContent="⏸";}
+});
+function stopTTS(){
+  if(synth)synth.cancel();
+  speaking=false;paused=false;$("#tts-pause").textContent="⏸";
+  $$("#r-page p").forEach(p=>p.classList.remove("speaking"));
+}
+$("#tts-stop").addEventListener("click",stopTTS);
+
+/* ================= THE LIBRARIAN (live assistant) ================= */
+let chatHistory=[];
+$("#btn-panel").addEventListener("click",()=>{
+  $("#r-body").classList.toggle("with-panel");
+  $("#btn-panel").classList.toggle("active");
+});
+const QUICKS=["Explain this chapter simply","Give me a real-life example","Quiz me on this","Define the key terms","Why does this matter?"];
+function resetChat(){
+  chatHistory=[];
+  $("#chat").innerHTML="";
+  addMsg("bot",`Welcome, reader. I'm the Librarian — I've read “${cur.book.title}” with you in mind. Ask me anything on this page, and I'll explain it your way.`);
+  const q=$("#quick");q.innerHTML="";
+  QUICKS.forEach(t=>{const b=document.createElement("button");b.textContent=t;
+    b.addEventListener("click",()=>sendChat(t));q.appendChild(b);});
+}
+function addMsg(cls,text){
+  const d=document.createElement("div");d.className="msg "+cls;d.textContent=text;
+  $("#chat").appendChild(d);$("#chat").scrollTop=$("#chat").scrollHeight;return d;
+}
+async function sendChat(text){
+  text=(text||$("#chat-text").value).trim();if(!text)return;
+  $("#chat-text").value="";
+  addMsg("user",text);
+  chatHistory.push({role:"user",content:text});
+  const think=addMsg("bot thinking","The Librarian is consulting the shelves…");
+  const chIdx=Math.max(cur.ch,0);
+  const b=cur.book,c=b.chapters[chIdx];
+  const sys=`You are "The Librarian" of The AI Athenaeum, a warm, erudite reading companion inside a digital library curated by Pawan Maheshwari and conceptualized by Bhavin Maheshwari.
+The reader is currently reading the book "${b.title}: ${b.sub}" (${b.author}), Chapter ${chIdx+1}: "${c.t}", in the ${b.wing.plaque} (${b.wing.ages}).
+Adapt every explanation for ${b.wing.voiceHint}.
+The full text of the current chapter is:
+"""${c.p.join("\n\n")}"""
+Ground your answers in this chapter first, then broader accurate knowledge of AI. Be concise (under 180 words unless asked for more), encouraging, and use plain text only — no markdown symbols. If asked to quiz, ask one question at a time and wait.`;
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:sys,
+        messages:chatHistory.slice(-12)})
+    });
+    const data=await res.json();
+    const reply=(data.content||[]).filter(x=>x.type==="text").map(x=>x.text).join("\n").trim()
+      ||"Forgive me — the shelves were silent. Please ask once more.";
+    think.remove();addMsg("bot",reply);
+    chatHistory.push({role:"assistant",content:reply});
+  }catch(e){
+    think.remove();
+    addMsg("bot","I couldn't reach the reading room's assistant just now. Check your connection and ask again — I'll be right here.");
+  }
+}
+$("#chat-send").addEventListener("click",()=>sendChat());
+$("#chat-text").addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat();}
+});
+</script>
+</body>
+</html>
