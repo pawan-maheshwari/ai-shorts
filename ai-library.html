@@ -42,11 +42,9 @@ a{color:var(--oxblood)}
 .topbar .wordmark{font-family:var(--serif-display);font-weight:700;font-size:1.25rem;letter-spacing:.02em}
 .topbar .wordmark small{display:block;font-family:var(--sans);font-weight:600;font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:var(--brass-soft)}
 .topbar nav{margin-left:auto;display:flex;gap:.3rem}
-.topbar nav button,.topbar nav a.nav-link{background:none;border:none;color:var(--paper);font-family:var(--sans);font-weight:600;
-  font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;padding:.55rem .8rem;border-radius:4px;
-  text-decoration:none;display:inline-flex;align-items:center;line-height:1}
-.topbar nav button:hover,.topbar nav button.active,.topbar nav a.nav-link:hover{background:rgba(201,150,46,.18);color:var(--brass-soft)}
-.topbar nav a.nav-link.accent{color:var(--brass-soft)}
+.topbar nav button{background:none;border:none;color:var(--paper);font-family:var(--sans);font-weight:600;
+  font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;padding:.55rem .8rem;border-radius:4px}
+.topbar nav button:hover,.topbar nav button.active{background:rgba(201,150,46,.18);color:var(--brass-soft)}
 
 /* ---------- hero : the reading room ---------- */
 .hero{position:relative;background:
@@ -262,12 +260,21 @@ footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.
 .view{display:none}
 .view.active{display:block}
 
+/* scroll to top */
+.to-top{position:fixed;right:16px;bottom:16px;z-index:200;width:50px;height:50px;border-radius:50%;
+  background:linear-gradient(180deg,var(--brass-soft),var(--brass));color:var(--green-deep);
+  border:2px solid var(--green-deep);font-size:1.35rem;font-weight:700;display:none;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.35);transition:transform .15s ease}
+.to-top.show{display:flex}
+.to-top:hover{transform:translateY(-3px)}
+
 @media (max-width:760px){
   .sub-inner{grid-template-columns:1fr}
   .spine{width:32px}
   .spine span{font-size:.48rem}
   .r-body.with-panel{grid-template-columns:1fr}
   .r-body.with-panel .r-page-wrap{display:none}
+  .r-body.with-panel .r-nav{display:none}
   .topbar .wordmark small{display:none}
 }
 </style>
@@ -280,8 +287,6 @@ footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.
   <nav>
     <button data-nav="library" class="active">Library</button>
     <button data-nav="about">About Us</button>
-    <a href="ai-odyssey.html" class="nav-link accent">AI&nbsp;Odyssey&nbsp;↗</a>
-    <a href="index.html" class="nav-link">AI&nbsp;Shorts&nbsp;↗</a>
   </nav>
 </header>
 
@@ -350,6 +355,8 @@ footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.
   <p>© 2026 The AI Athenaeum · Curated by Pawan Maheshwari · Conceptualized by Bhavin Maheshwari<br>All titles listed are legally free publications by their respective authors; guided editions are original companions written for this library.</p>
 </footer>
 
+<button class="to-top" id="to-top" title="Back to top" aria-label="Scroll back to top">↑</button>
+
 <!-- =============== READER =============== -->
 <div class="reader" id="reader" data-theme="paper" role="dialog" aria-modal="true" aria-label="Book reader">
   <div>
@@ -389,7 +396,8 @@ footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.
     <aside class="panel" id="panel">
       <div class="panel-head">
         <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="30" fill="#C9962E"/><path d="M32 20c-3-2.4-7.4-3.3-12-2.6v22c4.6-.7 9 .2 12 2.6 3-2.4 7.4-3.3 12-2.6v-22c-4.6-.7-9 .2-12 2.6z" fill="#14291F"/></svg>
-        <div><div class="p-title">The Librarian</div><div class="p-sub" id="p-sub">At your side as you read</div></div>
+        <div style="flex:1"><div class="p-title">The Librarian</div><div class="p-sub" id="p-sub">At your side as you read</div></div>
+        <button class="icon-btn" id="btn-key" title="Connect the Librarian with an Anthropic API key">⚿ Key</button>
       </div>
       <div class="chat" id="chat"></div>
       <div class="quick" id="quick"></div>
@@ -1019,10 +1027,14 @@ function stopTTS(){
 $("#tts-stop").addEventListener("click",stopTTS);
 
 /* ================= THE LIBRARIAN (live assistant) ================= */
-let chatHistory=[];
+let chatHistory=[], userApiKey="";
 $("#btn-panel").addEventListener("click",()=>{
   $("#r-body").classList.toggle("with-panel");
   $("#btn-panel").classList.toggle("active");
+});
+$("#btn-key").addEventListener("click",()=>{
+  const k=prompt("To bring the Librarian fully to life on your own website, paste an Anthropic API key (from console.anthropic.com).\n\nIt is kept only in this page's memory for this session — never saved or sent anywhere except api.anthropic.com.");
+  if(k&&k.trim()){userApiKey=k.trim();addMsg("bot","The Librarian is fully awake now. Ask away!");}
 });
 const QUICKS=["Explain this chapter simply","Give me a real-life example","Quiz me on this","Define the key terms","Why does this matter?"];
 function resetChat(){
@@ -1037,6 +1049,49 @@ function addMsg(cls,text){
   const d=document.createElement("div");d.className="msg "+cls;d.textContent=text;
   $("#chat").appendChild(d);$("#chat").scrollTop=$("#chat").scrollHeight;return d;
 }
+
+/* --- Study Mode: an offline librarian grounded in the open chapter --- */
+function offlineAnswer(q,b,c){
+  const low=q.toLowerCase();
+  const summary=()=> "Here is this chapter in brief — " + c.p.map(p=>p.split(". ")[0]).join(". ") + ".";
+  if(/quiz|test me|question/.test(low))
+    return "A question from the shelves: in your own words, what is the main idea of “"+c.t+"”? Say your answer aloud, then re-read the final paragraph of the chapter and see how closely you matched it.";
+  if(/summar|simpl|explain this chapter|brief/.test(low)) return summary();
+  if(/key terms|define|glossary|vocab/.test(low)){
+    const caps=[...new Set((c.p.join(" ").match(/\b[a-z]+(?:-[a-z]+)? (?:learning|network|descent|function|model|data|bias)\b/gi)||[]).map(s=>s.toLowerCase()))].slice(0,6);
+    return caps.length?"Terms worth holding onto from this chapter: "+caps.join(", ")+". Each is explained in context above — re-read the paragraph where it first appears.":summary();
+  }
+  const words=low.split(/\W+/).filter(w=>w.length>3);
+  let best=null,score=0;
+  c.p.forEach(p=>{const pl=p.toLowerCase();const s=words.reduce((a,w)=>a+(pl.includes(w)?1:0),0);
+    if(s>score){score=s;best=p;}});
+  if(best&&score>0) return "From this very page: "+best;
+  return summary()+" For a deeper conversation, connect me with the ⚿ Key button above, or open this library inside Claude.";
+}
+
+async function askClaude(sys){
+  const body=JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:sys,messages:chatHistory.slice(-12)});
+  /* attempt 1 — keyless (works when this library runs inside Claude.ai) */
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"Content-Type":"application/json"},body});
+    if(res.ok){const data=await res.json();
+      const t=(data.content||[]).filter(x=>x.type==="text").map(x=>x.text).join("\n").trim();
+      if(t)return t;}
+  }catch(e){}
+  /* attempt 2 — reader's own API key (works anywhere, e.g. GitHub Pages) */
+  if(userApiKey){
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":userApiKey,
+        "anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body});
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message||"API error");
+    const t=(data.content||[]).filter(x=>x.type==="text").map(x=>x.text).join("\n").trim();
+    if(t)return t;
+  }
+  return null;
+}
+
 async function sendChat(text){
   text=(text||$("#chat-text").value).trim();if(!text)return;
   $("#chat-text").value="";
@@ -1051,25 +1106,34 @@ Adapt every explanation for ${b.wing.voiceHint}.
 The full text of the current chapter is:
 """${c.p.join("\n\n")}"""
 Ground your answers in this chapter first, then broader accurate knowledge of AI. Be concise (under 180 words unless asked for more), encouraging, and use plain text only — no markdown symbols. If asked to quiz, ask one question at a time and wait.`;
-  try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:1000,system:sys,
-        messages:chatHistory.slice(-12)})
-    });
-    const data=await res.json();
-    const reply=(data.content||[]).filter(x=>x.type==="text").map(x=>x.text).join("\n").trim()
-      ||"Forgive me — the shelves were silent. Please ask once more.";
-    think.remove();addMsg("bot",reply);
-    chatHistory.push({role:"assistant",content:reply});
-  }catch(e){
-    think.remove();
-    addMsg("bot","I couldn't reach the reading room's assistant just now. Check your connection and ask again — I'll be right here.");
+  let reply=null, offline=false;
+  try{reply=await askClaude(sys);}catch(e){reply=null;}
+  if(!reply){offline=true;reply=offlineAnswer(text,b,c);}
+  think.remove();
+  addMsg("bot",reply);
+  if(offline&&!userApiKey&&!sendChat.hinted){
+    sendChat.hinted=true;
+    addMsg("bot","(Study Mode: I'm answering from the open chapter itself. For the full live Librarian outside Claude, tap ⚿ Key above and add an Anthropic API key.)");
   }
+  chatHistory.push({role:"assistant",content:reply});
 }
 $("#chat-send").addEventListener("click",()=>sendChat());
 $("#chat-text").addEventListener("keydown",e=>{
   if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendChat();}
+});
+
+/* ================= SCROLL TO TOP ================= */
+const toTop=$("#to-top"), pageWrap=$("#page-wrap");
+function updateToTop(){
+  const inReader=reader.classList.contains("open");
+  const y=inReader?pageWrap.scrollTop:window.scrollY;
+  toTop.classList.toggle("show",y>350);
+}
+window.addEventListener("scroll",updateToTop,{passive:true});
+pageWrap.addEventListener("scroll",updateToTop,{passive:true});
+toTop.addEventListener("click",()=>{
+  if(reader.classList.contains("open"))pageWrap.scrollTo({top:0,behavior:"smooth"});
+  else window.scrollTo({top:0,behavior:"smooth"});
 });
 </script>
 </body>
