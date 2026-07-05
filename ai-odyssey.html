@@ -76,14 +76,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(8,13,42,.82);backdrop-f
 .nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1.5px;background:var(--gold);transition:width .25s}
 .nav-links a:hover{color:#fff}
 .nav-links a:hover::after{width:100%}
-.nav-links a.x-site{color:var(--gold-hi);opacity:.9}
-.nav-links a.x-site:hover{opacity:1}
-.nav-links a.x-site::after{background:var(--gold-hi)}
-@media(max-width:640px){
-  .nav-links{display:flex;gap:16px;margin-left:auto}
-  .nav-links a:not(.x-site){display:none}
-  .nav-links a.x-site{font-size:12px;letter-spacing:.06em}
-}
+@media(max-width:640px){.nav-links{display:none}}
 
 /* ===== hero ===== */
 .hero{position:relative;color:#fff;padding:84px 0 110px;overflow:hidden;
@@ -143,6 +136,18 @@ h1 .thin{display:block;font-weight:400;font-size:clamp(15px,2.1vw,21px);letter-s
 .ev-cap .eyebrow{color:var(--gold)}
 .ev-cap .eyebrow::before{background:var(--gold)}
 .ev-cap p{font-family:var(--disp);font-size:15.5px;margin-top:6px;font-weight:500}
+.ev-sound{position:absolute;top:16px;right:16px;z-index:3;font-size:11.5px;padding:9px 15px}
+
+/* scroll to top */
+.to-top{position:fixed;right:26px;bottom:26px;z-index:110;width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(160deg,var(--gold-hi),var(--gold) 55%,var(--gold-lo));
+  color:var(--space);box-shadow:0 14px 30px -10px rgba(169,118,31,.85),inset 0 1px 0 rgba(255,255,255,.7);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;visibility:hidden;transform:translateY(18px) scale(.85);transition:opacity .3s,transform .3s,visibility .3s,box-shadow .2s}
+.to-top.show{opacity:1;visibility:visible;transform:none}
+.to-top:hover{transform:translateY(-4px) scale(1.06);box-shadow:0 22px 40px -12px rgba(169,118,31,.95),inset 0 1px 0 rgba(255,255,255,.7)}
+.to-top svg{width:24px;height:24px;stroke:var(--space);stroke-width:2.6;fill:none;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:640px){.to-top{right:18px;bottom:18px;width:48px;height:48px}}
 
 /* ===== book summary ===== */
 #book{color:#fff;overflow:hidden;
@@ -265,8 +270,6 @@ footer .gold{background:var(--foil);background-size:200% auto;-webkit-background
       <a href="#book">The Book</a>
       <a href="#transform">Transformation</a>
       <a href="#reviews">Reviews</a>
-      <a href="ai-library.html" class="x-site">AI&nbsp;Library&nbsp;↗</a>
-      <a href="index.html" class="x-site">AI&nbsp;Shorts&nbsp;↗</a>
     </nav>
   </div>
 </header>
@@ -294,8 +297,8 @@ footer .gold{background:var(--foil);background-size:200% auto;-webkit-background
 
     <div class="player rv in">
       <div class="inner">
-        <video id="launchVid" autoplay muted loop playsinline preload="auto" poster="booth.jpg">
-          <source src="launch.mp4" type="video/mp4">
+        <video id="launchVid" autoplay muted loop playsinline preload="auto" poster="assets/booth.jpg">
+          <source src="assets/launch.mp4" type="video/mp4">
         </video>
         <div class="vig"></div>
         <span class="tag"><span class="rec"></span>BOOK LAUNCH</span>
@@ -328,16 +331,17 @@ footer .gold{background:var(--foil);background-size:200% auto;-webkit-background
 
     <div class="grid">
       <figure class="ev tall rv">
-        <img src="booth.jpg" alt="AI Odyssey festival booth with the book display, badges, and the Learn AI by Playing screen">
+        <img src="assets/booth.jpg" alt="AI Odyssey festival booth with the book display, badges, and the Learn AI by Playing screen">
         <figcaption class="ev-cap">
           <span class="eyebrow">Festival Booth</span>
           <p>Book signing &amp; "Learn AI by Playing" — 163 players and counting</p>
         </figcaption>
       </figure>
       <figure class="ev rv">
-        <video autoplay muted loop playsinline preload="metadata">
-          <source src="event.mp4" type="video/mp4">
+        <video id="eventVid" autoplay muted loop playsinline preload="metadata">
+          <source src="assets/event.mp4" type="video/mp4">
         </video>
+        <button class="sound-btn ev-sound" id="eventSoundBtn" aria-label="Unmute event video">🔊 Sound on</button>
         <figcaption class="ev-cap">
           <span class="eyebrow">Live Demo</span>
           <p>Interactive AI games in action at the event</p>
@@ -460,7 +464,7 @@ footer .gold{background:var(--foil);background-size:200% auto;-webkit-background
         <div class="polaroid">
           <span class="pin"></span>
           <span class="tape l"></span><span class="tape r"></span>
-          <img src="cover-sm.jpg" alt="AI Odyssey book cover — The Complete Master Edition by Pawan Maheshwari">
+          <img src="assets/cover-sm.jpg" alt="AI Odyssey book cover — The Complete Master Edition by Pawan Maheshwari">
           <span class="cap">book cover here ✦</span>
         </div>
         <figcaption>— the complete master edition</figcaption>
@@ -470,6 +474,10 @@ footer .gold{background:var(--foil);background-size:200% auto;-webkit-background
     <div class="rev-list" id="revList" aria-live="polite"></div>
   </div>
 </section>
+
+<button class="to-top" id="toTop" aria-label="Scroll back to top" title="Back to top">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <footer>
   <div class="wrap">
@@ -509,14 +517,35 @@ const store = {
   document.querySelectorAll('.rv,#infoCard').forEach(e=>io.observe(e));
 })();
 
-/* ---------- hero video sound toggle ---------- */
-const vid = document.getElementById('launchVid');
-const sBtn = document.getElementById('soundBtn');
-sBtn.addEventListener('click', () => {
-  vid.muted = !vid.muted;
-  if(!vid.muted) vid.play();
-  sBtn.textContent = vid.muted ? '🔊 Sound on' : '🔇 Mute';
-  sBtn.setAttribute('aria-label', vid.muted ? 'Unmute launch video' : 'Mute launch video');
+/* ---------- video sound toggles (hero + event) ---------- */
+const pairs = [
+  { vid:document.getElementById('launchVid'), btn:document.getElementById('soundBtn'),      label:'launch video' },
+  { vid:document.getElementById('eventVid'),  btn:document.getElementById('eventSoundBtn'), label:'event video'  }
+];
+function setBtn(p){
+  p.btn.textContent = p.vid.muted ? '🔊 Sound on' : '🔇 Mute';
+  p.btn.setAttribute('aria-label', (p.vid.muted?'Unmute ':'Mute ')+p.label);
+}
+pairs.forEach(p=>{
+  if(!p.vid||!p.btn) return;
+  p.btn.addEventListener('click', ()=>{
+    const turningOn = p.vid.muted;
+    if(turningOn){                       // mute every other video first so audio never overlaps
+      pairs.forEach(o=>{ if(o!==p && o.vid){ o.vid.muted=true; setBtn(o); } });
+    }
+    p.vid.muted = !p.vid.muted;
+    if(!p.vid.muted){ p.vid.play().catch(()=>{}); }
+    setBtn(p);
+  });
+});
+
+/* ---------- scroll to top ---------- */
+const toTop = document.getElementById('toTop');
+const onScroll = ()=>{ toTop.classList.toggle('show', window.scrollY > 640); };
+window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+toTop.addEventListener('click', ()=>{
+  const rm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({ top:0, behavior: rm ? 'auto' : 'smooth' });
 });
 
 /* ---------- reviews ---------- */
@@ -575,7 +604,7 @@ function render(){
       <div class="polaroid">
         <span class="pin"></span>
         <span class="tape l"></span><span class="tape r"></span>
-        <img src="cover-sm.jpg" alt="AI Odyssey book cover" loading="lazy">
+        <img src="assets/cover-sm.jpg" alt="AI Odyssey book cover" loading="lazy">
         <span class="cap">ai odyssey ✦ ${r.stars}/5</span>
       </div>
     </article>`;
