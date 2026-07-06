@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#1E3A2F">
 <title>The AI Athenaeum — A Library of Artificial Intelligence</title>
 <meta name="description" content="World-class AI literature for every age — read, listen, and learn with a live librarian. Curated by Pawan Maheshwari · Conceptualized by Bhavin Maheshwari.">
 <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="%231E3A2F"/><path d="M32 18c-4-3.4-10-4.6-16-3.6v28c6-1 12 .2 16 3.6 4-3.4 10-4.6 16-3.6v-28c-6-1-12 .2-16 3.6z" fill="%23F6EFDF"/><path d="M32 18v28" stroke="%231E3A2F" stroke-width="2.4"/><circle cx="32" cy="30" r="4.6" fill="none" stroke="%23C9962E" stroke-width="2.2"/><path d="M32 21.5v4M32 34.5v4M23.5 30h4M36.5 30h4M26 24l2.8 2.8M38 36l-2.8-2.8M38 24l-2.8 2.8M26 36l2.8-2.8" stroke="%23C9962E" stroke-width="2.2" stroke-linecap="round"/></svg>'>
@@ -37,7 +38,7 @@ a{color:var(--oxblood)}
 
 /* ---------- top bar ---------- */
 .topbar{position:sticky;top:0;z-index:60;background:var(--green);color:var(--paper);
-  display:flex;align-items:center;gap:.9rem;padding:.65rem 1.2rem;border-bottom:3px solid var(--brass)}
+  display:flex;align-items:center;gap:.9rem;padding:.65rem 1.2rem;padding-top:calc(.65rem + env(safe-area-inset-top,0px));border-bottom:3px solid var(--brass)}
 .topbar .mark{width:34px;height:34px;flex:0 0 auto}
 .topbar .wordmark{font-family:var(--serif-display);font-weight:700;font-size:1.25rem;letter-spacing:.02em}
 .topbar .wordmark small{display:block;font-family:var(--sans);font-weight:600;font-size:.55rem;letter-spacing:.32em;text-transform:uppercase;color:var(--brass-soft)}
@@ -103,11 +104,11 @@ a{color:var(--oxblood)}
 .book-card:hover .cover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 26px 48px rgba(20,25,18,.4)}
 .cover .rule{width:42px;height:2px;background:var(--brass-soft);margin:.55rem 0}
 .cover h3{font-family:var(--serif-display);font-weight:600;font-size:1.22rem;line-height:1.15}
-.cover .c-kicker{font-family:var(--sans);font-weight:600;font-size:.55rem;letter-spacing:.26em;text-transform:uppercase;opacity:.85}
+.cover .c-kicker{font-family:var(--sans);font-weight:600;font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;opacity:.85;margin-top:.4rem}
 .cover .c-author{margin-top:auto;font-style:italic;font-size:.82rem;opacity:.9}
-.cover .badge{position:absolute;right:.7rem;top:.7rem;background:rgba(0,0,0,.28);border:1px solid var(--brass-soft);
-  color:var(--brass-soft);font-family:var(--sans);font-size:.52rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
-  padding:.22rem .5rem;border-radius:20px}
+.cover .badge{align-self:flex-start;max-width:100%;background:rgba(0,0,0,.28);border:1px solid var(--brass-soft);
+  color:var(--brass-soft);font-family:var(--sans);font-size:.5rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  padding:.24rem .55rem;border-radius:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
 .book-meta .t{font-weight:600;font-size:.95rem;line-height:1.3}
 .book-meta .s{font-size:.8rem;color:var(--ink-soft)}
 .open-hint{font-family:var(--sans);font-weight:600;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--oxblood)}
@@ -146,7 +147,8 @@ footer{background:var(--green-deep);color:#C9C2AD;text-align:center;padding:2.2r
 footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.05rem;color:var(--brass-soft);margin-bottom:.4rem}
 
 /* ================= READER ================= */
-.reader{position:fixed;inset:0;z-index:100;display:none;grid-template-rows:auto 1fr;background:var(--paper)}
+.reader{position:fixed;inset:0;z-index:100;display:none;grid-template-rows:auto 1fr;background:var(--paper);
+  height:100vh;height:100dvh}
 .reader.open{display:grid}
 .reader[data-theme="sepia"]{--pg:#F3E7CF;--pg-ink:#3A3020}
 .reader[data-theme="paper"]{--pg:#FBF7EC;--pg-ink:#241F19}
@@ -261,22 +263,63 @@ footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.
 .view.active{display:block}
 
 /* scroll to top */
-.to-top{position:fixed;right:16px;bottom:16px;z-index:200;width:50px;height:50px;border-radius:50%;
+.to-top{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:500;
+  width:54px;height:54px;border-radius:50%;
   background:linear-gradient(180deg,var(--brass-soft),var(--brass));color:var(--green-deep);
-  border:2px solid var(--green-deep);font-size:1.35rem;font-weight:700;display:none;align-items:center;justify-content:center;
-  box-shadow:0 8px 20px rgba(0,0,0,.35);transition:transform .15s ease}
-.to-top.show{display:flex}
+  border:2px solid var(--green-deep);font-size:1.5rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.35);transition:opacity .2s ease, transform .15s ease;
+  opacity:0;visibility:hidden;pointer-events:none}
+.to-top.show{opacity:1;visibility:visible;pointer-events:auto}
 .to-top:hover{transform:translateY(-3px)}
 
+/* let the reader toolbar wrap instead of overflowing on narrow screens */
+.r-top{padding-top:calc(.55rem + env(safe-area-inset-top,0px))}
+
+/* tablets */
+@media (max-width:960px){
+  .section{padding:3rem 1.2rem}
+  .sub-inner{gap:1.5rem}
+}
+/* phones */
 @media (max-width:760px){
   .sub-inner{grid-template-columns:1fr}
-  .spine{width:32px}
-  .spine span{font-size:.48rem}
+  .hero{padding-top:calc(3.4rem + env(safe-area-inset-top,0px))}
+  /* spines become a horizontally scrollable shelf so nothing is clipped */
+  .shelf{overflow-x:auto;justify-content:flex-start;padding:0 12px 6px;
+    -webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .shelf::-webkit-scrollbar{display:none}
+  .spine{width:36px;flex:0 0 auto}
+  .spine span{font-size:.5rem}
+  .spine:hover{transform:none}
+  .book-row{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}
   .r-body.with-panel{grid-template-columns:1fr}
   .r-body.with-panel .r-page-wrap{display:none}
   .r-body.with-panel .r-nav{display:none}
   .topbar .wordmark small{display:none}
+  .r-top .icon-btn{padding:.5rem .55rem;font-size:.7rem}
+  .r-title{order:10;flex-basis:100%;text-align:center;font-size:.9rem}
+  .r-page-wrap{padding:1.6rem 1rem 5rem}
+  .listen-bar{gap:.5rem}
+  .listen-bar select{max-width:130px}
+  .to-top{width:50px;height:50px;font-size:1.35rem}
 }
+/* small phones */
+@media (max-width:420px){
+  .sec-head{flex-direction:column;gap:.2rem}
+  .book-row{grid-template-columns:1fr 1fr;gap:.8rem}
+  .cover{padding:.9rem .75rem}
+  .cover h3{font-size:1.05rem}
+  .hp-frame{padding:1.8rem 1.2rem}
+  .founders{grid-template-columns:1fr}
+  .f-top{flex-direction:column;text-align:center}
+}
+/* short landscape (phones held sideways) */
+@media (max-height:520px) and (orientation:landscape){
+  .r-page-wrap{padding-top:1rem}
+  .hp-frame{aspect-ratio:auto;min-height:auto}
+}
+/* fine-pointer devices keep hover flourishes; touch devices skip them handled above */
 </style>
 </head>
 <body>
@@ -867,6 +910,7 @@ function openBook(id){
   $("#r-title").textContent=cur.book.title+": "+cur.book.sub;
   $("#p-sub").textContent="Reading with you: "+cur.book.title;
   buildTOC();renderChapter();resetChat();
+  setTimeout(()=>updateToTop&&updateToTop(),50);
 }
 
 /* ---- enchanted cover ---- */
@@ -1124,16 +1168,29 @@ $("#chat-text").addEventListener("keydown",e=>{
 
 /* ================= SCROLL TO TOP ================= */
 const toTop=$("#to-top"), pageWrap=$("#page-wrap");
+function scrollY(){
+  return window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+}
 function updateToTop(){
   const inReader=reader.classList.contains("open");
-  const y=inReader?pageWrap.scrollTop:window.scrollY;
-  toTop.classList.toggle("show",y>350);
+  const y=inReader?(pageWrap.scrollTop||0):scrollY();
+  if(y>300) toTop.classList.add("show");
+  else toTop.classList.remove("show");
 }
+/* listen broadly — different engines fire scroll on different targets */
 window.addEventListener("scroll",updateToTop,{passive:true});
+document.addEventListener("scroll",updateToTop,{passive:true});
 pageWrap.addEventListener("scroll",updateToTop,{passive:true});
+window.addEventListener("resize",updateToTop,{passive:true});
+window.addEventListener("load",updateToTop);
+updateToTop();
 toTop.addEventListener("click",()=>{
-  if(reader.classList.contains("open"))pageWrap.scrollTo({top:0,behavior:"smooth"});
-  else window.scrollTo({top:0,behavior:"smooth"});
+  if(reader.classList.contains("open")){
+    try{pageWrap.scrollTo({top:0,behavior:"smooth"});}catch(e){pageWrap.scrollTop=0;}
+  }else{
+    try{window.scrollTo({top:0,behavior:"smooth"});}catch(e){window.scrollTo(0,0);}
+    document.documentElement.scrollTop=0;document.body.scrollTop=0;
+  }
 });
 </script>
 </body>
