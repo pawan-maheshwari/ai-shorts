@@ -3,8 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta name="theme-color" content="#0A1030">
 <title>AI Odyssey — The Complete Master Edition | Pawan Maheshwari</title>
 <meta name="description" content="AI Odyssey: a student's field guide to the past, present, and future of Artificial Intelligence. Book launch, events, and reader reviews.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3CradialGradient id='bg' cx='35%25' cy='28%25' r='90%25'%3E%3Cstop offset='0' stop-color='%231B2A6B'/%3E%3Cstop offset='1' stop-color='%23080D2A'/%3E%3C/radialGradient%3E%3CradialGradient id='star' cx='40%25' cy='35%25' r='70%25'%3E%3Cstop offset='0' stop-color='%23F8DE8D'/%3E%3Cstop offset='1' stop-color='%23C4922E'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23bg)'/%3E%3Cline x1='30' y1='68' x2='52' y2='30' stroke='%23E8B44A' stroke-width='2.4' stroke-opacity='.85'/%3E%3Cline x1='52' y1='30' x2='74' y2='60' stroke='%23AAB8F0' stroke-width='2' stroke-opacity='.7'/%3E%3Ccircle cx='30' cy='68' r='4.5' fill='%23AAB8F0'/%3E%3Ccircle cx='74' cy='60' r='4' fill='%23fff'/%3E%3Ccircle cx='52' cy='30' r='9' fill='url(%23star)'/%3E%3Ccircle cx='52' cy='30' r='9' fill='none' stroke='%23F8DE8D' stroke-opacity='.5' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23080D2A'/%3E%3Cline x1='30' y1='68' x2='52' y2='30' stroke='%23E8B44A' stroke-width='2.4'/%3E%3Cline x1='52' y1='30' x2='74' y2='60' stroke='%23AAB8F0' stroke-width='2'/%3E%3Ccircle cx='30' cy='68' r='4.5' fill='%23AAB8F0'/%3E%3Ccircle cx='74' cy='60' r='4' fill='%23fff'/%3E%3Ccircle cx='52' cy='30' r='10' fill='%23E8B44A'/%3E%3C/svg%3E">
+<meta property="og:title" content="AI Odyssey — The Complete Master Edition">
+<meta property="og:description" content="A student's guide to the past, present, and future of Artificial Intelligence. By Pawan Maheshwari.">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400;1,6..72,500&family=Anton&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
@@ -158,12 +165,10 @@ h1 .thin{display:block;font-weight:400;font-size:clamp(15px,2.1vw,21px);letter-s
 
 /* universal per-video sound button (auto-attached, revealed on hover) */
 .has-vsound{position:relative}
-.v-sound{position:absolute;top:14px;right:14px;z-index:9;width:42px;height:42px;min-width:42px;flex:0 0 auto;box-sizing:border-box;padding:0;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;color:var(--space);background:linear-gradient(160deg,var(--gold-hi),var(--gold) 55%,var(--gold-lo));box-shadow:0 6px 16px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.7);opacity:0;transform:scale(.8);pointer-events:none;transition:opacity .2s,transform .2s,box-shadow .2s}
-.has-vsound:hover .v-sound,.v-sound.on{opacity:1;transform:none;pointer-events:auto}
+.v-sound{position:absolute;top:14px;right:14px;z-index:9;width:42px;height:42px;min-width:42px;max-width:42px;max-height:42px;flex:0 0 auto;box-sizing:border-box;padding:0;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;overflow:hidden;color:var(--space);background:linear-gradient(160deg,var(--gold-hi),var(--gold) 55%,var(--gold-lo));box-shadow:0 6px 16px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.7);opacity:.8;transform:none;transition:opacity .2s,transform .2s,box-shadow .2s}
+.has-vsound:hover .v-sound,.v-sound.on{opacity:1}
 .v-sound:hover{transform:scale(1.09);box-shadow:0 10px 22px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.7)}
 .v-sound.on{background:linear-gradient(160deg,#ffffff,var(--gold-hi) 60%,var(--gold))}
-body.is-touch .v-sound{opacity:.92;transform:none;pointer-events:auto}
-body.is-touch .v-sound.on{opacity:1}
 /* sound button sits beside the counter inside a slide */
 
 /* scroll to top */
