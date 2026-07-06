@@ -158,13 +158,13 @@ h1 .thin{display:block;font-weight:400;font-size:clamp(15px,2.1vw,21px);letter-s
 
 /* universal per-video sound button (auto-attached, revealed on hover) */
 .has-vsound{position:relative}
-.v-sound{position:absolute;top:16px;right:16px;z-index:9;font-family:var(--disp);font-size:12px;letter-spacing:.08em;font-weight:600;color:var(--space);border:none;border-radius:999px;padding:10px 16px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;background:linear-gradient(160deg,var(--gold-hi),var(--gold) 55%,var(--gold-lo));box-shadow:0 8px 22px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.75);opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .25s,transform .25s,box-shadow .2s}
+.v-sound{position:absolute;top:14px;right:14px;z-index:9;width:42px;height:42px;min-width:42px;flex:0 0 auto;box-sizing:border-box;padding:0;border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:17px;line-height:1;color:var(--space);background:linear-gradient(160deg,var(--gold-hi),var(--gold) 55%,var(--gold-lo));box-shadow:0 6px 16px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.7);opacity:0;transform:scale(.8);pointer-events:none;transition:opacity .2s,transform .2s,box-shadow .2s}
 .has-vsound:hover .v-sound,.v-sound.on{opacity:1;transform:none;pointer-events:auto}
-.v-sound:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 14px 30px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.75)}
-.v-sound.on{background:linear-gradient(160deg,#fff2d0,var(--gold-hi) 55%,var(--gold))}
-body.is-touch .v-sound{opacity:1;transform:none;pointer-events:auto}
+.v-sound:hover{transform:scale(1.09);box-shadow:0 10px 22px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.7)}
+.v-sound.on{background:linear-gradient(160deg,#ffffff,var(--gold-hi) 60%,var(--gold))}
+body.is-touch .v-sound{opacity:.92;transform:none;pointer-events:auto}
+body.is-touch .v-sound.on{opacity:1}
 /* sound button sits beside the counter inside a slide */
-.ev-slide .v-sound{top:16px;right:16px}
 
 /* scroll to top */
 .to-top{position:fixed;right:26px;bottom:26px;z-index:110;width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;
@@ -589,8 +589,9 @@ const store = {
   function label(v,btn){
     const on = !v.muted;
     btn.classList.toggle('on', on);
-    btn.innerHTML = on ? '🔇 <span>Mute</span>' : '🔊 <span>Sound&nbsp;on</span>';
-    btn.setAttribute('aria-label', on ? 'Mute this video' : 'Turn sound on for this video');
+    btn.textContent = on ? '🔊' : '🔇';                       // compact icon only
+    btn.setAttribute('aria-label', on ? 'Mute this video' : 'Turn sound on');
+    btn.title = on ? 'Mute' : 'Sound on';
   }
   // route all audio to one video, muting every other managed video
   function soloAudio(target, byUser){
