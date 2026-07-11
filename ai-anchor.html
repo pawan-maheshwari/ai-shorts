@@ -106,7 +106,7 @@ footer a{color:var(--signal);text-decoration:none}
 
 <div class="stage-wrap">
   <div class="stage">
-    <video id="anchorVideo" src="anchor-news.mp4" muted loop playsinline preload="metadata"></video>
+    <video id="anchorVideo" src="anchor-news.mp4" poster="anchor-poster.jpeg" muted loop playsinline preload="metadata"></video>
     <div class="no-video" id="noVideo" hidden>
       <span>anchor-news.mp4 not found beside this file.</span>
       <input type="file" id="videoFile" accept="video/mp4,video/webm" aria-label="Choose anchor video">
@@ -348,6 +348,25 @@ async function fetchHeadlines(){
   els.fetchBtn.disabled = true;
   els.bulletinStatus.textContent = 'Fetching feed…';
   els.bulletinStatus.classList.remove('err');
+
+  // 1) same-origin headlines.json (written daily by the GitHub Action) — no CORS, always works
+  try{
+    const r = await fetch('headlines.json?ts=' + Date.now(), {signal: AbortSignal.timeout(8000)});
+    if(r.ok){
+      const j = await r.json();
+      if(Array.isArray(j.headlines) && j.headlines.length){
+        headlines = j.headlines.slice(0,5);
+        renderHeadlines();
+        const when = j.updated ? new Date(j.updated).toLocaleString() : 'today';
+        els.bulletinStatus.textContent = `${headlines.length} headlines · bulletin of ${when}`;
+        els.fetchBtn.disabled = false;
+        saveState();
+        return;
+      }
+    }
+  }catch(e){ /* fall through to live proxies */ }
+
+  // 2) live RSS via CORS proxies (best effort)
   const feed = els.feedUrl.value;
   for(const wrap of PROXIES){
     try{
@@ -531,6 +550,7 @@ loadState();
 loadVoices();
 refreshBudget();
 setTally('ready','STANDBY');
+fetchHeadlines(); // auto-pull today's bulletin on open
 </script>
 </body>
 </html>
