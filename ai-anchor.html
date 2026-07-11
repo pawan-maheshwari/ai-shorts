@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI SHORTS — Anchor Desk</title>
+<meta name="description" content="Daily AI news, read live over the AI Shorts anchor. Zero-backend, fully client-side.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --studio:#0d1117;        /* control-room black */
+  --panel:#161d24;         /* console panel */
+  --panel-edge:#232d37;
+  --onair:#e5484d;         /* tally red */
+  --standby:#e8a33d;       /* tally amber */
+  --signal:#3fb68b;        /* levels green */
+  --ink:#e9e6dd;
+  --ink-dim:#8d97a1;
+  --chyron:#0b3a8c;        /* lower-third blue */
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--studio);color:var(--ink);font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.55;min-height:100vh}
+::selection{background:var(--onair);color:#fff}
+
+/* ---------- masthead ---------- */
+header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--panel-edge)}
+.brand{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.06em;line-height:1}
+.brand b{color:var(--onair)}
+.tally{display:flex;align-items:center;gap:8px;margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+.tally .dot{width:10px;height:10px;border-radius:50%;background:#3a434d;transition:background .3s, box-shadow .3s}
+.tally.live .dot{background:var(--onair);box-shadow:0 0 10px 2px rgba(229,72,77,.65);animation:pulse 1.2s ease-in-out infinite}
+.tally.ready .dot{background:var(--standby)}
+.tally.live{color:var(--onair)}
+@keyframes pulse{50%{box-shadow:0 0 4px 1px rgba(229,72,77,.35)}}
+@media (prefers-reduced-motion:reduce){.tally.live .dot,.ticker-track{animation:none!important}}
+
+/* ---------- stage ---------- */
+.stage-wrap{max-width:980px;margin:22px auto 0;padding:0 16px}
+.stage{position:relative;background:#000;border:1px solid var(--panel-edge);border-radius:8px;overflow:hidden;aspect-ratio:16/9}
+.stage video{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.96)}
+.stage .no-video{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;padding:20px}
+.timecode{position:absolute;top:10px;right:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:3px}
+
+/* signature: lower-third chyron */
+.chyron{position:absolute;left:0;right:0;bottom:0;transform:translateY(105%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.chyron.show{transform:translateY(0)}
+.chyron .strap{display:flex;align-items:stretch;background:linear-gradient(90deg,var(--chyron),#1d5bd6);border-top:2px solid rgba(255,255,255,.25)}
+.chyron .slug{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.08em;background:var(--onair);color:#fff;padding:7px 14px;display:flex;align-items:center;white-space:nowrap}
+.chyron .line{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.05em;color:#fff;padding:7px 14px;flex:1;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ticker{background:rgba(6,10,16,.92);overflow:hidden;border-top:1px solid rgba(255,255,255,.08)}
+.ticker-track{display:inline-block;white-space:nowrap;padding:5px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);animation:crawl 40s linear infinite}
+.ticker-track span{margin:0 26px}
+@keyframes crawl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---------- console ---------- */
+main{max-width:980px;margin:18px auto 40px;padding:0 16px;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:14px}
+@media (max-width:840px){main{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--panel-edge);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.card h2{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.12em;color:var(--ink-dim);display:flex;align-items:center;gap:8px}
+.card h2 .step{color:var(--signal);font-size:15px}
+label{font-size:12px;color:var(--ink-dim);display:block;margin-bottom:4px}
+input[type=text],input[type=number],textarea,select{width:100%;background:#0d1319;border:1px solid var(--panel-edge);border-radius:5px;color:var(--ink);padding:8px 10px;font-family:'IBM Plex Mono',monospace;font-size:13px}
+textarea{resize:vertical;line-height:1.6}
+input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid var(--signal);outline-offset:1px}
+button{cursor:pointer;border:1px solid var(--panel-edge);border-radius:5px;background:#1d252e;color:var(--ink);padding:9px 14px;font:600 13px 'Inter',sans-serif;transition:background .15s}
+button:hover{background:#252f3a}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.primary{background:var(--onair);border-color:var(--onair);color:#fff}
+button.primary:hover{background:#f05b60}
+button.go{background:var(--signal);border-color:var(--signal);color:#06231a}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>*{flex:1}
+.hint{font-size:12px;color:var(--ink-dim)}
+.mono{font-family:'IBM Plex Mono',monospace}
+
+/* headlines list */
+.headlines{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto}
+.headlines li{list-style:none;font-size:13px;padding:7px 9px;background:#0d1319;border:1px solid var(--panel-edge);border-radius:5px;display:flex;gap:8px}
+.headlines li b{color:var(--standby);font-family:'IBM Plex Mono',monospace;font-weight:500}
+
+/* timing contract gauge */
+.gauge{background:#0d1319;border:1px solid var(--panel-edge);border-radius:5px;padding:10px}
+.gauge .nums{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);margin-bottom:6px}
+.gauge .nums b{color:var(--ink)}
+.bar{height:8px;border-radius:4px;background:#1a222b;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--signal);border-radius:4px;transition:width .4s, background .4s}
+.bar i.over{background:var(--onair)}
+.engine-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--signal);letter-spacing:.08em}
+
+.status{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);min-height:18px}
+.status.err{color:var(--onair)}
+
+footer{border-top:1px solid var(--panel-edge);padding:16px 20px;text-align:center;font-size:12px;color:var(--ink-dim)}
+footer a{color:var(--signal);text-decoration:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">AI<b>SHORTS</b> · ANCHOR DESK</div>
+  <div class="tally" id="tally"><span class="dot"></span><span id="tallyText">OFF AIR</span></div>
+</header>
+
+<div class="stage-wrap">
+  <div class="stage">
+    <video id="anchorVideo" src="anchor-news.mp4" muted loop playsinline preload="metadata"></video>
+    <div class="no-video" id="noVideo" hidden>
+      <span>anchor-news.mp4 not found beside this file.</span>
+      <input type="file" id="videoFile" accept="video/mp4,video/webm" aria-label="Choose anchor video">
+    </div>
+    <div class="timecode mono" id="timecode">00:00 / 00:00</div>
+    <div class="chyron" id="chyron">
+      <div class="strap">
+        <div class="slug">LIVE · AI SHORTS</div>
+        <div class="line" id="chyronLine">Today's AI briefing</div>
+      </div>
+      <div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
+    </div>
+  </div>
+</div>
+
+<main>
+  <!-- 1 · BULLETIN -->
+  <section class="card">
+    <h2><span class="step">01</span> BULLETIN</h2>
+    <div>
+      <label for="feedUrl">News feed (RSS)</label>
+      <select id="feedUrl">
+        <option value="https://news.google.com/rss/search?q=artificial+intelligence&hl=en-IN&gl=IN&ceid=IN:en">Google News · AI (India)</option>
+        <option value="https://news.google.com/rss/search?q=artificial+intelligence&hl=en-US&gl=US&ceid=US:en">Google News · AI (Global)</option>
+        <option value="https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=en-IN&gl=IN&ceid=IN:en">Google News · Technology</option>
+      </select>
+    </div>
+    <button id="fetchBtn" class="primary">Fetch today's headlines</button>
+    <ul class="headlines" id="headlineList"></ul>
+    <div>
+      <label for="manualHeadlines">Or paste headlines (one per line)</label>
+      <textarea id="manualHeadlines" rows="3" placeholder="OpenAI launches...&#10;India announces..."></textarea>
+    </div>
+    <div class="status" id="bulletinStatus"></div>
+  </section>
+
+  <!-- 2 · SCRIPT -->
+  <section class="card">
+    <h2><span class="step">02</span> SCRIPT <span class="engine-tag" id="engineTag"></span></h2>
+    <button id="genBtn">Write script to word budget</button>
+    <textarea id="scriptBox" rows="11" spellcheck="false" placeholder="Script appears here. Edit freely — the gauge tracks your word budget."></textarea>
+    <div class="gauge">
+      <div class="nums"><span>Timing contract</span><span><b id="wordNow">0</b> / <b id="wordBudget">0</b> words</span></div>
+      <div class="bar"><i id="gaugeFill"></i></div>
+    </div>
+    <div class="status" id="scriptStatus"></div>
+  </section>
+
+  <!-- 3 · BROADCAST -->
+  <section class="card">
+    <h2><span class="step">03</span> BROADCAST</h2>
+    <div class="row">
+      <div>
+        <label for="videoDur">Video length (sec)</label>
+        <input type="number" id="videoDur" min="5" step="1" value="60">
+      </div>
+      <div>
+        <label for="anchorWpm">Anchor pace (WPM)</label>
+        <input type="number" id="anchorWpm" min="90" max="220" step="5" value="150">
+      </div>
+    </div>
+    <div>
+      <label for="voiceSel">Voice</label>
+      <select id="voiceSel"></select>
+    </div>
+    <div class="hint">Word budget = video length × pace. Speech rate auto-calibrates so the read lands on the video's runtime.</div>
+    <div class="row">
+      <button id="goBtn" class="go">● GO LIVE</button>
+      <button id="stopBtn" disabled>■ CUT</button>
+    </div>
+    <div class="status" id="airStatus"></div>
+  </section>
+</main>
+
+<footer>
+  Built by <a href="https://www.linkedin.com/in/pawan-maheshwari-4b9b4715" rel="author">Pawan Maheshwari</a> · Planet AI · zero-backend, all processing in your browser
+</footer>
+
+<script>
+/* ============ PURE-CORE (testable) ============ */
+// TEST-EXTRACT-START
+const AnchorCore = {
+  countWords(text){
+    if(!text) return 0;
+    const m = String(text).trim().match(/\S+/g);
+    return m ? m.length : 0;
+  },
+  wordBudget(videoSeconds, wpm){
+    const s = Math.max(1, Number(videoSeconds)||0);
+    const w = Math.min(260, Math.max(80, Number(wpm)||150));
+    return Math.max(20, Math.round(s * w / 60));
+  },
+  // trims whole sentences from the end until <= budget, then hard-trims words
+  fitToBudget(text, budget){
+    let words = String(text).trim().split(/\s+/).filter(Boolean);
+    if(words.length <= budget) return words.join(' ');
+    const sentences = String(text).trim().split(/(?<=[.!?])\s+/);
+    while(sentences.length > 1 && AnchorCore.countWords(sentences.join(' ')) > budget){
+      sentences.pop();
+    }
+    let out = sentences.join(' ').trim();
+    words = out.split(/\s+/).filter(Boolean);
+    if(words.length > budget){
+      out = words.slice(0, budget).join(' ').replace(/[,;:]?$/, '.') ;
+    }
+    return out;
+  },
+  // pads with sign-off lines until within 90% of budget
+  padToBudget(text, budget, brand){
+    const fillers = [
+      `You are watching ${brand}, your daily window into the fast moving world of artificial intelligence.`,
+      `Behind each of these headlines is a story reshaping how we work, learn, and build together.`,
+      `Full stories, context, and analysis are waiting for you right now on our broadsheet edition.`,
+      `From research labs to boardrooms, the pace of change this week has been nothing short of remarkable.`,
+      `That is the pulse of AI today — fast, global, and closer to home than ever before.`,
+      `Keep an eye on this space, because tomorrow's briefing is already taking shape as we speak.`,
+      `On behalf of the entire ${brand} desk, thank you for making us part of your day.`,
+      `Stay curious, stay informed, and we will see you right here in tomorrow's bulletin.`
+    ];
+    const closers = [
+      `This is ${brand}.`,
+      `More on our broadsheet.`,
+      `Until tomorrow, good day.`,
+      `Thank you for watching.`
+    ];
+    let out = String(text).trim();
+    const target = Math.round(budget * 0.9);
+    // greedy: append a line only if it still fits the budget, stop once past target
+    for(const line of fillers.concat(closers)){
+      if(AnchorCore.countWords(out) >= target) break;
+      if(AnchorCore.countWords(out) + AnchorCore.countWords(line) <= budget){
+        out += ' ' + line;
+      }
+    }
+    return AnchorCore.fitToBudget(out, budget);
+  },
+  // deterministic rule-engine script from headlines
+  ruleScript(headlines, budget, brand){
+    const hs = (headlines||[]).map(h=>String(h).replace(/\s*[-–—|]\s*[^-–—|]+$/,'').trim()).filter(Boolean);
+    const openers = ['Good day, and welcome to', 'Hello and welcome to', 'This is'];
+    const bridges = ['Our top story:', 'Also in the news:', 'Meanwhile,', 'In other developments,', 'And finally,'];
+    let out = `${openers[hs.length % openers.length]} ${brand}. Here is your artificial intelligence briefing for today.`;
+    hs.slice(0, 5).forEach((h, i)=>{
+      const b = bridges[Math.min(i, bridges.length-1)];
+      const line = /[.!?]$/.test(h) ? h : h + '.';
+      out += ` ${b} ${line}`;
+    });
+    out += ` That wraps today's bulletin from ${brand}.`;
+    return AnchorCore.padToBudget(out, budget, brand);
+  },
+  // speech rate so that (words / baseWpm*rate) minutes ≈ video seconds
+  calibrateRate(scriptWords, videoSeconds, voiceBaseWpm){
+    const base = voiceBaseWpm || 170; // typical speechSynthesis voice at rate 1
+    const needWpm = scriptWords / (Math.max(1, videoSeconds) / 60);
+    const rate = needWpm / base;
+    return Math.min(1.6, Math.max(0.7, Math.round(rate*100)/100));
+  },
+  // dependency-free RSS <item><title> extraction (works in node & browser)
+  parseRssTitles(xml, limit){
+    const titles = [];
+    const items = String(xml).split(/<item[\s>]/).slice(1);
+    for(const chunk of items){
+      const m = chunk.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/);
+      if(m && m[1]){
+        const t = m[1].replace(/&amp;/g,'&').replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+        if(t) titles.push(t);
+      }
+      if(titles.length >= (limit||5)) break;
+    }
+    return titles;
+  }
+};
+// TEST-EXTRACT-END
+if(typeof module!=='undefined') module.exports = AnchorCore;
+</script>
+
+<script>
+/* ============ APP ============ */
+const $ = id => document.getElementById(id);
+const BRAND = 'AI Shorts';
+const LS_KEY = 'aiAnchorDesk.v1';
+
+const els = {
+  video: $('anchorVideo'), noVideo: $('noVideo'), videoFile: $('videoFile'),
+  timecode: $('timecode'), chyron: $('chyron'), chyronLine: $('chyronLine'),
+  ticker: $('tickerTrack'), tally: $('tally'), tallyText: $('tallyText'),
+  feedUrl: $('feedUrl'), fetchBtn: $('fetchBtn'), headlineList: $('headlineList'),
+  manual: $('manualHeadlines'), bulletinStatus: $('bulletinStatus'),
+  genBtn: $('genBtn'), scriptBox: $('scriptBox'), engineTag: $('engineTag'),
+  wordNow: $('wordNow'), wordBudget: $('wordBudget'), gaugeFill: $('gaugeFill'),
+  scriptStatus: $('scriptStatus'),
+  videoDur: $('videoDur'), anchorWpm: $('anchorWpm'), voiceSel: $('voiceSel'),
+  goBtn: $('goBtn'), stopBtn: $('stopBtn'), airStatus: $('airStatus')
+};
+
+let headlines = [];
+let utterance = null;
+
+/* ---- persistence ---- */
+function saveState(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify({
+    wpm: els.anchorWpm.value, dur: els.videoDur.value, feed: els.feedUrl.value, voice: els.voiceSel.value
+  })); }catch(e){}
+}
+function loadState(){
+  try{
+    const s = JSON.parse(localStorage.getItem(LS_KEY)||'{}');
+    if(s.wpm) els.anchorWpm.value = s.wpm;
+    if(s.dur) els.videoDur.value = s.dur;
+    if(s.feed) els.feedUrl.value = s.feed;
+    return s;
+  }catch(e){ return {}; }
+}
+
+/* ---- video ---- */
+els.video.addEventListener('loadedmetadata', ()=>{
+  els.noVideo.hidden = true;
+  if(isFinite(els.video.duration) && els.video.duration > 1){
+    els.videoDur.value = Math.round(els.video.duration);
+    refreshBudget();
+  }
+});
+els.video.addEventListener('error', ()=>{ els.noVideo.hidden = false; });
+els.videoFile.addEventListener('change', e=>{
+  const f = e.target.files[0];
+  if(f) els.video.src = URL.createObjectURL(f);
+});
+els.video.addEventListener('timeupdate', ()=>{
+  const f = t => `${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
+  els.timecode.textContent = `${f(els.video.currentTime||0)} / ${f(els.video.duration||0)}`;
+});
+
+/* ---- bulletin ---- */
+const PROXIES = [
+  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`
+];
+async function fetchHeadlines(){
+  els.fetchBtn.disabled = true;
+  els.bulletinStatus.textContent = 'Fetching feed…';
+  els.bulletinStatus.classList.remove('err');
+  const feed = els.feedUrl.value;
+  for(const wrap of PROXIES){
+    try{
+      const r = await fetch(wrap(feed), {signal: AbortSignal.timeout(12000)});
+      if(!r.ok) continue;
+      const xml = await r.text();
+      const titles = AnchorCore.parseRssTitles(xml, 5);
+      if(titles.length){
+        headlines = titles;
+        renderHeadlines();
+        els.bulletinStatus.textContent = `${titles.length} headlines pulled · ${new Date().toLocaleTimeString()}`;
+        els.fetchBtn.disabled = false;
+        saveState();
+        return;
+      }
+    }catch(e){ /* try next proxy */ }
+  }
+  els.bulletinStatus.textContent = 'Feed unreachable — paste headlines below instead.';
+  els.bulletinStatus.classList.add('err');
+  els.fetchBtn.disabled = false;
+}
+function activeHeadlines(){
+  const manual = els.manual.value.split('\n').map(s=>s.trim()).filter(Boolean);
+  return manual.length ? manual.slice(0,5) : headlines;
+}
+function renderHeadlines(){
+  els.headlineList.innerHTML = '';
+  headlines.forEach((h,i)=>{
+    const li = document.createElement('li');
+    const b = document.createElement('b'); b.textContent = String(i+1).padStart(2,'0');
+    li.appendChild(b); li.appendChild(document.createTextNode(' '+h));
+    els.headlineList.appendChild(li);
+  });
+  els.ticker.innerHTML = '';
+  const seq = headlines.concat(headlines); // seamless crawl
+  seq.forEach(h=>{
+    const s = document.createElement('span'); s.textContent = '● ' + h;
+    els.ticker.appendChild(s);
+  });
+}
+els.fetchBtn.addEventListener('click', fetchHeadlines);
+
+/* ---- script generation: Gemini Nano → rule engine ---- */
+async function nanoScript(hs, budget){
+  const api = (typeof LanguageModel !== 'undefined') ? LanguageModel
+            : (window.ai && window.ai.languageModel) ? window.ai.languageModel : null;
+  if(!api) return null;
+  try{
+    const avail = await (api.availability ? api.availability() : api.capabilities().then(c=>c.available));
+    if(avail === 'no' || avail === 'unavailable') return null;
+    const session = await api.create();
+    const prompt = `You are a television news anchor for "${BRAND}". Write a spoken news script covering these headlines:\n${hs.map((h,i)=>`${i+1}. ${h}`).join('\n')}\n\nRules: exactly ${budget} words (hard limit, count carefully), warm professional anchor tone, smooth transitions, open with a greeting, close with a sign-off. Output only the script text, no headings or notes.`;
+    const out = await session.prompt(prompt);
+    session.destroy && session.destroy();
+    return out && out.trim() ? out.trim() : null;
+  }catch(e){ return null; }
+}
+async function generateScript(){
+  const hs = activeHeadlines();
+  if(!hs.length){
+    els.scriptStatus.textContent = 'No headlines yet — fetch or paste them first.';
+    els.scriptStatus.classList.add('err');
+    return;
+  }
+  els.scriptStatus.classList.remove('err');
+  els.genBtn.disabled = true;
+  const budget = AnchorCore.wordBudget(els.videoDur.value, els.anchorWpm.value);
+
+  els.scriptStatus.textContent = 'Trying on-device Gemini Nano…';
+  let script = await nanoScript(hs, budget);
+  let engine = 'GEMINI NANO · ON-DEVICE';
+  if(!script){
+    script = AnchorCore.ruleScript(hs, budget, BRAND);
+    engine = 'RULE ENGINE · OFFLINE';
+  }else{
+    script = AnchorCore.padToBudget(AnchorCore.fitToBudget(script, budget), budget, BRAND);
+  }
+  els.scriptBox.value = script;
+  els.engineTag.textContent = engine;
+  els.scriptStatus.textContent = 'Script ready. Edit freely — gauge tracks the budget.';
+  els.genBtn.disabled = false;
+  refreshBudget();
+}
+els.genBtn.addEventListener('click', generateScript);
+
+/* ---- timing contract gauge ---- */
+function refreshBudget(){
+  const budget = AnchorCore.wordBudget(els.videoDur.value, els.anchorWpm.value);
+  const now = AnchorCore.countWords(els.scriptBox.value);
+  els.wordBudget.textContent = budget;
+  els.wordNow.textContent = now;
+  const pct = Math.min(100, now/budget*100);
+  els.gaugeFill.style.width = pct + '%';
+  els.gaugeFill.classList.toggle('over', now > budget);
+}
+['input','change'].forEach(ev=>{
+  els.scriptBox.addEventListener(ev, refreshBudget);
+  els.videoDur.addEventListener(ev, ()=>{refreshBudget(); saveState();});
+  els.anchorWpm.addEventListener(ev, ()=>{refreshBudget(); saveState();});
+});
+
+/* ---- voices ---- */
+function loadVoices(){
+  const vs = speechSynthesis.getVoices();
+  els.voiceSel.innerHTML = '';
+  const pref = ['en-IN','en-GB','en-US'];
+  const sorted = vs.filter(v=>v.lang.startsWith('en')).sort((a,b)=>{
+    const pa = pref.findIndex(p=>a.lang.startsWith(p)); const pb = pref.findIndex(p=>b.lang.startsWith(p));
+    return (pa<0?9:pa) - (pb<0?9:pb) || (b.name.includes('Google')?1:0) - (a.name.includes('Google')?1:0);
+  });
+  (sorted.length?sorted:vs).forEach(v=>{
+    const o = document.createElement('option');
+    o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
+    els.voiceSel.appendChild(o);
+  });
+  const saved = loadState().voice;
+  if(saved && [...els.voiceSel.options].some(o=>o.value===saved)) els.voiceSel.value = saved;
+}
+speechSynthesis.onvoiceschanged = loadVoices;
+els.voiceSel.addEventListener('change', saveState);
+
+/* ---- broadcast ---- */
+function setTally(mode, text){
+  els.tally.classList.remove('live','ready');
+  if(mode) els.tally.classList.add(mode);
+  els.tallyText.textContent = text;
+}
+function goLive(){
+  const script = els.scriptBox.value.trim();
+  if(!script){ els.airStatus.textContent = 'No script on the prompter.'; els.airStatus.classList.add('err'); return; }
+  els.airStatus.classList.remove('err');
+  speechSynthesis.cancel();
+
+  const words = AnchorCore.countWords(script);
+  const dur = Number(els.videoDur.value)||60;
+  const rate = AnchorCore.calibrateRate(words, dur, 170);
+
+  utterance = new SpeechSynthesisUtterance(script);
+  const v = speechSynthesis.getVoices().find(v=>v.name===els.voiceSel.value);
+  if(v) utterance.voice = v;
+  utterance.rate = rate;
+  utterance.pitch = 1;
+
+  utterance.onstart = ()=>{
+    setTally('live','ON AIR');
+    els.chyron.classList.add('show');
+    const hs = activeHeadlines();
+    els.chyronLine.textContent = hs[0] || "Today's AI briefing";
+    els.video.currentTime = 0;
+    els.video.play().catch(()=>{});
+    els.goBtn.disabled = true; els.stopBtn.disabled = false;
+    els.airStatus.textContent = `Reading ${words} words @ rate ${rate} — target ${dur}s`;
+  };
+  const wrap = ()=>{
+    setTally('','OFF AIR');
+    els.video.pause();
+    els.chyron.classList.remove('show');
+    els.goBtn.disabled = false; els.stopBtn.disabled = true;
+    els.airStatus.textContent = 'Broadcast complete.';
+  };
+  utterance.onend = wrap;
+  utterance.onerror = wrap;
+  speechSynthesis.speak(utterance);
+}
+function cut(){
+  speechSynthesis.cancel();
+  setTally('','OFF AIR');
+  els.video.pause();
+  els.chyron.classList.remove('show');
+  els.goBtn.disabled = false; els.stopBtn.disabled = true;
+  els.airStatus.textContent = 'Cut.';
+}
+els.goBtn.addEventListener('click', goLive);
+els.stopBtn.addEventListener('click', cut);
+
+/* keep long utterances alive in Chrome */
+setInterval(()=>{ if(speechSynthesis.speaking && !speechSynthesis.paused){ speechSynthesis.pause(); speechSynthesis.resume(); } }, 12000);
+
+/* ---- init ---- */
+loadState();
+loadVoices();
+refreshBudget();
+setTally('ready','STANDBY');
+</script>
+</body>
+</html>
