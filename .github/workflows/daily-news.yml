@@ -1,0 +1,67 @@
+name: Daily AI headlines
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # 02:00 UTC = 7:30 AM IST, before your morning bulletin
+  workflow_dispatch: {}    # manual "Run workflow" button for testing
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and parse RSS
+        run: |
+          node - <<'EOF'
+          const https = require('https');
+          const fs = require('fs');
+          const FEED = 'https://news.google.com/rss/search?q=artificial+intelligence&hl=en-IN&gl=IN&ceid=IN:en';
+
+          function get(url, hops = 0) {
+            return new Promise((resolve, reject) => {
+              https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (aishorts-daily-bulletin)' } }, res => {
+                if ([301,302,307,308].includes(res.statusCode) && res.headers.location && hops < 3)
+                  return resolve(get(res.headers.location, hops + 1));
+                let d = ''; res.on('data', c => d += c); res.on('end', () => resolve(d));
+              }).on('error', reject);
+            });
+          }
+
+          function parseTitles(xml, limit = 5) {
+            const titles = [];
+            for (const chunk of String(xml).split(/<item[\s>]/).slice(1)) {
+              const m = chunk.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/);
+              if (m && m[1]) {
+                const t = m[1].replace(/&amp;/g,'&').replace(/&#39;|&apos;/g,"'")
+                              .replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+                if (t) titles.push(t);
+              }
+              if (titles.length >= limit) break;
+            }
+            return titles;
+          }
+
+          (async () => {
+            const xml = await get(FEED);
+            const headlines = parseTitles(xml, 5);
+            if (!headlines.length) { console.error('No headlines parsed — keeping previous file'); process.exit(0); }
+            fs.writeFileSync('headlines.json', JSON.stringify({
+              updated: new Date().toISOString(),
+              source: 'Google News · AI (India)',
+              headlines
+            }, null, 2));
+            console.log('Wrote', headlines.length, 'headlines');
+          })().catch(e => { console.error(e); process.exit(1); });
+          EOF
+
+      - name: Commit if changed
+        run: |
+          git config user.name "aishorts-bot"
+          git config user.email "actions@github.com"
+          git add headlines.json
+          git diff --cached --quiet || git commit -m "Daily bulletin: refresh headlines.json"
+          git push
