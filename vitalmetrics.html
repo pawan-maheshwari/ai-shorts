@@ -693,12 +693,16 @@
                                     <i class="fa-solid fa-heart-pulse"></i>
                                     <span>START PULSE SCAN</span>
                                 </button>
+                                <button onclick="flipPulseCamera()" id="flip-pulse-btn" title="Switch camera" aria-label="Switch camera"
+                                        class="hidden w-12 shrink-0 border border-rose-300 text-rose-700 hover:bg-rose-50 transition font-semibold py-3 rounded-3xl text-sm">
+                                    <i class="fa-solid fa-camera-rotate"></i>
+                                </button>
                                 <button onclick="stopPulseScan(true)" id="stop-pulse-btn"
                                         class="flex-1 hidden border border-rose-300 text-rose-700 hover:bg-rose-50 transition font-semibold py-3 rounded-3xl text-sm">
                                     STOP
                                 </button>
                             </div>
-                            <p class="text-[10px] text-slate-400 mt-3">Works best on mobile with a rear flash (torch mode is switched on automatically when supported). On devices without a flash, use bright light behind your finger.</p>
+                            <p class="text-[10px] text-slate-400 mt-3">Torch is switched on automatically where the browser allows it (Android Chrome). <strong>iPhone/Safari can't control the flash from a web page</strong> — swipe into Control Centre, turn the 🔦 flashlight on manually, then cover the camera + flash together. Wrong camera? Use the <i class="fa-solid fa-camera-rotate"></i> switch button while scanning.</p>
                         </div>
                     </div>
 
@@ -863,13 +867,21 @@
 
         <!-- GenAI setup (collapsed by default) -->
         <div id="engine-setup" class="hidden px-4 py-3 bg-white border-b border-slate-100 space-y-2">
-            <button onclick="enableNano()" class="w-full text-left px-3.5 py-2.5 rounded-2xl border border-slate-200 hover:border-teal-400 hover:bg-teal-50/50 transition text-xs">
+            <div id="engine-recommend" class="text-[10px] font-semibold text-teal-700"></div>
+            <button onclick="enableNano()" id="engine-opt-nano" class="w-full text-left px-3.5 py-2.5 rounded-2xl border border-slate-200 hover:border-teal-400 hover:bg-teal-50/50 transition text-xs">
                 <div class="font-bold text-slate-700 flex items-center gap-x-1.5"><i class="fa-brands fa-chrome text-teal-600"></i> Chrome Built-in AI (Gemini Nano)</div>
                 <div class="text-[10px] text-slate-400 mt-0.5">Free • on-device • instant if already installed (Chrome 128+, Edge)</div>
+                <div class="text-[10px] mt-0.5 font-semibold" id="engine-note-nano"></div>
             </button>
-            <button onclick="enableWebLLM()" class="w-full text-left px-3.5 py-2.5 rounded-2xl border border-slate-200 hover:border-teal-400 hover:bg-teal-50/50 transition text-xs">
+            <button onclick="enableWebLLM()" id="engine-opt-webllm" class="w-full text-left px-3.5 py-2.5 rounded-2xl border border-slate-200 hover:border-teal-400 hover:bg-teal-50/50 transition text-xs">
                 <div class="font-bold text-slate-700 flex items-center gap-x-1.5"><i class="fa-solid fa-microchip text-teal-600"></i> Open SLM in your browser (Qwen2.5 0.5B)</div>
                 <div class="text-[10px] text-slate-400 mt-0.5">Free open model via WebLLM • WebGPU • ~400 MB one-time download, then cached</div>
+                <div class="text-[10px] mt-0.5 font-semibold" id="engine-note-webllm"></div>
+            </button>
+            <button onclick="enableTJS()" id="engine-opt-tjs" class="w-full text-left px-3.5 py-2.5 rounded-2xl border border-slate-200 hover:border-teal-400 hover:bg-teal-50/50 transition text-xs">
+                <div class="font-bold text-slate-700 flex items-center gap-x-1.5"><i class="fa-solid fa-feather text-teal-600"></i> Lite SLM — works on iPhone (SmolLM2 135M)</div>
+                <div class="text-[10px] text-slate-400 mt-0.5">Free open model via Transformers.js • runs on CPU/WASM, no WebGPU needed • ~120 MB one-time</div>
+                <div class="text-[10px] mt-0.5 font-semibold" id="engine-note-tjs"></div>
             </button>
             <div id="engine-progress-wrap" class="hidden">
                 <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
@@ -877,7 +889,7 @@
                 </div>
             </div>
             <div id="engine-status" class="text-[10px] text-slate-500 min-h-[14px]"></div>
-            <p class="text-[10px] text-slate-400">🔒 Both engines run 100% on your device — your health data never leaves the browser.</p>
+            <p class="text-[10px] text-slate-400">🔒 All engines run 100% on your device — your health data never leaves the browser.</p>
         </div>
 
         <!-- Messages -->
@@ -2149,36 +2161,87 @@
         const PPG = {
             stream: null, raf: null, running: false, torch: false,
             samples: [], times: [], fingerSince: null,
-            SCAN_SECONDS: 20, lastResult: null
+            SCAN_SECONDS: 20, HARD_LIMIT: 32, lastResult: null,
+            devices: [], deviceIndex: -1
         };
         let lastPulseResult = null; // exposed for save + bot
+        const IS_IOS = /iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+
+        async function acquirePulseStream(deviceId) {
+            const base = { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } };
+            // Preference chain: explicit device → exact rear → ideal rear → any camera
+            const attempts = deviceId
+                ? [{ ...base, deviceId: { exact: deviceId } }]
+                : [
+                    { ...base, facingMode: { exact: 'environment' } },
+                    { ...base, facingMode: { ideal: 'environment' } },
+                    base
+                  ];
+            let lastErr;
+            for (const video of attempts) {
+                try { return await navigator.mediaDevices.getUserMedia({ video, audio: false }); }
+                catch (e) { lastErr = e; }
+            }
+            throw lastErr || new Error('no-camera');
+        }
+
+        async function refreshPulseDevices() {
+            try {
+                const all = await navigator.mediaDevices.enumerateDevices();
+                PPG.devices = all.filter(d => d.kind === 'videoinput');
+                if (PPG.deviceIndex === -1 && PPG.stream) {
+                    const activeId = PPG.stream.getVideoTracks()[0].getSettings().deviceId;
+                    PPG.deviceIndex = Math.max(0, PPG.devices.findIndex(d => d.deviceId === activeId));
+                }
+                document.getElementById('flip-pulse-btn').classList.toggle('hidden', PPG.devices.length < 2 || !PPG.running);
+            } catch (e) { /* enumeration unsupported — flip stays hidden */ }
+        }
+
+        async function flipPulseCamera() {
+            if (!PPG.running || PPG.devices.length < 2) return;
+            PPG.deviceIndex = (PPG.deviceIndex + 1) % PPG.devices.length;
+            const nextId = PPG.devices[PPG.deviceIndex].deviceId;
+            // Swap stream without resetting scan UI state
+            if (PPG.stream) PPG.stream.getTracks().forEach(t => t.stop());
+            try {
+                PPG.stream = await acquirePulseStream(nextId);
+                const video = document.getElementById('ppg-video');
+                video.srcObject = PPG.stream;
+                await video.play();
+                await tryEnableTorch();
+                PPG.fingerSince = null; PPG.samples = []; PPG.times = [];
+                const label = PPG.devices[PPG.deviceIndex].label || `Camera ${PPG.deviceIndex + 1}`;
+                setPpgStatus(`Switched to ${label} — cover it with your fingertip.`, 'info');
+            } catch (e) {
+                setPpgStatus('Could not switch camera — restart the scan.', 'error');
+                stopPulseScan();
+            }
+        }
+
+        async function tryEnableTorch() {
+            PPG.torch = false;
+            try {
+                const track = PPG.stream.getVideoTracks()[0];
+                const caps = track.getCapabilities ? track.getCapabilities() : {};
+                if (caps.torch) {
+                    await track.applyConstraints({ advanced: [{ torch: true }] });
+                    PPG.torch = true;
+                }
+            } catch (e) { /* torch unsupported — continue */ }
+        }
 
         async function startPulseScan() {
             if (PPG.running) return;
-            const statusEl = document.getElementById('ppg-status');
             try {
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                     throw new Error('unsupported');
                 }
-                PPG.stream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 30 } },
-                    audio: false
-                });
+                PPG.stream = await acquirePulseStream();
 
                 const video = document.getElementById('ppg-video');
                 video.srcObject = PPG.stream;
                 await video.play();
-
-                // Turn the flash (torch) ON when the device supports it
-                const track = PPG.stream.getVideoTracks()[0];
-                PPG.torch = false;
-                try {
-                    const caps = track.getCapabilities ? track.getCapabilities() : {};
-                    if (caps.torch) {
-                        await track.applyConstraints({ advanced: [{ torch: true }] });
-                        PPG.torch = true;
-                    }
-                } catch (e) { /* torch unsupported — continue in ambient light */ }
+                await tryEnableTorch();
 
                 PPG.running = true;
                 PPG.samples = []; PPG.times = []; PPG.fingerSince = null;
@@ -2187,9 +2250,16 @@
                 document.getElementById('pulse-live-dot').classList.remove('hidden');
                 document.getElementById('ppg-bpm').textContent = '--';
                 document.getElementById('ppg-progress').style.width = '0%';
-                setPpgStatus(PPG.torch
-                    ? 'Flash ON — cover the camera & flash fully with your fingertip'
-                    : 'No flash on this device — press fingertip on the camera under bright light', 'info');
+
+                refreshPulseDevices(); // labels are populated after permission is granted
+
+                if (PPG.torch) {
+                    setPpgStatus('Flash ON — cover the camera & flash fully with your fingertip', 'info');
+                } else if (IS_IOS) {
+                    setPpgStatus('iPhone tip: turn ON the 🔦 flashlight from Control Centre, then cover the rear camera + flash with your fingertip.', 'info');
+                } else {
+                    setPpgStatus('No controllable flash — press fingertip on the camera under bright light (or switch on your torch manually).', 'info');
+                }
 
                 ppgLoop();
             } catch (err) {
@@ -2209,6 +2279,7 @@
             }
             document.getElementById('start-pulse-btn').classList.remove('hidden');
             document.getElementById('stop-pulse-btn').classList.add('hidden');
+            document.getElementById('flip-pulse-btn').classList.add('hidden');
             document.getElementById('pulse-live-dot').classList.add('hidden');
             if (userInitiated) setPpgStatus('Sensor stopped.', 'info');
         }
@@ -2235,9 +2306,15 @@
                 for (let i = 0; i < data.length; i += 4) { r += data[i]; g += data[i + 1]; b += data[i + 2]; }
                 r /= px; g /= px; b /= px;
 
-                // Finger detection: transilluminated skin is strongly red-dominant
-                const fingerOn = r > 70 && r > g * 1.35 && r > b * 1.35;
+                // Finger detection: transilluminated skin is red-dominant.
+                // Looser thresholds for no-torch phones (iPhone Safari) + saturation guard.
+                const saturated = r > 250 && g > 220;
+                const fingerOn = !saturated && r > 55 && r > g * 1.2 && r > b * 1.2;
                 const now = performance.now();
+
+                if (saturated && PPG.fingerSince === null) {
+                    setPpgStatus('Sensor is over-exposed — press more lightly or move finger slightly off the flash.', 'info');
+                }
 
                 if (fingerOn) {
                     if (!PPG.fingerSince) {
@@ -2257,8 +2334,13 @@
                         if (est.bpm) document.getElementById('ppg-bpm').textContent = est.bpm;
                     }
                     if (elapsed >= PPG.SCAN_SECONDS) {
-                        finishPulseScan();
-                        return;
+                        // Lock now if we have a heartbeat; otherwise keep sampling up to the hard limit
+                        const check = computeBPM();
+                        if (check.bpm || elapsed >= PPG.HARD_LIMIT) {
+                            finishPulseScan();
+                            return;
+                        }
+                        setPpgStatus('Signal is faint — extending scan a few more seconds, keep holding…', 'info');
                     }
                 } else {
                     if (PPG.fingerSince) setPpgStatus('Finger lifted — re-cover the camera & flash to restart the reading.', 'info');
@@ -2288,14 +2370,29 @@
             return out;
         }
 
-        function computeBPM() {
-            const sig = detrended();
-            const n = sig.length;
-            if (n < 60) return { bpm: null };
+        function smoothed(sig) {
+            // 5-point moving average knocks down camera sensor noise
+            const out = new Array(sig.length);
+            for (let i = 0; i < sig.length; i++) {
+                let s = 0, c = 0;
+                for (let j = Math.max(0, i - 2); j <= Math.min(sig.length - 1, i + 2); j++) { s += sig[j]; c++; }
+                out[i] = s / c;
+            }
+            return out;
+        }
 
-            // Threshold at 40% of positive amplitude; enforce ≥330ms between peaks (≤180 BPM)
-            const maxV = Math.max(...sig.map(Math.abs)) || 1;
-            const thr = maxV * 0.35;
+        function computeBPM() {
+            const raw = detrended();
+            if (raw.length < 60) return { bpm: null };
+            const sig = smoothed(raw);
+            const n = sig.length;
+
+            // Adaptive threshold from median absolute deviation — robust to motion
+            // spikes, unlike a global-max threshold that one twitch can ruin.
+            const sorted = sig.map(Math.abs).sort((a, b) => a - b);
+            const mad = sorted[Math.floor(n / 2)] || 0.001;
+            const thr = mad * 1.1;
+
             const peaks = [];
             for (let i = 2; i < n - 2; i++) {
                 if (sig[i] > thr && sig[i] > sig[i - 1] && sig[i] >= sig[i + 1] &&
@@ -2303,21 +2400,58 @@
                     if (!peaks.length || PPG.times[i] - PPG.times[peaks[peaks.length - 1]] > 330) peaks.push(i);
                 }
             }
-            if (peaks.length < 4) return { bpm: null };
 
-            const ivs = [];
-            for (let i = 1; i < peaks.length; i++) {
-                const d = PPG.times[peaks[i]] - PPG.times[peaks[i - 1]];
-                if (d >= 330 && d <= 1600) ivs.push(d); // 37–180 BPM physiologic band
+            let bpm = null, cv = 1, beats = peaks.length;
+            if (peaks.length >= 4) {
+                const ivs = [];
+                for (let i = 1; i < peaks.length; i++) {
+                    const d = PPG.times[peaks[i]] - PPG.times[peaks[i - 1]];
+                    if (d >= 330 && d <= 1600) ivs.push(d); // 37–180 BPM physiologic band
+                }
+                if (ivs.length >= 3) {
+                    // Median interval resists outlier beats better than the mean
+                    ivs.sort((a, b) => a - b);
+                    const med = ivs[Math.floor(ivs.length / 2)];
+                    const mean = ivs.reduce((a, b) => a + b, 0) / ivs.length;
+                    const sd = Math.sqrt(ivs.reduce((a, b) => a + (b - mean) ** 2, 0) / ivs.length);
+                    cv = sd / mean;
+                    bpm = Math.round(60000 / med);
+                }
             }
-            if (ivs.length < 3) return { bpm: null };
 
-            const mean = ivs.reduce((a, b) => a + b, 0) / ivs.length;
-            const sd = Math.sqrt(ivs.reduce((a, b) => a + (b - mean) ** 2, 0) / ivs.length);
-            const cv = sd / mean;
-            const bpm = Math.round(60000 / mean);
+            // Fallback: autocorrelation finds the dominant heartbeat period even in
+            // noisy, low-amplitude signals where individual peaks are unreliable
+            // (typical for iPhone Safari where the web page can't switch the torch on).
+            if (!bpm) {
+                const ac = autocorrBPM(sig);
+                if (ac) { bpm = ac.bpm; cv = 0.22; beats = ac.beats; }
+            }
+
+            if (!bpm || bpm < 37 || bpm > 185) return { bpm: null };
             const quality = cv < 0.08 ? 'Excellent' : cv < 0.15 ? 'Good' : cv < 0.25 ? 'Fair' : 'Weak';
-            return { bpm, quality, cv, beats: peaks.length };
+            return { bpm, quality, cv, beats };
+        }
+
+        function autocorrBPM(sig) {
+            const n = sig.length;
+            const durMs = PPG.times[PPG.times.length - 1] - PPG.times[PPG.times.length - n];
+            const fs = n / Math.max(durMs / 1000, 0.001); // samples per second
+            const minLag = Math.round(fs * 0.33);          // 180 BPM
+            const maxLag = Math.min(Math.round(fs * 1.6), Math.floor(n / 2)); // 37 BPM
+            if (maxLag <= minLag + 2) return null;
+
+            let bestLag = 0, bestR = 0, r0 = 0;
+            for (let i = 0; i < n; i++) r0 += sig[i] * sig[i];
+            if (r0 <= 0) return null;
+            for (let lag = minLag; lag <= maxLag; lag++) {
+                let r = 0;
+                for (let i = 0; i < n - lag; i++) r += sig[i] * sig[i + lag];
+                r /= r0;
+                if (r > bestR) { bestR = r; bestLag = lag; }
+            }
+            if (bestR < 0.25) return null; // no periodic structure found
+            const bpm = Math.round(60 * fs / bestLag);
+            return { bpm, beats: Math.round((n / fs) * (bpm / 60)) };
         }
 
         function drawWave(fingerOn) {
@@ -2350,7 +2484,9 @@
             stopPulseScan();
 
             if (!result.bpm) {
-                setPpgStatus('Signal too weak to lock a heartbeat. Adjust finger pressure (light, full coverage) and rescan.', 'error');
+                setPpgStatus(IS_IOS
+                    ? 'Couldn\u2019t lock a heartbeat. Turn ON the flashlight from Control Centre, cover camera + flash together with light pressure, and rescan.'
+                    : 'Signal too weak to lock a heartbeat. Adjust finger pressure (light, full coverage), add more light, and rescan.', 'error');
                 return;
             }
 
@@ -2439,7 +2575,7 @@
                 });
                 if (!full || !full.trim()) throw new Error('empty');
                 bubble.innerHTML = renderBotText(full.trim())
-                    + `<div class="mt-1.5 text-[9px] text-slate-400">${AIEngine.tier === 'nano' ? '✦ Gemini Nano · on-device' : '✦ Qwen2.5 · in-browser'} — educational info, not medical advice</div>`;
+                    + `<div class="mt-1.5 text-[9px] text-slate-400">${AIEngine.tier === 'nano' ? '✦ Gemini Nano · on-device' : AIEngine.tier === 'tjs' ? '✦ SmolLM2 Lite · in-browser CPU' : '✦ Qwen2.5 · in-browser'} — educational info, not medical advice</div>`;
                 AIEngine.history.push({ role: 'user', content: text }, { role: 'assistant', content: full.trim() });
                 if (AIEngine.history.length > 12) AIEngine.history = AIEngine.history.slice(-12);
             } catch (e) {
@@ -2553,9 +2689,48 @@
         };
         const WEBLLM_MODEL = 'Qwen2.5-0.5B-Instruct-q4f16_1-MLC';
         const WEBLLM_CDN = 'https://esm.run/@mlc-ai/web-llm';
+        const TJS_CDN = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.3.1';
+        const TJS_MODEL = 'HuggingFaceTB/SmolLM2-135M-Instruct';
 
         function toggleEngineSetup() {
-            document.getElementById('engine-setup').classList.toggle('hidden');
+            const panel = document.getElementById('engine-setup');
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) probeEngines();
+        }
+
+        // Detect what THIS device can run and annotate every option honestly,
+        // then recommend the best available path (crucial on iPhone/Safari,
+        // where Nano and WebGPU are typically unavailable).
+        async function probeEngines() {
+            const note = (id, txt, ok) => {
+                const el = document.getElementById('engine-note-' + id);
+                if (el) {
+                    el.textContent = txt;
+                    el.className = 'text-[10px] mt-0.5 font-semibold ' + (ok ? 'text-emerald-600' : 'text-red-400');
+                }
+            };
+            const nanoAv = await nanoAvailability();
+            const nanoOk = nanoAv !== 'unavailable';
+            note('nano', nanoOk
+                ? (nanoAv === 'available' ? '✅ Ready on this device — instant' : '✅ Supported — one-time model download')
+                : '❌ Not available in this browser (needs Chrome/Edge with Prompt API)', nanoOk);
+
+            const gpuOk = !!navigator.gpu;
+            note('webllm', gpuOk
+                ? '✅ WebGPU detected — supported here'
+                : '❌ Needs WebGPU — not available in this browser', gpuOk);
+
+            const wasmOk = typeof WebAssembly !== 'undefined';
+            note('tjs', wasmOk
+                ? '✅ Supported on this device' + (IS_IOS ? ' — recommended for iPhone' : '')
+                : '❌ WebAssembly unavailable', wasmOk);
+
+            const rec = document.getElementById('engine-recommend');
+            rec.textContent = nanoOk ? '💡 Recommended for this device: Gemini Nano (fastest, zero download if installed).'
+                : gpuOk ? '💡 Recommended for this device: Qwen2.5 0.5B via WebLLM.'
+                : wasmOk ? '💡 Recommended for this device: Lite SLM (SmolLM2) — the only tier your browser supports, and it runs fine on iPhone.'
+                : 'ℹ️ No GenAI tier is supported in this browser — the instant rule engine will answer.';
+            return { nanoOk, gpuOk, wasmOk };
         }
 
         function setEngineStatus(msg, isError) {
@@ -2574,6 +2749,10 @@
                 btn.textContent = 'Change';
             } else if (AIEngine.tier === 'webllm') {
                 label.textContent = 'Engine: Qwen2.5 0.5B (in-browser SLM)';
+                dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse';
+                btn.textContent = 'Change';
+            } else if (AIEngine.tier === 'tjs') {
+                label.textContent = 'Engine: SmolLM2 Lite (in-browser, CPU)';
                 dot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse';
                 btn.textContent = 'Change';
             } else {
@@ -2672,6 +2851,48 @@
             }
         }
 
+        // ---- Tier 2b: Lite SLM via Transformers.js (WASM/CPU — works on iPhone Safari) ----
+        async function enableTJS() {
+            if (AIEngine.loading) return false;
+            if (typeof WebAssembly === 'undefined') {
+                setEngineStatus('WebAssembly is not available in this browser.', true);
+                return false;
+            }
+            AIEngine.loading = true;
+            const wrap = document.getElementById('engine-progress-wrap');
+            const bar = document.getElementById('engine-progress');
+            wrap.classList.remove('hidden');
+            try {
+                setEngineStatus('Loading Transformers.js runtime…');
+                const tjsLib = await import(TJS_CDN);
+                AIEngine.tjsLib = tjsLib;
+                setEngineStatus('Downloading SmolLM2-135M — ~120 MB one-time, cached for future visits…');
+                AIEngine.tjs = await tjsLib.pipeline('text-generation', TJS_MODEL, {
+                    dtype: 'q4',
+                    progress_callback: (p) => {
+                        if (p && typeof p.progress === 'number') {
+                            const pct = Math.round(p.progress);
+                            bar.style.width = pct + '%';
+                            setEngineStatus(`Downloading ${(p.file || 'model').split('/').pop()} — ${pct}%`);
+                        }
+                    }
+                });
+                AIEngine.tier = 'tjs';
+                localStorage.setItem('vm_ai_pref', 'tjs');
+                updateEnginePill();
+                bar.style.width = '100%';
+                setEngineStatus('✅ SmolLM2 Lite running in your browser on CPU — works even on iPhone, offline-capable after this.');
+                document.getElementById('engine-setup').classList.add('hidden');
+                botAppend('ai', '🧠 <strong>GenAI enabled — SmolLM2 Lite</strong> (open-source 135M SLM) is now running inside your browser via WebAssembly. It\u2019s compact, so keep questions simple — and everything stays on your device. Ask away!');
+                return true;
+            } catch (e) {
+                setEngineStatus('Lite model load failed: ' + (e.message || e), true);
+                return false;
+            } finally {
+                AIEngine.loading = false;
+            }
+        }
+
         // ---- Shared: system prompt built fresh from live metrics ----
         function aiSystemPrompt() {
             const c = botCtx();
@@ -2720,6 +2941,39 @@
                 return full;
             }
 
+            if (AIEngine.tier === 'tjs' && AIEngine.tjs) {
+                const messages = [
+                    { role: 'system', content: sys },
+                    ...AIEngine.history.slice(-4),
+                    { role: 'user', content: userText }
+                ];
+                let streamed = '';
+                let streamer;
+                try {
+                    if (AIEngine.tjsLib && AIEngine.tjsLib.TextStreamer && AIEngine.tjs.tokenizer) {
+                        streamer = new AIEngine.tjsLib.TextStreamer(AIEngine.tjs.tokenizer, {
+                            skip_prompt: true, skip_special_tokens: true,
+                            callback_function: t => { streamed += t; onChunk(streamed); }
+                        });
+                    }
+                } catch (e) { streamer = undefined; }
+                const out = await AIEngine.tjs(messages, {
+                    max_new_tokens: 220, temperature: 0.6, do_sample: true,
+                    ...(streamer ? { streamer } : {})
+                });
+                let full = streamed;
+                if (!full || !full.trim()) {
+                    // Extract from structured output when streaming wasn't available
+                    try {
+                        const gen = out && out[0] && out[0].generated_text;
+                        if (Array.isArray(gen)) full = gen[gen.length - 1].content || '';
+                        else if (typeof gen === 'string') full = gen;
+                    } catch (e) { full = ''; }
+                    onChunk(full);
+                }
+                return full;
+            }
+
             throw new Error('no-engine');
         }
 
@@ -2735,7 +2989,7 @@
             if (enginePrefRestored) return;
             enginePrefRestored = true;
             const pref = localStorage.getItem('vm_ai_pref');
-            if (!pref || AIEngine.tier !== 'rules') return;
+            if (AIEngine.tier !== 'rules') return;
             if (pref === 'nano') {
                 setEngineStatus('Restoring Gemini Nano…');
                 enableNano();
@@ -2743,6 +2997,15 @@
                 document.getElementById('engine-setup').classList.remove('hidden');
                 setEngineStatus('Reloading your cached Qwen model…');
                 enableWebLLM();
+            } else if (pref === 'tjs') {
+                document.getElementById('engine-setup').classList.remove('hidden');
+                setEngineStatus('Reloading your cached SmolLM2 Lite model…');
+                enableTJS();
+            } else {
+                // First visit: surface the GenAI options immediately with an
+                // honest capability check so users see what THIS device supports.
+                document.getElementById('engine-setup').classList.remove('hidden');
+                probeEngines();
             }
         }
 
