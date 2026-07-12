@@ -412,9 +412,10 @@ els.video.addEventListener('error', ()=>{
   }
   els.noVideo.hidden = false;
 });
+let userClip = false;
 els.videoFile.addEventListener('change', e=>{
   const f = e.target.files[0];
-  if(f) els.video.src = URL.createObjectURL(f);
+  if(f){ userClip = true; els.video.src = URL.createObjectURL(f); }
 });
 els.video.addEventListener('timeupdate', ()=>{
   const f = t => `${String(Math.floor(t/60)).padStart(2,'0')}:${String(Math.floor(t%60)).padStart(2,'0')}`;
@@ -681,29 +682,31 @@ async function detectBulletin(){
 const SLUG_LABEL = { negative:'BREAKING', positive:'UPDATE', neutral:'DEVELOPING' };
 /* expression footage: drop anchor-negative.mp4 / anchor-positive.mp4 / anchor-neutral.mp4
    beside this file and the director cuts to the matching face per story */
-const expressionClips = {}; // sentiment -> url
+const expressionClips = {}; // sentiment -> blob url (preloaded, so cuts are instant)
 async function probeExpressionClips(){
   for(const s of ['negative','positive','neutral']){
     try{
-      const r = await fetch(`anchor-${s}.mp4`, {method:'HEAD', signal: AbortSignal.timeout(5000)});
-      if(r.ok) expressionClips[s] = `anchor-${s}.mp4`;
+      const r = await fetch(`anchor-${s}.mp4`, {signal: AbortSignal.timeout(30000)});
+      if(!r.ok) continue;
+      const blob = await r.blob();
+      if(blob.size > 10000) expressionClips[s] = URL.createObjectURL(blob);
     }catch(e){}
   }
 }
 const BASE_CLIP = 'anchor-news.mp4';
+let currentClipKey = 'base';
 function cutToStory(storyIndex, sentiment){
   const clip = expressionClips[sentiment];
-  const currentSrc = els.video.getAttribute('src') || '';
-  if(clip && !currentSrc.endsWith(clip)){
-    // expression cut: swap footage to the matching face
-    els.video.setAttribute('src', clip);
-    els.video.load();
-    els.video.play().catch(()=>{});
-  }else if(!clip){
-    // single-clip mode: vary the take — new seek offset, camera toggle, sentiment grade
-    if(!currentSrc.endsWith(BASE_CLIP) && Object.keys(expressionClips).length){
-      els.video.setAttribute('src', BASE_CLIP); els.video.load();
+  if(clip){
+    if(currentClipKey !== sentiment){
+      currentClipKey = sentiment;
+      els.video.src = clip;          // blob: preloaded, swap is instant
+      els.video.load();
+      els.video.play().catch(()=>{});
+      els.video.classList.remove('cam2');
     }
+  }else{
+    // no clip for this sentiment: vary the take on whatever footage is loaded
     const d = els.video.duration;
     if(isFinite(d) && d > 2) els.video.currentTime = (storyIndex * 4.2) % (d - 1);
     els.video.classList.toggle('cam2');
@@ -749,9 +752,10 @@ function stopDirector(){
   const slug = document.getElementById('chyronSlug');
   if(slug){ slug.textContent = 'LIVE · AI SHORTS'; slug.className = 'slug'; }
   els.video.classList.remove('cam2','g-negative','g-positive','g-neutral');
-  const currentSrc = els.video.getAttribute('src') || '';
-  if(currentSrc && !currentSrc.endsWith(BASE_CLIP) && !currentSrc.startsWith('blob:')){
-    els.video.setAttribute('src', BASE_CLIP); els.video.load();
+  if(currentClipKey !== 'base' && !userClip){
+    currentClipKey = 'base';
+    els.video.src = BASE_CLIP;
+    els.video.load();
   }
   lastVideoT = 0;
 }
@@ -888,7 +892,7 @@ const watchBtn = $('watchBtn');
 if(KIOSK){
   // viewers get a fuller bulletin: keep the 60s budget even if the clip is shorter (it loops)
   (async ()=>{
-    probeExpressionClips();
+    const clipsReady = probeExpressionClips();
     const hasBulletin = await detectBulletin();
     if(!hasBulletin){
       await fetchHeadlines();
@@ -901,6 +905,7 @@ if(KIOSK){
     }else{
       watchBtn.textContent = 'Bulletin unavailable — try later';
     }
+    await clipsReady; // expression footage cached; cuts are now instant
   })();
   watchBtn.addEventListener('click', ()=>{ watchBtn.classList.add('hide'); goLive(); });
   const showReplay = ()=>{
