@@ -1,0 +1,85 @@
+name: Daily AI headlines
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # 02:00 UTC = 7:30 AM IST
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch headlines and write anchor script
+        run: |
+          node - <<'EOF'
+          const https = require('https');
+          const fs = require('fs');
+          const FEED = 'https://news.google.com/rss/search?q=artificial+intelligence&hl=en-IN&gl=IN&ceid=IN:en';
+          function get(url, hops = 0){
+            return new Promise((res, rej) => {
+              https.get(url, {headers:{'User-Agent':'Mozilla/5.0 (aishorts-daily-bulletin)'}}, r => {
+                if([301,302,307,308].includes(r.statusCode) && r.headers.location && hops < 3)
+                  return res(get(r.headers.location, hops+1));
+                let d=''; r.on('data',c=>d+=c); r.on('end',()=>res(d));
+              }).on('error', rej);
+            });
+          }
+          function parseTitles(xml, limit=5){
+            const t=[];
+            for(const c of String(xml).split(/<item[\s>]/).slice(1)){
+              const m=c.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/);
+              if(m&&m[1]){
+                const s=m[1].replace(/&amp;/g,'&').replace(/&#39;|&apos;/g,"'").replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').trim();
+                if(s) t.push(s);
+              }
+              if(t.length>=limit) break;
+            }
+            return t;
+          }
+          function buildScript(hs){
+            const clean = hs.map(h=>h.replace(/\s*[-–—|]\s*[^-–—|]+$/,'').trim());
+            const bridges=['Our top story:','Also in the news:','Meanwhile,','In other developments,','And finally,'];
+            const d = new Date().toLocaleDateString('en-IN',{weekday:'long', day:'numeric', month:'long'});
+            let out = `Good day, and welcome to AI Shorts. Here is your artificial intelligence briefing for ${d}.`;
+            clean.forEach((h,i)=>{
+              const line = /[.!?]$/.test(h)? h : h + '.';
+              out += ` ${bridges[Math.min(i,bridges.length-1)]} ${line}`;
+            });
+            out += ' Full stories and analysis are on our front page. That wraps today\u2019s bulletin from AI Shorts \u2014 stay curious, and we will see you tomorrow.';
+            return out;
+          }
+          (async () => {
+            const xml = await get(FEED);
+            const headlines = parseTitles(xml, 5);
+            if(!headlines.length){ console.error('No headlines parsed \u2014 keeping previous files'); process.exit(0); }
+            const script = buildScript(headlines);
+            const updated = new Date().toISOString();
+            fs.writeFileSync('headlines.json', JSON.stringify({updated, source:'Google News \u00b7 AI (India)', headlines}, null, 2));
+            fs.writeFileSync('bulletin.json', JSON.stringify({updated, headlines, script, mp3:'bulletin.mp3'}, null, 2));
+            fs.writeFileSync('script.txt', script);
+            console.log('Script:', script.split(/\s+/).length, 'words');
+          })().catch(e => { console.error(e); process.exit(1); });
+          EOF
+
+      - name: Generate neural voice MP3 (Piper)
+        run: |
+          pip install --quiet piper-tts
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          # en_US-amy-medium: clear, warm female neural voice; model cached by piper on first download
+          cat script.txt | piper --model en_US-amy-medium --download-dir ./pvoice --data-dir ./pvoice --output_file bulletin.wav
+          ffmpeg -y -v error -i bulletin.wav -codec:a libmp3lame -qscale:a 4 bulletin.mp3
+          rm -rf bulletin.wav script.txt pvoice
+          ls -la bulletin.mp3
+
+      - name: Commit if changed
+        run: |
+          git config user.name "aishorts-bot"
+          git config user.email "actions@github.com"
+          git add headlines.json bulletin.json bulletin.mp3
+          git diff --cached --quiet || git commit -m "Daily bulletin: headlines, script and neural voice"
+          git push
