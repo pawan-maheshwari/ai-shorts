@@ -95,6 +95,14 @@ button.go{background:var(--signal);border-color:var(--signal);color:#06231a}
 
 footer{border-top:1px solid var(--panel-edge);padding:16px 20px;text-align:center;font-size:12px;color:var(--ink-dim)}
 footer a{color:var(--signal);text-decoration:none}
+
+/* ---------- watch mode (?watch=1) — viewer-facing, console hidden ---------- */
+body.kiosk main{display:none}
+body.kiosk .stage-wrap{margin-top:34px}
+.watch-btn{position:absolute;inset:0;margin:auto;width:min(78%,340px);height:56px;display:none;align-items:center;justify-content:center;gap:10px;background:rgba(229,72,77,.92);border:none;border-radius:28px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.1em;cursor:pointer;box-shadow:0 6px 30px rgba(0,0,0,.5)}
+body.kiosk .watch-btn{display:flex}
+.watch-btn:disabled{background:rgba(60,68,78,.9);cursor:wait}
+.watch-btn.hide{display:none}
 </style>
 </head>
 <body>
@@ -112,6 +120,7 @@ footer a{color:var(--signal);text-decoration:none}
       <input type="file" id="videoFile" accept="video/mp4,video/webm" aria-label="Choose anchor video">
     </div>
     <div class="timecode mono" id="timecode">00:00 / 00:00</div>
+    <button class="watch-btn" id="watchBtn" disabled>▶ Preparing today's bulletin…</button>
     <div class="chyron" id="chyron">
       <div class="strap">
         <div class="slug">LIVE · AI SHORTS</div>
@@ -169,10 +178,17 @@ footer a{color:var(--signal);text-decoration:none}
       </div>
     </div>
     <div>
+      <label for="engineSel">Voice engine</label>
+      <select id="engineSel">
+        <option value="device">Device voice — instant</option>
+        <option value="kokoro">Studio voice — Kokoro AI (HD, ~90 MB one-time download)</option>
+      </select>
+    </div>
+    <div>
       <label for="voiceSel">Voice</label>
       <select id="voiceSel"></select>
     </div>
-    <div class="hint">Word budget = video length × pace. Speech rate auto-calibrates so the read lands on the video's runtime.</div>
+    <div class="hint" id="voiceHint">Word budget = video length × pace. Speech rate auto-calibrates so the read lands on the video's runtime.</div>
     <div class="row">
       <button id="goBtn" class="go">● GO LIVE</button>
       <button id="stopBtn" disabled>■ CUT</button>
@@ -299,6 +315,7 @@ const els = {
   wordNow: $('wordNow'), wordBudget: $('wordBudget'), gaugeFill: $('gaugeFill'),
   scriptStatus: $('scriptStatus'),
   videoDur: $('videoDur'), anchorWpm: $('anchorWpm'), voiceSel: $('voiceSel'),
+  engineSel: $('engineSel'), voiceHint: $('voiceHint'),
   goBtn: $('goBtn'), stopBtn: $('stopBtn'), airStatus: $('airStatus')
 };
 
@@ -307,9 +324,12 @@ let utterance = null;
 
 /* ---- persistence ---- */
 function saveState(){
-  try{ localStorage.setItem(LS_KEY, JSON.stringify({
-    wpm: els.anchorWpm.value, dur: els.videoDur.value, feed: els.feedUrl.value, voice: els.voiceSel.value
-  })); }catch(e){}
+  try{
+    const prev = JSON.parse(localStorage.getItem(LS_KEY)||'{}');
+    const s = { ...prev, wpm: els.anchorWpm.value, dur: els.videoDur.value, feed: els.feedUrl.value, engine: els.engineSel.value };
+    if(els.engineSel.value === 'kokoro') s.kokoroVoice = els.voiceSel.value; else s.voice = els.voiceSel.value;
+    localStorage.setItem(LS_KEY, JSON.stringify(s));
+  }catch(e){}
 }
 function loadState(){
   try{
@@ -317,6 +337,7 @@ function loadState(){
     if(s.wpm) els.anchorWpm.value = s.wpm;
     if(s.dur) els.videoDur.value = s.dur;
     if(s.feed) els.feedUrl.value = s.feed;
+    if(s.engine) els.engineSel.value = s.engine;
     return s;
   }catch(e){ return {}; }
 }
@@ -330,15 +351,22 @@ els.video.addEventListener('loadedmetadata', ()=>{
     stage.style.aspectRatio = `${els.video.videoWidth} / ${els.video.videoHeight}`;
     if(els.video.videoHeight > els.video.videoWidth) stage.style.maxWidth = '420px';
   }
-  if(isFinite(els.video.duration) && els.video.duration > 1){
+  if(isFinite(els.video.duration) && els.video.duration > 1 && !document.body.classList.contains('kiosk')){
     els.videoDur.value = Math.round(els.video.duration);
     refreshBudget();
   }
 });
 els.video.addEventListener('canplay', ()=>{ els.noVideo.hidden = true; });
+els.video.addEventListener('playing', ()=>{ els.noVideo.hidden = true; });
+let videoRetried = false;
 els.video.addEventListener('error', ()=>{
-  // only surface the picker if the video truly failed to load
-  if(els.video.readyState === 0) els.noVideo.hidden = false;
+  if(els.video.readyState !== 0) return;           // frames exist — ignore transient error
+  if(!videoRetried){                                // one silent reload before surfacing the picker
+    videoRetried = true;
+    setTimeout(()=>els.video.load(), 800);
+    return;
+  }
+  els.noVideo.hidden = false;
 });
 els.videoFile.addEventListener('change', e=>{
   const f = e.target.files[0];
@@ -479,24 +507,82 @@ function refreshBudget(){
 });
 
 /* ---- voices ---- */
+const KOKORO_VOICES = [
+  ['af_heart',    'Heart — warm US female (recommended)'],
+  ['af_bella',    'Bella — bright US female'],
+  ['af_nicole',   'Nicole — soft US female'],
+  ['af_sarah',    'Sarah — clear US female'],
+  ['bf_emma',     'Emma — British female'],
+  ['bf_isabella', 'Isabella — British female'],
+  ['am_michael',  'Michael — US male'],
+  ['bm_george',   'George — British male']
+];
+const FEMALE_HINTS = ['female','samantha','ava','zoe','allison','susan','karen','moira','tessa','veena','isha','rishika','zira','jenny','aria','sonia','neerja','heera','kalpana','martha','serena','kate','stephanie','fiona'];
+
 function loadVoices(){
+  if(els.engineSel.value === 'kokoro'){
+    els.voiceSel.innerHTML = '';
+    KOKORO_VOICES.forEach(([v,label])=>{
+      const o = document.createElement('option');
+      o.value = v; o.textContent = label;
+      els.voiceSel.appendChild(o);
+    });
+    els.voiceHint.textContent = 'Studio voices are generated on your device — first use downloads the model once (~90 MB), then it is cached.';
+    const saved = loadState().kokoroVoice;
+    if(saved && [...els.voiceSel.options].some(o=>o.value===saved)) els.voiceSel.value = saved;
+    return;
+  }
   const vs = speechSynthesis.getVoices();
   els.voiceSel.innerHTML = '';
-  const pref = ['en-IN','en-GB','en-US'];
-  const sorted = vs.filter(v=>v.lang.startsWith('en')).sort((a,b)=>{
-    const pa = pref.findIndex(p=>a.lang.startsWith(p)); const pb = pref.findIndex(p=>b.lang.startsWith(p));
-    return (pa<0?9:pa) - (pb<0?9:pb) || (b.name.includes('Google')?1:0) - (a.name.includes('Google')?1:0);
-  });
+  const langScore = v => { const p=['en-IN','en-GB','en-US'].findIndex(x=>v.lang.startsWith(x)); return p<0?9:p; };
+  const femScore  = v => FEMALE_HINTS.some(h=>v.name.toLowerCase().includes(h)) ? 0 : 1;
+  const qualScore = v => /enhanced|premium|natural|neural|google/i.test(v.name) ? 0 : 1;
+  const sorted = vs.filter(v=>v.lang.startsWith('en'))
+    .sort((a,b)=> femScore(a)-femScore(b) || qualScore(a)-qualScore(b) || langScore(a)-langScore(b));
   (sorted.length?sorted:vs).forEach(v=>{
     const o = document.createElement('option');
     o.value = v.name; o.textContent = `${v.name} (${v.lang})`;
     els.voiceSel.appendChild(o);
   });
+  els.voiceHint.textContent = 'Tip: iPhone device voices improve a lot if you download an Enhanced voice — Settings → Accessibility → Spoken Content → Voices → English → e.g. "Ava (Enhanced)".';
   const saved = loadState().voice;
   if(saved && [...els.voiceSel.options].some(o=>o.value===saved)) els.voiceSel.value = saved;
 }
 speechSynthesis.onvoiceschanged = loadVoices;
 els.voiceSel.addEventListener('change', saveState);
+els.engineSel.addEventListener('change', ()=>{ loadVoices(); saveState(); });
+
+/* ---- Kokoro neural TTS (client-side, cached after first download) ---- */
+let kokoro = null, kokoroAudio = null;
+async function ensureKokoro(onStatus){
+  if(kokoro) return kokoro;
+  onStatus('Loading Kokoro engine…');
+  const mod = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.1/+esm');
+  const useGpu = !!navigator.gpu;
+  let lastPct = -1;
+  kokoro = await mod.KokoroTTS.from_pretrained('onnx-community/Kokoro-82M-v1.0-ONNX', {
+    dtype: useGpu ? 'fp32' : 'q8',
+    device: useGpu ? 'webgpu' : 'wasm',
+    progress_callback: p => {
+      if(p.status === 'progress' && p.total){
+        const pct = Math.round(p.loaded / p.total * 100);
+        if(pct !== lastPct){ lastPct = pct; onStatus(`Downloading studio voice model… ${pct}% (one time only)`); }
+      }
+    }
+  });
+  return kokoro;
+}
+async function speakKokoro(script, rate, onStatus, onStart, onEnd){
+  const tts = await ensureKokoro(onStatus);
+  onStatus('Generating the anchor read…');
+  const audio = await tts.generate(script, { voice: els.voiceSel.value || 'af_heart', speed: Math.min(1.3, Math.max(0.8, rate)) });
+  const blob = await audio.toBlob();
+  kokoroAudio = new Audio(URL.createObjectURL(blob));
+  kokoroAudio.onplay = onStart;
+  kokoroAudio.onended = onEnd;
+  kokoroAudio.onerror = onEnd;
+  await kokoroAudio.play();
+}
 
 /* ---- broadcast ---- */
 function setTally(mode, text){
@@ -509,18 +595,13 @@ function goLive(){
   if(!script){ els.airStatus.textContent = 'No script on the prompter.'; els.airStatus.classList.add('err'); return; }
   els.airStatus.classList.remove('err');
   speechSynthesis.cancel();
+  if(kokoroAudio){ kokoroAudio.pause(); kokoroAudio = null; }
 
   const words = AnchorCore.countWords(script);
   const dur = Number(els.videoDur.value)||60;
   const rate = AnchorCore.calibrateRate(words, dur, 170);
 
-  utterance = new SpeechSynthesisUtterance(script);
-  const v = speechSynthesis.getVoices().find(v=>v.name===els.voiceSel.value);
-  if(v) utterance.voice = v;
-  utterance.rate = rate;
-  utterance.pitch = 1;
-
-  utterance.onstart = ()=>{
+  const onStart = ()=>{
     setTally('live','ON AIR');
     els.chyron.classList.add('show');
     const hs = activeHeadlines();
@@ -528,7 +609,7 @@ function goLive(){
     els.video.currentTime = 0;
     els.video.play().catch(()=>{});
     els.goBtn.disabled = true; els.stopBtn.disabled = false;
-    els.airStatus.textContent = `Reading ${words} words @ rate ${rate} — target ${dur}s`;
+    els.airStatus.textContent = `Reading ${words} words — target ${dur}s`;
   };
   const wrap = ()=>{
     setTally('','OFF AIR');
@@ -537,12 +618,33 @@ function goLive(){
     els.goBtn.disabled = false; els.stopBtn.disabled = true;
     els.airStatus.textContent = 'Broadcast complete.';
   };
-  utterance.onend = wrap;
-  utterance.onerror = wrap;
+
+  if(els.engineSel.value === 'kokoro'){
+    els.goBtn.disabled = true;
+    speakKokoro(script, rate, s=>{ els.airStatus.textContent = s; }, onStart, wrap)
+      .catch(e=>{
+        // graceful fallback to device voice
+        els.airStatus.textContent = 'Studio voice unavailable — using device voice.';
+        speakDevice(script, rate, onStart, wrap);
+      });
+    return;
+  }
+  speakDevice(script, rate, onStart, wrap);
+}
+function speakDevice(script, rate, onStart, onEnd){
+  utterance = new SpeechSynthesisUtterance(script);
+  const v = speechSynthesis.getVoices().find(v=>v.name===els.voiceSel.value);
+  if(v) utterance.voice = v;
+  utterance.rate = rate;
+  utterance.pitch = 1;
+  utterance.onstart = onStart;
+  utterance.onend = onEnd;
+  utterance.onerror = onEnd;
   speechSynthesis.speak(utterance);
 }
 function cut(){
   speechSynthesis.cancel();
+  if(kokoroAudio){ kokoroAudio.pause(); kokoroAudio = null; }
   setTally('','OFF AIR');
   els.video.pause();
   els.chyron.classList.remove('show');
@@ -556,11 +658,40 @@ els.stopBtn.addEventListener('click', cut);
 setInterval(()=>{ if(speechSynthesis.speaking && !speechSynthesis.paused){ speechSynthesis.pause(); speechSynthesis.resume(); } }, 12000);
 
 /* ---- init ---- */
+const KIOSK = new URLSearchParams(location.search).has('watch');
+if(KIOSK) document.body.classList.add('kiosk');
+
 loadState();
 loadVoices();
 refreshBudget();
 setTally('ready','STANDBY');
-fetchHeadlines(); // auto-pull today's bulletin on open
+
+const watchBtn = $('watchBtn');
+if(KIOSK){
+  // viewers get a fuller bulletin: keep the 60s budget even if the clip is shorter (it loops)
+  (async ()=>{
+    await fetchHeadlines();
+    els.videoDur.value = Math.max(60, Number(els.videoDur.value)||0);
+    await generateScript();
+    if(els.scriptBox.value.trim()){
+      watchBtn.disabled = false;
+      watchBtn.textContent = "▶ WATCH TODAY'S AI NEWS";
+    }else{
+      watchBtn.textContent = 'Bulletin unavailable — try later';
+    }
+  })();
+  watchBtn.addEventListener('click', ()=>{ watchBtn.classList.add('hide'); goLive(); });
+  const showReplay = ()=>{
+    watchBtn.classList.remove('hide');
+    watchBtn.textContent = '↻ REPLAY BULLETIN';
+    watchBtn.disabled = false;
+  };
+  const origWrapCheck = setInterval(()=>{
+    if(!speechSynthesis.speaking && !speechSynthesis.pending && watchBtn.classList.contains('hide')) showReplay();
+  }, 1000);
+}else{
+  fetchHeadlines(); // desk mode: auto-pull today's bulletin on open
+}
 </script>
 </body>
 </html>
