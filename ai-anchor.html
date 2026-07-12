@@ -51,9 +51,9 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:
 .chyron .slug{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.08em;background:var(--onair);color:#fff;padding:7px 14px;display:flex;align-items:center;white-space:nowrap}
 .chyron .line{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.05em;color:#fff;padding:7px 14px;flex:1;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ticker{background:rgba(6,10,16,.92);overflow:hidden;border-top:1px solid rgba(255,255,255,.08)}
-.ticker-track{display:inline-block;white-space:nowrap;padding:5px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);animation:crawl 40s linear infinite}
+.ticker-track{display:inline-block;white-space:nowrap;padding:5px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);animation:crawl 40s linear infinite;will-change:transform}
 .ticker-track span{margin:0 26px}
-@keyframes crawl{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes crawl{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 
 /* ---------- console ---------- */
 main{max-width:980px;margin:18px auto 40px;padding:0 16px;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:14px}
@@ -361,6 +361,7 @@ els.video.addEventListener('loadedmetadata', ()=>{
 });
 els.video.addEventListener('canplay', ()=>{ els.noVideo.hidden = true; });
 els.video.addEventListener('playing', ()=>{ els.noVideo.hidden = true; });
+els.video.addEventListener('timeupdate', ()=>{ if(!els.noVideo.hidden) els.noVideo.hidden = true; });
 let videoRetried = false;
 els.video.addEventListener('error', ()=>{
   if(els.video.readyState !== 0) return;           // frames exist — ignore transient error
@@ -447,6 +448,10 @@ function renderHeadlines(){
     const s = document.createElement('span'); s.textContent = '● ' + h;
     els.ticker.appendChild(s);
   });
+  // restart the crawl (iOS can leave the animation parked after content swaps)
+  els.ticker.style.animation = 'none';
+  void els.ticker.offsetWidth;
+  els.ticker.style.animation = '';
 }
 els.fetchBtn.addEventListener('click', fetchHeadlines);
 
@@ -611,8 +616,6 @@ function goLive(){
     els.chyron.classList.add('show');
     const hs = activeHeadlines();
     els.chyronLine.textContent = hs[0] || "Today's AI briefing";
-    // iOS decoder-pool defense: a fresh load() reclaims a decode slot before playing
-    try{ els.video.load(); }catch(e){}
     els.video.currentTime = 0;
     els.video.play().catch(()=>{});
     els.goBtn.disabled = true; els.stopBtn.disabled = false;
