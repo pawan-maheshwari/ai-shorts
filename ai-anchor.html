@@ -39,9 +39,9 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:
 
 /* ---------- stage ---------- */
 .stage-wrap{max-width:980px;margin:22px auto 0;padding:0 16px}
-.stage{position:relative;background:#000;border:1px solid var(--panel-edge);border-radius:8px;overflow:hidden;aspect-ratio:16/9}
-.stage video{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.96)}
-.stage .no-video{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;padding:20px}
+.stage{position:relative;background:#000;border:1px solid var(--panel-edge);border-radius:8px;overflow:hidden;aspect-ratio:16/9;max-height:70vh;margin:0 auto;transition:aspect-ratio .3s}
+.stage video{width:100%;height:100%;object-fit:contain;display:block;filter:saturate(.96)}
+.stage .no-video{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;padding:20px;background:var(--studio)}
 .timecode{position:absolute;top:10px;right:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:3px}
 
 /* signature: lower-third chyron */
@@ -324,12 +324,22 @@ function loadState(){
 /* ---- video ---- */
 els.video.addEventListener('loadedmetadata', ()=>{
   els.noVideo.hidden = true;
+  // stage adopts the video's real shape (portrait anchor stays uncropped); cap width for tall videos
+  if(els.video.videoWidth && els.video.videoHeight){
+    const stage = els.video.closest('.stage');
+    stage.style.aspectRatio = `${els.video.videoWidth} / ${els.video.videoHeight}`;
+    if(els.video.videoHeight > els.video.videoWidth) stage.style.maxWidth = '420px';
+  }
   if(isFinite(els.video.duration) && els.video.duration > 1){
     els.videoDur.value = Math.round(els.video.duration);
     refreshBudget();
   }
 });
-els.video.addEventListener('error', ()=>{ els.noVideo.hidden = false; });
+els.video.addEventListener('canplay', ()=>{ els.noVideo.hidden = true; });
+els.video.addEventListener('error', ()=>{
+  // only surface the picker if the video truly failed to load
+  if(els.video.readyState === 0) els.noVideo.hidden = false;
+});
 els.videoFile.addEventListener('change', e=>{
   const f = e.target.files[0];
   if(f) els.video.src = URL.createObjectURL(f);
