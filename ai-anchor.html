@@ -39,7 +39,7 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:
 
 /* ---------- stage ---------- */
 .stage-wrap{max-width:980px;margin:22px auto 0;padding:0 16px}
-.stage{position:relative;background:#000;border:1px solid var(--panel-edge);border-radius:8px;overflow:hidden;aspect-ratio:16/9;max-height:70vh;margin:0 auto;transition:aspect-ratio .3s}
+.stage{position:relative;background:#000 url('anchor-poster.jpeg') center/contain no-repeat;border:1px solid var(--panel-edge);border-radius:8px;overflow:hidden;aspect-ratio:16/9;max-height:70vh;margin:0 auto;transition:aspect-ratio .3s}
 .stage video{width:100%;height:100%;object-fit:contain;display:block;filter:saturate(.96)}
 .stage .no-video{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;padding:20px;background:var(--studio)}
 .timecode{position:absolute;top:10px;right:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:3px}
@@ -99,6 +99,9 @@ footer a{color:var(--signal);text-decoration:none}
 /* ---------- watch mode (?watch=1) — viewer-facing, console hidden ---------- */
 body.kiosk main{display:none}
 body.kiosk .stage-wrap{margin-top:34px}
+body.embed header,body.embed footer{display:none}
+body.embed .stage-wrap{margin-top:6px;padding:0 6px}
+body.embed .stage{border:none;border-radius:0;aspect-ratio:auto;height:calc(100vh - 12px);max-height:none}
 .watch-btn{position:absolute;inset:0;margin:auto;width:min(78%,340px);height:56px;display:none;align-items:center;justify-content:center;gap:10px;background:rgba(229,72,77,.92);border:none;border-radius:28px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.1em;cursor:pointer;box-shadow:0 6px 30px rgba(0,0,0,.5)}
 body.kiosk .watch-btn{display:flex}
 .watch-btn:disabled{background:rgba(60,68,78,.9);cursor:wait}
@@ -602,10 +605,14 @@ function goLive(){
   const rate = AnchorCore.calibrateRate(words, dur, 170);
 
   const onStart = ()=>{
+    const wb = document.getElementById('watchBtn');
+    if(wb) wb.classList.add('hide');
     setTally('live','ON AIR');
     els.chyron.classList.add('show');
     const hs = activeHeadlines();
     els.chyronLine.textContent = hs[0] || "Today's AI briefing";
+    // iOS decoder-pool defense: a fresh load() reclaims a decode slot before playing
+    try{ els.video.load(); }catch(e){}
     els.video.currentTime = 0;
     els.video.play().catch(()=>{});
     els.goBtn.disabled = true; els.stopBtn.disabled = false;
@@ -660,6 +667,27 @@ setInterval(()=>{ if(speechSynthesis.speaking && !speechSynthesis.paused){ speec
 /* ---- init ---- */
 const KIOSK = new URLSearchParams(location.search).has('watch');
 if(KIOSK) document.body.classList.add('kiosk');
+const EMBED = (()=>{ try{ return window.self !== window.top; }catch(e){ return true; } })();
+if(EMBED) document.body.classList.add('embed');
+
+/* ---- aishorts broadsheet protocol: the parent page feeds today's wire directly ---- */
+window.addEventListener('message', e=>{
+  const d = e.data || {};
+  if(d.type === 'aishorts-headlines' && Array.isArray(d.items)){
+    const hs = d.items.map(i=>i && i.headline).filter(Boolean).slice(0,5);
+    if(hs.length){ headlines = hs; renderHeadlines(); }
+  }else if(d.type === 'aishorts-script' && Array.isArray(d.lines)){
+    els.scriptBox.value = d.lines.join(' ');
+    refreshBudget();
+    const wb = document.getElementById('watchBtn');
+    if(wb){ wb.disabled = false; wb.textContent = "▶ WATCH TODAY'S AI NEWS"; }
+  }else if(d.type === 'aishorts-play'){
+    // parent gesture may not carry into the iframe for TTS; attempt, button stays as fallback
+    if(els.scriptBox.value.trim() && !els.goBtn.disabled){ try{ goLive(); }catch(err){} }
+  }else if(d.type === 'aishorts-pause'){
+    cut();
+  }
+});
 
 loadState();
 loadVoices();
