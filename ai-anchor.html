@@ -51,9 +51,8 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:
 .chyron .slug{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.08em;background:var(--onair);color:#fff;padding:7px 14px;display:flex;align-items:center;white-space:nowrap}
 .chyron .line{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.05em;color:#fff;padding:7px 14px;flex:1;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ticker{background:rgba(6,10,16,.92);overflow:hidden;border-top:1px solid rgba(255,255,255,.08)}
-.ticker-track{display:inline-block;white-space:nowrap;padding:5px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);animation:crawl 40s linear infinite;will-change:transform}
+.ticker-track{display:inline-block;white-space:nowrap;padding:5px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);will-change:transform}
 .ticker-track span{margin:0 26px}
-@keyframes crawl{from{transform:translate3d(0,0,0)}to{transform:translate3d(-50%,0,0)}}
 
 /* ---------- console ---------- */
 main{max-width:980px;margin:18px auto 40px;padding:0 16px;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:14px}
@@ -102,7 +101,7 @@ body.kiosk .stage-wrap{margin-top:34px}
 body.embed header,body.embed footer{display:none}
 body.embed .stage-wrap{margin-top:6px;padding:0 6px}
 body.embed .stage{border:none;border-radius:0;aspect-ratio:auto;height:calc(100vh - 12px);max-height:none}
-.watch-btn{position:absolute;inset:0;margin:auto;width:min(78%,340px);height:56px;display:none;align-items:center;justify-content:center;gap:10px;background:rgba(229,72,77,.92);border:none;border-radius:28px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.1em;cursor:pointer;box-shadow:0 6px 30px rgba(0,0,0,.5)}
+.watch-btn{position:absolute;left:50%;transform:translateX(-50%);bottom:18%;width:auto;height:44px;display:none;align-items:center;justify-content:center;gap:8px;background:rgba(229,72,77,.92);border:none;border-radius:22px;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.08em;cursor:pointer;padding:0 20px;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.5)}
 body.kiosk .watch-btn{display:flex}
 .watch-btn:disabled{background:rgba(60,68,78,.9);cursor:wait}
 .watch-btn.hide{display:none}
@@ -448,10 +447,25 @@ function renderHeadlines(){
     const s = document.createElement('span'); s.textContent = '● ' + h;
     els.ticker.appendChild(s);
   });
-  // restart the crawl (iOS can leave the animation parked after content swaps)
-  els.ticker.style.animation = 'none';
-  void els.ticker.offsetWidth;
-  els.ticker.style.animation = '';
+  startTicker();
+}
+/* rAF-driven crawl — CSS animations get frozen in iOS iframes, this cannot */
+let tickerRaf = 0, tickerX = 0, tickerLast = 0;
+function startTicker(){
+  cancelAnimationFrame(tickerRaf);
+  tickerX = 0; tickerLast = 0;
+  const SPEED = 40; // px per second
+  const step = ts => {
+    if(tickerLast){
+      tickerX -= SPEED * (ts - tickerLast) / 1000;
+      const half = els.ticker.scrollWidth / 2;
+      if(half > 0 && -tickerX >= half) tickerX += half;
+      els.ticker.style.transform = `translate3d(${tickerX}px,0,0)`;
+    }
+    tickerLast = ts;
+    tickerRaf = requestAnimationFrame(step);
+  };
+  tickerRaf = requestAnimationFrame(step);
 }
 els.fetchBtn.addEventListener('click', fetchHeadlines);
 
@@ -598,6 +612,30 @@ function setTally(mode, text){
   if(mode) els.tally.classList.add(mode);
   els.tallyText.textContent = text;
 }
+/* ---- daily pre-generated bulletin (Piper neural voice, committed by the GitHub Action) ---- */
+let bulletinMp3 = null; // url when available
+async function detectBulletin(){
+  try{
+    const r = await fetch('bulletin.json?ts=' + Date.now(), {signal: AbortSignal.timeout(8000)});
+    if(!r.ok) return false;
+    const j = await r.json();
+    if(!j.script || !j.mp3) return false;
+    bulletinMp3 = j.mp3 + '?ts=' + (j.updated || Date.now());
+    els.scriptBox.value = j.script;
+    refreshBudget();
+    if(Array.isArray(j.headlines) && j.headlines.length){ headlines = j.headlines.slice(0,5); renderHeadlines(); }
+    // expose in the desk engine menu and make it the default
+    if(![...els.engineSel.options].some(o=>o.value==='mp3')){
+      const o = document.createElement('option');
+      o.value = 'mp3'; o.textContent = 'Daily studio voice — pre-generated (best quality)';
+      els.engineSel.insertBefore(o, els.engineSel.firstChild);
+    }
+    if(!loadState().engine) els.engineSel.value = 'mp3';
+    loadVoices();
+    return true;
+  }catch(e){ return false; }
+}
+
 function goLive(){
   const script = els.scriptBox.value.trim();
   if(!script){ els.airStatus.textContent = 'No script on the prompter.'; els.airStatus.classList.add('err'); return; }
@@ -629,6 +667,14 @@ function goLive(){
     els.airStatus.textContent = 'Broadcast complete.';
   };
 
+  if((els.engineSel.value === 'mp3' || (KIOSK && els.engineSel.value !== 'kokoro')) && bulletinMp3){
+    kokoroAudio = new Audio(bulletinMp3);
+    kokoroAudio.onplay = onStart;
+    kokoroAudio.onended = wrap;
+    kokoroAudio.onerror = ()=>{ els.airStatus.textContent = 'Bulletin audio unavailable — using device voice.'; speakDevice(script, rate, onStart, wrap); };
+    kokoroAudio.play().catch(()=>speakDevice(script, rate, onStart, wrap));
+    return;
+  }
   if(els.engineSel.value === 'kokoro'){
     els.goBtn.disabled = true;
     speakKokoro(script, rate, s=>{ els.airStatus.textContent = s; }, onStart, wrap)
@@ -701,9 +747,12 @@ const watchBtn = $('watchBtn');
 if(KIOSK){
   // viewers get a fuller bulletin: keep the 60s budget even if the clip is shorter (it loops)
   (async ()=>{
-    await fetchHeadlines();
-    els.videoDur.value = Math.max(60, Number(els.videoDur.value)||0);
-    await generateScript();
+    const hasBulletin = await detectBulletin();
+    if(!hasBulletin){
+      await fetchHeadlines();
+      els.videoDur.value = Math.max(60, Number(els.videoDur.value)||0);
+      await generateScript();
+    }
     if(els.scriptBox.value.trim()){
       watchBtn.disabled = false;
       watchBtn.textContent = "▶ WATCH TODAY'S AI NEWS";
@@ -721,7 +770,7 @@ if(KIOSK){
     if(!speechSynthesis.speaking && !speechSynthesis.pending && watchBtn.classList.contains('hide')) showReplay();
   }, 1000);
 }else{
-  fetchHeadlines(); // desk mode: auto-pull today's bulletin on open
+  (async ()=>{ await detectBulletin(); if(!headlines.length) fetchHeadlines(); })(); // desk mode
 }
 </script>
 </body>
