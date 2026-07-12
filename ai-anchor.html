@@ -40,7 +40,8 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:
 /* ---------- stage ---------- */
 .stage-wrap{max-width:980px;margin:22px auto 0;padding:0 16px}
 .stage{position:relative;background:#000 url('anchor-poster.jpeg') center/contain no-repeat;border:1px solid var(--panel-edge);border-radius:8px;overflow:hidden;aspect-ratio:16/9;max-height:70vh;margin:0 auto;transition:aspect-ratio .3s}
-.stage video{width:100%;height:100%;object-fit:contain;display:block;filter:saturate(.96)}
+.stage video{width:100%;height:100%;object-fit:contain;display:block;filter:saturate(.96);transform-origin:50% 22%}
+.stage video.cam2{transform:scale(1.12)}
 .stage .no-video{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;padding:20px;background:var(--studio)}
 .timecode{position:absolute;top:10px;right:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:3px}
 
@@ -48,7 +49,10 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:
 .chyron{position:absolute;left:0;right:0;bottom:0;transform:translateY(105%);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .chyron.show{transform:translateY(0)}
 .chyron .strap{display:flex;align-items:stretch;background:linear-gradient(90deg,var(--chyron),#1d5bd6);border-top:2px solid rgba(255,255,255,.25)}
-.chyron .slug{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.08em;background:var(--onair);color:#fff;padding:7px 14px;display:flex;align-items:center;white-space:nowrap}
+.chyron .slug{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.08em;background:var(--onair);color:#fff;padding:7px 14px;display:flex;align-items:center;white-space:nowrap;transition:background .4s}
+.chyron .slug.s-negative{background:#c0392b}
+.chyron .slug.s-positive{background:#1e8e5a}
+.chyron .slug.s-neutral{background:#1d5bd6}
 .chyron .line{font-family:'Bebas Neue',sans-serif;font-size:clamp(15px,2.6vw,22px);letter-spacing:.05em;color:#fff;padding:7px 14px;flex:1;display:flex;align-items:center;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
 .ticker{background:rgba(6,10,16,.92);overflow:hidden;border-top:1px solid rgba(255,255,255,.08)}
 .ticker-track{display:inline-block;white-space:nowrap;padding:5px 0;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-dim);will-change:transform}
@@ -126,7 +130,7 @@ body.kiosk .watch-btn{display:flex}
     <button class="watch-btn" id="watchBtn" disabled>▶ Preparing today's bulletin…</button>
     <div class="chyron" id="chyron">
       <div class="strap">
-        <div class="slug">LIVE · AI SHORTS</div>
+        <div class="slug" id="chyronSlug">LIVE · AI SHORTS</div>
         <div class="line" id="chyronLine">Today's AI briefing</div>
       </div>
       <div class="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
@@ -296,6 +300,39 @@ const AnchorCore = {
       if(titles.length >= (limit||5)) break;
     }
     return titles;
+  },
+  // lightweight sentiment for broadcast framing: negative → BREAKING, positive → UPDATE, else DEVELOPING
+  sentimentOf(text){
+    const t = String(text).toLowerCase();
+    const neg = ['sues','sued','lawsuit','backlash','crisis','warn','losses','fraud','breach','hack','ban','fail','layoff','cuts','scandal','stole','theft','collapse','fine','risk','threat','attack','pulls','recall','outage','decline','crash'];
+    const pos = ['launch','growth','surge','wins','record','breakthrough','partnership','funding','raises','expands','success','boost','milestone','award','profit','soar','achieve','returns to growth','unveil'];
+    let n=0, p=0;
+    neg.forEach(w=>{ if(t.includes(w)) n++; });
+    pos.forEach(w=>{ if(t.includes(w)) p++; });
+    if(n > p) return 'negative';
+    if(p > n) return 'positive';
+    return 'neutral';
+  },
+  // split a bridge-structured script into per-story time windows over the audio duration
+  storyTimings(script, headlines, totalDur){
+    const bridges = ['Our top story:','Also in the news:','Meanwhile,','In other developments,','And finally,'];
+    const words = String(script).trim().split(/\s+/);
+    const total = words.length;
+    const text = words.join(' ');
+    const marks = [];
+    bridges.forEach((b,i)=>{
+      const at = text.indexOf(b);
+      if(at >= 0 && i < headlines.length){
+        const wordsBefore = text.slice(0, at).trim().split(/\s+/).filter(Boolean).length;
+        marks.push({ index:i, start: wordsBefore / total * totalDur });
+      }
+    });
+    marks.sort((a,b)=>a.start-b.start);
+    return marks.map((m,j)=>({
+      index: m.index,
+      start: m.start,
+      end: j+1 < marks.length ? marks[j+1].start : totalDur
+    }));
   }
 };
 // TEST-EXTRACT-END
@@ -637,6 +674,47 @@ async function detectBulletin(){
   }catch(e){ return false; }
 }
 
+/* ---- broadcast director: camera cuts on loop + story-synced sentiment chyron ---- */
+const SLUG_LABEL = { negative:'BREAKING', positive:'UPDATE', neutral:'DEVELOPING' };
+let lastVideoT = 0;
+els.video.addEventListener('timeupdate', ()=>{
+  // loop wrap detected → "cut" to the other camera framing
+  if(els.video.currentTime < lastVideoT - 1){
+    els.video.classList.toggle('cam2');
+  }
+  lastVideoT = els.video.currentTime;
+});
+function startDirector(getElapsed, totalDur){
+  const slug = document.getElementById('chyronSlug');
+  const hs = activeHeadlines();
+  const timings = AnchorCore.storyTimings(els.scriptBox.value, hs, totalDur);
+  clearInterval(window.__director);
+  if(!timings.length) return;
+  let shown = -1;
+  window.__director = setInterval(()=>{
+    const t = getElapsed();
+    if(t == null) return;
+    const cur = timings.find(x=> t >= x.start && t < x.end);
+    if(cur && cur.index !== shown){
+      shown = cur.index;
+      const h = hs[cur.index] || '';
+      const senti = AnchorCore.sentimentOf(h);
+      els.chyronLine.textContent = h.replace(/\s*[-–—|]\s*[^-–—|]+$/,'');
+      if(slug){
+        slug.textContent = SLUG_LABEL[senti] + ' · AI SHORTS';
+        slug.className = 'slug s-' + senti;
+      }
+    }
+  }, 400);
+}
+function stopDirector(){
+  clearInterval(window.__director);
+  const slug = document.getElementById('chyronSlug');
+  if(slug){ slug.textContent = 'LIVE · AI SHORTS'; slug.className = 'slug'; }
+  els.video.classList.remove('cam2');
+  lastVideoT = 0;
+}
+
 function goLive(){
   const script = els.scriptBox.value.trim();
   if(!script){ els.airStatus.textContent = 'No script on the prompter.'; els.airStatus.classList.add('err'); return; }
@@ -671,6 +749,7 @@ function goLive(){
   };
   const wrap = ()=>{
     clearInterval(window.__videoWatchdog);
+    stopDirector();
     setTally('','OFF AIR');
     els.video.pause();
     els.chyron.classList.remove('show');
@@ -681,6 +760,9 @@ function goLive(){
   if((els.engineSel.value === 'mp3' || (KIOSK && els.engineSel.value !== 'kokoro')) && bulletinMp3){
     kokoroAudio = new Audio(bulletinMp3);
     kokoroAudio.onplay = onStart;
+    kokoroAudio.onloadedmetadata = ()=>{
+      startDirector(()=> kokoroAudio ? kokoroAudio.currentTime : null, kokoroAudio.duration || 50);
+    };
     kokoroAudio.onended = wrap;
     kokoroAudio.onerror = ()=>{ els.airStatus.textContent = 'Bulletin audio unavailable — using device voice.'; speakDevice(script, rate, onStart, wrap); };
     kokoroAudio.play().catch(()=>speakDevice(script, rate, onStart, wrap));
@@ -704,13 +786,19 @@ function speakDevice(script, rate, onStart, onEnd){
   if(v) utterance.voice = v;
   utterance.rate = rate;
   utterance.pitch = 1;
-  utterance.onstart = onStart;
+  utterance.onstart = ()=>{
+    onStart();
+    const est = AnchorCore.countWords(script) / (170 * rate) * 60; // estimated read length
+    const t0 = performance.now();
+    startDirector(()=> (performance.now() - t0) / 1000, est);
+  };
   utterance.onend = onEnd;
   utterance.onerror = onEnd;
   speechSynthesis.speak(utterance);
 }
 function cut(){
   clearInterval(window.__videoWatchdog);
+  stopDirector();
   speechSynthesis.cancel();
   if(kokoroAudio){ kokoroAudio.pause(); kokoroAudio = null; }
   setTally('','OFF AIR');
