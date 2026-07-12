@@ -98,6 +98,7 @@ footer a{color:var(--signal);text-decoration:none}
 /* ---------- watch mode (?watch=1) — viewer-facing, console hidden ---------- */
 body.kiosk main{display:none}
 body.kiosk .stage-wrap{margin-top:34px}
+body.kiosk .no-video{display:none !important}
 body.embed header,body.embed footer{display:none}
 body.embed .stage-wrap{margin-top:6px;padding:0 6px}
 body.embed .stage{border:none;border-radius:0;aspect-ratio:auto;height:calc(100vh - 12px);max-height:none}
@@ -656,10 +657,20 @@ function goLive(){
     els.chyronLine.textContent = hs[0] || "Today's AI briefing";
     els.video.currentTime = 0;
     els.video.play().catch(()=>{});
+    // iOS eviction watchdog: if Safari unloads the video mid-broadcast, revive it
+    clearInterval(window.__videoWatchdog);
+    window.__videoWatchdog = setInterval(()=>{
+      if(els.video.readyState < 2){
+        try{ els.video.load(); els.video.play().catch(()=>{}); }catch(e){}
+      }else if(els.video.paused){
+        els.video.play().catch(()=>{});
+      }
+    }, 3000);
     els.goBtn.disabled = true; els.stopBtn.disabled = false;
     els.airStatus.textContent = `Reading ${words} words — target ${dur}s`;
   };
   const wrap = ()=>{
+    clearInterval(window.__videoWatchdog);
     setTally('','OFF AIR');
     els.video.pause();
     els.chyron.classList.remove('show');
@@ -699,6 +710,7 @@ function speakDevice(script, rate, onStart, onEnd){
   speechSynthesis.speak(utterance);
 }
 function cut(){
+  clearInterval(window.__videoWatchdog);
   speechSynthesis.cancel();
   if(kokoroAudio){ kokoroAudio.pause(); kokoroAudio = null; }
   setTally('','OFF AIR');
@@ -767,7 +779,9 @@ if(KIOSK){
     watchBtn.disabled = false;
   };
   const origWrapCheck = setInterval(()=>{
-    if(!speechSynthesis.speaking && !speechSynthesis.pending && watchBtn.classList.contains('hide')) showReplay();
+    const ttsActive = speechSynthesis.speaking || speechSynthesis.pending;
+    const mp3Active = kokoroAudio && !kokoroAudio.paused && !kokoroAudio.ended;
+    if(!ttsActive && !mp3Active && watchBtn.classList.contains('hide')) showReplay();
   }, 1000);
 }else{
   (async ()=>{ await detectBulletin(); if(!headlines.length) fetchHeadlines(); })(); // desk mode
