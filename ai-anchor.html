@@ -42,6 +42,9 @@ header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:
 .stage{position:relative;background:#000 url('anchor-poster.jpeg') center/contain no-repeat;border:1px solid var(--panel-edge);border-radius:8px;overflow:hidden;aspect-ratio:16/9;max-height:70vh;margin:0 auto;transition:aspect-ratio .3s}
 .stage video{width:100%;height:100%;object-fit:contain;display:block;filter:saturate(.96);transform-origin:50% 22%}
 .stage video.cam2{transform:scale(1.12)}
+.stage video.g-negative{filter:saturate(.82) contrast(1.07) brightness(.93)}
+.stage video.g-positive{filter:saturate(1.12) brightness(1.06)}
+.stage video.g-neutral{filter:saturate(.96)}
 .stage .no-video{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--ink-dim);font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:center;padding:20px;background:var(--studio)}
 .timecode{position:absolute;top:10px;right:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:3px}
 
@@ -674,8 +677,41 @@ async function detectBulletin(){
   }catch(e){ return false; }
 }
 
-/* ---- broadcast director: camera cuts on loop + story-synced sentiment chyron ---- */
+/* ---- broadcast director: expression cuts + story-synced sentiment chyron ---- */
 const SLUG_LABEL = { negative:'BREAKING', positive:'UPDATE', neutral:'DEVELOPING' };
+/* expression footage: drop anchor-negative.mp4 / anchor-positive.mp4 / anchor-neutral.mp4
+   beside this file and the director cuts to the matching face per story */
+const expressionClips = {}; // sentiment -> url
+async function probeExpressionClips(){
+  for(const s of ['negative','positive','neutral']){
+    try{
+      const r = await fetch(`anchor-${s}.mp4`, {method:'HEAD', signal: AbortSignal.timeout(5000)});
+      if(r.ok) expressionClips[s] = `anchor-${s}.mp4`;
+    }catch(e){}
+  }
+}
+const BASE_CLIP = 'anchor-news.mp4';
+function cutToStory(storyIndex, sentiment){
+  const clip = expressionClips[sentiment];
+  const currentSrc = els.video.getAttribute('src') || '';
+  if(clip && !currentSrc.endsWith(clip)){
+    // expression cut: swap footage to the matching face
+    els.video.setAttribute('src', clip);
+    els.video.load();
+    els.video.play().catch(()=>{});
+  }else if(!clip){
+    // single-clip mode: vary the take — new seek offset, camera toggle, sentiment grade
+    if(!currentSrc.endsWith(BASE_CLIP) && Object.keys(expressionClips).length){
+      els.video.setAttribute('src', BASE_CLIP); els.video.load();
+    }
+    const d = els.video.duration;
+    if(isFinite(d) && d > 2) els.video.currentTime = (storyIndex * 4.2) % (d - 1);
+    els.video.classList.toggle('cam2');
+    els.video.play().catch(()=>{});
+  }
+  els.video.classList.remove('g-negative','g-positive','g-neutral');
+  els.video.classList.add('g-' + sentiment);
+}
 let lastVideoT = 0;
 els.video.addEventListener('timeupdate', ()=>{
   // loop wrap detected → "cut" to the other camera framing
@@ -704,6 +740,7 @@ function startDirector(getElapsed, totalDur){
         slug.textContent = SLUG_LABEL[senti] + ' · AI SHORTS';
         slug.className = 'slug s-' + senti;
       }
+      cutToStory(cur.index, senti);
     }
   }, 400);
 }
@@ -711,7 +748,11 @@ function stopDirector(){
   clearInterval(window.__director);
   const slug = document.getElementById('chyronSlug');
   if(slug){ slug.textContent = 'LIVE · AI SHORTS'; slug.className = 'slug'; }
-  els.video.classList.remove('cam2');
+  els.video.classList.remove('cam2','g-negative','g-positive','g-neutral');
+  const currentSrc = els.video.getAttribute('src') || '';
+  if(currentSrc && !currentSrc.endsWith(BASE_CLIP) && !currentSrc.startsWith('blob:')){
+    els.video.setAttribute('src', BASE_CLIP); els.video.load();
+  }
   lastVideoT = 0;
 }
 
@@ -847,6 +888,7 @@ const watchBtn = $('watchBtn');
 if(KIOSK){
   // viewers get a fuller bulletin: keep the 60s budget even if the clip is shorter (it loops)
   (async ()=>{
+    probeExpressionClips();
     const hasBulletin = await detectBulletin();
     if(!hasBulletin){
       await fetchHeadlines();
@@ -872,7 +914,7 @@ if(KIOSK){
     if(!ttsActive && !mp3Active && watchBtn.classList.contains('hide')) showReplay();
   }, 1000);
 }else{
-  (async ()=>{ await detectBulletin(); if(!headlines.length) fetchHeadlines(); })(); // desk mode
+  (async ()=>{ probeExpressionClips(); await detectBulletin(); if(!headlines.length) fetchHeadlines(); })(); // desk mode
 }
 </script>
 </body>
