@@ -258,6 +258,48 @@ footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.
 .hp-open .hp-frame{animation:hpOpen .55s ease forwards}
 @keyframes hpOpen{to{transform:rotateY(-78deg) translateX(-16%);opacity:0}}
 
+/* ---------- lost treasures vault ---------- */
+.vault{background:
+  radial-gradient(ellipse 70% 60% at 50% 0%, rgba(201,150,46,.18), transparent 70%),
+  linear-gradient(180deg,#14291F 0%,#1a2620 60%,#221d14 100%);
+  color:var(--paper);border-top:3px solid var(--brass);border-bottom:3px solid var(--brass);position:relative;overflow:hidden}
+.vault::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.06;
+  background-image:repeating-linear-gradient(45deg,var(--brass) 0 1px,transparent 1px 22px)}
+.vault-inner{max-width:1080px;margin:0 auto;padding:3.4rem 1.4rem;position:relative;z-index:2}
+.vault-head{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:.7rem}
+.vault-head h2{font-family:var(--serif-display);font-weight:700;font-size:clamp(1.8rem,4vw,2.6rem);
+  background:linear-gradient(100deg,#8a6a1c,#f4dd8e 35%,#c9962e 50%,#fdf0bf 70%,#8a6a1c);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:hpShimmer 5s linear infinite}
+.vault-head .chest{font-size:1.9rem;filter:drop-shadow(0 0 10px rgba(228,200,120,.6))}
+.vault-desc{max-width:64ch;color:#CFC7B0;font-style:italic;margin-bottom:1.9rem}
+.treasure-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.3rem}
+.treasure{display:block;text-decoration:none;color:var(--paper);position:relative;
+  background:linear-gradient(155deg,rgba(246,239,223,.09),rgba(246,239,223,.03));
+  border:1px solid rgba(228,200,120,.45);border-radius:6px;padding:1.4rem 1.3rem;
+  transition:transform .2s ease, box-shadow .2s ease, border-color .2s ease;overflow:hidden}
+.treasure::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(248,233,176,.16) 48%,transparent 62%);
+  transform:translateX(-120%);transition:transform .7s ease}
+.treasure:hover{transform:translateY(-5px);border-color:var(--brass-soft);
+  box-shadow:0 20px 44px rgba(0,0,0,.45), 0 0 26px rgba(201,150,46,.22)}
+.treasure:hover::after{transform:translateX(120%)}
+.treasure .t-seal{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 34% 30%,#a03636,#6d1717 60%,#4c0e0e);border:2px solid var(--brass-soft);
+  font-size:1.1rem;margin-bottom:.9rem;box-shadow:0 0 16px rgba(228,200,120,.35)}
+.treasure .t-kicker{font-family:var(--sans);font-weight:600;font-size:.55rem;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--brass-soft)}
+.treasure h3{font-family:var(--serif-display);font-weight:700;font-size:1.5rem;margin:.35rem 0 .1rem;line-height:1.15}
+.treasure .t-sub{font-style:italic;font-size:.9rem;color:#CFC7B0}
+.treasure .t-body{font-size:.88rem;color:#D6CFBB;margin-top:.7rem;line-height:1.55}
+.treasure .t-foot{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:1.1rem}
+.treasure .t-open{font-family:var(--sans);font-weight:700;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--green-deep);background:linear-gradient(180deg,var(--brass-soft),var(--brass));
+  padding:.45rem .9rem;border-radius:3px}
+.treasure .t-src{font-family:var(--sans);font-size:.62rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--brass-soft);border:1px solid rgba(228,200,120,.5);padding:.42rem .7rem;border-radius:3px}
+.treasure .t-src:hover{background:rgba(201,150,46,.2)}
+
 /* views */
 .view{display:none}
 .view.active{display:block}
@@ -329,6 +371,7 @@ footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.
   <div class="wordmark">The AI Athenaeum<small>A Library of Artificial Intelligence</small></div>
   <nav>
     <button data-nav="library" class="active">Library</button>
+    <button id="nav-treasures">Treasures</button>
     <button data-nav="about">About Us</button>
   </nav>
 </header>
@@ -360,6 +403,17 @@ footer .colophon{font-family:var(--serif-display);font-style:italic;font-size:1.
   <section class="section" id="wings">
     <div class="sec-head"><span class="kicker">The Four Wings</span><h2>Find your reading room</h2></div>
     <div id="wings-mount"></div>
+  </section>
+
+  <section class="vault" id="treasures">
+    <div class="vault-inner">
+      <div class="vault-head">
+        <span class="chest">🗝</span>
+        <h2>Lost Treasures</h2>
+      </div>
+      <p class="vault-desc">Every great library keeps a locked room — the singular works that fit no shelf. These are ours: rare, self-contained artefacts, recovered and kept whole.</p>
+      <div class="treasure-row" id="treasure-mount"></div>
+    </div>
   </section>
 
   <section class="sub-strip">
@@ -875,6 +929,54 @@ function shade(hex,f){const n=parseInt(hex.slice(1),16),r=(n>>16)&255,g=(n>>8)&2
   });
 })();
 
+/* ---- Lost Treasures ----
+   The treasure opens with ZERO setup required.
+   On load we quietly check whether GitHub Pages is live for the repo.
+   • Pages live      -> we use the fast, official Pages URL.
+   • Pages not live  -> we use a mirror that renders the repo's HTML directly,
+                        so the link always works. Enable Pages any time and this
+                        page upgrades itself automatically — nothing to edit.   */
+const LOST_TREASURES=[
+  { kicker:"Recovered Artefact · No. I",
+    title:"Kalinga",
+    sub:"The Lost Treasure",
+    body:"A single, self-contained page — nearly ten megabytes of it, whole and undivided. Recovered from the Athenaeum's vaults and kept exactly as it was made. Open it and see for yourself.",
+    seal:"⚔",
+    pages:"https://pawan-maheshwari.github.io/kalinga/",
+    mirror:"https://raw.githack.com/pawan-maheshwari/kalinga/main/index.html",
+    src:"https://github.com/pawan-maheshwari/kalinga" }
+];
+(function(){
+  const mount=$("#treasure-mount");
+  LOST_TREASURES.forEach((t,i)=>{
+    const a=document.createElement("a");
+    a.className="treasure";a.id="treasure-"+i;
+    a.href=t.mirror;               /* safe default: always works */
+    a.target="_blank";a.rel="noopener";
+    a.innerHTML=`<div class="t-seal">${t.seal}</div>
+      <div class="t-kicker">${t.kicker}</div>
+      <h3>${t.title}</h3>
+      <div class="t-sub">${t.sub}</div>
+      <p class="t-body">${t.body}</p>
+      <div class="t-foot"><span class="t-open">Unlock the Treasure →</span>
+      <span class="t-src" data-src="${t.src}">Source</span></div>`;
+    a.querySelector(".t-src").addEventListener("click",e=>{
+      e.preventDefault();e.stopPropagation();
+      window.open(t.src,"_blank","noopener");
+    });
+    mount.appendChild(a);
+    /* silently prefer the official Pages URL whenever it is live.
+       Fully guarded: if fetch is unavailable or blocked, the mirror simply stays. */
+    try{
+      if(typeof fetch==="function"){
+        fetch(t.pages,{method:"HEAD",mode:"cors"})
+          .then(r=>{if(r&&r.ok)a.href=t.pages;})
+          .catch(()=>{});
+      }
+    }catch(e){/* keep the mirror */}
+  });
+})();
+
 /* founders */
 (function(){
   const mount=$("#founders-mount");
@@ -898,6 +1000,13 @@ $$("[data-nav]").forEach(b=>b.addEventListener("click",()=>{
   $$(".topbar nav button").forEach(x=>x.classList.toggle("active",x.dataset.nav===v));
   window.scrollTo({top:0});
 }));
+
+$("#nav-treasures").addEventListener("click",()=>{
+  $$(".view").forEach(x=>x.classList.remove("active"));
+  $("#view-library").classList.add("active");
+  $$(".topbar nav button").forEach(x=>x.classList.remove("active"));
+  setTimeout(()=>$("#treasures").scrollIntoView({behavior:"smooth"}),60);
+});
 
 /* ================= READER ================= */
 let cur={book:null,ch:0,font:1.06};
