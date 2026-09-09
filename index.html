@@ -6,10 +6,35 @@
 <title>AIShorts — All the AI That’s Fit to Print</title>
 <meta name="description" content="AIShorts is a swipe-through wire of the day’s most important artificial-intelligence news from around the world, with a link to every original source.">
 <meta name="theme-color" content="#ffffff">
+<meta name="author" content="planetAI LLP">
+<meta name="copyright" content="&copy; 2026 planetAI LLP">
+<meta name="application-name" content="AIShorts">
+<meta name="publisher" content="planetAI LLP">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="AIShorts &mdash; a planetAI LLP product">
 <meta property="og:title" content="AIShorts — the AI news wire">
 <meta property="og:description" content="The day’s AI news, one swipe at a time. All the AI that’s fit to print.">
 <meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://aishorts.biz/">
+<meta property="og:url" content="https://aishorts.biz/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "AIShorts",
+  "alternateName": "AIShorts \u2014 the AI news wire",
+  "url": "https://aishorts.biz/",
+  "description": "The day\u2019s AI news, one swipe at a time.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "planetAI LLP",
+    "legalName": "PLANETAI LLP",
+    "url": "https://world-of-ai.co.in",
+    "slogan": "AI for Every Planet. Intelligence Accessible to All.",
+    "founder": { "@type": "Person", "name": "Pawan Maheshwari" }
+  }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2731%27%20fill%3D%27%23121212%27/%3E%3Ctext%20x%3D%2732%27%20y%3D%2741%27%20font-family%3D%27Georgia%2Cserif%27%20font-size%3D%2729%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%3EAI%3C/text%3E%3Cpath%20d%3D%27M13%2047%20H28%20l3%20-6%203.5%2012%203%20-6%20H51%27%20fill%3D%27none%27%20stroke%3D%27%23E8B04B%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -799,6 +824,14 @@
     .nav-sheet{width:340px;}
   }
 
+  /* ---- publisher credit under the nameplate ---- */
+  .publisher{font:600 7.4px/1 "Libre Franklin",sans-serif;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--meta-2);margin-top:6px;}
+  .publisher a{color:var(--meta);text-decoration:none;border-bottom:1px solid var(--rule);}
+  .publisher a:hover{color:var(--link);border-bottom-color:var(--link);}
+  @media (max-height:680px){ .publisher{display:none;} }
+  @media (min-width:1024px){ .publisher{font-size:8.4px;margin-top:8px;} }
+
   /* ---- keyboard focus: one visible ring for every interactive control ----
      Mouse and touch users never see it (:focus-visible), keyboard users
      always do. WCAG 2.4.7. ---------------------------------------------- */
@@ -822,11 +855,15 @@
   <div class="ns-grp" id="nsSites"><div class="ns-lab">More from AIShorts</div></div>
   <div class="ns-grp" id="nsTools"><div class="ns-lab">Today</div></div>
   <div class="ns-grp" id="nsAcct"><div class="ns-lab">Stay in touch</div></div>
+  <div class="ns-grp" id="nsOrg">
+    <div class="ns-lab">Published by</div>
+    <a class="tb-link tb-site" href="https://world-of-ai.co.in" target="_blank" rel="noopener">planetAI LLP<span class="ext">&#8599;</span></a>
+  </div>
 </aside>
 <div class="intro" id="intro" role="dialog" aria-label="AIShorts front page">
   <div class="intro-paper">
     <div class="intro-masthead">AIShorts</div>
-    <div class="intro-meta"><span>Special Edition</span><span id="introDate">Today</span><span>Front Page</span></div>
+    <div class="intro-meta"><span>planetAI LLP</span><span id="introDate">Today</span><span>Front Page</span></div>
     <div class="intro-kicker" id="introKicker">Lead Story</div>
     <h1 class="intro-headline" id="introHeadline">Loading the wire&hellip;</h1>
     <figure class="mphoto" id="introFrame">
@@ -904,6 +941,7 @@
       <div class="np-center">
         <div class="wordmark">AIShorts</div>
         <div class="slogan">&ldquo;All the AI That&rsquo;s Fit to Print&rdquo;</div>
+        <div class="publisher">A <a href="https://world-of-ai.co.in" target="_blank" rel="noopener">planetAI LLP</a> product</div>
       </div>
       <div class="dateline-side" id="dateline">AI Edition</div>
     </div>
@@ -968,6 +1006,7 @@
   </footer>
   <div class="colophon">
     <span class="cx">&copy; <span id="cyear">2026</span> AIShorts</span>
+    <span class="cx">A <a href="https://world-of-ai.co.in" target="_blank" rel="noopener">planetAI LLP</a> product</span>
     <span class="cx">Moderated by <a href="https://www.linkedin.com/in/pawan-maheshwari-4b9b4715" target="_blank" rel="noopener noreferrer">Pawan Maheshwari</a></span>
     <span class="cx"><a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a> &middot; <a href="contact.html">Contact</a></span>
   </div>
