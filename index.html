@@ -40,6 +40,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="alternate" type="application/atom+xml" title="AIShorts" href="feed.xml">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <meta name="apple-mobile-web-app-title" content="AIShorts">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2083,8 +2084,25 @@ async function fetchHN(){
   return out;
 }
 
+/* source 0: today's edition, built once a day in CI and committed to the
+   repo. Reading it here means no CORS proxies in the reader's browser,
+   a much faster first paint, and — the part that matters for the
+   corrections log — one identical edition for every reader. */
+async function fetchEdition(){
+  var r=await fetchT("editions/latest.json?t="+Math.floor(Date.now()/6e5),{},7000);
+  if(!r.ok) throw new Error("edition "+r.status);
+  var e=await r.json();
+  if(!e||!Array.isArray(e.items)||e.items.length<3) throw new Error("edition empty");
+  return e.items.map(function(it){
+    return {headline:it.headline,summary:it.summary,source:it.source,
+            url:it.url,image:it.image||"",category:it.category,
+            region:it.region||"Global",date:it.date,note:it.note||""};
+  });
+}
+
 /* priority order of live sources */
 async function fetchFresh(){
+  try{var ed=await fetchEdition(); if(ed.length)return{items:ed,tag:""};}catch(e){console.info("[aishorts] edition:",e.message);}
   try{var w=await fetchWorker(); if(w.length)return{items:w,tag:""};}catch(e){console.info("[aishorts] worker:",e.message);}
   try{var a=await fetchRSS(); if(a.length)return{items:a,tag:" \u00b7 via Google News"};}catch(e){console.info("[aishorts] rss:",e.message);}
   try{var b=await fetchHN(); if(b.length)return{items:b,tag:" \u00b7 via Hacker News"};}catch(e){console.info("[aishorts] hn:",e.message);}
