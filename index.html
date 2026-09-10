@@ -983,6 +983,44 @@
     .colophon{display:block;border-top:1pt solid #000;padding-top:6pt;font-size:8pt;}
   }
 
+  /* =====================================================================
+     CLIPPINGS + CUTTINGS
+     ===================================================================== */
+  .acts{display:flex;gap:6px;flex:0 0 auto;}
+  .act{appearance:none;cursor:pointer;border:1px solid var(--rule);background:transparent;
+    color:var(--meta);border-radius:0;padding:4px 7px;
+    font:700 7.6px/1 var(--sans);letter-spacing:1px;text-transform:uppercase;
+    transition:background var(--dur) var(--ease),color var(--dur) var(--ease),
+               border-color var(--dur) var(--ease);}
+  .act:hover{border-color:var(--ink);color:var(--ink);}
+  .act[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--paper);}
+  .act.is-busy{opacity:.5;cursor:progress;}
+
+  .clip-count{margin-left:auto;min-width:19px;height:19px;padding:0 5px;
+    display:inline-flex;align-items:center;justify-content:center;
+    background:var(--ink);color:var(--paper);border-radius:10px;
+    font:800 9px/1 var(--sans);font-variant-numeric:tabular-nums;}
+  .clip-count[data-n="0"]{background:var(--rule);color:var(--meta);}
+
+  .clip-item{display:flex;gap:10px;align-items:flex-start;
+    padding:11px 0;border-bottom:1px solid var(--rule);}
+  .clip-item:last-child{border-bottom:0;}
+  .clip-main{flex:1 1 auto;min-width:0;}
+  .clip-hed{font-family:var(--serif);font-weight:600;font-size:14px;line-height:1.25;
+    color:var(--ink);margin:0 0 4px;}
+  .clip-hed a{color:inherit;text-decoration:none;border-bottom:1px solid var(--rule);}
+  .clip-hed a:hover{color:var(--link);border-bottom-color:var(--link);}
+  .clip-meta{font-family:var(--serif);font-variant-caps:all-small-caps;
+    font-variant-numeric:oldstyle-nums;font-size:11px;color:var(--meta);letter-spacing:.2px;}
+  .clip-del{appearance:none;border:0;background:transparent;cursor:pointer;flex:0 0 auto;
+    color:var(--meta-2);font-size:17px;line-height:1;padding:2px 3px;}
+  .clip-del:hover{color:var(--live);}
+  .clips-empty{font-family:var(--serif);font-size:13px;color:var(--meta);
+    padding:14px 0 4px;line-height:1.5;}
+
+  @media (max-width:379px){ .act{padding:4px 5px;font-size:7px;letter-spacing:.6px;} }
+  @media print{ .acts{display:none !important;} }
+
   /* ---- nameplate ears: the daily quiz and poll flank the wordmark ----
      Classic broadsheet furniture. The dateline gives up its absolute
      right-hand slot and flows centred under the slogan at every width,
@@ -1051,6 +1089,10 @@
   <div class="ns-grp" id="nsSites"><div class="ns-lab">More from AIShorts</div></div>
   <div class="ns-grp" id="nsTools"><div class="ns-lab">Today</div></div>
   <div class="ns-grp" id="nsAcct"><div class="ns-lab">Stay in touch</div></div>
+  <div class="ns-grp" id="nsClips">
+    <div class="ns-lab">Your scrapbook</div>
+    <button class="tb-link" id="openClips">Clippings<span class="clip-count" id="clipCount">0</span></button>
+  </div>
   <div class="ns-grp" id="nsOrg">
     <div class="ns-lab">Published by</div>
     <a class="tb-link tb-site" href="https://world-of-ai.co.in" target="_blank" rel="noopener">planetAI LLP<span class="ext">&#8599;</span></a>
@@ -1210,6 +1252,17 @@
   </div>
 
   <div class="status" id="status"></div>
+
+  <div class="modal" id="clipsModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Your clippings">
+      <button class="modal-x" data-close aria-label="Close">&times;</button>
+      <div class="modal-kicker">Your Scrapbook</div>
+      <h3 class="modal-title">Clippings</h3>
+      <p class="modal-sub" id="clipsSub">Stories you clip are kept on this device.</p>
+      <div id="clipsList"></div>
+      <button class="opt" id="clipsClear" style="margin-top:14px;display:none;">Clear all clippings</button>
+    </div>
+  </div>
 
   <div class="modal" id="quizModal">
     <div class="modal-card" role="dialog" aria-modal="true" aria-label="AI Quiz of the Day">
@@ -1459,6 +1512,10 @@ function card(n){
       </div>
       <div class="source">
         <div class="by">By <b>${esc(n.source||"Unknown")}</b> &middot; ${fmtDate(n.date)}${n.note?`<br><span class="note">${esc(n.note)}</span>`:""}</div>
+        <div class="acts">
+          <button class="act clip" data-clip="${key}" aria-pressed="${(typeof isClipped==="function"&&isClipped(cardKey(n)))?"true":"false"}" title="Clip this story to your scrapbook">Clip</button>
+          <button class="act cut" data-cut="${key}" title="Share this story as a newspaper cutting">Cutting</button>
+        </div>
         ${link}
       </div>
     </div>
@@ -2873,6 +2930,299 @@ initFeed();
     if(e.target.closest('a,button') && e.target.id !== 'navClose') shut();
   });
 })();
+</script>
+<script>
+/* =====================================================================
+   CLIPPINGS — a scrapbook kept on the reader's own device
+   =====================================================================
+   Nothing leaves the browser. Stories are keyed by cardKey(), the same
+   identity the deck already uses, so a clip survives a feed refresh.
+   isClipped() is declared here as a function declaration on purpose: the
+   card template calls it via a typeof guard, so the very first render
+   (which happens before this script runs) degrades to "not clipped"
+   instead of throwing.
+--------------------------------------------------------------------- */
+var CLIP_KEY = "aishorts_clips";
+
+function clipsRead(){
+  try{ var v = JSON.parse(localStorage.getItem(CLIP_KEY) || "[]");
+       return Array.isArray(v) ? v : []; }
+  catch(e){ return []; }
+}
+function clipsWrite(list){
+  try{ localStorage.setItem(CLIP_KEY, JSON.stringify(list.slice(0, 200))); return true; }
+  catch(e){ return false; }               /* private mode / quota — fail quietly */
+}
+function isClipped(key){
+  var k = String(key || "");
+  return clipsRead().some(function(c){ return c.k === k; });
+}
+
+(function(){
+  var deck = document.getElementById("deck");
+
+  function findStory(key){
+    if(typeof news === "undefined" || !Array.isArray(news)) return null;
+    for(var i=0;i<news.length;i++){ if(cardKey(news[i]) === key) return news[i]; }
+    return null;
+  }
+
+  function badge(){
+    var el = document.getElementById("clipCount");
+    if(!el) return;
+    var n = clipsRead().length;
+    el.textContent = n; el.setAttribute("data-n", n);
+  }
+
+  function toggleClip(key, btn){
+    var list = clipsRead(),
+        at   = list.findIndex(function(c){ return c.k === key; });
+    if(at > -1){
+      list.splice(at, 1);
+    }else{
+      var n = findStory(key);
+      if(!n) return;
+      list.unshift({
+        k: key,
+        headline: String(n.headline || ""),
+        source:   String(n.source || ""),
+        date:     String(n.date || ""),
+        cat:      String(n.category || ""),
+        url:      safeURL(n.url),
+        clipped:  new Date().toISOString()
+      });
+    }
+    if(!clipsWrite(list)) return;
+    if(btn) btn.setAttribute("aria-pressed", at > -1 ? "false" : "true");
+    badge(); renderClips();
+  }
+
+  function renderClips(){
+    var box = document.getElementById("clipsList"),
+        sub = document.getElementById("clipsSub"),
+        clr = document.getElementById("clipsClear");
+    if(!box) return;
+    var list = clipsRead();
+    box.textContent = "";
+    if(clr) clr.style.display = list.length ? "block" : "none";
+    if(sub) sub.textContent = list.length
+      ? list.length + (list.length === 1 ? " story" : " stories") + " kept on this device."
+      : "Stories you clip are kept on this device.";
+    if(!list.length){
+      var p = document.createElement("p");
+      p.className = "clips-empty";
+      p.textContent = "Nothing clipped yet. Tap Clip on any story to keep it here.";
+      box.appendChild(p);
+      return;
+    }
+    list.forEach(function(c){
+      var row = document.createElement("div"); row.className = "clip-item";
+      var main = document.createElement("div"); main.className = "clip-main";
+      var hed = document.createElement("div"); hed.className = "clip-hed";
+      if(c.url){
+        var a = document.createElement("a");
+        a.href = c.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+        a.textContent = c.headline; hed.appendChild(a);
+      }else{ hed.textContent = c.headline; }
+      var met = document.createElement("div"); met.className = "clip-meta";
+      met.textContent = [c.source, c.cat, (c.date || "").slice(0, 10)]
+                          .filter(Boolean).join(" \u00b7 ");
+      main.appendChild(hed); main.appendChild(met);
+      var del = document.createElement("button");
+      del.className = "clip-del"; del.type = "button";
+      del.setAttribute("aria-label", "Remove this clipping");
+      del.innerHTML = "&times;";
+      del.onclick = function(){
+        clipsWrite(clipsRead().filter(function(x){ return x.k !== c.k; }));
+        badge(); renderClips(); syncButtons();
+      };
+      row.appendChild(main); row.appendChild(del);
+      box.appendChild(row);
+    });
+  }
+
+  /* the deck re-renders on filter and refresh; re-sync the pressed state */
+  function syncButtons(){
+    if(!deck) return;
+    deck.querySelectorAll("[data-clip]").forEach(function(b){
+      b.setAttribute("aria-pressed", isClipped(b.getAttribute("data-clip")) ? "true" : "false");
+    });
+  }
+  if(deck && window.MutationObserver){
+    new MutationObserver(syncButtons).observe(deck, {childList:true, subtree:true});
+  }
+
+  /* delegation, so buttons keep working through every re-render */
+  if(deck) deck.addEventListener("click", function(e){
+    var c = e.target.closest("[data-clip]");
+    if(c){ e.preventDefault(); toggleClip(c.getAttribute("data-clip"), c); return; }
+    var t = e.target.closest("[data-cut]");
+    if(t){ e.preventDefault(); shareCutting(findStory(t.getAttribute("data-cut")), t); }
+  });
+
+  var open = document.getElementById("openClips"),
+      modal = document.getElementById("clipsModal"),
+      clear = document.getElementById("clipsClear");
+  if(open && modal) open.addEventListener("click", function(){
+    renderClips(); modal.classList.add("open");
+  });
+  if(clear) clear.onclick = function(){
+    clipsWrite([]); badge(); renderClips(); syncButtons();
+  };
+  document.querySelectorAll("#clipsModal [data-close]").forEach(function(b){
+    b.onclick = function(){ modal.classList.remove("open"); };
+  });
+
+  badge(); renderClips(); syncButtons();
+})();
+
+/* =====================================================================
+   CUTTINGS — render a story as a torn newspaper clipping and share it
+   =====================================================================
+   Drawn to an offscreen 1080x1350 canvas (4:5, the friendliest ratio for
+   social), then handed to the native share sheet. Where Web Share can't
+   take files, it falls back to a download.
+--------------------------------------------------------------------- */
+function shareCutting(n, btn){
+  if(!n) return;
+  if(btn){ btn.classList.add("is-busy"); btn.disabled = true; }
+
+  var done = function(){ if(btn){ btn.classList.remove("is-busy"); btn.disabled = false; } };
+  var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+
+  ready.then(function(){
+    var W = 1080, PAD = 84, FOOT = 196;
+    var PAPER = "#fdfcf9", INK = "#14110f", META = "#6b645c", BRASS = "#8a6a2f";
+
+    /* Lay the cutting out once to measure it, then again to draw it at a
+       height that actually fits the story. A fixed 4:5 frame left a hole
+       under short summaries; this clamps between square and 4:5 instead. */
+    function layout(x, draw, maxY){
+      var y = PAD;
+
+      function wrap(text, font, lh, colour, limit){
+        x.font = font; if(draw) x.fillStyle = colour;
+        var words = String(text || "").split(/\s+/), line = "", drawn = 0, max = W - PAD * 2;
+        for(var i = 0; i < words.length; i++){
+          var test = line ? line + " " + words[i] : words[i];
+          if(x.measureText(test).width > max && line){
+            if(limit && drawn === limit - 1){
+              while(x.measureText(line + "\u2026").width > max && line.indexOf(" ") > -1){
+                line = line.slice(0, line.lastIndexOf(" "));
+              }
+              if(draw) x.fillText(line + "\u2026", PAD, y);
+              y += lh; return;
+            }
+            if(draw) x.fillText(line, PAD, y);
+            y += lh; drawn++; line = words[i];
+          }else{ line = test; }
+        }
+        if(line){ if(draw) x.fillText(line, PAD, y); y += lh; }
+      }
+
+      /* masthead */
+      if(draw){ x.fillStyle = INK; x.textAlign = "center";
+        x.font = '700 78px "UnifrakturCook", Georgia, serif';
+        x.fillText("AIShorts", W / 2, y + 62); }
+      y += 92;
+      if(draw){ x.font = 'italic 24px "Newsreader", Georgia, serif'; x.fillStyle = META;
+        x.fillText("\u201cAll the AI That\u2019s Fit to Print\u201d", W / 2, y); }
+      y += 34;
+
+      /* thick-thin rule */
+      if(draw) x.fillStyle = INK;
+      if(draw) x.fillRect(PAD, y, W - PAD * 2, 6);
+      y += 12;
+      if(draw) x.fillRect(PAD, y, W - PAD * 2, 2);
+      y += 52;
+
+      if(draw) x.textAlign = "left";
+
+      /* kicker — its own line, clear of the headline's ascenders */
+      if(draw){ x.fillStyle = BRASS; x.font = '800 22px "Libre Franklin", sans-serif';
+        x.fillText(String(n.category || "News").toUpperCase(), PAD, y); }
+      y += 76;
+
+      wrap(n.headline, '700 62px "Newsreader", Georgia, serif', 70, INK, 5);
+      y += 26;
+
+      var room = maxY ? Math.max(0, Math.floor((maxY - y) / 42)) : 7;
+      if(room > 0) wrap(n.summary, '400 32px "Newsreader", Georgia, serif',
+                        42, "#2e2a26", Math.min(room, 7));
+
+      /* end mark, the way a printed story closes */
+      if(draw){ x.fillStyle = BRASS; x.fillRect(PAD, y + 6, 26, 8); }
+      y += 22;
+      return y;
+    }
+
+    /* pass 1: measure */
+    var scratch = document.createElement("canvas");
+    scratch.width = W; scratch.height = 2400;
+    var contentBottom = layout(scratch.getContext("2d"), false, 1500);
+    var H = Math.max(1080, Math.min(1440, Math.round(contentBottom + FOOT + 40)));
+
+    /* pass 2: draw */
+    var cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    var x = cv.getContext("2d");
+
+    /* paper, with a torn bottom edge */
+    x.fillStyle = PAPER;
+    x.beginPath();
+    x.moveTo(0, 0); x.lineTo(W, 0); x.lineTo(W, H - 40);
+    for(var tx = W; tx >= 0; tx -= 20){
+      x.lineTo(tx, H - 40 + (Math.sin(tx * 0.06) * 11) + (Math.random() * 17));
+    }
+    x.lineTo(0, 0); x.closePath(); x.fill();
+
+    /* a whisper of grain */
+    x.save(); x.globalAlpha = 0.035; x.fillStyle = INK;
+    for(var i = 0; i < 2600; i++){
+      x.fillRect(Math.random() * W, Math.random() * (H - 60), 1.4, 1.4);
+    }
+    x.restore();
+
+    layout(x, true, H - FOOT - 40);
+
+    /* byline block, pinned above the tear */
+    var footY = H - FOOT;
+    x.textAlign = "left";
+    x.fillStyle = "#ddd8cc"; x.fillRect(PAD, footY, W - PAD * 2, 2);
+    x.fillStyle = META;
+    x.font = '600 26px "Newsreader", Georgia, serif';
+    x.fillText("By " + String(n.source || "Unknown").toUpperCase()
+               + "  \u00b7  " + String(n.date || "").slice(0, 10), PAD, footY + 44);
+
+    x.fillStyle = INK;
+    x.font = '800 24px "Libre Franklin", sans-serif';
+    x.fillText("AISHORTS.BIZ", PAD, footY + 90);
+    x.fillStyle = BRASS;
+    x.font = '600 21px "Libre Franklin", sans-serif';
+    x.fillText("A planetAI LLP product", PAD, footY + 124);
+
+    cv.toBlob(function(blob){
+      if(!blob){ done(); return; }
+      var name = "aishorts-cutting.png";
+      var file = null;
+      try{ file = new File([blob], name, {type:"image/png"}); }catch(e){}
+
+      if(file && navigator.canShare && navigator.canShare({files:[file]})){
+        navigator.share({
+          files: [file],
+          title: n.headline,
+          text: String(n.headline || "") + " \u2014 via AIShorts"
+        }).catch(function(){}).then(done, done);
+        return;
+      }
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+      done();
+    }, "image/png");
+  }).catch(done);
+}
 </script>
 </body>
 </html>
