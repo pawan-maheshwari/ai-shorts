@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Editorial Standards &amp; Corrections — AIShorts</title>
+<meta name="description" content="How AIShorts selects stories, what is automated, what a human reviews, and how corrections are handled. Includes the corrections log.">
+<meta name="author" content="planetAI LLP">
+<link rel="canonical" href="https://aishorts.biz/standards.html">
+<style>
+  :root{--ink:#14110f;--paper:#fdfcf9;--paper-2:#f4f2ec;--rule:#ddd8cc;
+        --link:#1c4a5e;--meta:#6b645c;--accent:#8a6a2f;}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--paper-2);color:var(--ink);
+       font:400 17px/1.6 Georgia,"Times New Roman",serif;}
+  .doc{max-width:720px;margin:0 auto;background:var(--paper);min-height:100vh;
+       padding:34px 22px 60px;border-left:1px solid var(--rule);border-right:1px solid var(--rule);}
+  .name{font-family:"Libre Franklin",Helvetica,Arial,sans-serif;font-weight:800;letter-spacing:3px;
+        text-transform:uppercase;font-size:13px;color:var(--accent);}
+  h1{font-size:34px;line-height:1.1;margin:6px 0 18px;}
+  h2{font-size:21px;margin:30px 0 8px;border-bottom:1px solid var(--rule);padding-bottom:5px;}
+  h3{font-size:16px;margin:20px 0 4px;font-family:"Libre Franklin",Helvetica,Arial,sans-serif;
+     letter-spacing:.4px;}
+  p,li{font-size:16.5px;}
+  a{color:var(--link);}
+  .lead{font-size:19px;line-height:1.55;font-style:italic;color:#2b2b2b;}
+  .updated{font-family:"Libre Franklin",sans-serif;font-size:12px;letter-spacing:1px;
+           text-transform:uppercase;color:var(--meta);margin:0 0 26px;}
+  table.pipe{width:100%;border-collapse:collapse;margin:12px 0 6px;font-size:15.5px;}
+  table.pipe th,table.pipe td{text-align:left;vertical-align:top;padding:9px 10px 9px 0;
+                              border-bottom:1px solid var(--rule);}
+  table.pipe th{font-family:"Libre Franklin",sans-serif;font-size:11px;letter-spacing:1.2px;
+                text-transform:uppercase;color:var(--meta);font-weight:800;}
+  .tag{display:inline-block;font-family:"Libre Franklin",sans-serif;font-size:10px;font-weight:800;
+       letter-spacing:1px;text-transform:uppercase;padding:3px 7px;border:1px solid var(--rule);
+       white-space:nowrap;}
+  .tag.auto{border-color:var(--accent);color:var(--accent);}
+  .tag.human{border-color:var(--ink);color:var(--ink);}
+  .log{margin-top:10px;}
+  .log-item{border-bottom:1px solid var(--rule);padding:13px 0;}
+  .log-date{font-family:"Libre Franklin",sans-serif;font-size:11px;letter-spacing:1.2px;
+            text-transform:uppercase;color:var(--meta);}
+  .log-what{margin:4px 0 0;}
+  .log-empty{color:var(--meta);font-style:italic;}
+  footer{max-width:720px;margin:0 auto;padding:18px 22px 40px;
+         font:600 13px/1.6 "Libre Franklin",sans-serif;color:var(--meta);text-align:center;}
+  footer a{color:var(--meta);text-decoration:none;margin:0 6px;}
+  footer a:hover{color:var(--ink);text-decoration:underline;}
+  @media (prefers-color-scheme:dark){
+    :root{--ink:#f2ede1;--paper:#16140f;--paper-2:#0c0b08;--rule:#332e25;
+          --link:#7fb6cd;--meta:#9b9384;--accent:#c9a961;}
+    .lead{color:#ddd6c7;}
+  }
+</style>
+</head>
+<body>
+<main class="doc">
+  <div class="name">AIShorts</div>
+  <h1>Editorial Standards</h1>
+  <p class="updated">Last reviewed &middot; September 2026</p>
+
+  <p class="lead">AIShorts is an automated news wire with a human editor. This page sets out
+  exactly which parts are which, so you can judge what you are reading.</p>
+
+  <h2>What AIShorts is</h2>
+  <p>AIShorts is an aggregator, not a reporting outlet. It does not conduct interviews, verify
+  claims independently, or break news. Every story on the front page originates with a
+  third-party publisher, and the headline is a pointer to that publisher's work. The value we
+  aim to add is selection, ordering and presentation &mdash; not new facts.</p>
+  <p>If a story matters to you, read the original. Every card links straight to it.</p>
+
+  <h2>How stories are selected</h2>
+  <p>Selection is automated. Each edition is assembled by querying a general news index for
+  artificial-intelligence coverage from the preceding few days, ranked by recency. When that
+  index is unavailable, AIShorts falls back to a second source of technology stories currently
+  drawing discussion. The edition is capped at twelve dispatches.</p>
+  <p>Two consequences worth stating plainly. First, no human chooses which stories appear, so
+  the front page reflects whatever the underlying index surfaces, including its own biases
+  toward English-language and Western outlets. Second, a story's presence is not an
+  endorsement of its accuracy, and prominence on the page reflects recency, not importance.</p>
+
+  <h2>What is automated and what is not</h2>
+  <table class="pipe">
+    <tr><th>Step</th><th>By</th><th>Notes</th></tr>
+    <tr>
+      <td>Story selection and ordering</td>
+      <td><span class="tag auto">Automated</span></td>
+      <td>Feed query, ranked by recency. No human curation of the daily edition.</td>
+    </tr>
+    <tr>
+      <td>Section labels</td>
+      <td><span class="tag auto">Automated</span></td>
+      <td>Assigned by keyword matching against the headline. Mislabels happen; report them.</td>
+    </tr>
+    <tr>
+      <td>Summaries</td>
+      <td><span class="tag auto">Automated</span></td>
+      <td>Taken from the publisher's own feed description, or generated from the source item's
+          public metadata. They are not independently written analysis.</td>
+    </tr>
+    <tr>
+      <td>Photographs</td>
+      <td><span class="tag auto">Automated</span></td>
+      <td>Retrieved from the publisher's own page metadata and credited to the source.</td>
+    </tr>
+    <tr>
+      <td>Illustrations</td>
+      <td><span class="tag auto">Automated</span></td>
+      <td>Where no source photograph exists, AIShorts draws an abstract plate. These are always
+          marked <em>AIShorts illustration</em> and never depict real events, places or people.</td>
+    </tr>
+    <tr>
+      <td>Quiz and poll</td>
+      <td><span class="tag auto">Automated</span></td>
+      <td>Generated from the day's edition.</td>
+    </tr>
+    <tr>
+      <td>Standing pages, policy and this document</td>
+      <td><span class="tag human">Human</span></td>
+      <td>Written and maintained by the editor.</td>
+    </tr>
+    <tr>
+      <td>Corrections and removals</td>
+      <td><span class="tag human">Human</span></td>
+      <td>Every correction below is a human decision, logged.</td>
+    </tr>
+  </table>
+
+  <h2>What a human reviews</h2>
+  <p>AIShorts is edited by <a href="https://www.linkedin.com/in/pawan-maheshwari-4b9b4715"
+  target="_blank" rel="noopener">Pawan Maheshwari</a>. Because the edition assembles itself,
+  editorial review is retrospective rather than pre-publication: the editor reviews the wire
+  regularly, and acts on anything reported through the <a href="contact.html">contact page</a>.
+  A story can be removed from the wire at the editor's discretion &mdash; for instance where a
+  publisher has retracted it, or where a headline is misleading enough that linking to it does
+  more harm than good.</p>
+  <p>No story is reviewed by a human before it appears. If that matters for your use case,
+  treat AIShorts as a discovery tool rather than a source of record.</p>
+
+  <h2>Corrections policy</h2>
+  <p>We correct three kinds of error:</p>
+  <ul>
+    <li><strong>Ours.</strong> A wrong section label, a broken or mismatched link, a summary
+    that misrepresents the source, an illustration that could be mistaken for a photograph.
+    These are fixed and logged below.</li>
+    <li><strong>Presentational.</strong> Anything that misleads through arrangement rather than
+    fact &mdash; a headline placed under the wrong kicker, or a stale story presented as current.</li>
+    <li><strong>Upstream.</strong> Where a publisher corrects or retracts a story, we remove it
+    from the wire and note it here. We do not correct another outlet's copy on their behalf.</li>
+  </ul>
+  <p>To report something, use the <a href="contact.html">contact page</a>. Please include the
+  headline and the date of the edition.</p>
+  <p>We do not silently edit. Where a correction changes what a story said, the log entry records
+  what was wrong as well as what changed.</p>
+
+  <h2>Independence and money</h2>
+  <p>AIShorts is published by planetAI LLP and takes no payment for placement. No publisher,
+  vendor or sponsor can buy a position on the front page, and there is no paid inclusion in the
+  wire. Where that changes, it will be disclosed here first.</p>
+
+  <h2>Your data</h2>
+  <p>Reading preferences and clippings are stored in your own browser and are never transmitted
+  to us. See the <a href="privacy.html">privacy policy</a> for the full account.</p>
+
+  <h2>Corrections log</h2>
+  <div class="log" id="log">
+    <p class="log-empty">Loading the log&hellip;</p>
+  </div>
+
+</main>
+<footer>
+  <a href="index.html">Home</a> &middot;
+  <a href="standards.html">Standards</a> &middot;
+  <a href="privacy.html">Privacy</a> &middot;
+  <a href="about.html">About</a> &middot;
+  <a href="contact.html">Contact</a>
+  <div style="margin-top:8px;font-weight:400;">&copy; 2026 AIShorts &middot; A
+    <a href="https://world-of-ai.co.in" target="_blank" rel="noopener" style="color:inherit;">planetAI LLP</a>
+    product &middot; Moderated by Pawan Maheshwari</div>
+</footer>
+
+<script>
+/* The log lives in corrections.json so an entry can be added without
+   touching this page. Rendered with textContent — the log is data. */
+(function(){
+  var box = document.getElementById("log");
+  function empty(msg){
+    box.textContent = "";
+    var p = document.createElement("p");
+    p.className = "log-empty"; p.textContent = msg;
+    box.appendChild(p);
+  }
+  fetch("corrections.json", {cache:"no-cache"})
+    .then(function(r){ if(!r.ok) throw new Error("http " + r.status); return r.json(); })
+    .then(function(list){
+      if(!Array.isArray(list) || !list.length){
+        empty("No corrections have been issued yet. When one is, it will appear here.");
+        return;
+      }
+      box.textContent = "";
+      list.forEach(function(c){
+        var item = document.createElement("div"); item.className = "log-item";
+        var d = document.createElement("div"); d.className = "log-date";
+        d.textContent = [c.date, c.kind].filter(Boolean).join("  \u00b7  ");
+        var w = document.createElement("p"); w.className = "log-what";
+        w.textContent = c.what || "";
+        item.appendChild(d); item.appendChild(w);
+        if(c.headline){
+          var hd = document.createElement("p");
+          hd.className = "log-date"; hd.style.marginTop = "6px";
+          hd.textContent = "Story: " + c.headline;
+          item.appendChild(hd);
+        }
+        box.appendChild(item);
+      });
+    })
+    .catch(function(){
+      empty("The corrections log could not be loaded. Please try again later.");
+    });
+})();
+</script>
+</body>
+</html>
