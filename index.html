@@ -44,6 +44,23 @@
 <meta name="apple-mobile-web-app-title" content="AIShorts">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script>
+/* Reading preferences are applied before the first paint so a night or
+   sepia reader never gets a white flash. Runs in <head>; touches nothing
+   but the <html> element. */
+(function(){
+  var TK="aishorts_theme", SK="aishorts_size", el=document.documentElement;
+  function get(k,d){ try{ return localStorage.getItem(k) || d; }catch(e){ return d; } }
+  var pref=get(TK,"auto"), size=get(SK,"m");
+  if(["auto","day","night","sepia"].indexOf(pref)<0) pref="auto";
+  if(["s","m","l"].indexOf(size)<0) size="m";
+  el.setAttribute("data-theme-pref", pref);
+  el.setAttribute("data-size", size);
+  el.setAttribute("data-theme", pref==="auto"
+    ? ((window.matchMedia && matchMedia("(prefers-color-scheme:dark)").matches) ? "night" : "day")
+    : pref);
+})();
+</script>
 <style>
   :root{
     --paper:#ffffff;          /* newsprint white */
@@ -942,25 +959,75 @@
   @keyframes shimmer{0%,100%{opacity:.28;}50%{opacity:.62;}}
   @media (prefers-reduced-motion:reduce){ #deck:empty::before{animation:none;} }
 
-  /* ---- 3.12 night edition ---- */
-  @media (prefers-color-scheme:dark){
-    :root{
-      --paper:#16140f;   --paper-2:#1e1b15;
-      --ink:#f2ede1;     --body:#ddd6c7;
-      --meta:#9b9384;    --meta-2:#7d7568;
-      --rule:#332e25;    --rule-strong:#f2ede1;
-      --link:#7fb6cd;    --link-dark:#a5cfe1;
-      --live:#e2596b;    --accent:#c9a961;
-      --desk:#0c0b08;
-    }
-    .wire::after{mix-blend-mode:screen;opacity:.05;}
-    .eng-btn,.opt,.ear .eng-btn,.menu-btn,.nav button{background:var(--paper);color:var(--ink);}
-    .eng-btn:hover,.nav button:hover,.menu-btn:hover{background:var(--ink);color:var(--paper);}
-    .ai-fab{background:var(--ink);color:var(--paper);border-color:var(--ink);}
-    .plate-img,.mphoto-img img{filter:brightness(.86) contrast(104%);}
-    .opt.correct{background:#12281d;}
-    .opt.wrong{background:#2a1417;}
+  /* ---- 3.12 editions: day, night, sepia ----
+     data-theme is always concrete — the script resolves "auto" against the
+     system setting before painting — so each palette is written once. ---- */
+  html[data-theme="night"]{
+    --paper:#16140f;   --paper-2:#1e1b15;
+    --ink:#f2ede1;     --body:#ddd6c7;
+    --meta:#9b9384;    --meta-2:#7d7568;
+    --rule:#332e25;    --rule-strong:#f2ede1;
+    --link:#7fb6cd;    --link-dark:#a5cfe1;
+    --live:#e2596b;    --accent:#c9a961;
+    --desk:#0c0b08;
   }
+  html[data-theme="night"] .wire::after{mix-blend-mode:screen;opacity:.05;}
+  html[data-theme="night"] .plate-img,
+  html[data-theme="night"] .mphoto-img img{filter:brightness(.86) contrast(104%);}
+  html[data-theme="night"] .opt.correct{background:#12281d;}
+  html[data-theme="night"] .opt.wrong{background:#2a1417;}
+
+  html[data-theme="sepia"]{
+    --paper:#f6ecd8;   --paper-2:#efe2c9;
+    --ink:#2b2115;     --body:#4a3a28;
+    --meta:#7d6a52;    --meta-2:#9c8a72;
+    --rule:#dfcdaa;    --rule-strong:#2b2115;
+    --link:#1f5566;    --link-dark:#153c49;
+    --live:#9c2b1e;    --accent:#8a6a2f;
+    --desk:#ded0b4;
+  }
+  html[data-theme="sepia"] .plate-img,
+  html[data-theme="sepia"] .mphoto-img img{filter:sepia(18%) saturate(94%);}
+
+  html[data-theme="night"] .eng-btn,html[data-theme="night"] .opt,
+  html[data-theme="night"] .ear .eng-btn,html[data-theme="night"] .menu-btn,
+  html[data-theme="night"] .nav button,
+  html[data-theme="sepia"] .eng-btn,html[data-theme="sepia"] .opt,
+  html[data-theme="sepia"] .ear .eng-btn,html[data-theme="sepia"] .menu-btn,
+  html[data-theme="sepia"] .nav button{background:var(--paper);color:var(--ink);}
+  html[data-theme="night"] .eng-btn:hover,html[data-theme="night"] .nav button:hover,
+  html[data-theme="night"] .menu-btn:hover,
+  html[data-theme="sepia"] .eng-btn:hover,html[data-theme="sepia"] .nav button:hover,
+  html[data-theme="sepia"] .menu-btn:hover{background:var(--ink);color:var(--paper);}
+  html[data-theme="night"] .ai-fab,html[data-theme="sepia"] .ai-fab{
+    background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+  /* ---- 3.12b three text sizes ----
+     Only the reading type scales. Furniture — rails, chips, the folio —
+     stays put, so a larger setting buys words rather than chrome. ------- */
+  html{--tscale:1;}
+  html[data-size="s"]{--tscale:.9;}
+  html[data-size="l"]{--tscale:1.16;}
+  .headline{font-size:calc(17.1px * var(--tscale));}
+  .summary{font-size:calc(13.7px * var(--tscale));}
+  .source .by{font-size:calc(11.6px * var(--tscale));}
+  .clip-hed{font-size:calc(14px * var(--tscale));}
+  .modal-title{font-size:calc(19.7px * var(--tscale));}
+  .modal-sub{font-size:calc(12.4px * var(--tscale));}
+  .poll-prev .pq{font-size:calc(12.8px * var(--tscale));}
+
+  /* ---- 3.12c the preference controls ---- */
+  .seg{display:flex;gap:0;margin:2px 0 12px;border:1px solid var(--rule);}
+  .seg button{flex:1 1 0;appearance:none;cursor:pointer;border:0;border-right:1px solid var(--rule);
+    background:transparent;color:var(--meta);padding:9px 4px;
+    font:700 8.6px/1 var(--sans);letter-spacing:1px;text-transform:uppercase;
+    transition:background var(--dur) var(--ease),color var(--dur) var(--ease);}
+  .seg button:last-child{border-right:0;}
+  .seg button:hover{color:var(--ink);}
+  .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper);}
+  .seg-lab{font:700 7.4px/1 var(--sans);letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--meta-2);margin:10px 0 4px;}
+  .seg .aa-s{font-size:8px;} .seg .aa-m{font-size:9.6px;} .seg .aa-l{font-size:11.4px;}
 
   /* ---- 3.13 print: an actual page, not a screenshot of an app ---- */
   @media print{
@@ -1089,6 +1156,22 @@
   <div class="ns-grp" id="nsSites"><div class="ns-lab">More from AIShorts</div></div>
   <div class="ns-grp" id="nsTools"><div class="ns-lab">Today</div></div>
   <div class="ns-grp" id="nsAcct"><div class="ns-lab">Stay in touch</div></div>
+  <div class="ns-grp" id="nsRead">
+    <div class="ns-lab">Reading</div>
+    <div class="seg-lab">Text size</div>
+    <div class="seg" id="segSize" role="group" aria-label="Text size">
+      <button type="button" data-size="s" aria-pressed="false"><span class="aa-s">Aa</span></button>
+      <button type="button" data-size="m" aria-pressed="true"><span class="aa-m">Aa</span></button>
+      <button type="button" data-size="l" aria-pressed="false"><span class="aa-l">Aa</span></button>
+    </div>
+    <div class="seg-lab">Edition</div>
+    <div class="seg" id="segTheme" role="group" aria-label="Edition">
+      <button type="button" data-theme-pref="auto"  aria-pressed="true">Auto</button>
+      <button type="button" data-theme-pref="day"   aria-pressed="false">Day</button>
+      <button type="button" data-theme-pref="night" aria-pressed="false">Night</button>
+      <button type="button" data-theme-pref="sepia" aria-pressed="false">Sepia</button>
+    </div>
+  </div>
   <div class="ns-grp" id="nsClips">
     <div class="ns-lab">Your scrapbook</div>
     <button class="tb-link" id="openClips">Clippings<span class="clip-count" id="clipCount">0</span></button>
@@ -1096,6 +1179,7 @@
   <div class="ns-grp" id="nsOrg">
     <div class="ns-lab">Published by</div>
     <a class="tb-link tb-site" href="https://world-of-ai.co.in" target="_blank" rel="noopener">planetAI LLP<span class="ext">&#8599;</span></a>
+    <a class="tb-link" href="standards.html">Editorial Standards</a>
   </div>
 </aside>
 <div class="intro" id="intro" role="dialog" aria-label="AIShorts front page">
@@ -1248,7 +1332,7 @@
     <span class="cx">&copy; <span id="cyear">2026</span> AIShorts</span>
     <span class="cx">A <a href="https://world-of-ai.co.in" target="_blank" rel="noopener">planetAI LLP</a> product</span>
     <span class="cx">Moderated by <a href="https://www.linkedin.com/in/pawan-maheshwari-4b9b4715" target="_blank" rel="noopener noreferrer">Pawan Maheshwari</a></span>
-    <span class="cx"><a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a> &middot; <a href="contact.html">Contact</a></span>
+    <span class="cx"><a href="standards.html">Standards</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a> &middot; <a href="contact.html">Contact</a></span>
   </div>
 
   <div class="status" id="status"></div>
@@ -3223,6 +3307,67 @@ function shareCutting(n, btn){
     }, "image/png");
   }).catch(done);
 }
+</script>
+<script>
+/* =====================================================================
+   READING PREFERENCES
+   Three text sizes and four editions, remembered on the device. "Auto"
+   tracks the system setting live, so a reader who leaves it alone gets
+   night at dusk without touching anything.
+--------------------------------------------------------------------- */
+(function(){
+  var TK="aishorts_theme", SK="aishorts_size", el=document.documentElement,
+      mq = window.matchMedia ? matchMedia("(prefers-color-scheme:dark)") : null,
+      meta = document.querySelector('meta[name="theme-color"]');
+
+  var BAR = {day:"#fdfcf9", night:"#16140f", sepia:"#f6ecd8"};
+
+  function save(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+  function applyTheme(pref){
+    var actual = pref==="auto" ? ((mq && mq.matches) ? "night" : "day") : pref;
+    el.setAttribute("data-theme-pref", pref);
+    el.setAttribute("data-theme", actual);
+    if(meta) meta.setAttribute("content", BAR[actual] || BAR.day);
+    mark("segTheme", "data-theme-pref", pref);
+  }
+  function applySize(size){
+    el.setAttribute("data-size", size);
+    mark("segSize", "data-size", size);
+  }
+  function mark(groupId, attr, value){
+    var g = document.getElementById(groupId);
+    if(!g) return;
+    g.querySelectorAll("button").forEach(function(b){
+      b.setAttribute("aria-pressed", b.getAttribute(attr) === value ? "true" : "false");
+    });
+  }
+
+  var theme = el.getAttribute("data-theme-pref") || "auto",
+      size  = el.getAttribute("data-size") || "m";
+  applyTheme(theme); applySize(size);
+
+  var st = document.getElementById("segTheme");
+  if(st) st.addEventListener("click", function(e){
+    var b = e.target.closest("[data-theme-pref]"); if(!b) return;
+    theme = b.getAttribute("data-theme-pref");
+    save(TK, theme); applyTheme(theme);
+  });
+
+  var ss = document.getElementById("segSize");
+  if(ss) ss.addEventListener("click", function(e){
+    var b = e.target.closest("[data-size]"); if(!b) return;
+    size = b.getAttribute("data-size");
+    save(SK, size); applySize(size);
+  });
+
+  /* follow the system while the reader is on "auto" */
+  if(mq){
+    var onSys = function(){ if(theme === "auto") applyTheme("auto"); };
+    if(mq.addEventListener) mq.addEventListener("change", onSys);
+    else if(mq.addListener) mq.addListener(onSys);
+  }
+})();
 </script>
 </body>
 </html>
