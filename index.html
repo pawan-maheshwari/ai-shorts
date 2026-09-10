@@ -1266,6 +1266,40 @@
   #cutModal .form-note{margin-top:12px;}
   @media (prefers-reduced-motion:reduce){ .cut-net:hover{transform:none;} }
 
+  /* =====================================================================
+     DESKTOP GRID CORRECTIONS
+     ===================================================================== */
+  @media (min-width:1024px){
+    /* Every card is on screen at once here, so there is no "card you have
+       landed on" — reveal them all. The hover lift already supplies the
+       motion this layout needs. */
+    .card .plate,.card .body,
+    .card .kicker,.card .headline,.card .summary,.card .source{
+      opacity:1;transform:none;box-shadow:none;transition-delay:0s;
+    }
+
+    /* A definite height keeps .source pinned to the foot of the card and
+       inside the grid track, instead of being pushed below the fold by a
+       long summary. .bodyinner keeps its own scroll for the overflow. */
+    .deck{grid-auto-rows:436px;}
+    .card{height:436px;min-height:436px;}
+    .plate{flex:0 0 132px;}
+    .body{padding:12px 16px 12px;}
+    .summary{-webkit-line-clamp:4;}
+    .source{margin-top:auto;padding-top:9px;}
+
+    /* the row has four things in it now — keep them on one line */
+    .source .by{flex:1 1 100%;order:1;margin-bottom:2px;}
+    .acts{order:2;}
+    .read{order:3;margin-left:auto;}
+    .act{padding:5px 8px;font-size:8px;}
+  }
+
+  /* Wider still: there is room for the byline to sit inline again. */
+  @media (min-width:1500px){
+    .source .by{flex:1 1 auto;margin-bottom:0;}
+  }
+
   /* ---- nameplate ears: the daily quiz and poll flank the wordmark ----
      Classic broadsheet furniture. The dateline gives up its absolute
      right-hand slot and flows centred under the slogan at every width,
@@ -2105,7 +2139,9 @@ function extractItems(text){
 }
 function mapItems(raw,note){
   return (Array.isArray(raw)?raw:[]).filter(o=>o&&o.headline&&o.summary).map(o=>({
-    headline:String(o.headline),summary:String(o.summary),
+    headline:String(o.headline),
+    summary:dedupeSummary(o.headline,o.summary)
+            ||("Open the full report at "+String(o.source||"the publisher")+" for the complete story."),
     source:String(o.source||"Wire"),url:String(o.url||"").trim(),
     category:normCat(o.category),region:normRegion(o.region),
     date:String(o.date||new Date().toISOString().slice(0,10)),
@@ -2156,6 +2192,29 @@ function freshOnly(items,days){
 }
 
 /* category guess (shared by RSS + HN) */
+/* A feed's <description> is frequently the <title> verbatim, or the title
+   followed by the real blurb. Compare on letters and digits only, so
+   punctuation and casing differences don't hide the repeat, then drop the
+   repeated opening. Anything left too short to be a summary becomes "",
+   and the caller supplies its own line. */
+function dedupeSummary(title, desc){
+  var d = String(desc == null ? "" : desc).trim();
+  if(!d) return "";
+  var flat = function(s){ return String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, ""); };
+  var nt = flat(title), nd = flat(d);
+  if(!nt) return d;
+  if(nd === nt) return "";                       /* the headline, again */
+  if(nd.indexOf(nt) !== 0) return d;             /* not a repeat at all */
+
+  var words = d.split(/\s+/), acc = "", cut = 0;
+  for(var i = 0; i < words.length; i++){
+    acc += flat(words[i]); cut = i + 1;
+    if(acc.length >= nt.length) break;
+  }
+  var rest = words.slice(cut).join(" ").replace(/^[\s\-\u2013\u2014:.,;)"']+/, "").trim();
+  return rest.split(/\s+/).filter(Boolean).length < 6 ? "" : rest;
+}
+
 function guessCat(t){
   t=String(t||"").toLowerCase();
   if(/(robot|humanoid|autonom|self.?driv|drone|embodied)/.test(t))return"Robotics";
@@ -2176,7 +2235,9 @@ async function fetchWorker(){
   if(!r.ok) throw new Error("worker HTTP "+r.status);
   var d=await r.json(); var raw=(d&&d.items)||[];
   var items=raw.filter(function(o){return o&&o.headline&&o.url;}).map(function(o){
-    return {headline:String(o.headline),summary:String(o.summary||o.headline),
+    return {headline:String(o.headline),
+      summary:dedupeSummary(o.headline,o.summary)
+              ||("Open the full report at "+String(o.source||"the publisher")+" for the complete story."),
       source:String(o.source||"AIShorts wire"),url:String(o.url),
       category:normCat(o.category),region:normRegion(o.region||"Global"),
       date:normDate(o.date),note:o.note||"via AIShorts wire",
@@ -2210,8 +2271,8 @@ function mapRSS(items){
     if(!source) source=stripTags(it.author)||"Google News";
     var key=title.toLowerCase(); if(seen[key]) continue; seen[key]=1;
     var desc=stripTags(it.description);
-    var sum=clipWords(desc||title,42);
-    if(sum.length<36) sum=title+". Open the full report for the complete story.";
+    var sum=clipWords(dedupeSummary(title,desc),42);
+    if(sum.length<36) sum="Open the full report at "+source+" for the complete story.";
     out.push({headline:title,summary:sum,source:source,url:it.link||it.guid||"",image:pickImg(it),
       category:guessCat(title+" "+desc),region:"Global",date:normDate(it.pubDate),note:"via Google News"});
   }
@@ -2293,7 +2354,9 @@ async function fetchEdition(){
   var e=await r.json();
   if(!e||!Array.isArray(e.items)||e.items.length<3) throw new Error("edition empty");
   return e.items.map(function(it){
-    return {headline:it.headline,summary:it.summary,source:it.source,
+    return {headline:it.headline,
+            summary:dedupeSummary(it.headline,it.summary)||it.summary,
+            source:it.source,
             url:it.url,image:it.image||"",category:it.category,
             region:it.region||"Global",date:it.date,note:it.note||""};
   });
