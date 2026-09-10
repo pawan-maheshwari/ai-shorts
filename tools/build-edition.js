@@ -84,6 +84,29 @@ const tag = (block, name) => {
   return m ? m[1] : "";
 };
 
+/* A feed's <description> is frequently the <title> verbatim, or the title
+   followed by the real blurb. Compare on letters and digits only, then drop
+   the repeated opening; anything left too short becomes "". Mirrors
+   dedupeSummary() in index.html — keep the two in step. */
+function dedupeSummary(title, desc){
+  const d = String(desc == null ? "" : desc).trim();
+  if(!d) return "";
+  const flat = s => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  const nt = flat(title), nd = flat(d);
+  if(!nt) return d;
+  if(nd === nt) return "";
+  if(nd.indexOf(nt) !== 0) return d;
+
+  const words = d.split(/\s+/);
+  let acc = "", cut = 0;
+  for(let i = 0; i < words.length; i++){
+    acc += flat(words[i]); cut = i + 1;
+    if(acc.length >= nt.length) break;
+  }
+  const rest = words.slice(cut).join(" ").replace(/^[\s\-\u2013\u2014:.,;)"']+/, "").trim();
+  return rest.split(/\s+/).filter(Boolean).length < 6 ? "" : rest;
+}
+
 function guessCat(t){
   t = String(t || "").toLowerCase();
   if(/(robot|humanoid|autonom|self.?driv|drone|embodied)/.test(t)) return "Robotics";
@@ -139,8 +162,8 @@ function toEdition(raw, day){
     if(!isNaN(when) && when.getTime() < cutoff) continue;
     seen.add(key);
 
-    let summary = clipWords(r.desc || r.title, 42);
-    if(summary.length < 36) summary = r.title + ". Open the full report for the complete story.";
+    let summary = clipWords(dedupeSummary(r.title, r.desc), 42);
+    if(summary.length < 36) summary = `Open the full report at ${r.source} for the complete story.`;
 
     items.push({
       id: idFor(r.url || r.link, r.title, day),
