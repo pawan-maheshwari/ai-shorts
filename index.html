@@ -38,7 +38,12 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%2731%27%20fill%3D%27%23121212%27/%3E%3Ctext%20x%3D%2732%27%20y%3D%2741%27%20font-family%3D%27Georgia%2Cserif%27%20font-size%3D%2729%27%20font-weight%3D%27700%27%20fill%3D%27%23ffffff%27%20text-anchor%3D%27middle%27%3EAI%3C/text%3E%3Cpath%20d%3D%27M13%2047%20H28%20l3%20-6%203.5%2012%203%20-6%20H51%27%20fill%3D%27none%27%20stroke%3D%27%23E8B04B%27%20stroke-width%3D%273%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<meta name="apple-mobile-web-app-title" content="AIShorts">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
   :root{
     --paper:#ffffff;          /* newsprint white */
@@ -666,7 +671,7 @@
   .mphoto-img.has-photo{filter:contrast(108%) saturate(112%) sepia(6%);}
   .mphoto-img img{width:100%;height:100%;object-fit:cover;display:block;}
   /* ===== AI Console: assistant + dashboards + listen ===== */
-  .ai-fab{position:fixed;right:14px;bottom:74px;z-index:79;appearance:none;cursor:pointer;font:800 12px/1 "Libre Franklin",sans-serif;letter-spacing:1px;color:#fff;background:var(--ink);border:1px solid var(--ink);border-radius:30px;padding:11px 15px;box-shadow:0 6px 18px rgba(0,0,0,.28);}
+  .ai-fab{position:fixed;right:14px;bottom:78px;z-index:79;appearance:none;cursor:pointer;font:800 12px/1 "Libre Franklin",sans-serif;letter-spacing:1px;color:#fff;background:var(--ink);border:1px solid var(--ink);border-radius:30px;padding:11px 15px;box-shadow:0 6px 18px rgba(0,0,0,.28);}
   .ai-fab:hover{background:var(--link);border-color:var(--link);}
   .ai-panel{position:fixed;right:12px;bottom:12px;z-index:80;width:min(93vw,380px);height:min(74vh,580px);display:flex;flex-direction:column;background:var(--paper);border:1px solid var(--ink);box-shadow:0 24px 60px rgba(0,0,0,.4);}
   .ai-panel[hidden]{display:none;}
@@ -824,6 +829,160 @@
     .nav-sheet{width:340px;}
   }
 
+
+  /* =====================================================================
+     PREMIUM LAYER
+     Editorial typeface, real typographic detail, a warmed newsprint
+     palette, broadsheet rule hierarchy, a night edition, and a print
+     stylesheet. Loaded last so it wins on specificity ties.
+     ===================================================================== */
+
+  /* ---- 3.1 tokens: warm the paper, retire the borrowed blue ---- */
+  :root{
+    --paper:#fdfcf9;          /* warm newsprint, not clinical white   */
+    --paper-2:#f4f2ec;        /* panel / plate base                   */
+    --ink:#14110f;            /* warm near-black                      */
+    --body:#2e2a26;
+    --meta:#6b645c;
+    --meta-2:#8f877d;
+    --rule:#ddd8cc;           /* hairline                             */
+    --rule-strong:#14110f;
+    --link:#1c4a5e;           /* deep petrol — ours, not the Times's  */
+    --link-dark:#123746;
+    --live:#a8172a;           /* a deeper press red                   */
+    --accent:#8a6a2f;         /* brass foil, echoing the AI Odyssey    */
+    --desk:#e4e0d6;           /* desk behind the page                 */
+    --serif:"Newsreader",Georgia,"Times New Roman",serif;
+    --sans:"Libre Franklin",system-ui,sans-serif;
+    --dur:.22s;
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  body{background:var(--desk);font-family:var(--serif);
+    text-rendering:optimizeLegibility;
+    font-feature-settings:"kern" 1,"liga" 1;}
+
+  /* ---- 3.2 the serif carries the reading ---- */
+  .headline,.summary,.slogan,.poll-prev .pq,.ear-s,
+  .source .by .note,.intro-hed,.intro-dek{font-family:var(--serif);}
+  .headline{font-weight:700;letter-spacing:-.15px;}
+  .summary{font-weight:400;}
+  .slogan{font-weight:400;}
+
+  /* ---- 3.3 numerals: tabular where they change, old-style where they read ---- */
+  .stockbar,.count,.progress,.bar .lab,.market,.mkt-row{
+    font-variant-numeric:tabular-nums lining-nums;}
+  .dateline-side{font-family:var(--serif);font-weight:600;
+    font-variant-numeric:oldstyle-nums;font-variant-caps:all-small-caps;
+    letter-spacing:.6px;text-transform:none;font-size:10.5px;}
+  .count{font-variant-numeric:tabular-nums;}
+
+  /* ---- 3.4 real small caps instead of faked ones ---- */
+  .source .by{font-family:var(--serif);font-size:11.6px;letter-spacing:.2px;
+    text-transform:none;font-variant-caps:all-small-caps;
+    font-variant-numeric:oldstyle-nums;}
+  .source .by b{font-weight:700;}
+  .source .by .note{font-variant-caps:normal;font-size:10.8px;}
+
+  /* ---- 3.5 drop cap ---- */
+  .summary::first-letter{
+    float:left;font-family:var(--serif);font-weight:600;
+    font-size:3.05em;line-height:.82;margin:.04em .09em -.02em 0;
+    color:var(--ink);}
+  .summary::first-line{font-variant-caps:normal;}
+
+  /* ---- 3.6 rule hierarchy: hairline, heavy, and a thick-thin masthead rule ---- */
+  .nameplate{border-bottom:0;}
+  .nameplate::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;
+    background:linear-gradient(var(--rule-strong) 0 3px,transparent 3px 4px,var(--rule-strong) 4px 5px);}
+  .source{border-top:2px solid var(--rule-strong);}
+  .market{border-bottom:2px solid var(--rule-strong);}
+  .kicker{letter-spacing:1.5px;}
+
+  /* ---- 3.7 paper grain ---- */
+  .wire{position:relative;}
+  .wire::after{content:"";position:absolute;inset:0;z-index:60;pointer-events:none;
+    opacity:.035;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  /* ---- 3.8 shared motion ---- */
+  .eng-btn,.nav button,.chip,.read,.menu-btn,.ai-fab,.opt,.tb-link{
+    transition:background var(--dur) var(--ease),color var(--dur) var(--ease),
+               border-color var(--dur) var(--ease);}
+  @media (prefers-reduced-motion:reduce){ *{transition-duration:.01ms !important;} }
+
+  /* ---- 3.9 brass accents ---- */
+  .publisher a{color:var(--accent);border-bottom-color:var(--accent);}
+  .publisher a:hover{color:var(--ink);}
+  .ear .eng-btn:hover{background:var(--accent);border-color:var(--accent);color:var(--paper);}
+  .market-kicker,.ns-lab{color:var(--accent);}
+
+  /* ---- 3.10 the AI button must never cover the story's own link ---- */
+  .ai-fab{padding:0;width:44px;height:44px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:15px;
+    box-shadow:0 4px 14px rgba(20,17,15,.26);}
+  .ai-fab .fab-txt{display:none;}
+  .source{padding-right:56px;}
+  @media (min-width:700px){
+    .ai-fab{width:auto;height:auto;border-radius:30px;padding:11px 15px;font-size:12px;}
+    .ai-fab .fab-txt{display:inline;}
+    .source{padding-right:0;}
+  }
+
+  /* ---- 3.11 skeleton while the wire loads ---- */
+  #deck:empty{position:relative;}
+  #deck:empty::before{content:"";position:absolute;inset:16px;
+    background:
+      linear-gradient(var(--rule) 0 0) 0 0/38% 9px no-repeat,
+      linear-gradient(var(--rule-strong) 0 0) 0 26px/88% 15px no-repeat,
+      linear-gradient(var(--rule-strong) 0 0) 0 48px/64% 15px no-repeat,
+      linear-gradient(var(--rule) 0 0) 0 82px/100% 8px no-repeat,
+      linear-gradient(var(--rule) 0 0) 0 100px/100% 8px no-repeat,
+      linear-gradient(var(--rule) 0 0) 0 118px/72% 8px no-repeat;
+    opacity:.5;animation:shimmer 1.4s var(--ease) infinite;}
+  @keyframes shimmer{0%,100%{opacity:.28;}50%{opacity:.62;}}
+  @media (prefers-reduced-motion:reduce){ #deck:empty::before{animation:none;} }
+
+  /* ---- 3.12 night edition ---- */
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#16140f;   --paper-2:#1e1b15;
+      --ink:#f2ede1;     --body:#ddd6c7;
+      --meta:#9b9384;    --meta-2:#7d7568;
+      --rule:#332e25;    --rule-strong:#f2ede1;
+      --link:#7fb6cd;    --link-dark:#a5cfe1;
+      --live:#e2596b;    --accent:#c9a961;
+      --desk:#0c0b08;
+    }
+    .wire::after{mix-blend-mode:screen;opacity:.05;}
+    .eng-btn,.opt,.ear .eng-btn,.menu-btn,.nav button{background:var(--paper);color:var(--ink);}
+    .eng-btn:hover,.nav button:hover,.menu-btn:hover{background:var(--ink);color:var(--paper);}
+    .ai-fab{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+    .plate-img,.mphoto-img img{filter:brightness(.86) contrast(104%);}
+    .opt.correct{background:#12281d;}
+    .opt.wrong{background:#2a1417;}
+  }
+
+  /* ---- 3.13 print: an actual page, not a screenshot of an app ---- */
+  @media print{
+    @page{margin:16mm 14mm;}
+    html,body{height:auto;overflow:visible;background:#fff;color:#000;}
+    body{font-size:11pt;}
+    .wire{height:auto !important;max-width:none;box-shadow:none;border:0;}
+    .wire::after,.topbar,.chips,.stockbar,.rail,.ai-fab,.ai-panel,.breaking,
+    .nav-sheet,.nav-scrim,.ear,.market,.intro,.engage,.modal,.colophon a{display:none !important;}
+    .nameplate{padding:0 0 8pt;}
+    .nameplate::after{position:static;height:4pt;margin-top:8pt;}
+    .wordmark{font-size:38pt;}
+    .deck,.card{position:static !important;height:auto !important;transform:none !important;
+      opacity:1 !important;visibility:visible !important;overflow:visible !important;}
+    .card{page-break-inside:avoid;border:0;padding:0 0 14pt;}
+    .body,.bodyinner{overflow:visible !important;height:auto !important;}
+    .headline{font-size:20pt;}
+    .summary{font-size:11pt;}
+    .read::after{content:" (" attr(href) ")";font-size:8pt;word-break:break-all;}
+    .colophon{display:block;border-top:1pt solid #000;padding-top:6pt;font-size:8pt;}
+  }
+
   /* ---- nameplate ears: the daily quiz and poll flank the wordmark ----
      Classic broadsheet furniture. The dateline gives up its absolute
      right-hand slot and flows centred under the slogan at every width,
@@ -913,7 +1072,7 @@
   <button class="intro-skip" id="introSkip">Skip intro &rarr;</button>
   <div class="intro-progress"><i id="introBar"></i></div>
 </div>
-<button class="ai-fab" id="aiFab" aria-label="Open AI assistant, dashboards and listen">&#10022;&nbsp;AI</button>
+<button class="ai-fab" id="aiFab" aria-label="Open AI assistant, dashboards and listen">&#10022;<span class="fab-txt">&nbsp;AI</span></button>
 <div class="ai-panel" id="aiPanel" hidden role="dialog" aria-label="AIShorts AI console">
   <div class="ai-head">
     <div class="ai-tabs">
