@@ -824,6 +824,43 @@
     .nav-sheet{width:340px;}
   }
 
+  /* ---- nameplate ears: the daily quiz and poll flank the wordmark ----
+     Classic broadsheet furniture. The dateline gives up its absolute
+     right-hand slot and flows centred under the slogan at every width,
+     so both ears are free and the masthead stays symmetrical. ------- */
+  .dateline-side{position:static;right:auto;bottom:auto;max-width:none;
+    text-align:center;margin-top:5px;}
+
+  .ear{position:absolute;top:50%;transform:translateY(-50%);width:74px;z-index:2;}
+  .ear-l{left:14px;}
+  .ear-r{right:14px;}
+  .ear .eng-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:2px;width:100%;min-height:0;cursor:pointer;
+    border:1px solid var(--ink);border-radius:0;background:var(--paper);color:var(--ink);
+    padding:7px 3px;text-align:center;transition:background .18s,color .18s;}
+  .ear .eng-btn:hover{background:var(--ink);color:var(--paper);}
+  .ear-k{font:800 8.4px/1.15 "Libre Franklin",sans-serif;letter-spacing:.9px;text-transform:uppercase;}
+  .ear-s{font-family:Georgia,serif;font-style:italic;font-size:7.6px;line-height:1;opacity:.72;
+    text-transform:none;letter-spacing:0;}
+
+  /* very narrow phones: shrink before anything can touch the wordmark */
+  @media (max-width:379px){
+    .ear{width:62px;} .ear-l{left:9px;} .ear-r{right:9px;}
+    .ear .eng-btn{padding:6px 2px;} .ear-k{font-size:7.6px;letter-spacing:.6px;} .ear-s{font-size:7px;}
+  }
+  @media (min-width:700px){
+    .ear{width:92px;} .ear-l{left:22px;} .ear-r{right:22px;}
+    .ear .eng-btn{padding:9px 5px;} .ear-k{font-size:9.4px;} .ear-s{font-size:8.4px;}
+  }
+  @media (min-width:1024px){
+    .ear{width:112px;} .ear-l{left:28px;} .ear-r{right:28px;}
+    .ear .eng-btn{padding:11px 6px;} .ear-k{font-size:10.4px;} .ear-s{font-size:9px;}
+  }
+  /* short viewports: the masthead shrinks, so the ears shrink with it */
+  @media (max-height:680px){
+    .ear .eng-btn{padding:5px 3px;} .ear-s{display:none;} .ear-k{font-size:7.8px;}
+  }
+
   /* ---- publisher credit under the nameplate ---- */
   .publisher{font:600 7.4px/1 "Libre Franklin",sans-serif;letter-spacing:1.5px;
     text-transform:uppercase;color:var(--meta-2);margin-top:6px;}
@@ -938,12 +975,14 @@
 
   <header class="masthead">
     <div class="nameplate">
+      <div class="ear ear-l" id="earQuiz"></div>
       <div class="np-center">
         <div class="wordmark">AIShorts</div>
         <div class="slogan">&ldquo;All the AI That&rsquo;s Fit to Print&rdquo;</div>
         <div class="publisher">A <a href="https://world-of-ai.co.in" target="_blank" rel="noopener">planetAI LLP</a> product</div>
       </div>
       <div class="dateline-side" id="dateline">AI Edition</div>
+      <div class="ear ear-r" id="earPoll"></div>
     </div>
 
     <!-- Live AI-company stock ticker (occupies the spot the dateline used to hold) -->
@@ -957,8 +996,8 @@
 
   <div class="utility-row" id="utilityRow">
   <div class="engage">
-    <button class="eng-btn" id="openQuiz">AI Quiz of the Day</button>
-    <button class="eng-btn" id="openPoll">AI Poll of the Day</button>
+    <button class="eng-btn" id="openQuiz" aria-label="Open the AI quiz of the day"><span class="ear-k">AI Quiz</span><span class="ear-s">of the day</span></button>
+    <button class="eng-btn" id="openPoll" aria-label="Open the AI poll of the day"><span class="ear-k">AI Poll</span><span class="ear-s">of the day</span></button>
     <a class="eng-btn" href="vitalmetrics.html" target="_blank" rel="noopener" title="Open AI Vitals — AI-enabled BMI &amp; body tracker in a new tab">AI Vitals &mdash; BMI tracker<span class="ext">&#8599;</span></a>
   </div>
 
@@ -2630,9 +2669,10 @@ initFeed();
   Array.prototype.slice.call(document.querySelectorAll('.tb-right a.tb-site'))
     .forEach(function(a){ sites.appendChild(a); });
 
-  /* today's interactive bits */
-  move('#openQuiz', tools);
-  move('#openPoll', tools);
+  /* the daily quiz and poll ride in the nameplate ears; the vitals
+     link stays in the sheet where there is room for its longer label */
+  move('#openQuiz', document.getElementById('earQuiz'));
+  move('#openPoll', document.getElementById('earPoll'));
   move('.engage a.eng-btn', tools);
 
   /* account actions */
