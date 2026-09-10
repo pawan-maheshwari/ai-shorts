@@ -166,9 +166,19 @@
   .sb-item .sym{font-weight:800;font-size:10px;letter-spacing:.4px;color:var(--ink);}
   .sb-item .px{font-family:Georgia,serif;font-size:10.6px;color:var(--ink);transition:background .18s,color .18s;padding:0 3px;border-radius:2px;}
   .sb-item .chg{font-weight:600;font-size:9.3px;letter-spacing:.2px;}
-  .sb-item .chg.up{color:#1E6F4C;} .sb-item .chg.down{color:#d0021b;} .sb-item .chg.flat{color:#326891;}
-  .sb-item .px.flash-up{background:rgba(30,111,76,.18);color:#1E6F4C;}
-  .sb-item .px.flash-down{background:rgba(208,2,27,.16);color:#d0021b;}
+  .sb-item .chg.up{color:var(--up);} .sb-item .chg.down{color:var(--down);} .sb-item .chg.flat{color:var(--meta);}
+  .sb-item .px.flash-up{animation:pxflash-up .62s var(--ease);}
+  .sb-item .px.flash-down{animation:pxflash-down .62s var(--ease);}
+  @keyframes pxflash-up{
+    0%{background:var(--up);color:var(--paper);}
+    55%{background:var(--up-wash);color:var(--up);}
+    100%{background:transparent;color:var(--ink);}
+  }
+  @keyframes pxflash-down{
+    0%{background:var(--down);color:var(--paper);}
+    55%{background:var(--down-wash);color:var(--down);}
+    100%{background:transparent;color:var(--ink);}
+  }
   .sb-sep{color:var(--rule-strong);flex:0 0 auto;font-size:9px;padding:0 2px;}
 
   /* ---- section nav (chips) ---- */
@@ -1088,6 +1098,136 @@
 
   @media (max-width:379px){ .act{padding:4px 5px;font-size:7px;letter-spacing:.6px;} }
   @media print{ .acts{display:none !important;} }
+
+  /* =====================================================================
+     MOTION & COLOUR
+     ===================================================================== */
+
+  /* ---- market movement colours, per edition ---- */
+  :root{
+    --up:#1e6f4c;   --up-wash:rgba(30,111,76,.16);
+    --down:#a8172a; --down-wash:rgba(168,23,42,.14);
+  }
+  html[data-theme="night"]{
+    --up:#57c08d;   --up-wash:rgba(87,192,141,.20);
+    --down:#e2596b; --down-wash:rgba(226,89,107,.20);
+  }
+  html[data-theme="sepia"]{
+    --up:#2f6b45;   --up-wash:rgba(47,107,69,.16);
+    --down:#9c2b1e; --down-wash:rgba(156,43,30,.14);
+  }
+
+  /* ---- page turn ----
+     The lift is applied to the card's children, never the card itself:
+     .card is a scroll-snap target, and transforming a snap target makes
+     iOS Safari fight the scroller. ------------------------------------ */
+  .card .plate,.card .body{
+    transform:translateY(14px) rotate(.35deg) scale(.986);
+    transform-origin:50% 0;
+    opacity:.55;
+    box-shadow:0 14px 26px -18px rgba(20,17,15,.55);
+    transition:transform .46s var(--ease),opacity .34s var(--ease),box-shadow .46s var(--ease);
+  }
+  .card .body{transition-delay:.04s;}
+  .card.is-live .plate,.card.is-live .body{
+    transform:none;opacity:1;box-shadow:0 0 0 0 rgba(20,17,15,0);
+  }
+
+  /* ---- ink set ----
+     Type arrives a beat after the paper settles, the way a page resolves
+     when it stops moving. --------------------------------------------- */
+  .card .kicker,.card .headline,.card .summary,.card .source{
+    opacity:0;transform:translateY(9px);
+    transition:opacity .38s var(--ease),transform .38s var(--ease);
+  }
+  .card.is-live .kicker  {opacity:1;transform:none;transition-delay:.10s;}
+  .card.is-live .headline{opacity:1;transform:none;transition-delay:.16s;}
+  .card.is-live .summary {opacity:1;transform:none;transition-delay:.23s;}
+  .card.is-live .source  {opacity:1;transform:none;transition-delay:.29s;}
+
+  /* nothing may be left invisible if the observer never fires */
+  .no-motion .card .plate,.no-motion .card .body,
+  .no-motion .card .kicker,.no-motion .card .headline,
+  .no-motion .card .summary,.no-motion .card .source{
+    opacity:1;transform:none;box-shadow:none;transition:none;
+  }
+  @media (prefers-reduced-motion:reduce){
+    .card .plate,.card .body,.card .kicker,.card .headline,
+    .card .summary,.card .source{
+      opacity:1 !important;transform:none !important;
+      box-shadow:none !important;transition:none !important;
+    }
+    .sb-item .px.flash-up,.sb-item .px.flash-down{animation:none;}
+  }
+  @media print{
+    .card .plate,.card .body,.card .kicker,.card .headline,
+    .card .summary,.card .source{opacity:1 !important;transform:none !important;}
+  }
+
+  /* =====================================================================
+     THE QUIZ AND POLL — the one place on the site allowed to be loud
+     ===================================================================== */
+  #quizModal .modal-card,#pollModal .modal-card{
+    padding:0;overflow:hidden;border-color:var(--q-ink);
+    box-shadow:0 28px 70px rgba(20,17,15,.5);
+  }
+  #quizModal{--q-ink:#3b2d7d;--q-hot:#6a4fd8;--q-glow:rgba(106,79,216,.22);}
+  #pollModal{--q-ink:#8a2b52;--q-hot:#d94f7a;--q-glow:rgba(217,79,122,.22);}
+
+  #quizModal .modal-kicker,#pollModal .modal-kicker{
+    margin:0;padding:22px 22px 16px;color:#fff;background:var(--q-ink);
+    font-size:10px;letter-spacing:2px;
+    background-image:radial-gradient(circle at 88% 0%,var(--q-hot) 0%,transparent 62%);
+  }
+  #quizModal .modal-x,#pollModal .modal-x{color:rgba(255,255,255,.75);top:14px;}
+  #quizModal .modal-x:hover,#pollModal .modal-x:hover{color:#fff;}
+  #quizModal .modal-title,#pollModal .modal-title{
+    margin:0;padding:0 22px 18px;color:#fff;background:var(--q-ink);
+    background-image:radial-gradient(circle at 88% -40%,var(--q-hot) 0%,transparent 62%);
+  }
+  #quizModal #quizBody,#pollModal #pollBody,
+  #quizModal .form-note,#pollModal .form-note,#pollModal .poll-prev{
+    padding-left:22px;padding-right:22px;
+  }
+  #quizModal #quizBody,#pollModal #pollBody{padding-top:20px;}
+  #pollModal .poll-prev{padding-bottom:22px;}
+  #quizModal .form-note,#pollModal .form-note{padding-bottom:22px;}
+
+  #quizModal .opt,#pollModal .opt{
+    border:1.5px solid var(--rule);font-weight:600;padding:13px 15px;
+    transition:border-color var(--dur) var(--ease),background var(--dur) var(--ease),
+               transform var(--dur) var(--ease);
+  }
+  #quizModal .opt:hover:not([disabled]),#pollModal .opt:hover:not([disabled]){
+    border-color:var(--q-hot);background:var(--q-glow);transform:translateX(3px);
+  }
+  #quizModal .opt.correct{
+    border-color:#0f8a52;background:#0f8a52;color:#fff;
+    animation:optpop .42s var(--ease);
+  }
+  #quizModal .opt.wrong{
+    border-color:var(--down);background:var(--down);color:#fff;
+    animation:optshake .38s var(--ease);
+  }
+  @keyframes optpop{0%{transform:scale(1);}38%{transform:scale(1.035);}100%{transform:scale(1);}}
+  @keyframes optshake{0%,100%{transform:translateX(0);}22%{transform:translateX(-6px);}
+    58%{transform:translateX(5px);}80%{transform:translateX(-2px);}}
+
+  #pollModal .bar .track{height:12px;background:var(--rule);overflow:hidden;}
+  #pollModal .bar .fill{
+    background:var(--q-ink);
+    background-image:linear-gradient(90deg,var(--q-ink),var(--q-hot));
+    transition:width .7s var(--ease);
+  }
+  #pollModal .bar.mine .fill{
+    background-image:linear-gradient(90deg,var(--q-hot),#ffb35c);
+  }
+  #pollModal .bar.mine .lab{color:var(--q-ink);font-weight:800;}
+
+  @media (prefers-reduced-motion:reduce){
+    #quizModal .opt.correct,#quizModal .opt.wrong{animation:none;}
+    #quizModal .opt:hover,#pollModal .opt:hover{transform:none;}
+  }
 
   /* ---- nameplate ears: the daily quiz and poll flank the wordmark ----
      Classic broadsheet furniture. The dateline gives up its absolute
@@ -2894,7 +3034,7 @@ initFeed();
     var px = cell.querySelector(".px"); if(!px) return;
     var cls = up ? "flash-up" : "flash-down";
     px.classList.add(cls);
-    setTimeout(function(){ px.classList.remove(cls); }, 480);
+    setTimeout(function(){ px.classList.remove(cls); }, 640);
   }
   // Update the two on-screen copies of each symbol in place (keeps the marquee smooth)
   function paint(){
@@ -3385,6 +3525,62 @@ function shareCutting(n, btn){
     if(mq.addEventListener) mq.addEventListener("change", onSys);
     else if(mq.addListener) mq.addListener(onSys);
   }
+})();
+</script>
+<script>
+/* =====================================================================
+   PAGE TURN — mark the card the reader has landed on
+   =====================================================================
+   An IntersectionObserver against the deck decides which card is "live";
+   CSS does the rest. If anything here fails, .no-motion on <html> puts
+   every card back to full opacity, so a broken observer can never leave
+   the wire blank.
+--------------------------------------------------------------------- */
+(function(){
+  var deck = document.getElementById("deck");
+  if(!deck) return;
+
+  if(!("IntersectionObserver" in window)){
+    document.documentElement.classList.add("no-motion");
+    return;
+  }
+
+  var live = null;
+  var io = new IntersectionObserver(function(entries){
+    var best = live, ratio = 0;
+    entries.forEach(function(en){
+      if(en.intersectionRatio > ratio){ ratio = en.intersectionRatio; best = en.target; }
+    });
+    if(!best || best === live) return;
+    if(live) live.classList.remove("is-live");
+    best.classList.add("is-live");
+    live = best;
+  }, {root: deck, threshold: [.25, .5, .75]});
+
+  function observe(){
+    var cards = deck.querySelectorAll(".card");
+    if(!cards.length) return;
+    cards.forEach(function(c){ io.observe(c); });
+    /* the first card is already on screen, so it never crosses a
+       threshold — set it live directly */
+    if(!deck.querySelector(".card.is-live")){
+      cards[0].classList.add("is-live");
+      live = cards[0];
+    }
+  }
+
+  observe();
+  new MutationObserver(function(){
+    io.disconnect(); live = null; observe();
+  }).observe(deck, {childList: true});
+
+  /* belt and braces: if 1.2s after load nothing is live, the observer
+     never fired — show everything rather than an empty page */
+  setTimeout(function(){
+    if(deck.querySelector(".card") && !deck.querySelector(".card.is-live")){
+      document.documentElement.classList.add("no-motion");
+    }
+  }, 1200);
 })();
 </script>
 </body>
