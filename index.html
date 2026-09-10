@@ -1229,6 +1229,43 @@
     #quizModal .opt:hover,#pollModal .opt:hover{transform:none;}
   }
 
+  /* =====================================================================
+     THE CUTTING SHEET
+     ===================================================================== */
+  #cutModal .modal-card{max-width:430px;}
+  .cut-stage{margin:14px 0 4px;background:var(--paper-2);border:1px solid var(--rule);
+    display:flex;align-items:center;justify-content:center;min-height:150px;padding:10px;}
+  .cut-stage img{max-width:100%;height:auto;display:block;
+    box-shadow:0 10px 30px -12px rgba(20,17,15,.5);}
+  .cut-stage.is-working{min-height:220px;}
+  .cut-stage.is-working img{display:none;}
+  .cut-stage.is-working::after{content:"Setting the type\2026";
+    font-family:var(--serif);font-style:italic;color:var(--meta);font-size:14px;}
+
+  .cut-acts{display:flex;gap:8px;margin:14px 0 4px;flex-wrap:wrap;}
+  .cut-go{flex:1 1 140px;appearance:none;cursor:pointer;border:1.5px solid var(--ink);
+    background:var(--ink);color:var(--paper);padding:13px 12px;border-radius:0;
+    font:800 10px/1 var(--sans);letter-spacing:1.4px;text-transform:uppercase;
+    transition:background var(--dur) var(--ease),color var(--dur) var(--ease);}
+  .cut-go:hover{background:transparent;color:var(--ink);}
+  .cut-go.alt{background:transparent;color:var(--ink);}
+  .cut-go.alt:hover{background:var(--ink);color:var(--paper);}
+  .cut-go[hidden]{display:none;}
+
+  .cut-lab{font:700 7.4px/1 var(--sans);letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--meta-2);margin:18px 0 8px;}
+  .cut-links{display:flex;flex-wrap:wrap;gap:7px;}
+  .cut-net{flex:1 1 auto;text-align:center;text-decoration:none;cursor:pointer;
+    padding:11px 10px;color:#fff;border:0;
+    font:800 9.4px/1 var(--sans);letter-spacing:1.1px;text-transform:uppercase;
+    transition:filter var(--dur) var(--ease),transform var(--dur) var(--ease);}
+  .cut-net:hover{filter:brightness(1.12);transform:translateY(-1px);}
+  .cut-net.wa{background:#25d366;} .cut-net.tg{background:#2aabee;}
+  .cut-net.x{background:#14110f;}  .cut-net.li{background:#0a66c2;}
+  .cut-net.em{background:#6b645c;}
+  #cutModal .form-note{margin-top:12px;}
+  @media (prefers-reduced-motion:reduce){ .cut-net:hover{transform:none;} }
+
   /* ---- nameplate ears: the daily quiz and poll flank the wordmark ----
      Classic broadsheet furniture. The dateline gives up its absolute
      right-hand slot and flows centred under the slogan at every width,
@@ -1477,6 +1514,28 @@
   </div>
 
   <div class="status" id="status"></div>
+
+  <div class="modal" id="cutModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Share this cutting">
+      <button class="modal-x" data-close aria-label="Close">&times;</button>
+      <div class="modal-kicker">Share a cutting</div>
+      <div class="cut-stage"><img id="cutImg" alt="A newspaper cutting of this story"></div>
+      <div class="cut-acts">
+        <button class="cut-go" id="cutShare" hidden>Share the image&hellip;</button>
+        <button class="cut-go alt" id="cutSave">Save image</button>
+        <button class="cut-go alt" id="cutCopy" hidden>Copy image</button>
+      </div>
+      <div class="cut-lab">Or send the headline and link</div>
+      <div class="cut-links">
+        <a class="cut-net wa" id="cutWA" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="cut-net tg" id="cutTG" target="_blank" rel="noopener">Telegram</a>
+        <a class="cut-net x"  id="cutX"  target="_blank" rel="noopener">X</a>
+        <a class="cut-net li" id="cutLI" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="cut-net em" id="cutEM">Email</a>
+      </div>
+      <div class="form-note" id="cutNote">These send text only. Use <b>Share the image</b> to send the cutting itself.</div>
+    </div>
+  </div>
 
   <div class="modal" id="clipsModal">
     <div class="modal-card" role="dialog" aria-modal="true" aria-label="Your clippings">
@@ -3330,6 +3389,11 @@ function shareCutting(n, btn){
   if(btn){ btn.classList.add("is-busy"); btn.disabled = true; }
 
   var done = function(){ if(btn){ btn.classList.remove("is-busy"); btn.disabled = false; } };
+
+  /* open the sheet straight away on the tap, so the reader sees something
+     happen while the type is set */
+  var _m = document.getElementById("cutModal");
+  if(_m){ _m.querySelector(".cut-stage").classList.add("is-working"); _m.classList.add("open"); }
   var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
 
   ready.then(function(){
@@ -3444,24 +3508,9 @@ function shareCutting(n, btn){
     x.fillText("A planetAI LLP product", PAD, footY + 124);
 
     cv.toBlob(function(blob){
-      if(!blob){ done(); return; }
-      var name = "aishorts-cutting.png";
-      var file = null;
-      try{ file = new File([blob], name, {type:"image/png"}); }catch(e){}
-
-      if(file && navigator.canShare && navigator.canShare({files:[file]})){
-        navigator.share({
-          files: [file],
-          title: n.headline,
-          text: String(n.headline || "") + " \u2014 via AIShorts"
-        }).catch(function(){}).then(done, done);
-        return;
-      }
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob); a.download = name;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
       done();
+      if(!blob) return;
+      showCutting(blob, n);
     }, "image/png");
   }).catch(done);
 }
@@ -3581,6 +3630,111 @@ function shareCutting(n, btn){
       document.documentElement.classList.add("no-motion");
     }
   }, 1200);
+})();
+</script>
+<script>
+/* =====================================================================
+   THE CUTTING SHEET
+   =====================================================================
+   Why a sheet rather than sharing straight from the card: navigator.share()
+   needs transient activation, and rendering the cutting costs two awaits
+   (fonts, then toBlob). By the time the old code called share(), the tap had
+   expired and iOS rejected it. The Share button in this sheet is a fresh
+   gesture with the blob already made, so it goes through.
+
+   The coloured network buttons send text only — no messaging app accepts an
+   image through a URL scheme. The image travels via the system share sheet.
+--------------------------------------------------------------------- */
+var showCutting;
+(function(){
+  var modal = document.getElementById("cutModal");
+  if(!modal) return;
+
+  var img   = document.getElementById("cutImg"),
+      stage = modal.querySelector(".cut-stage"),
+      bShare= document.getElementById("cutShare"),
+      bSave = document.getElementById("cutSave"),
+      bCopy = document.getElementById("cutCopy"),
+      note  = document.getElementById("cutNote"),
+      current = {blob:null, story:null, url:""};
+
+  var NAME = "aishorts-cutting.png";
+
+  function revoke(){
+    if(current.url){ URL.revokeObjectURL(current.url); current.url = ""; }
+  }
+  function close(){
+    modal.classList.remove("open");
+    revoke(); img.removeAttribute("src");
+  }
+  modal.querySelectorAll("[data-close]").forEach(function(b){ b.onclick = close; });
+  modal.addEventListener("click", function(e){ if(e.target === modal) close(); });
+
+  function fileOf(){
+    try{ return new File([current.blob], NAME, {type:"image/png"}); }catch(e){ return null; }
+  }
+  function canShareFile(){
+    var f = fileOf();
+    return !!(f && navigator.canShare && navigator.canShare({files:[f]}));
+  }
+
+  function links(n){
+    var head = String(n.headline || ""),
+        url  = n.url || "https://aishorts.biz/",
+        msg  = head + "\n\nvia AIShorts \u2014 https://aishorts.biz/\n" + url,
+        e    = encodeURIComponent;
+    document.getElementById("cutWA").href = "https://wa.me/?text=" + e(msg);
+    document.getElementById("cutTG").href = "https://t.me/share/url?url=" + e(url) + "&text=" + e(head + " \u2014 via AIShorts");
+    document.getElementById("cutX").href  = "https://twitter.com/intent/tweet?text=" + e(head + " \u2014 via AIShorts") + "&url=" + e(url);
+    document.getElementById("cutLI").href = "https://www.linkedin.com/sharing/share-offsite/?url=" + e(url);
+    document.getElementById("cutEM").href = "mailto:?subject=" + e(head) + "&body=" + e(msg);
+  }
+
+  /* called by shareCutting() once the PNG exists */
+  showCutting = function(blob, n){
+    current.blob = blob; current.story = n;
+    revoke();
+    current.url = URL.createObjectURL(blob);
+    img.src = current.url;
+    stage.classList.remove("is-working");
+
+    bShare.hidden = !canShareFile();
+    bCopy.hidden  = !(navigator.clipboard && window.ClipboardItem);
+    note.innerHTML = bShare.hidden
+      ? "Your browser can\u2019t hand images to other apps. Save the image, then attach it \u2014 or use the buttons below to send the headline and link."
+      : "These send text only. Use <b>Share the image</b> to send the cutting itself.";
+
+    links(n);
+    modal.classList.add("open");
+  };
+
+  bShare.onclick = function(){
+    var f = fileOf(); if(!f) return;
+    var n = current.story || {};
+    navigator.share({
+      files: [f],
+      title: n.headline || "AIShorts",
+      text:  String(n.headline || "") + " \u2014 via AIShorts"
+    }).catch(function(err){
+      if(err && err.name === "AbortError") return;      /* reader changed their mind */
+      note.textContent = "That didn\u2019t go through. Try saving the image instead.";
+    });
+  };
+
+  bSave.onclick = function(){
+    if(!current.blob) return;
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(current.blob); a.download = NAME;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 4000);
+  };
+
+  bCopy.onclick = function(){
+    if(!current.blob || !navigator.clipboard || !window.ClipboardItem) return;
+    navigator.clipboard.write([new ClipboardItem({"image/png": current.blob})])
+      .then(function(){ bCopy.textContent = "Copied"; setTimeout(function(){ bCopy.textContent = "Copy image"; }, 1600); })
+      .catch(function(){ note.textContent = "Couldn\u2019t copy. Save the image instead."; });
+  };
 })();
 </script>
 </body>
