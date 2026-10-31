@@ -1,0 +1,251 @@
+{
+  "generated": "2026-10-31T12:04:34.334Z",
+  "forDate": "2026-11-01",
+  "window": {
+    "from": "2026-10-30T12:04:34.334Z",
+    "to": "2026-10-31T12:04:34.334Z"
+  },
+  "scanned": {
+    "stories": 797,
+    "outlets": 369,
+    "regions": [
+      "Global desks",
+      "Community",
+      "Europe",
+      "Africa",
+      "North America",
+      "South Asia",
+      "Asia-Pacific",
+      "Middle East"
+    ],
+    "storylines": 632
+  },
+  "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
+  "predictions": [
+    {
+      "rank": 1,
+      "score": 0.5979,
+      "probability": 0.8,
+      "confidence": "High",
+      "entity": "OpenAI",
+      "theme": "Funding & markets",
+      "headline": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports",
+      "outlook": "Market reaction, analyst notes and deal details around OpenAI are the likely next chapter.",
+      "signals": {
+        "outlets": 22,
+        "regions": [
+          "North America",
+          "South Asia",
+          "Asia-Pacific"
+        ],
+        "stories": 25,
+        "momentum": 2.12,
+        "recent6h": 11,
+        "authority": 8.2,
+        "hnPoints": 162,
+        "nextStepCues": 0,
+        "arcDays": 0,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.91,
+        "breadth": 0.5,
+        "momentum": 0.69,
+        "authority": 1,
+        "community": 0.74,
+        "nextStep": 0,
+        "arc": 0
+      },
+      "sig": [
+        "openai",
+        "target",
+        "funding",
+        "cuts",
+        "$10",
+        "$10b",
+        "reportedly",
+        "slashe"
+      ],
+      "evidence": [
+        {
+          "title": "OpenAI Raises Less Than Half of $30 Billion Target in Latest Round",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQTW9TMmVsZkc2b05TYkloVW41X050RjdtZ1F5U01TRnJOSEthYTJpcDdPWVhJb0FvRGEteHgtbVhSS0lOVEZ3T2N5MTNpSUNWNXpETThZR0RvcFQwY2Q5R3ctRUFvM1ZtdFdMaXhGSnpPM2FiLUhORXNrem84cUpfVGpuQ0VmaGNsZUlxUVQ0dk4zQUE2cWFzUk8yM1R3cjc3dEczVw?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNTWw3N0l5dm5KUi1FQmllTEpEeUdkY1k5TVlFNTlnWWFlbTgtdUJfZE9RMjZiQlJEVXU2VFo2blVaWk1MZzNYMm9OYmdrSngtSk02YnhKNDdVMVZkS3hIMHpWZ2dnRjJZWjBzQ0lFRU4ySFFUQzdTdnUzN3JETGtCYlo3Y3kxeGJseG5veVJMSVVCRDVPYzB3TXQyaFE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI slashes funding target by $10bn as tech anxieties mount",
+          "source": "Financial Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNaUV4SzVmMzFLRkI1UUhWNFBucHlqRTVacXh1cDlWRTFVY1pQeHBIUGtTRFlhSDNHc25OVUVqWGZZOFZLazRVaVpWR3luWk5ORWRBeFBUd0RsYndHZ3YwV2RVRFN5WTRYdzEwTm8yS0Z0YkRUQmNpTERIaWdKQU1Dbl9DZk4?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI cuts funding target by $10 billion: FT",
+          "source": "The Economic Times",
+          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNT2RDcFBKd3BXWm94Rk9LMDdSTHVmOWF1dDg0M1E4QmdkX3BXWFhfV0ZJR0NKM2Y4N0o0ZFlBLWlxcjBXR01hSkZsNmVHa0Y1QmgwM2NiWXlPdUlZZHV0TlllUjkwcVROMTVBMnlpLXJZbjNRT1lmZm9GQmE3aEJsNWg1UlJjMjBhN2JnSVlvX1Z0SlZYTHJ5UXM5QXJCb2RqRXduMnc3V0NPbFhEZjdyMDN0UTFCdXVYRXBwLTViMTF6TDBQ0gHKAUFVX3lxTE0yNTBLX3VQZE8xYlAza2hESXlxS1FsX29UWDlLMnllQU5ZNnBGMEt1RjZkNnVkNmRCcW5DZFpmYUJHNThfcmFOaWM2YzEtVW1KV0Z3S3lvcUk4eEM2OXNzS3hiYUpkekN1emJ5Mk03YlpPTDNpM1A3aERpN3lMRzI3d0JJU0s4azhRb0RESGVxeTZmakEwcEwwNm5UU05xM2c4ZE1zd2w3bHI2MTNmUVVKVnROckhXTmp4Z1drRXF0cC1oWWpuTXJNLUE?oc=5",
+          "region": "North America"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "score": 0.5248,
+      "probability": 0.7,
+      "confidence": "High",
+      "entity": "Samsung",
+      "theme": "Chips & compute",
+      "headline": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
+      "outlook": "Supply, pricing and export angles on Samsung should keep this in the headlines.",
+      "signals": {
+        "outlets": 9,
+        "regions": [
+          "North America",
+          "South Asia",
+          "Asia-Pacific",
+          "Africa",
+          "Middle East"
+        ],
+        "stories": 9,
+        "momentum": 10,
+        "recent6h": 9,
+        "authority": 3.4,
+        "hnPoints": 0,
+        "nextStepCues": 0,
+        "arcDays": 0,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.67,
+        "breadth": 0.83,
+        "momentum": 1,
+        "authority": 0.67,
+        "community": 0,
+        "nextStep": 0,
+        "arc": 0
+      },
+      "sig": [
+        "samsung",
+        "altman",
+        "openais",
+        "chip",
+        "executive",
+        "meet",
+        "crunch",
+        "deepen"
+      ],
+      "evidence": [
+        {
+          "title": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
+          "source": "Bloomberg",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPN1Fva1BkZVk3T3ZZVWZiSUNOQVhaMElmVERReF8zekRzTWt0YnNZZUVpTGUtaUd0MFVKcmp2TXF2d2hxNldzTUYyNVhTRjFxUU8xeHAtYllENzhtMDRlbF93dXUtb3RXNWkwbk9icU5KdlN4anY3RzJnSXl2dHZ0a3JTT2QzMlRsY1hhLWxyUVdSYzFFV1E3MzRBeXJmOU5EcnVIUzI0S2hhYTk2dUE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI’s Altman meets Samsung executives as chip crunch deepens",
+          "source": "The Straits Times",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNbVBEdzc1WDJhOXpEUUFaMGpKT0lTd0NmMzMzcy1wQ0pwRGVNWjhCRlFNZjA5ME9tWTNTazRKQ3NvV1UxMGFLNTV6T0pfZ2JuNEx3Y2w5ekVwN0RhbDc5SXVFdUFKVjI2ai0xLUExOFlhNWdsX19GS0RMVlZCOTU0Z3licDJLLVZqNXFqWlRHbUdVVkdkMmNpQzNoYnByamlGZGc?oc=5",
+          "region": "Asia-Pacific"
+        },
+        {
+          "title": "Altman Presents 300,000 Won Keyboard to Samsung",
+          "source": "조선일보",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNZFhiTUFMOW9FTDZBRFdGclM5STJvTU1DZEJPWXdvNWE1Q01QOFRVWjlfM2ZLNElUWmpta2pxbW9jV0tpa3Q5UXRESHNwTW5hNnBsaER2MHAtU3R4c0hnOEQwdGlPd0RYSHlVNFJsVVlXMUZZMWR3Y1lPaU9rVVdrd0FwZmljVi1z?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Sam Altman Samsung Meeting: 50 Executives, Chips [2026]",
+          "source": "https://tech-insider.org/",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOTGlPRmNQYlc0SmZfSzJOTkFCSVFSU1A3SjZQSTFRYng0Tl9YRk9kSlJBX0RCeVFGb3VyRGpMS250S2pvQ1JFbUFFd2VnTHNmdEN5NWVzb05IUlJVNm9rN3FnTXJqVGxpM2kwMXUwUGc0MkZoSS1ZLUJXS1Q4WFpCSTBCR0E?oc=5",
+          "region": "Middle East"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "score": 0.4569,
+      "probability": 0.58,
+      "confidence": "Medium",
+      "entity": "Apple",
+      "theme": "Model launch",
+      "headline": "Apple to launch iPhone AI features in China in December via Alibaba partnership",
+      "outlook": "Hands-on reviews, benchmark claims and rival responses to Apple are likely to lead tomorrow.",
+      "signals": {
+        "outlets": 4,
+        "regions": [
+          "Global desks",
+          "South Asia",
+          "Asia-Pacific",
+          "North America"
+        ],
+        "stories": 4,
+        "momentum": 1,
+        "recent6h": 1,
+        "authority": 1.7,
+        "hnPoints": 0,
+        "nextStepCues": 3,
+        "arcDays": 0,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.47,
+        "breadth": 0.67,
+        "momentum": 0.33,
+        "authority": 0.34,
+        "community": 0,
+        "nextStep": 1,
+        "arc": 0
+      },
+      "sig": [
+        "apple",
+        "china",
+        "launch",
+        "december",
+        "qwen",
+        "powered",
+        "finally",
+        "coming"
+      ],
+      "evidence": [
+        {
+          "title": "Apple to launch iPhone AI features in China in December via Alibaba partnership",
+          "source": "South China Morning Post",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNN2tkN3NFenBvWmVSMHFlWEJGWnlfeWpyVzFQQzhoUllDZ3ljS05venFUT1ZnT3pQai13c3hmUHU0RTlESklTekVvU2VuTXJXeDF0Z1k4THFicC1ybU0wcVk5MVBuNmdaMXVCUlZ3dTBPcmtLTVBjTnBKV2lHZEFGRmlKU0loWWttaWlXbDM3QkxLS1RkaHhic04xYm5FWGcyWWxDZDZFT01kVXl5WTFWQUtrcW1uZU020gG4AUFVX3lxTFA4YTg1dUhJeDhZajg5NTFxU29RRWNNeVZzZXRxMmpoUjZ3QTNuWktwS0FQVkxvbUQ3YjQ1NGcwa3hVRDE3TnNOTmVhdXk5QTVuYUhuMGgxR0tmWHZGbDdKV09tdnhWQWhJWTdnaW9mNmhZRWowaV9wQmdvZTRTa3FzdExZakVlTHpXT0RGNGxYS0RpeXd1emlfYXBqVkVCMk1MUjJhbmlQdV90M2RqN3FiakNEM3VYU2w?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Apple Intelligence is finally coming to China with iOS 27.3",
+          "source": "The Verge",
+          "url": "https://www.theverge.com/tech/1023974/apple-intelligence-china-ios-27-3",
+          "region": "Global desks"
+        },
+        {
+          "title": "Qwen-powered Apple AI to launch in China in December",
+          "source": "China Daily",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTFAzUGNVNDNqTlJNbHpFVS1Xa2FRdm8tTlhZc0RlWkxsLVBrcWhYcE1EeldpbEd4Y3RGMmMyeEhGdFdwakRac0JIelZod0hkb0xCVjVFREl5NF9EZ1gtNFdoanZYcklNWHJNQVo3dEI2R1Q0MTViSWhlNEJFcW4yQQ?oc=5",
+          "region": "South Asia"
+        },
+        {
+          "title": "Qwen-powered Apple AI to launch in China in December",
+          "source": "China Daily Global Edition",
+          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNTExGaUVsN2N6UGNnUVFpUUlxcnZqb3I1dTVqOXg2YkdsWkhoWlFxa201cGhyRXBYbGNnSmZmWWpoaVlvYlo2dUpMUE9KN2dmUWZ1MW9ZQjgxOHphdngtNUtVN3JVMzJfMWFJZ2NhQ2k0d3NVMXNXc01aQm8weDlFMWVB?oc=5",
+          "region": "Asia-Pacific"
+        }
+      ]
+    }
+  ],
+  "scorecard": null,
+  "track": {
+    "days": 0,
+    "calls": 0,
+    "hits": 0,
+    "log": [],
+    "hitRate": null
+  },
+  "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
+}
