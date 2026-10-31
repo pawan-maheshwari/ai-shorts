@@ -1356,6 +1356,78 @@
   .breaking a:focus-visible{outline-color:#fff;}
   /* never suppress it entirely: keep any legacy outline:none from winning */
   *:focus-visible{outline-style:solid;}
+
+  /* =====================================================================
+     TOP AI PREDICTION — tomorrow's wire, forecast from today's global coverage
+     ===================================================================== */
+  .predict{flex:0 0 auto;display:flex;align-items:center;gap:12px;width:100%;
+    padding:8px 16px;border:0;border-bottom:1px solid var(--rule);background:var(--paper);
+    font-family:"Libre Franklin",sans-serif;color:var(--ink);text-align:left;cursor:pointer;}
+  .predict:hover .pr-go{background:var(--ink);color:var(--paper);}
+  .pr-tag{flex:0 0 auto;display:flex;flex-direction:column;line-height:1.1;padding-right:12px;border-right:1px solid var(--rule);}
+  .pr-k{font-size:7.8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--live);}
+  .pr-t{font-family:Georgia,serif;font-size:12.6px;font-weight:700;white-space:nowrap;}
+  .pr-line{flex:1 1 auto;min-width:0;display:flex;align-items:center;gap:8px;overflow:hidden;}
+  .pr-n{flex:0 0 auto;font:800 9px/1 "Libre Franklin",sans-serif;color:var(--paper);background:var(--ink);padding:3px 5px;}
+  .pr-p{flex:0 0 auto;font:700 10.5px/1 Georgia,serif;color:var(--link);}
+  .pr-h{flex:1 1 auto;min-width:0;font-family:Georgia,serif;font-size:12.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    transition:opacity .35s;}
+  .pr-h.fade{opacity:0;}
+  .pr-go{flex:0 0 auto;border:1px solid var(--ink);font-size:9.6px;font-weight:700;letter-spacing:.4px;padding:4px 8px;white-space:nowrap;}
+  @media (max-width:520px){ .pr-tag{padding-right:8px;} .pr-t{font-size:11px;} .pr-go{display:none;} .predict{padding:7px 14px;gap:8px;} }
+  @media (min-width:900px){ .predict{padding:8px 26px;} }
+
+  #predModal{--p-ink:#123746;--p-hot:#c9a961;--p-soft:rgba(201,169,97,.16);}
+  #predModal .modal-card{max-width:520px;padding:0;overflow-y:auto;border-color:var(--p-ink);box-shadow:0 28px 70px rgba(10,20,26,.5);}
+  .pm-head{padding:22px 22px 16px;color:#fff;background:var(--p-ink);
+    background-image:radial-gradient(circle at 90% 0%,rgba(201,169,97,.55) 0%,transparent 60%);}
+  .pm-head .modal-kicker{color:var(--p-hot);margin-bottom:6px;letter-spacing:2px;}
+  .pm-head h3{margin:0 0 6px;font-family:Georgia,serif;font-size:22px;line-height:1.12;color:#fff;}
+  .pm-scan{font-family:"Libre Franklin",sans-serif;font-size:10.6px;line-height:1.45;color:rgba(255,255,255,.78);}
+  .pm-scan b{color:#fff;}
+  #predModal .modal-x{color:rgba(255,255,255,.7);z-index:2;}
+  #predModal .modal-x:hover{color:#fff;}
+  .pm-body{padding:6px 22px 18px;}
+  .pm-card{display:grid;grid-template-columns:34px 1fr;gap:4px 12px;padding:16px 0;border-bottom:1px solid var(--rule);}
+  .pm-card > :not(.pm-rank){grid-column:2;min-width:0;}
+  .pm-rank{grid-column:1;grid-row:1 / span 8;font:700 34px/0.9 Georgia,serif;color:var(--p-hot);}
+  .pm-kick{font:800 8.6px/1.2 "Libre Franklin",sans-serif;letter-spacing:1.2px;text-transform:uppercase;color:var(--link);}
+  .pm-h{font-family:Georgia,serif;font-weight:700;font-size:16.5px;line-height:1.22;color:var(--ink);margin:2px 0 4px;}
+  .pm-meter{display:flex;align-items:center;gap:8px;font-family:"Libre Franklin",sans-serif;font-size:10px;color:var(--meta);}
+  .pm-bar{flex:1 1 auto;height:7px;background:var(--rule);position:relative;overflow:hidden;}
+  .pm-bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--p-ink),var(--p-hot));}
+  .pm-pct{font:700 14px/1 Georgia,serif;color:var(--ink);min-width:36px;text-align:right;}
+  .pm-conf{font-weight:800;letter-spacing:.8px;text-transform:uppercase;font-size:8.4px;padding:2px 5px;border:1px solid currentColor;}
+  .pm-conf.High{color:#1E6F4C;} .pm-conf.Medium{color:#8a6a2f;} .pm-conf.Low{color:var(--meta);}
+  .pm-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+  .pm-chip{font:600 9.6px/1 "Libre Franklin",sans-serif;padding:4px 6px;background:var(--p-soft);color:var(--ink);white-space:nowrap;}
+  .pm-out{font-family:Georgia,serif;font-style:italic;font-size:12.3px;line-height:1.45;color:var(--body);margin-top:6px;}
+  .pm-card details{margin-top:6px;font-family:"Libre Franklin",sans-serif;}
+  .pm-card summary{cursor:pointer;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--link);text-transform:uppercase;list-style:none;}
+  .pm-card summary::-webkit-details-marker{display:none;}
+  .pm-card summary:before{content:"\25B8  ";}
+  .pm-card details[open] summary:before{content:"\25BE  ";}
+  .pm-why{display:grid;grid-template-columns:76px 1fr 30px;gap:4px 8px;align-items:center;margin:8px 0 2px;font-size:10px;color:var(--meta);}
+  .pm-why .fb{height:5px;background:var(--rule);position:relative;}
+  .pm-why .fb i{position:absolute;inset:0 auto 0 0;background:var(--p-ink);}
+  html[data-theme="night"] .pm-why .fb i{background:var(--p-hot);}
+  .pm-ev{margin:8px 0 0;padding:0;list-style:none;}
+  .pm-ev li{font-size:11.2px;line-height:1.35;margin-bottom:6px;}
+  .pm-ev a{color:var(--ink);text-decoration:none;font-family:Georgia,serif;}
+  .pm-ev a:hover{text-decoration:underline;}
+  .pm-ev span{display:block;font-size:9.4px;color:var(--meta);}
+  .pm-score{margin-top:16px;padding:12px 14px;background:var(--paper-2);border:1px solid var(--rule);font-family:"Libre Franklin",sans-serif;}
+  .pm-score h4{margin:0 0 8px;font-size:9px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--meta);}
+  .pm-score .row{display:flex;gap:8px;font-size:11.2px;line-height:1.35;margin-bottom:6px;color:var(--body);font-family:Georgia,serif;}
+  .pm-score .ok{color:#1E6F4C;font-weight:800;} .pm-score .no{color:var(--live);font-weight:800;}
+  .pm-rate{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:10.4px;color:var(--meta);}
+  .pm-rate b{font:700 18px/1 Georgia,serif;color:var(--ink);}
+  .pm-spark{display:flex;align-items:flex-end;gap:2px;height:22px;}
+  .pm-spark i{width:6px;background:var(--p-hot);display:block;}
+  .pm-note{margin-top:14px;font-family:"Libre Franklin",sans-serif;font-size:9.8px;line-height:1.5;color:var(--meta);}
+  .pm-empty{padding:26px 0;font-family:Georgia,serif;font-size:13px;color:var(--body);}
+  @media print{ .predict{display:none!important;} }
+
 </style>
 </head>
 <body>
@@ -1529,6 +1601,14 @@
   </div>
   </div>
 
+  <!-- Top AI Prediction: tomorrow's three most likely AI storylines (predictions.json, built nightly) -->
+  <button class="predict" id="predictBand" type="button" aria-label="Open the Top AI Prediction for tomorrow">
+    <span class="pr-tag"><span class="pr-k">Tomorrow&rsquo;s wire</span><span class="pr-t">Top AI Prediction</span></span>
+    <span class="pr-line"><span class="pr-n" id="prN">1</span><span class="pr-p" id="prP">&middot;&middot;</span><span class="pr-h" id="prH">Reading the world&rsquo;s AI coverage&hellip;</span></span>
+    <span class="pr-go">See all 3 &rarr;</span>
+  </button>
+
+
   <div class="deck" id="deck"></div>
 
   <footer class="rail">
@@ -1579,6 +1659,18 @@
       <p class="modal-sub" id="clipsSub">Stories you clip are kept on this device.</p>
       <div id="clipsList"></div>
       <button class="opt" id="clipsClear" style="margin-top:14px;display:none;">Clear all clippings</button>
+    </div>
+  </div>
+
+  <div class="modal" id="predModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="Top AI Prediction">
+      <button class="modal-x" data-close aria-label="Close">&times;</button>
+      <div class="pm-head">
+        <div class="modal-kicker">Top AI Prediction</div>
+        <h3 id="pmTitle">Tomorrow&rsquo;s three AI stories</h3>
+        <div class="pm-scan" id="pmScan"></div>
+      </div>
+      <div class="pm-body" id="pmBody"></div>
     </div>
   </div>
 
@@ -3800,5 +3892,135 @@ var showCutting;
   };
 })();
 </script>
+<script>
+/* =================== Top AI Prediction ===================
+   Reads predictions.json (built nightly by .github/workflows/ai-prediction.yml
+   from 24h of global AI coverage) and shows tomorrow's three most likely
+   storylines, why each was called, the evidence, and yesterday's scorecard. */
+(function(){
+  var band=document.getElementById('predictBand'), modal=document.getElementById('predModal');
+  if(!band||!modal) return;
+  var data=null, idx=0, timer=null;
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+  function pct(p){return Math.round((p||0)*100)+'%';}
+  function fmtDate(iso,opt){try{return new Date(iso+(iso.length===10?'T12:00:00+05:30':'')).toLocaleDateString('en-IN',opt||{weekday:'long',day:'numeric',month:'long'});}catch(e){return iso;}}
+  function safeUrl(u){return /^https?:\/\//i.test(u||'')?u:'#';}
+
+  function showBand(){
+    var p=data&&data.predictions&&data.predictions[idx];
+    var h=document.getElementById('prH'),n=document.getElementById('prN'),pp=document.getElementById('prP');
+    if(!p){h.textContent='First forecast publishes tonight at 11:30 PM IST';n.textContent='•';pp.textContent='';return;}
+    h.classList.add('fade');
+    setTimeout(function(){n.textContent=p.rank;pp.textContent=pct(p.probability);h.textContent=p.headline;h.classList.remove('fade');},300);
+  }
+  function rotate(){
+    clearInterval(timer);
+    if(!data||!data.predictions||data.predictions.length<2) return;
+    timer=setInterval(function(){idx=(idx+1)%data.predictions.length;showBand();},5200);
+  }
+
+  var FACTORS=[['reach','Reach'],['breadth','Breadth'],['momentum','Momentum'],['authority','Authority'],['community','Community'],['nextStep','Next step'],['arc','Story arc']];
+
+  function card(p){
+    var c=el('article','pm-card'), s=p.signals||{};
+    c.appendChild(el('div','pm-rank',String(p.rank)));
+    c.appendChild(el('div','pm-kick',(p.entity||'AI')+' · '+(p.theme||'')));
+    c.appendChild(el('div','pm-h',p.headline));
+    var m=el('div','pm-meter'), bar=el('div','pm-bar'), fill=el('i');
+    fill.style.width=pct(p.probability);bar.appendChild(fill);
+    m.appendChild(el('span','pm-pct',pct(p.probability)));m.appendChild(bar);
+    m.appendChild(el('span','pm-conf '+p.confidence,p.confidence));
+    c.appendChild(m);
+    var chips=el('div','pm-chips');
+    function chip(t){chips.appendChild(el('span','pm-chip',t));}
+    chip(s.outlets+' outlets');
+    if(s.regions&&s.regions.length) chip(s.regions.length+(s.regions.length>1?' regions':' region'));
+    if(s.momentum) chip(s.momentum>=1.2?'▲ Accelerating '+s.momentum+'×':s.momentum<0.8?'▼ Cooling':'▶ Steady');
+    if(s.nextStepCues) chip('Next-step signal');
+    if(s.arcDays) chip('Running '+(s.arcDays+1)+' days');
+    if(s.hnPoints) chip(s.hnPoints+' HN points');
+    if(s.calendar) chip('★ Scheduled');
+    c.appendChild(chips);
+    c.appendChild(el('div','pm-out',p.outlook));
+    var d=el('details'), sm=el('summary',null,'Why this call');
+    d.appendChild(sm);
+    var w=el('div','pm-why');
+    FACTORS.forEach(function(f){
+      var v=(p.factors||{})[f[0]]||0;
+      w.appendChild(el('span',null,f[1]));
+      var fb=el('span','fb'),i=el('i');i.style.width=Math.round(v*100)+'%';fb.appendChild(i);w.appendChild(fb);
+      w.appendChild(el('span',null,Math.round(v*100)));
+    });
+    d.appendChild(w);
+    if(s.regions&&s.regions.length) d.appendChild(el('div','pm-note','Covered in: '+s.regions.join(', ')));
+    c.appendChild(d);
+    if(p.evidence&&p.evidence.length){
+      var e=el('details');e.appendChild(el('summary',null,'Today’s evidence ('+p.evidence.length+')'));
+      var ul=el('ul','pm-ev');
+      p.evidence.forEach(function(x){
+        var li=el('li'),a=el('a',null,x.title);a.href=safeUrl(x.url);a.target='_blank';a.rel='noopener noreferrer';
+        li.appendChild(a);li.appendChild(el('span',null,x.source+(x.region?' · '+x.region:'')));ul.appendChild(li);
+      });
+      e.appendChild(ul);c.appendChild(e);
+    }
+    return c;
+  }
+
+  function render(){
+    var body=document.getElementById('pmBody'), scan=document.getElementById('pmScan'), title=document.getElementById('pmTitle');
+    body.innerHTML='';
+    if(!data||!data.predictions||!data.predictions.length){
+      title.textContent='Tomorrow’s three AI stories';
+      scan.textContent='Every night at 11:30 PM IST we read the last 24 hours of AI coverage from around the world and call the three storylines most likely to lead the next day.';
+      body.appendChild(el('div','pm-empty','The first forecast is on its way. Check back after 11:30 PM IST.'));
+      return;
+    }
+    title.textContent='The AI stories to watch on '+fmtDate(data.forDate);
+    var sc=data.scanned||{};
+    scan.innerHTML='';
+    scan.appendChild(document.createTextNode('Read '));scan.appendChild(el('b',null,sc.stories+' stories'));
+    scan.appendChild(document.createTextNode(' from '));scan.appendChild(el('b',null,sc.outlets+' outlets'));
+    scan.appendChild(document.createTextNode(' across '));scan.appendChild(el('b',null,(sc.regions||[]).length+' regions'));
+    scan.appendChild(document.createTextNode(', grouped into '+sc.storylines+' storylines. Forecast made '+
+      new Date(data.generated).toLocaleString('en-IN',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit',timeZone:'Asia/Kolkata'})+' IST.'));
+    data.predictions.forEach(function(p){body.appendChild(card(p));});
+
+    var sco=data.scorecard, tr=data.track;
+    if(sco||(tr&&tr.calls)){
+      var box=el('div','pm-score');
+      if(sco&&sco.calls){
+        box.appendChild(el('h4',null,'How we did · calls for '+fmtDate(sco.date,{day:'numeric',month:'short'})));
+        sco.calls.forEach(function(c){
+          var r=el('div','row');r.appendChild(el('span',c.hit?'ok':'no',c.hit?'✓':'✗'));
+          r.appendChild(el('span',null,c.headline+' ('+pct(c.probability)+')'));box.appendChild(r);
+        });
+      }
+      if(tr&&tr.calls){
+        var rate=el('div','pm-rate');rate.appendChild(el('b',null,pct(tr.hitRate)));
+        rate.appendChild(el('span',null,'hit rate · '+tr.hits+' of '+tr.calls+' calls over '+tr.days+(tr.days>1?' days':' day')));
+        var sp=el('span','pm-spark');
+        (tr.log||[]).slice(-14).forEach(function(l){var i=el('i');i.style.height=(4+18*(l.calls?l.hits/l.calls:0))+'px';i.title=l.date+': '+l.hits+'/'+l.calls;sp.appendChild(i);});
+        rate.appendChild(sp);box.appendChild(rate);
+      }
+      body.appendChild(box);
+    }
+    body.appendChild(el('div','pm-note','This is a forecast, not reporting. The percentage is our estimated chance that the storyline is among the ten most-covered AI stories that day, from signals in today’s coverage: reach, regional breadth, momentum, outlet authority, community interest, next-step language and running story arcs. Surprises (outages, leaks, sudden deals) can’t be predicted. Each call is graded the next night.'));
+  }
+
+  function open(){render();modal.classList.add('open');}
+  band.addEventListener('click',open);
+  var tools=document.getElementById('nsTools');
+  if(tools){
+    var mb=el('button','tb-link','Top AI Prediction — tomorrow');mb.type='button';mb.addEventListener('click',open);
+    tools.appendChild(mb);tools.classList.remove('is-empty');
+  }
+
+  fetch('predictions.json?v='+Date.now(),{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(j){data=j;idx=0;showBand();rotate();})
+    .catch(function(){showBand();});
+})();
+</script>
+
 </body>
 </html>

@@ -1,0 +1,39 @@
+name: Top AI Prediction
+
+# Runs once the world's AI news day has played out (18:00 UTC = 11:30 PM IST),
+# reads the last 24h of global AI coverage, publishes tomorrow's top-3
+# predicted storylines to predictions.json and grades yesterday's calls.
+on:
+  schedule:
+    - cron: "0 18 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ai-prediction
+  cancel-in-progress: false
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Read the day's global AI coverage and forecast tomorrow
+        run: node tools/predict.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name "aishorts-bot"
+          git config user.email "actions@github.com"
+          git add predictions.json predictions-history.json
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "Top AI Prediction: forecast for tomorrow"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push && exit 0; sleep 5; done
+          exit 1

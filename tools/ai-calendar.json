@@ -1,0 +1,6 @@
+{
+  "_help": "Optional. Add known scheduled AI events (launch keynotes, earnings, hearings, votes). If any of an event's keywords appear in the day's coverage and its date is the forecast date, that storyline gets a calendar boost. Dates are IST, YYYY-MM-DD.",
+  "events": [
+    { "date": "2099-01-01", "title": "Example: Nvidia quarterly earnings", "keywords": ["nvidia earnings", "nvidia results"] }
+  ]
+}
