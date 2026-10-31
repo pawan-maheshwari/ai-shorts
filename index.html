@@ -1427,6 +1427,23 @@
   .pm-note{margin-top:14px;font-family:"Libre Franklin",sans-serif;font-size:9.8px;line-height:1.5;color:var(--meta);}
   .pm-empty{padding:26px 0;font-family:Georgia,serif;font-size:13px;color:var(--body);}
   @media print{ .predict{display:none!important;} }
+  .pr-new{flex:0 0 auto;font:800 7.6px/1 "Libre Franklin",sans-serif;letter-spacing:1px;color:#fff;background:var(--live);padding:3px 4px;margin-left:6px;vertical-align:2px;}
+  .pr-promo{position:fixed;left:16px;bottom:84px;z-index:40;width:min(360px,calc(100vw - 32px));
+    background:#123746;color:#fff;border:1px solid #c9a961;box-shadow:0 18px 50px rgba(0,0,0,.4);
+    padding:16px 16px 14px;font-family:"Libre Franklin",sans-serif;
+    background-image:radial-gradient(circle at 92% 0%,rgba(201,169,97,.5) 0%,transparent 58%);
+    transform:translateY(16px);opacity:0;transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .35s;}
+  .pr-promo.show{transform:none;opacity:1;}
+  .pr-promo .pp-k{font-size:8.6px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:#c9a961;margin-bottom:6px;}
+  .pr-promo .pp-t{font-family:Georgia,serif;font-weight:700;font-size:18px;line-height:1.15;margin:0 0 6px;}
+  .pr-promo .pp-b{font-family:Georgia,serif;font-size:12.4px;line-height:1.45;color:rgba(255,255,255,.85);margin:0 0 12px;}
+  .pr-promo .pp-row{display:flex;gap:8px;align-items:center;}
+  .pr-promo .pp-go{appearance:none;border:0;cursor:pointer;background:#c9a961;color:#123746;font:800 11px/1 "Libre Franklin",sans-serif;padding:9px 12px;}
+  .pr-promo .pp-go:hover{background:#fff;}
+  .pr-promo .pp-later{appearance:none;border:0;background:transparent;color:rgba(255,255,255,.7);font:600 10.5px/1 "Libre Franklin",sans-serif;cursor:pointer;padding:9px 4px;}
+  .pr-promo .pp-x{position:absolute;top:6px;right:10px;appearance:none;border:0;background:transparent;color:rgba(255,255,255,.6);font-size:20px;line-height:1;cursor:pointer;}
+  @media (max-width:520px){ .pr-promo{left:16px;right:16px;width:auto;bottom:118px;} }
+  @media print{ .pr-promo{display:none!important;} }
 
 </style>
 </head>
@@ -1603,7 +1620,7 @@
 
   <!-- Top AI Prediction: tomorrow's three most likely AI storylines (predictions.json, built nightly) -->
   <button class="predict" id="predictBand" type="button" aria-label="Open the Top AI Prediction for tomorrow">
-    <span class="pr-tag"><span class="pr-k">Tomorrow&rsquo;s wire</span><span class="pr-t">Top AI Prediction</span></span>
+    <span class="pr-tag"><span class="pr-k">Tomorrow&rsquo;s wire</span><span class="pr-t">Top AI Prediction<span class="pr-new" id="prNew" hidden>NEW</span></span></span>
     <span class="pr-line"><span class="pr-n" id="prN">1</span><span class="pr-p" id="prP">&middot;&middot;</span><span class="pr-h" id="prH">Reading the world&rsquo;s AI coverage&hellip;</span></span>
     <span class="pr-go">See all 3 &rarr;</span>
   </button>
@@ -4014,6 +4031,35 @@ var showCutting;
     var mb=el('button','tb-link','Top AI Prediction — tomorrow');mb.type='button';mb.addEventListener('click',open);
     tools.appendChild(mb);tools.classList.remove('is-empty');
   }
+
+
+  /* ---- launch promotion: a one-time note introducing the feature ---- */
+  (function(){
+    var UNTIL='2026-11-30', KEY='aishorts_promo_prediction';
+    var force=/[?&]promo=1/.test(location.search);
+    var today=new Date().toISOString().slice(0,10);
+    var nb=document.getElementById('prNew'); if(nb&&today<=UNTIL) nb.hidden=false;
+    var seen=null; try{seen=localStorage.getItem(KEY);}catch(e){}
+    if(!force&&(seen||today>UNTIL)) return;
+    function remember(){try{localStorage.setItem(KEY,'1');}catch(e){}}
+    var box=el('aside','pr-promo');box.setAttribute('role','dialog');box.setAttribute('aria-label','New: Top AI Prediction');
+    var x=el('button','pp-x','\u00d7');x.setAttribute('aria-label','Dismiss');
+    box.appendChild(x);
+    box.appendChild(el('div','pp-k','New on AIShorts'));
+    box.appendChild(el('div','pp-t','Know tomorrow\u2019s AI news tonight'));
+    box.appendChild(el('p','pp-b','Every night at 11:30 PM IST, Top AI Prediction reads the day\u2019s AI coverage from hundreds of outlets worldwide and calls the three stories most likely to lead tomorrow \u2014 with the odds, the evidence, and a public scorecard of how we did.'));
+    var row=el('div','pp-row'), go=el('button','pp-go','See tomorrow\u2019s top 3 \u2192'), later=el('button','pp-later','Maybe later');
+    row.appendChild(go);row.appendChild(later);box.appendChild(row);
+    function hide(){box.classList.remove('show');setTimeout(function(){box.remove();},400);}
+    x.onclick=function(){remember();hide();};
+    later.onclick=hide;
+    go.onclick=function(){remember();hide();open();};
+    function introGone(){var i=document.getElementById('intro');return !i||i.style.display==='none'||i.classList.contains('hide');}
+    var tries=0;(function wait(){
+      if(document.querySelector('.modal.open')||!introGone()){ if(++tries<120) return setTimeout(wait,1000); return; }
+      setTimeout(function(){document.body.appendChild(box);requestAnimationFrame(function(){box.classList.add('show');});},2500);
+    })();
+  })();
 
   fetch('predictions.json?v='+Date.now(),{cache:'no-store'})
     .then(function(r){return r.ok?r.json():null;})
