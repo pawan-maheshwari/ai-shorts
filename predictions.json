@@ -1,72 +1,77 @@
 {
-  "generated": "2026-10-31T12:04:34.334Z",
-  "forDate": "2026-11-01",
+  "generated": "2026-10-31T20:54:30.970Z",
+  "forDate": "2026-11-02",
   "window": {
-    "from": "2026-10-30T12:04:34.334Z",
-    "to": "2026-10-31T12:04:34.334Z"
+    "from": "2026-10-30T20:54:30.970Z",
+    "to": "2026-10-31T20:54:30.970Z"
   },
   "scanned": {
-    "stories": 797,
-    "outlets": 369,
+    "stories": 722,
+    "outlets": 330,
     "regions": [
       "Global desks",
+      "North America",
       "Community",
+      "Asia-Pacific",
       "Europe",
       "Africa",
-      "North America",
-      "South Asia",
-      "Asia-Pacific",
-      "Middle East"
+      "Middle East",
+      "South Asia"
     ],
-    "storylines": 632
+    "storylines": 596
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.5979,
-      "probability": 0.8,
+      "score": 0.5838,
+      "probability": 0.78,
       "confidence": "High",
       "entity": "OpenAI",
       "theme": "Funding & markets",
       "headline": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports",
       "outlook": "Market reaction, analyst notes and deal details around OpenAI are the likely next chapter.",
       "signals": {
-        "outlets": 22,
+        "outlets": 20,
         "regions": [
           "North America",
-          "South Asia",
-          "Asia-Pacific"
+          "South Asia"
         ],
-        "stories": 25,
-        "momentum": 2.12,
-        "recent6h": 11,
-        "authority": 8.2,
-        "hnPoints": 162,
+        "stories": 22,
+        "momentum": 1.59,
+        "recent6h": 8,
+        "authority": 9.1,
+        "hnPoints": 189,
         "nextStepCues": 0,
-        "arcDays": 0,
+        "arcDays": 1,
         "calendar": null
       },
       "factors": {
-        "reach": 0.91,
-        "breadth": 0.5,
-        "momentum": 0.69,
+        "reach": 0.89,
+        "breadth": 0.33,
+        "momentum": 0.56,
         "authority": 1,
-        "community": 0.74,
+        "community": 0.76,
         "nextStep": 0,
-        "arc": 0
+        "arc": 0.33
       },
       "sig": [
         "openai",
         "target",
         "funding",
+        "slashe",
         "cuts",
-        "$10",
         "$10b",
-        "reportedly",
-        "slashe"
+        "fundraising",
+        "goal"
       ],
       "evidence": [
+        {
+          "title": "OpenAI pares fundraising goal, now seeking up to $20 billion in latest round",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOb2hwU1RZMjNaMVpkcW13aDRGb3M0UGlMb21CRTI4dDU5STc4eEJkZHNMc2VPQjVnYm80MEEzWm80RDFZdElReXNmbG1sS0xBYjNnNWNOZVJsSUhySmhIUTJfV0tEZjJncTFLSHJFbDVqU2FrdmlSVW1hNzdxZG8tbktn0gGHAUFVX3lxTFBEd2ZuVFNJR09vWjBBWUtDMF80c1luQkFnVWRkN2RWMG1DWmZJd3Z4clZwcjNIeEcwaExPcjc5MWt2MkZ1SW9KUHdZODhtV3NGanVTSVkzdFl0aTQtUmxZa1V6dHpDUkxacTNhTk1PWXFDbnVIR3NraVRJODh3MjFGdUhBNl9rTQ?oc=5",
+          "region": "North America"
+        },
         {
           "title": "OpenAI Raises Less Than Half of $30 Billion Target in Latest Round",
           "source": "WSJ",
@@ -84,168 +89,190 @@
           "source": "Financial Times",
           "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNaUV4SzVmMzFLRkI1UUhWNFBucHlqRTVacXh1cDlWRTFVY1pQeHBIUGtTRFlhSDNHc25OVUVqWGZZOFZLazRVaVpWR3luWk5ORWRBeFBUd0RsYndHZ3YwV2RVRFN5WTRYdzEwTm8yS0Z0YkRUQmNpTERIaWdKQU1Dbl9DZk4?oc=5",
           "region": "North America"
-        },
-        {
-          "title": "OpenAI cuts funding target by $10 billion: FT",
-          "source": "The Economic Times",
-          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNT2RDcFBKd3BXWm94Rk9LMDdSTHVmOWF1dDg0M1E4QmdkX3BXWFhfV0ZJR0NKM2Y4N0o0ZFlBLWlxcjBXR01hSkZsNmVHa0Y1QmgwM2NiWXlPdUlZZHV0TlllUjkwcVROMTVBMnlpLXJZbjNRT1lmZm9GQmE3aEJsNWg1UlJjMjBhN2JnSVlvX1Z0SlZYTHJ5UXM5QXJCb2RqRXduMnc3V0NPbFhEZjdyMDN0UTFCdXVYRXBwLTViMTF6TDBQ0gHKAUFVX3lxTE0yNTBLX3VQZE8xYlAza2hESXlxS1FsX29UWDlLMnllQU5ZNnBGMEt1RjZkNnVkNmRCcW5DZFpmYUJHNThfcmFOaWM2YzEtVW1KV0Z3S3lvcUk4eEM2OXNzS3hiYUpkekN1emJ5Mk03YlpPTDNpM1A3aERpN3lMRzI3d0JJU0s4azhRb0RESGVxeTZmakEwcEwwNm5UU05xM2c4ZE1zd2w3bHI2MTNmUVVKVnROckhXTmp4Z1drRXF0cC1oWWpuTXJNLUE?oc=5",
-          "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.5248,
-      "probability": 0.7,
-      "confidence": "High",
-      "entity": "Samsung",
-      "theme": "Chips & compute",
-      "headline": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
-      "outlook": "Supply, pricing and export angles on Samsung should keep this in the headlines.",
+      "score": 0.4434,
+      "probability": 0.56,
+      "confidence": "Medium",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "Anthropic expected to receive high 'junk' rating from credit agencies following IPO, FT report says",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 9,
+        "outlets": 6,
         "regions": [
-          "North America",
-          "South Asia",
-          "Asia-Pacific",
-          "Africa",
-          "Middle East"
+          "North America"
         ],
-        "stories": 9,
-        "momentum": 10,
-        "recent6h": 9,
-        "authority": 3.4,
-        "hnPoints": 0,
-        "nextStepCues": 0,
-        "arcDays": 0,
+        "stories": 6,
+        "momentum": 2,
+        "recent6h": 3,
+        "authority": 1.9,
+        "hnPoints": 98,
+        "nextStepCues": 1,
+        "arcDays": 1,
         "calendar": null
       },
       "factors": {
-        "reach": 0.67,
-        "breadth": 0.83,
-        "momentum": 1,
-        "authority": 0.67,
-        "community": 0,
-        "nextStep": 0,
-        "arc": 0
+        "reach": 0.57,
+        "breadth": 0.17,
+        "momentum": 0.67,
+        "authority": 0.38,
+        "community": 0.67,
+        "nextStep": 0.33,
+        "arc": 0.33
       },
       "sig": [
-        "samsung",
-        "altman",
-        "openais",
-        "chip",
-        "executive",
-        "meet",
-        "crunch",
-        "deepen"
+        "anthropic",
+        "ipo",
+        "high",
+        "rating",
+        "credit",
+        "junk",
+        "face",
+        "risk"
       ],
       "evidence": [
         {
-          "title": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
-          "source": "Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPN1Fva1BkZVk3T3ZZVWZiSUNOQVhaMElmVERReF8zekRzTWt0YnNZZUVpTGUtaUd0MFVKcmp2TXF2d2hxNldzTUYyNVhTRjFxUU8xeHAtYllENzhtMDRlbF93dXUtb3RXNWkwbk9icU5KdlN4anY3RzJnSXl2dHZ0a3JTT2QzMlRsY1hhLWxyUVdSYzFFV1E3MzRBeXJmOU5EcnVIUzI0S2hhYTk2dUE?oc=5",
+          "title": "Anthropic expected to receive high 'junk' rating from credit agencies following IPO, FT report says",
+          "source": "TechCrunch",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOVXpfTXdqVDgtSDYzSkp0TmVFdW5yZ0lyRXdfNk9tdHY3d05BQzdvZ1ZLRXEyQ2FuWkdCRF9SRnBhNTFMRG5fN0VKT0tVUVNXZm92clZwOEh0Z2NPYlhRQWhxT1FZTWhkTmM1a2dOdFpvaU00UmY4S1lNWEEycnpZNjlzdWtubWpLWmEwQS1rRHNFWTBXRzdtWVNjQWlqaU1CazVYM01VcktOdDdJcFJkazdjSUVkVV9fUDJhaFIzVEFNV292QlJz?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI’s Altman meets Samsung executives as chip crunch deepens",
-          "source": "The Straits Times",
-          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNbVBEdzc1WDJhOXpEUUFaMGpKT0lTd0NmMzMzcy1wQ0pwRGVNWjhCRlFNZjA5ME9tWTNTazRKQ3NvV1UxMGFLNTV6T0pfZ2JuNEx3Y2w5ekVwN0RhbDc5SXVFdUFKVjI2ai0xLUExOFlhNWdsX19GS0RMVlZCOTU0Z3licDJLLVZqNXFqWlRHbUdVVkdkMmNpQzNoYnByamlGZGc?oc=5",
-          "region": "Asia-Pacific"
+          "title": "Anthropic to receive high 'junk' rating from credit agencies following IPO",
+          "source": "Hacker News",
+          "url": "https://techcrunch.com/2026/10/30/anthropic-expected-to-receive-high-junk-rating-from-credit-agencies-following-ipo-report-says/",
+          "region": "Community"
         },
         {
-          "title": "Altman Presents 300,000 Won Keyboard to Samsung",
-          "source": "조선일보",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNZFhiTUFMOW9FTDZBRFdGclM5STJvTU1DZEJPWXdvNWE1Q01QOFRVWjlfM2ZLNElUWmpta2pxbW9jV0tpa3Q5UXRESHNwTW5hNnBsaER2MHAtU3R4c0hnOEQwdGlPd0RYSHlVNFJsVVlXMUZZMWR3Y1lPaU9rVVdrd0FwZmljVi1z?oc=5",
+          "title": "Blackstone now expects Anthropic to get a 'high junk' credit rating after its IPO",
+          "source": "Dealroom",
+          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQQ2hqeUl1NTRsM1MzSFRnU2J2S0Joa2FSalBndG5EM0VPMWlDYTE4U2tlU0lRRzRuRlk1RVFoREpORkcwYWFKUVMxLTl4eXR6S3JoOHVBZ19lT050NVJzYTc1M3c3UC1NYWFrSl91STdfOURjZXR6aGNIanNwdlRWUGlZVFQxSmhibVdnZW5vTklMRExoeDdEa2o3bE0xdF9uWlF4dVg2TmtrR2J0MDFKOTJBQQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Sam Altman Samsung Meeting: 50 Executives, Chips [2026]",
-          "source": "https://tech-insider.org/",
-          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOTGlPRmNQYlc0SmZfSzJOTkFCSVFSU1A3SjZQSTFRYng0Tl9YRk9kSlJBX0RCeVFGb3VyRGpMS250S2pvQ1JFbUFFd2VnTHNmdEN5NWVzb05IUlJVNm9rN3FnTXJqVGxpM2kwMXUwUGc0MkZoSS1ZLUJXS1Q4WFpCSTBCR0E?oc=5",
-          "region": "Middle East"
+          "title": "Anthropic IPO Faces Risks Amid AI Market Downturn and High Valuation Concerns",
+          "source": "KuCoin",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNUUllbU9jaS0yRXVjSHRqOFJwelNDSFJ0Sk9rVVJYVlJDY093ekY4MXNnLUxrQm5ZUzJuWk50OGZ2LW5DeGhKcllyTm4wdWRyTGpLbjJPVHBVZFF1aFB4RVNBcUlNQUVJUzdNUFZmNTJVT3otaG9paFZxVmN6ekNHamI4ZVhEbjBmY1NsbmE1MUtsVzRTUXVodXVzRlc5cFJLTjZPU3g0VlJkOHZ6VlRubQ?oc=5",
+          "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.4569,
-      "probability": 0.58,
+      "score": 0.4149,
+      "probability": 0.5,
       "confidence": "Medium",
-      "entity": "Apple",
-      "theme": "Model launch",
-      "headline": "Apple to launch iPhone AI features in China in December via Alibaba partnership",
-      "outlook": "Hands-on reviews, benchmark claims and rival responses to Apple are likely to lead tomorrow.",
+      "entity": "OpenAI",
+      "theme": "Chips & compute",
+      "headline": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
+      "outlook": "Supply, pricing and export angles on OpenAI should keep this in the headlines.",
       "signals": {
-        "outlets": 4,
+        "outlets": 8,
         "regions": [
-          "Global desks",
-          "South Asia",
+          "North America",
+          "Europe",
           "Asia-Pacific",
-          "North America"
+          "South Asia"
         ],
-        "stories": 4,
+        "stories": 8,
         "momentum": 1,
-        "recent6h": 1,
-        "authority": 1.7,
+        "recent6h": 2,
+        "authority": 2.8,
         "hnPoints": 0,
-        "nextStepCues": 3,
-        "arcDays": 0,
+        "nextStepCues": 0,
+        "arcDays": 1,
         "calendar": null
       },
       "factors": {
-        "reach": 0.47,
+        "reach": 0.64,
         "breadth": 0.67,
         "momentum": 0.33,
-        "authority": 0.34,
+        "authority": 0.55,
         "community": 0,
-        "nextStep": 1,
-        "arc": 0
+        "nextStep": 0,
+        "arc": 0.33
       },
       "sig": [
-        "apple",
-        "china",
-        "launch",
-        "december",
-        "qwen",
-        "powered",
-        "finally",
-        "coming"
+        "samsung",
+        "altman",
+        "meet",
+        "openais",
+        "executive",
+        "chip",
+        "sam",
+        "discuss"
       ],
       "evidence": [
         {
-          "title": "Apple to launch iPhone AI features in China in December via Alibaba partnership",
-          "source": "South China Morning Post",
-          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNN2tkN3NFenBvWmVSMHFlWEJGWnlfeWpyVzFQQzhoUllDZ3ljS05venFUT1ZnT3pQai13c3hmUHU0RTlESklTekVvU2VuTXJXeDF0Z1k4THFicC1ybU0wcVk5MVBuNmdaMXVCUlZ3dTBPcmtLTVBjTnBKV2lHZEFGRmlKU0loWWttaWlXbDM3QkxLS1RkaHhic04xYm5FWGcyWWxDZDZFT01kVXl5WTFWQUtrcW1uZU020gG4AUFVX3lxTFA4YTg1dUhJeDhZajg5NTFxU29RRWNNeVZzZXRxMmpoUjZ3QTNuWktwS0FQVkxvbUQ3YjQ1NGcwa3hVRDE3TnNOTmVhdXk5QTVuYUhuMGgxR0tmWHZGbDdKV09tdnhWQWhJWTdnaW9mNmhZRWowaV9wQmdvZTRTa3FzdExZakVlTHpXT0RGNGxYS0RpeXd1emlfYXBqVkVCMk1MUjJhbmlQdV90M2RqN3FiakNEM3VYU2w?oc=5",
+          "title": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPN1Fva1BkZVk3T3ZZVWZiSUNOQVhaMElmVERReF8zekRzTWt0YnNZZUVpTGUtaUd0MFVKcmp2TXF2d2hxNldzTUYyNVhTRjFxUU8xeHAtYllENzhtMDRlbF93dXUtb3RXNWkwbk9icU5KdlN4anY3RzJnSXl2dHZ0a3JTT2QzMlRsY1hhLWxyUVdSYzFFV1E3MzRBeXJmOU5EcnVIUzI0S2hhYTk2dUE?oc=5",
           "region": "North America"
         },
         {
-          "title": "Apple Intelligence is finally coming to China with iOS 27.3",
-          "source": "The Verge",
-          "url": "https://www.theverge.com/tech/1023974/apple-intelligence-china-ios-27-3",
-          "region": "Global desks"
+          "title": "OpenAI CEO Gifts First Hardware Keyboard to Samsung",
+          "source": "조선일보",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNZFhiTUFMOW9FTDZBRFdGclM5STJvTU1DZEJPWXdvNWE1Q01QOFRVWjlfM2ZLNElUWmpta2pxbW9jV0tpa3Q5UXRESHNwTW5hNnBsaER2MHAtU3R4c0hnOEQwdGlPd0RYSHlVNFJsVVlXMUZZMWR3Y1lPaU9rVVdrd0FwZmljVi1z?oc=5",
+          "region": "North America"
         },
         {
-          "title": "Qwen-powered Apple AI to launch in China in December",
-          "source": "China Daily",
-          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTFAzUGNVNDNqTlJNbHpFVS1Xa2FRdm8tTlhZc0RlWkxsLVBrcWhYcE1EeldpbEd4Y3RGMmMyeEhGdFdwakRac0JIelZod0hkb0xCVjVFREl5NF9EZ1gtNFdoanZYcklNWHJNQVo3dEI2R1Q0MTViSWhlNEJFcW4yQQ?oc=5",
+          "title": "Sam Altman Meets 50 Samsung Execs, Gifts OpenAI’s Codex Keyboard",
+          "source": "SammyGuru",
+          "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1TX1BhWlYwM2ZoZ2x6V3FPc2gzRGVBYmVIRFcxdzgyak5pRlVZNGdUZENYTlNlOGdzVmt0Mjg2QkhiVnZiRFFObXlSM3JYeWltMTNibEFveV9FaVBTd2FwbWp5VmNGS014TXhsd0dGcFRoQko0MW9F?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI CEO Sam Altman meets Samsung executives to discuss memory chip supply, AI infrastructure",
+          "source": "ET Enterprise AI",
+          "url": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxPRERIRjRBSjJBWFpVRFdqNTJwUDBELXZtMnRuUVROSl9mbFhjVHJzY2wyeTAyMjJNdUlOWTJMdkxjWERxQ0tsYmxacUQteUxXNDBiallwUXpVWmw2YUNtSWlHRUhrejFDdE5reEdNZEVQTk4wU2JXNmJKYVJwZGh5UjlmS0dybVd3NExDZ0NKbG1hMmpfRzBZWXFnRUIwbmVkTk5DQWx1bWZxR0hvRjFMM1FJVGhzWjdVMU5KWlljazFHdXdrSVBVVnk1WGFkbzMwc2ljM3V0RVB5WGFNWVpNVnVNRzlBRTY1OTE3QlhDU21fR1BuV0VtTW1qa0HSAYICQVVfeXFMT181UjI3X1ZmdVJ1S2owSUhmanBSWnp3YmdMTUV1Ums1Qzdtb19MbkdydUpzbnIzZFZrNE1NNC1FR0kwZXlhTEtKYTdBRXFGdlplWTc0NTVhcVVQY0NZamY3TXpBZ3Zjd1p0VzdVTGZGQzVHc2dtU3ZUa19wbWR5UzlJcmExWTNaekhQTXVrcHhXcy1UWXlnY2M0LVJvOFdSRzhRby1Id3A4TGxNUjN2MFRkRVhWdWdWaVZaclRIb1FTWEs4VE8wZmd5a2hXcWNjSG4ydzJISjd0eUpwYk40UURTMnhRc1JWNU54V2t2UEpGSy1iWjcwaEZUT05ROWVlN253?oc=5",
           "region": "South Asia"
-        },
-        {
-          "title": "Qwen-powered Apple AI to launch in China in December",
-          "source": "China Daily Global Edition",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNTExGaUVsN2N6UGNnUVFpUUlxcnZqb3I1dTVqOXg2YkdsWkhoWlFxa201cGhyRXBYbGNnSmZmWWpoaVlvYlo2dUpMUE9KN2dmUWZ1MW9ZQjgxOHphdngtNUtVN3JVMzJfMWFJZ2NhQ2k0d3NVMXNXc01aQm8weDlFMWVB?oc=5",
-          "region": "Asia-Pacific"
         }
       ]
     }
   ],
-  "scorecard": null,
+  "scorecard": {
+    "date": "2026-11-01",
+    "calls": [
+      {
+        "rank": 1,
+        "headline": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports",
+        "probability": 0.8,
+        "hit": true,
+        "matched": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports"
+      },
+      {
+        "rank": 2,
+        "headline": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
+        "probability": 0.7,
+        "hit": true,
+        "matched": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens"
+      },
+      {
+        "rank": 3,
+        "headline": "Apple to launch iPhone AI features in China in December via Alibaba partnership",
+        "probability": 0.58,
+        "hit": true,
+        "matched": "Apple to launch iPhone AI features in China in December via Alibaba partnership"
+      }
+    ],
+    "hits": 3
+  },
   "track": {
-    "days": 0,
-    "calls": 0,
-    "hits": 0,
-    "log": [],
-    "hitRate": null
+    "days": 1,
+    "calls": 3,
+    "hits": 3,
+    "log": [
+      {
+        "date": "2026-11-01",
+        "hits": 3,
+        "calls": 3
+      }
+    ],
+    "hitRate": 1
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
