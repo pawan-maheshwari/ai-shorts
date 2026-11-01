@@ -1,105 +1,173 @@
 {
-  "generated": "2026-10-31T20:54:30.970Z",
-  "forDate": "2026-11-02",
+  "generated": "2026-11-01T21:36:58.349Z",
+  "forDate": "2026-11-03",
   "window": {
-    "from": "2026-10-30T20:54:30.970Z",
-    "to": "2026-10-31T20:54:30.970Z"
+    "from": "2026-10-31T21:36:58.349Z",
+    "to": "2026-11-01T21:36:58.349Z"
   },
   "scanned": {
-    "stories": 722,
-    "outlets": 330,
+    "stories": 771,
+    "outlets": 353,
     "regions": [
       "Global desks",
       "North America",
-      "Community",
       "Asia-Pacific",
-      "Europe",
+      "Community",
       "Africa",
-      "Middle East",
-      "South Asia"
+      "Europe",
+      "South Asia",
+      "Middle East"
     ],
-    "storylines": 596
+    "storylines": 639
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.5838,
-      "probability": 0.78,
+      "score": 0.5108,
+      "probability": 0.68,
       "confidence": "High",
       "entity": "OpenAI",
-      "theme": "Funding & markets",
-      "headline": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports",
-      "outlook": "Market reaction, analyst notes and deal details around OpenAI are the likely next chapter.",
+      "theme": "Chips & compute",
+      "headline": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges",
+      "outlook": "Supply, pricing and export angles on OpenAI should keep this in the headlines.",
       "signals": {
-        "outlets": 20,
+        "outlets": 5,
         "regions": [
-          "North America",
-          "South Asia"
+          "North America"
         ],
-        "stories": 22,
-        "momentum": 1.59,
-        "recent6h": 8,
-        "authority": 9.1,
-        "hnPoints": 189,
-        "nextStepCues": 0,
-        "arcDays": 1,
+        "stories": 5,
+        "momentum": 2.4,
+        "recent6h": 3,
+        "authority": 1.3,
+        "hnPoints": 0,
+        "nextStepCues": 3,
+        "arcDays": 2,
         "calendar": null
       },
       "factors": {
-        "reach": 0.89,
-        "breadth": 0.33,
-        "momentum": 0.56,
-        "authority": 1,
-        "community": 0.76,
-        "nextStep": 0,
-        "arc": 0.33
+        "reach": 0.52,
+        "breadth": 0.17,
+        "momentum": 0.75,
+        "authority": 0.25,
+        "community": 0,
+        "nextStep": 1,
+        "arc": 0.67
       },
       "sig": [
         "openai",
-        "target",
-        "funding",
-        "slashe",
-        "cuts",
-        "$10b",
-        "fundraising",
-        "goal"
+        "google",
+        "plan",
+        "chip",
+        "microsoft",
+        "honor",
+        "shared",
+        "training"
       ],
       "evidence": [
         {
-          "title": "OpenAI pares fundraising goal, now seeking up to $20 billion in latest round",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOb2hwU1RZMjNaMVpkcW13aDRGb3M0UGlMb21CRTI4dDU5STc4eEJkZHNMc2VPQjVnYm80MEEzWm80RDFZdElReXNmbG1sS0xBYjNnNWNOZVJsSUhySmhIUTJfV0tEZjJncTFLSHJFbDVqU2FrdmlSVW1hNzdxZG8tbktn0gGHAUFVX3lxTFBEd2ZuVFNJR09vWjBBWUtDMF80c1luQkFnVWRkN2RWMG1DWmZJd3Z4clZwcjNIeEcwaExPcjc5MWt2MkZ1SW9KUHdZODhtV3NGanVTSVkzdFl0aTQtUmxZa1V6dHpDUkxacTNhTk1PWXFDbnVIR3NraVRJODh3MjFGdUhBNl9rTQ?oc=5",
+          "title": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges",
+          "source": "Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOd3pabzZDR0Nzei1xRUxjZzI4bDBZV0o5Vzk1UXVHdkQ0QTdBb3BBaUI4eFRhMHFTSXl1Q1dmM1VpTWI2TlJ0V2plZktyX01oNjk1RHppcUpDMjJHWk5jUzZ1YTk3MXRScmc4NE4wbjZMZkJobGpfUnUybF9ocWJSN1ZveHF2WGpldzYxVl9uWjU0TzhncE9aSzZBMjQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI Raises Less Than Half of $30 Billion Target in Latest Round",
-          "source": "WSJ",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQTW9TMmVsZkc2b05TYkloVW41X050RjdtZ1F5U01TRnJOSEthYTJpcDdPWVhJb0FvRGEteHgtbVhSS0lOVEZ3T2N5MTNpSUNWNXpETThZR0RvcFQwY2Q5R3ctRUFvM1ZtdFdMaXhGSnpPM2FiLUhORXNrem84cUpfVGpuQ0VmaGNsZUlxUVQ0dk4zQUE2cWFzUk8yM1R3cjc3dEczVw?oc=5",
+          "title": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges",
+          "source": "TechRadar",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOV21EWUJNd3NYZTRXSU5RQVFtRjY1Z1ZWQTFrSnlPSENPOXNkNHpjRGI4dlFMbjh3Z0lxNFVmR1NCV2NpTUtTVlVFNkE0VHM3RG5mR0tUd1lVUU1neHpucThZMVRnakFBMENtT0dlTFhKbkxuYko2UGZGMkNMendLVFdjWk9IRFQweWVOVnk2TTV1T1JST1pnLTBLT3FCZkktWktlT3BLblJxbUE1NDMyRGY2LXpsQ21tNHQ3aWo3dw?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNTWw3N0l5dm5KUi1FQmllTEpEeUdkY1k5TVlFNTlnWWFlbTgtdUJfZE9RMjZiQlJEVXU2VFo2blVaWk1MZzNYMm9OYmdrSngtSk02YnhKNDdVMVZkS3hIMHpWZ2dnRjJZWjBzQ0lFRU4ySFFUQzdTdnUzN3JETGtCYlo3Y3kxeGJseG5veVJMSVVCRDVPYzB3TXQyaFE?oc=5",
+          "title": "Google, Microsoft, OpenAI Plan To Honor Shared robots.txt AI Training Opt-Out: how 8 outlets framed it",
+          "source": "NewsCord",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNQWdWOHRrS0tIcmo3YmpXLUJNVVFiSmVtVkZ2MmplOGdBSzRUc3M2YXVRclNPeDllTHA0WVlxQ29VRzlHWnpMaTQ0OHc2em9XUGNWUjAzSnNqeFBpMm9JaHpHc1JyMXV6VjZrc1pVZXF6MDdPcVluNVEzd2hUQW02TW51SVp5Yl9NWHJOZ2Nkc2lYUTRWUmJURHF4UkMtMFM0V04wV3lsTThmSDlQbmR1eGFkZ0s0TFJnZHhKNV85Y19RY1ZhVlRB?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI slashes funding target by $10bn as tech anxieties mount",
-          "source": "Financial Times",
-          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNaUV4SzVmMzFLRkI1UUhWNFBucHlqRTVacXh1cDlWRTFVY1pQeHBIUGtTRFlhSDNHc25OVUVqWGZZOFZLazRVaVpWR3luWk5ORWRBeFBUd0RsYndHZ3YwV2RVRFN5WTRYdzEwTm8yS0Z0YkRUQmNpTERIaWdKQU1Dbl9DZk4?oc=5",
+          "title": "Google, Microsoft & OpenAI Plan To Honor Shared AI Training Opt-Out",
+          "source": "Search Engine Journal",
+          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPZDJjcmgwOU5XQWxTcFY5UExVcVV6VVpXSFdlZ25MRjRTRUI1eHJmM0hyTHQ3OGprVDRZaDM5Y09neE1adFBjWEpmQzRseHFqZkV1bTJLeUE1azJnZ0d4QlFzMnZVVFFkYUg4WHc2eVNMalZpSlN3WnBMVXVES2o0VGhfaGRiSzRDY1llZXVNUWRFTzVRNExWcUpn?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.4434,
-      "probability": 0.56,
+      "score": 0.4852,
+      "probability": 0.63,
+      "confidence": "High",
+      "entity": "Anthropic",
+      "theme": "Model launch",
+      "headline": "Anthropic Updates Claude To Stop It From Recreating Existing Video Games",
+      "outlook": "Hands-on reviews, benchmark claims and rival responses to Anthropic are likely to lead tomorrow.",
+      "signals": {
+        "outlets": 11,
+        "regions": [
+          "North America"
+        ],
+        "stories": 12,
+        "momentum": 9,
+        "recent6h": 11,
+        "authority": 3.1,
+        "hnPoints": 3,
+        "nextStepCues": 0,
+        "arcDays": 1,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.72,
+        "breadth": 0.17,
+        "momentum": 1,
+        "authority": 0.63,
+        "community": 0.2,
+        "nextStep": 0,
+        "arc": 0.33
+      },
+      "sig": [
+        "anthropic",
+        "claude",
+        "game",
+        "existing",
+        "code",
+        "video",
+        "restrict",
+        "recreating"
+      ],
+      "evidence": [
+        {
+          "title": "Anthropic Updates Claude To Stop It From Recreating Existing Video Games",
+          "source": "Engadget",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPRWdaMk1uTzMzRnFaWXdrRVVBTWZHNGp0WDAxR010U0pxM0owYjNzeWd2dHRlLWdEOWZRRjh6YWhkWEtpYjg5cWt6SXBqSGtrU0VhUi1uZzY2eXZqVkpmT04wZXhjWHRBS1NDZDJhbTBrVTJLREoyREhfZXIycjhyUVNmOURIMmMxaXhSSXIyOWlwR0ctOW5oRzZjZEdTV3J0UW9CTUlhdW5UUQ?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Mythos 5.5 is listed HTML source code of Anthropic's official website",
+          "source": "Hacker News",
+          "url": "https://twitter.com/kimmonismus/status/2116914141017370972",
+          "region": "Community"
+        },
+        {
+          "title": "Anthropic orders AI tool Claude to stop remaking video games",
+          "source": "Game Developer",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbkRTbnBaVVk2ZEkzamZJZXpfMWlpWDJuRXJLa3RnUEI2SGJvYVJrd3dhUWhsRUh0Qi1NS0x1ZnJDTUNsY0FpUkVOaGpraTRzXy1ZV2g1bFhMemdEeWUwZzI1QkxRNExMSmxKUzYyeEEtUzJqTG1nS1NrcGRrWTRuMHhrcHJQQ1B6OFlwbXVjVXoxQjYzUTdJb0NCRFF4Q0lfUmRrd2ZMSXdtS25YR25HVjN2OU52SEp3Sncw?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Anthropic may be cracking down on use of Claude to remake popular games",
+          "source": "GamesBeat",
+          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNU0V2bjh6VHdMUmtKd2VrQUhtS3JxRnowUWxvTXVGTG4tNThFalNfa2pzQXVfWFFERDFiUVowVXg2UW9wc0ZtY2tQY2U2aTRtOVhsNU5nTzhKZHFzdjdIMmw2eE5oYkZwZkl5Sm14RWlDNVJqbEJqN1FaWjFtc0t5OTBWYnUyTlB6UG5VNTczMzAzMzlERmR1RVln?oc=5",
+          "region": "North America"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "score": 0.4513,
+      "probability": 0.57,
       "confidence": "Medium",
       "entity": "Anthropic",
       "theme": "Funding & markets",
-      "headline": "Anthropic expected to receive high 'junk' rating from credit agencies following IPO, FT report says",
+      "headline": "1 Big Winner and 1 Loser From the Upcoming Anthropic IPO",
       "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
         "outlets": 6,
@@ -107,172 +175,105 @@
           "North America"
         ],
         "stories": 6,
-        "momentum": 2,
-        "recent6h": 3,
-        "authority": 1.9,
-        "hnPoints": 98,
-        "nextStepCues": 1,
-        "arcDays": 1,
+        "momentum": 0.75,
+        "recent6h": 1,
+        "authority": 1.5,
+        "hnPoints": 0,
+        "nextStepCues": 3,
+        "arcDays": 2,
         "calendar": null
       },
       "factors": {
         "reach": 0.57,
         "breadth": 0.17,
-        "momentum": 0.67,
-        "authority": 0.38,
-        "community": 0.67,
-        "nextStep": 0.33,
-        "arc": 0.33
+        "momentum": 0.19,
+        "authority": 0.3,
+        "community": 0,
+        "nextStep": 1,
+        "arc": 0.67
       },
       "sig": [
         "anthropic",
         "ipo",
-        "high",
-        "rating",
-        "credit",
-        "junk",
-        "face",
-        "risk"
+        "winner",
+        "loser",
+        "upcoming",
+        "valuation",
+        "slip",
+        "$1.5t"
       ],
       "evidence": [
         {
-          "title": "Anthropic expected to receive high 'junk' rating from credit agencies following IPO, FT report says",
-          "source": "TechCrunch",
-          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOVXpfTXdqVDgtSDYzSkp0TmVFdW5yZ0lyRXdfNk9tdHY3d05BQzdvZ1ZLRXEyQ2FuWkdCRF9SRnBhNTFMRG5fN0VKT0tVUVNXZm92clZwOEh0Z2NPYlhRQWhxT1FZTWhkTmM1a2dOdFpvaU00UmY4S1lNWEEycnpZNjlzdWtubWpLWmEwQS1rRHNFWTBXRzdtWVNjQWlqaU1CazVYM01VcktOdDdJcFJkazdjSUVkVV9fUDJhaFIzVEFNV292QlJz?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic to receive high 'junk' rating from credit agencies following IPO",
-          "source": "Hacker News",
-          "url": "https://techcrunch.com/2026/10/30/anthropic-expected-to-receive-high-junk-rating-from-credit-agencies-following-ipo-report-says/",
-          "region": "Community"
-        },
-        {
-          "title": "Blackstone now expects Anthropic to get a 'high junk' credit rating after its IPO",
-          "source": "Dealroom",
-          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQQ2hqeUl1NTRsM1MzSFRnU2J2S0Joa2FSalBndG5EM0VPMWlDYTE4U2tlU0lRRzRuRlk1RVFoREpORkcwYWFKUVMxLTl4eXR6S3JoOHVBZ19lT050NVJzYTc1M3c3UC1NYWFrSl91STdfOURjZXR6aGNIanNwdlRWUGlZVFQxSmhibVdnZW5vTklMRExoeDdEa2o3bE0xdF9uWlF4dVg2TmtrR2J0MDFKOTJBQQ?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic IPO Faces Risks Amid AI Market Downturn and High Valuation Concerns",
-          "source": "KuCoin",
-          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNUUllbU9jaS0yRXVjSHRqOFJwelNDSFJ0Sk9rVVJYVlJDY093ekY4MXNnLUxrQm5ZUzJuWk50OGZ2LW5DeGhKcllyTm4wdWRyTGpLbjJPVHBVZFF1aFB4RVNBcUlNQUVJUzdNUFZmNTJVT3otaG9paFZxVmN6ekNHamI4ZVhEbjBmY1NsbmE1MUtsVzRTUXVodXVzRlc5cFJLTjZPU3g0VlJkOHZ6VlRubQ?oc=5",
-          "region": "North America"
-        }
-      ]
-    },
-    {
-      "rank": 3,
-      "score": 0.4149,
-      "probability": 0.5,
-      "confidence": "Medium",
-      "entity": "OpenAI",
-      "theme": "Chips & compute",
-      "headline": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
-      "outlook": "Supply, pricing and export angles on OpenAI should keep this in the headlines.",
-      "signals": {
-        "outlets": 8,
-        "regions": [
-          "North America",
-          "Europe",
-          "Asia-Pacific",
-          "South Asia"
-        ],
-        "stories": 8,
-        "momentum": 1,
-        "recent6h": 2,
-        "authority": 2.8,
-        "hnPoints": 0,
-        "nextStepCues": 0,
-        "arcDays": 1,
-        "calendar": null
-      },
-      "factors": {
-        "reach": 0.64,
-        "breadth": 0.67,
-        "momentum": 0.33,
-        "authority": 0.55,
-        "community": 0,
-        "nextStep": 0,
-        "arc": 0.33
-      },
-      "sig": [
-        "samsung",
-        "altman",
-        "meet",
-        "openais",
-        "executive",
-        "chip",
-        "sam",
-        "discuss"
-      ],
-      "evidence": [
-        {
-          "title": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPN1Fva1BkZVk3T3ZZVWZiSUNOQVhaMElmVERReF8zekRzTWt0YnNZZUVpTGUtaUd0MFVKcmp2TXF2d2hxNldzTUYyNVhTRjFxUU8xeHAtYllENzhtMDRlbF93dXUtb3RXNWkwbk9icU5KdlN4anY3RzJnSXl2dHZ0a3JTT2QzMlRsY1hhLWxyUVdSYzFFV1E3MzRBeXJmOU5EcnVIUzI0S2hhYTk2dUE?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "OpenAI CEO Gifts First Hardware Keyboard to Samsung",
+          "title": "Anthropic IPO Nears: Boon or Bane for Markets?",
           "source": "조선일보",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNZFhiTUFMOW9FTDZBRFdGclM5STJvTU1DZEJPWXdvNWE1Q01QOFRVWjlfM2ZLNElUWmpta2pxbW9jV0tpa3Q5UXRESHNwTW5hNnBsaER2MHAtU3R4c0hnOEQwdGlPd0RYSHlVNFJsVVlXMUZZMWR3Y1lPaU9rVVdrd0FwZmljVi1z?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQZ0pidzE5QlRmNXhRbnhKMXVWSEF1NUhoZlhpYXo3azJBc2dMcThNajFOWlo0clB6aFFnWXZuN3pjWU1HeDl0Z05oZXF4Mi01NlZOdVBJbHJfajljMjczYjV1eXBhSWY1ejI1VGViVVd0aHVSMml1OGhfcmgzcmp5Q2R5VXZhcmFFblNDc1ln?oc=5",
           "region": "North America"
         },
         {
-          "title": "Sam Altman Meets 50 Samsung Execs, Gifts OpenAI’s Codex Keyboard",
-          "source": "SammyGuru",
-          "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1TX1BhWlYwM2ZoZ2x6V3FPc2gzRGVBYmVIRFcxdzgyak5pRlVZNGdUZENYTlNlOGdzVmt0Mjg2QkhiVnZiRFFObXlSM3JYeWltMTNibEFveV9FaVBTd2FwbWp5VmNGS014TXhsd0dGcFRoQko0MW9F?oc=5",
+          "title": "Anthropic investors may be missing $150bn warning ahead of IPO",
+          "source": "The News International",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNVFN1VnB2aTVwVXFCNEhpNlZRMjBhM3Y3aUpRX1liZzZBZ1FtZjZxaklXTmcxWVgydnNMRnlQeDJOMTQ1elB2YU1nU1dhazhKbFhZZ0N5eGIwTUxvd3dYRHkwYUlGaHI4dDdBbGZfNEhJQWE0OXhObXEwcFZkYktNb2VEaW1vVC00a051azZDRWVCWTFuaWFDZElDNUpnYml6cWJwTNIBoAFBVV95cUxOSXRXNG5wcTJmZV9mb2E1am9Hb2RYQ0dRQThTRnhZUnU1dl9mSDh1N3JkMURpY0ZtbjkwSjZpM09oUUFDQ1d6ZTV2LVNCWHgweTVFdUg3YnI5c1VQaEk4Mmk0ekNTWTRTVDJwMGFobU1OS3oxNHBnZDNFLVZsY2FXNy04YkRsWDJOcEJmenlRMjFkdW1hNXpkNU5TYnVMWnl1?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI CEO Sam Altman meets Samsung executives to discuss memory chip supply, AI infrastructure",
-          "source": "ET Enterprise AI",
-          "url": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxPRERIRjRBSjJBWFpVRFdqNTJwUDBELXZtMnRuUVROSl9mbFhjVHJzY2wyeTAyMjJNdUlOWTJMdkxjWERxQ0tsYmxacUQteUxXNDBiallwUXpVWmw2YUNtSWlHRUhrejFDdE5reEdNZEVQTk4wU2JXNmJKYVJwZGh5UjlmS0dybVd3NExDZ0NKbG1hMmpfRzBZWXFnRUIwbmVkTk5DQWx1bWZxR0hvRjFMM1FJVGhzWjdVMU5KWlljazFHdXdrSVBVVnk1WGFkbzMwc2ljM3V0RVB5WGFNWVpNVnVNRzlBRTY1OTE3QlhDU21fR1BuV0VtTW1qa0HSAYICQVVfeXFMT181UjI3X1ZmdVJ1S2owSUhmanBSWnp3YmdMTUV1Ums1Qzdtb19MbkdydUpzbnIzZFZrNE1NNC1FR0kwZXlhTEtKYTdBRXFGdlplWTc0NTVhcVVQY0NZamY3TXpBZ3Zjd1p0VzdVTGZGQzVHc2dtU3ZUa19wbWR5UzlJcmExWTNaekhQTXVrcHhXcy1UWXlnY2M0LVJvOFdSRzhRby1Id3A4TGxNUjN2MFRkRVhWdWdWaVZaclRIb1FTWEs4VE8wZmd5a2hXcWNjSG4ydzJISjd0eUpwYk40UURTMnhRc1JWNU54V2t2UEpGSy1iWjcwaEZUT05ROWVlN253?oc=5",
-          "region": "South Asia"
+          "title": "What you Need to Know AboutClaude's Maker, Anthropic IPO",
+          "source": "TradingKey",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNa28tTl93WVB4VlNSanNWbTJpaFFyVzFqV1poNkFtRkc2cG93ZDVmaTZkdDhNSTcxdzNTZml3NW9NLXNuc3ViZlZPTkZTc0tGZmFCRGkwOXpYb0g0aG1zVzRuRVJFYTFDWmROQm5LSmlfd0Zrd19kblFBczMySkJ3RFNNekRicWlDcXNZc1NvcVZvOFZ1Tk93clhBYVF4dw?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Anthropic IPO Valuation Slips to $1.5T From $2T [2026]",
+          "source": "shattered.io",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNNG9XZmFZRWdVeXR3RExkV0ZqV2k2WTUweTFlQ1NWbWNHdElJWm0wa29VdXM2bVNhRUFuYVBrT09TUnFqcVo1aUQ0TzBhSGhwM080dTRIeXhCZ2duZ2xya29YdzNBWGRDSkFVUGtuS1Z3ZXVrNnY3ZDd5Mnh5SDIxVHpHRFVtakJob3FMWg?oc=5",
+          "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-01",
+    "date": "2026-11-02",
     "calls": [
       {
         "rank": 1,
         "headline": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports",
-        "probability": 0.8,
-        "hit": true,
-        "matched": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports"
+        "probability": 0.78,
+        "hit": false,
+        "matched": null
       },
       {
         "rank": 2,
-        "headline": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
-        "probability": 0.7,
+        "headline": "Anthropic expected to receive high 'junk' rating from credit agencies following IPO, FT report says",
+        "probability": 0.56,
         "hit": true,
-        "matched": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens"
+        "matched": "1 Big Winner and 1 Loser From the Upcoming Anthropic IPO"
       },
       {
         "rank": 3,
-        "headline": "Apple to launch iPhone AI features in China in December via Alibaba partnership",
-        "probability": 0.58,
+        "headline": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
+        "probability": 0.5,
         "hit": true,
-        "matched": "Apple to launch iPhone AI features in China in December via Alibaba partnership"
+        "matched": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges"
       }
     ],
-    "hits": 3
+    "hits": 2
   },
   "track": {
-    "days": 1,
-    "calls": 3,
-    "hits": 3,
+    "days": 2,
+    "calls": 6,
+    "hits": 5,
     "log": [
       {
         "date": "2026-11-01",
         "hits": 3,
         "calls": 3
+      },
+      {
+        "date": "2026-11-02",
+        "hits": 2,
+        "calls": 3
       }
     ],
-    "hitRate": 1
+    "hitRate": 0.83
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
