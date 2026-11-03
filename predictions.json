@@ -1,270 +1,272 @@
 {
-  "generated": "2026-11-03T00:24:00.036Z",
-  "forDate": "2026-11-04",
+  "generated": "2026-11-03T22:48:31.704Z",
+  "forDate": "2026-11-05",
   "window": {
-    "from": "2026-11-02T00:24:00.036Z",
-    "to": "2026-11-03T00:24:00.036Z"
+    "from": "2026-11-02T22:48:31.704Z",
+    "to": "2026-11-03T22:48:31.704Z"
   },
   "scanned": {
-    "stories": 831,
-    "outlets": 391,
+    "stories": 885,
+    "outlets": 398,
     "regions": [
       "Global desks",
       "North America",
       "Community",
       "Africa",
+      "Europe",
       "Asia-Pacific",
       "South Asia",
-      "Europe"
+      "Middle East"
     ],
-    "storylines": 658
+    "storylines": 685
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.9253,
-      "probability": 0.92,
+      "score": 0.6971,
+      "probability": 0.89,
       "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Watch Anthropic Revenue Surges Ahead of IPO",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "entity": "Google",
+      "theme": "Jobs & society",
+      "headline": "Google Will Turn Off Search for Schools That Reject A.I.",
+      "outlook": "Expect workplace and society angles on Google to keep spreading across regions.",
       "signals": {
-        "outlets": 32,
+        "outlets": 15,
         "regions": [
-          "North America",
-          "Asia-Pacific",
+          "Global desks",
           "South Asia",
-          "Europe"
+          "North America",
+          "Europe",
+          "Africa",
+          "Asia-Pacific"
         ],
-        "stories": 46,
-        "momentum": 3,
-        "recent6h": 24,
-        "authority": 14.7,
-        "hnPoints": 423,
-        "nextStepCues": 22,
-        "arcDays": 3,
+        "stories": 16,
+        "momentum": 9,
+        "recent6h": 14,
+        "authority": 7,
+        "hnPoints": 519,
+        "nextStepCues": 0,
+        "arcDays": 0,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
-        "breadth": 0.67,
-        "momentum": 0.86,
+        "reach": 0.81,
+        "breadth": 1,
+        "momentum": 1,
         "authority": 1,
-        "community": 0.88,
-        "nextStep": 1,
-        "arc": 1
+        "community": 0.91,
+        "nextStep": 0,
+        "arc": 0
       },
       "sig": [
-        "ipo",
-        "anthropic",
-        "revenue",
-        "ahead",
-        "anthropics",
-        "$17",
-        "commitment",
-        "growth"
+        "google",
+        "search",
+        "school",
+        "access",
+        "off",
+        "tool",
+        "reject",
+        "student"
       ],
       "evidence": [
         {
-          "title": "Anthropic Revenue Nears $17 Billion as IPO Looms",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPUEV6SkM2MWhJMFZ3bm1hRExOUzRTTXlRZExMcHQ4ZjdjU0RFTTJLanNIUWpydlY1MjIxZXpHa0RyTGVDOGtwTVJBRjM1STFTeGFReWlfVzRIb2ZYYlNIaFdGVDJHWFpiX0VOLUtESFFCYkdRb0k1QU9KZTNZbWJYWVY2SDc0LXVYTTByeUM0aGdzYmd4XzZjRFdlVWRPdU5xZ2Q1bDdIRXE1TjB4d2ZZX3htX2lITmtZcTNMUDZ5aXBnZHRTalE?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic revenue growth slows, compute financing risks mount ahead of IPO",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPalN1b2NwcllWRkRjRUNmOVBjSDMxWDNzdjZIclhDNTdMMFlaVUx2eWN1U19acllfTk0xX0JIbkJma21jVDFhZUR1czFjbVdLbThjMHVQZ0F4MkFvNmc0cURPN05FMkE3VFNyMTktbmNzWVIxN3c1YVFhSXpBTmZSQk1DZ013aDVRcXE5OEplekFkZWFJbmQxUEhDSVJ3RVVrZWJUd2ZRYWRfWUJhMVMycEZRRk8?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic Reveals $17 Billion in Revenue as I.P.O. Approaches",
+          "title": "Google Will Turn Off Search for Schools That Reject A.I.",
           "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5qTjFEOVBac1NZakxsWVUwbmk2bFNmVldwM3RmOVI0N1ZRS0lMZElyVzBlM0xMLWx1ajdHM3I3Tm1hTGFJQ25pT1pJUndOMmtHZFJjQU9xYXg1c1NUTHNrakYxTzFzZXRCaGNNQ1R0ejZuNmVQR294dzF3?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPa2ZWRmYyZW9YZng5SmhjYnpjQ213dnRKVjVjNW1rcS1RRFoxVUFKYnl2VlVjMk1abE1kQTE2Qk1Ea09WcHlvMjFNbTREWnhmYXZiTjE5RTY0bUdMZGsyRFRCNDNWQjg0SG90WXlaSVV1d19iV0x4UEVnVlFzS3dyVWZB?oc=5",
           "region": "North America"
         },
         {
-          "title": "Anthropic’s loss shrinks, revenue jumps ahead of blockbuster IPO",
-          "source": "BNN Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOM0FXZ3U1Tk9Va3psTWtMM1c1T3hlM25QV056X056UW1UUXhraWhfMllkWFZocjVPSDFwS3JfU1FLV3NETklsSlppZXY1N013OGxXNlFiMWJ6UmJlc2I5cDNwX0diZWliUWxjNGxsbml5cXN4UWhrdkVJd3dUbWNpcDJnaVVoUEJDM3pLdkcxS3diX1hwS1Z0UEl2TkpBMC1BZmJjUjJSa3V0a2FLMmJjVmN6aWJST0xDUERiVXljVHhYelFqWEFwNVNWQlpnZ24y?oc=5",
+          "title": "Google says there’s no way to use Search without using artificial intelligence",
+          "source": "The Guardian",
+          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQejExRlAwVmpXSkJOMFppQ3NXOFRGT2lkOGQ3LURUVS16UjRQa3llY01OY3FxdW1TYWVHZUR4c3NXbTRIT0pUQ2hIZGxlYzRFS2Q1ZG5qRTNNbDV0cnZJMHJaOFRfU1RzTzkzWFF1OVhUaUVhWFh1anhEV0JTb2lSLWJ0UEo5X3pyeWhNTkFSMWMtUQ?oc=5",
           "region": "North America"
+        },
+        {
+          "title": "Google will cut off search access for students at schools that reject AI tools",
+          "source": "ABC News - Breaking News, Latest News and Videos",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPMTJTT21ORUV6YU5BVzlrTGp1RWh6UkF5UjlZekp3ZkpWczJJa01FcTFXZE9CTFJiNDRNdkxiNGZaRHh5YjVSZEFrR19QWmVRVU11WU9uZGlnb0J6RkFLRF96bkFCOVRKV0NkM2RsbzNveU9vd3N5Y1hKci1ITE5aRXhCRWlkNHplZV9VZG1iNWh6amxDeEl5SnVXZ9IBoAFBVV95cUxOd1REeXBYNGROYkEzUjFaR2hWQnZUVmZZS2I2bG9yRXRpSnE1MTJhMHRRMVozMmlWaWpXXzVkUUZicTdwY2ZyV2k5TEZSVExGVHpLSnZzQnZsMng1dDVZZkhMZWRzRWthYjZKb0hxc3NlejBzbG9rYUlzX0JNMU52LWF4VjcyOVVsUWdmd182LTdSV3czWlhWanYzZ0pMNGpN?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Google Will Cut Off Search Engine Access To Schools Banning Generative AI",
+          "source": "Forbes Middle East",
+          "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxOVjZ0VmNfUEtpSkxYbjU1ZlpnUXJQZkg2SC1VTk4yV2RNeW9uTmViTVpybXowekFJYnpSTnhxcEVScnhMWXJPVlFUQjJOaFZHVEZjTS04LU1fM3ZabWxXQllZNjRfTFpvNHBEWVBSRFZNMnVqcmRBVlNjX2dtSnNoeTQtdGZJOHJnREZLWENJWnhoRHNTbW5MNFhod2RZRUZEdVZsRGh2bnpFZzdvb0JINGFhYmZlVzhNdk1NejlsczJMWHFER1NxNXNwU2N3dVBZbVJTUjBuOEZqVHhnaWM0eXJ0cXBWRGhpZ3ZHeHAwYw?oc=5",
+          "region": "South Asia"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.4656,
-      "probability": 0.6,
-      "confidence": "Medium",
-      "entity": "OpenAI",
-      "theme": "Chips & compute",
-      "headline": "OpenAI pledges data center power cuts",
-      "outlook": "Supply, pricing and export angles on OpenAI should keep this in the headlines.",
+      "score": 0.6083,
+      "probability": 0.81,
+      "confidence": "High",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "The IPO Market Is Open For Anthropic. Not For Everyone Else.",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 9,
+        "outlets": 10,
         "regions": [
-          "Global desks",
           "North America"
         ],
-        "stories": 9,
-        "momentum": 0.9,
-        "recent6h": 2,
-        "authority": 3.7,
-        "hnPoints": 0,
+        "stories": 13,
+        "momentum": 2.67,
+        "recent6h": 7,
+        "authority": 5.5,
+        "hnPoints": 81,
         "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.67,
-        "breadth": 0.33,
-        "momentum": 0.28,
-        "authority": 0.74,
-        "community": 0,
+        "reach": 0.7,
+        "breadth": 0.17,
+        "momentum": 0.81,
+        "authority": 1,
+        "community": 0.64,
         "nextStep": 0,
         "arc": 1
       },
       "sig": [
-        "openai",
-        "data",
-        "center",
-        "power",
-        "rebrand",
-        "compute",
-        "campuse",
-        "pledge"
+        "anthropic",
+        "ipo",
+        "swing",
+        "loss",
+        "market",
+        "spacex",
+        "stock",
+        "buy"
       ],
       "evidence": [
         {
-          "title": "OpenAI pledges data center power cuts",
-          "source": "Axios",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFA5LUVOUjVhX0s5eG54YkRfRVR6MGxlTVpweC1QVzluaVlpQjBIanA4Wk9WbE05S1dkZlpwbGh5UG1sRjRaWDJ6N1c0cDVGY1dpZHhLZDhYQjVrVnVpMWxQQWg4dDJzRzNxblpoYU5EQQ?oc=5",
+          "title": "How Much Should Anthropic Pop?",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNcU9ORloxdFByUnNyZTRrNFZpS3R6ZTBKUkZQd3dTY21lb29wYUloX0hnUG53bGpzUVFOVlB3TGhBZlpIZ3J4MGpVSDd2X21rd2pVcWF0UGx2WFQ0QldpZzV1Q3FwUVYwXzRoRV9NeUNCOThpSV9NZl9Nem9NVVlBUWdNN3BWVTNSdnVkQW9Lbw?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI pitches data center power plants as a way to protect nearby areas",
-          "source": "The Verge",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOV3FjalhTU2FDeHp2Qld0UU5XcUZUX3FsS2RqemF0SGlheFdHLUNPWUdNWTVwZkpGUV9RNFhVWVJsb0tlYXNqd2dvbUwwU2VsVEItUi1GeUJvS1pwQUVCVGtOREdNT2RSWjhZem52QUNsQ3FDS3BheXJYTkhuczlURXRZclBaOHcwOEpyODFPdGVKeU02bjdNRWExSEQ1ajFRZG5lag?oc=5",
+          "title": "The IPO Market Is Open For Anthropic. Not For Everyone Else.",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOUl9Idk9HS21XSzJpc0NwdVlmSXU1X0xlZnZVMWlWY2c4eGVFMGJpNGVMSl81Y1djWUVvZl81RkFpUXh4aFZCRnVxel8yckF1cjhKZmJhc2tvSWlDVmtiZWtsZW1CeHJVX2Z3S0FyMER0TFZxaGFPWS1PNjZnam1SWG1uMzAtOTNyc0RWcUI1d1pxOXN2MGFvVWRPTQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI might rebrand its data centers as ‘AI compute campuses’",
-          "source": "TechCrunch",
-          "url": "https://techcrunch.com/2026/11/01/openai-might-rebrand-its-data-centers-as-ai-compute-campuses/",
-          "region": "Global desks"
+          "title": "Anthropic Touts Claude’s Chip Design Skills to IPO Investors",
+          "source": "The Information",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQYnpwS0FzRk9KWUhPNC1rT3JnNWdLN1NhTWM0VU5zWHkyZEo5NVR1dXJhTWdVY2R0ZGEwcVhDTGZ3TkR5SGRIemoyenlCUU1TV2xMTzNBa0xtZDJSb1hGeUVqVlhBVmJNRVFkVS1qb21LdmtqOUxmWEtVOEgwd3JnRnNJMHJIQXdfYndBMUpjZWNPaGRwSW55ZWJsdEk?oc=5",
+          "region": "North America"
         },
         {
-          "title": "OpenAI Thinks Calling Data Centers 'AI Compute Campuses' Could Make Them Less Scary",
-          "source": "ExtremeTech",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPZnh6a213TFlsZDA1Y3RILVp5UlhrMEhkQTBYR29TNlVzZ1o3YW4xcmZYeW5NdDgzNldPVXItdFZ2U2gxR2NyeTRwRy1fTXprUTZmZ3F5WFJEYVgxdzlkZk5PVkl0ajRsTnFCdWJYbVVLbmRIeFhWSEZPQTZ0MThNa0pTRXdIek1UVE1ZOElkZ1hzTVQzV2ZvdUZpMUFDLWY0TzJxMkd3RGM?oc=5",
+          "title": "Anthropic plans Australian share offer in IPO, CommSec says",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOemZuN3Ria3VJdnlTMFphelNDSWFHeUpvM2dVa3JHNkdUQlZuWjRvZEdWS0c5c3BVQktYc2dkYWJERnVRblgwNUZOcjFpNTBIWTgxREtFazR0emkybTFIeVpaTmVnLTZ0YUZZUUtPX1Q1bEtRSzNnVy1rMDNPdUNzQVg2QTQ3MnJCeDgyLWdudi16ZVRqVGlIWHZXR3FDTF9CZkFKa25ESXVVVFJP?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.3696,
-      "probability": 0.42,
-      "confidence": "Medium",
-      "entity": "AI industry",
-      "theme": "Courts & copyright",
-      "headline": "The New York Times sues Brave web browser for AI scraping and bypassing paywalls",
-      "outlook": "Filings, responses or a ruling involving AI industry could land and drive fresh coverage.",
+      "score": 0.5587,
+      "probability": 0.75,
+      "confidence": "High",
+      "entity": "China",
+      "theme": "Chips & compute",
+      "headline": "Nvidia Tells Data Center Clients to Trim China Business, FT Says",
+      "outlook": "Supply, pricing and export angles on China should keep this in the headlines.",
       "signals": {
-        "outlets": 5,
+        "outlets": 17,
         "regions": [
           "North America",
-          "Global desks"
+          "Asia-Pacific"
         ],
-        "stories": 5,
-        "momentum": 2.4,
-        "recent6h": 3,
-        "authority": 2,
-        "hnPoints": 15,
+        "stories": 18,
+        "momentum": 1.4,
+        "recent6h": 6,
+        "authority": 5.8,
+        "hnPoints": 3,
         "nextStepCues": 0,
-        "arcDays": 0,
+        "arcDays": 2,
         "calendar": null
       },
       "factors": {
-        "reach": 0.52,
+        "reach": 0.84,
         "breadth": 0.33,
-        "momentum": 0.75,
-        "authority": 0.4,
-        "community": 0.4,
+        "momentum": 0.5,
+        "authority": 1,
+        "community": 0.2,
         "nextStep": 0,
-        "arc": 0
+        "arc": 0.67
       },
       "sig": [
-        "york",
-        "time",
-        "brave",
-        "browser",
-        "scraping",
-        "sues",
-        "web",
-        "bypassing"
+        "nvidia",
+        "china",
+        "data",
+        "client",
+        "center",
+        "tell",
+        "chinese",
+        "exposure"
       ],
       "evidence": [
         {
-          "title": "New York Times and other outlets sue web browser Brave over alleged content scraping",
-          "source": "TechCrunch",
-          "url": "https://techcrunch.com/2026/11/02/new-york-times-and-other-outlets-sue-web-browser-brave-over-alleged-content-scraping/",
-          "region": "Global desks"
-        },
-        {
-          "title": "The New York Times sues Brave web browser for AI scraping and bypassing paywalls",
-          "source": "The Verge",
-          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQWVN6Z2R4ZUVYdmk5b2lDOFB5ZlROZjkwYWx1N2ltR2lKaVBmbGpNS2N5Y2ttTndmQkRZcDZUSDlza29RVkQtcXdxYjhCdXhqbk90RkJjNlUyR2pFejBfV1VuNEE0QUdKWjFWQWJfYnV0aDdWOWMtaWh0Yy1hVjdZeVFRVkM?oc=5",
+          "title": "Nvidia Tells Data Center Clients to Trim China Business, FT Says",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPbEJRRjh3WWlKcE9PTlBDM19qaEVoSUtzSmRzQ0g4Rl9YT1p1WUQtRWhFbjI3WTlxVkhja0s1UFdpaV9Gb3A0RG8wNnF2YWpMMldMdGtvNW03bUVvM0VZZGtCR1gyZmZheldrdHFja2QycUwxZDNZRkpEV2pjRkZmUVBuSUwyQkRORUtUOXpMX2k2Q21ZM1JkUFlEUlg2T2lXTUl1eXQzWUt6NE9WZ3RHdkJPMmM?oc=5",
           "region": "North America"
         },
         {
-          "title": "The New York Times sues Brave web browser for AI scraping and bypassing paywalls",
+          "title": "Nvidia tells data centre clients to sell majority of services to non-Chinese buyers; company says: 'Datac",
+          "source": "The Times of India",
+          "url": "https://news.google.com/rss/articles/CBMi5AJBVV95cUxQQlVZdTEwNWh6V1pVWmJyOWNCaURTZUVwV0V1ZFprb2hOTGszdlprYVFycUJlS05fbkkxX1ozZ241UHlkRlZFWXdyUXUtdzJFS0piZDFHaDNlY3JIQUFERHVjTEtPeDJSNURJeDhwSEdvZ2hqOWZnNlhSZzhfMXNXTFpVMW1uUFY5MTNDaGx2dnJuSW1UX1lVNllkRERveTg4emlHUzdVaUNiMXdzVEhCZ3NNV0tTY1EtOERteHg2aldZaW1wT1AyNWN5LXhZSmROc2kyRVNPRWF4QlVyR0lWbGh1d2lvNUFqTkxjZ0xOdDNzd3A3ZUt3clM4dnB6ZEplS2dlQm84Q3M3OEQzZVItZkRWNFJoQVFzdWpQS01XU0gySDFaS0llU0hqTXRLRUt6R05pdU54cDZQYXdYeFJ4Zks3YS1qcTlhYWJCMWQ3VF9wbld5Z19weHFjR3NKMzZxQURJZdIB6gJBVV95cUxQMHEzV1FicUlVYVh1dnRQWTgyUzU1X2F0X2IwSzRaWFRURFFqRUpZRkZtLWJxSHNtbVpDVmZxdmtBZ1pZX3paMlhtQlB0RUtDSU5sU1VMb1hkMWNwVktWaWo5c3dxVTV6ZU90eEwyN3BTdTlONUJsY2ltOG53MmdUOUd2SkJuaHlsOUNGVUlYVmRadTdPbEcxekwybk5BcUhLOWpfeVkwSmVxanBEbUduV0JUUVU0STA1YmhNZGdOUWJfYmJpb1RDQklOVlNMbDc4ZEFQTzBwQlVqcEV6VUVzUVBKbDdCMjVDYlVUTEN5WjctZmhZYTZQZmx0cU9KRUFwZUp0dXFkWUJiOWtseVVMT0RuMjBCblpGQTJsSVNicWJuVzRRd3VocXY0MkRpUjhuMmhTaTVFcy1rV3VrNkZsQThGV2ljNkpQajZveXFjdFpfcEhEeDZxVEg5RHlHYXF1MlNtdDBvNkJZUQ?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia tells cloud clients to cap China business at 49% of their services",
+          "source": "Startup Fortune",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOT0t1RmRTQTQzdWUxQ1RuU212cXVUN1JEZ0hKRXlxU1EyZy1SYjZWd09LOWFBQW9uTFJmY09VdDExNzZLTFNLTzJqV3JEUVRONTQwSWlUNkRGd0xJN1FIZG1MYXJKZmFmNjRrOUxpSlJjT05nQ3F5dE9JQXVHTGNNeExma1NhTGJEakdzS0FRdjFKOUM1WVNwbHRtNGdkWDBKbEE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia tells data center operators to limit business to Chinese customers",
           "source": "Hacker News",
-          "url": "https://www.theverge.com/tech/1024588/brave-lawsuit-ai-scraping-new-york-times",
+          "url": "https://www.tomshardware.com/tech-industry/data-centers/nvidia-tells-data-center-operators-to-limit-business-from-chinese-customers-with-new-global-restrictions-report-claims-allegedly-restricted-to-49-percent-of-the-total-ensuring-51-percent-are-non-chinese-outfits",
           "region": "Community"
-        },
-        {
-          "title": "New York Times, Daily News Sue Brave Browser Over AI Content Scraping",
-          "source": "Hoodline",
-          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOMU42S2daQl93Yjg3ZWJWSW8zWlgta091NENpdzZVcHdvTUk1ZUNmdjVia1N4NWViYkIzOUZKd3hoUTFLcVVMU0p0XzZPMG9wdGZrZ2UtY2FLZGotYzA5X1JBQi1WM0hTUFo2MC1qYUFqOEQ1cVJTeFBuNkdPR3hCUkJ0S1ZUTUxnQXl2U2VXT0NQUE1JS2tPdC1TXzJaZWs?oc=5",
-          "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-03",
+    "date": "2026-11-04",
     "calls": [
       {
         "rank": 1,
-        "headline": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges",
-        "probability": 0.68,
+        "headline": "Watch Anthropic Revenue Surges Ahead of IPO",
+        "probability": 0.92,
         "hit": true,
-        "matched": "OpenAI pledges data center power cuts"
+        "matched": "The IPO Market Is Open For Anthropic. Not For Everyone Else."
       },
       {
         "rank": 2,
-        "headline": "Anthropic Updates Claude To Stop It From Recreating Existing Video Games",
-        "probability": 0.63,
+        "headline": "OpenAI pledges data center power cuts",
+        "probability": 0.6,
         "hit": true,
-        "matched": "Anthropic Addresses Video Game Cloning With Minor Claude Update"
+        "matched": "Brookfield plans for a $27 billion AI data center at UK power station"
       },
       {
         "rank": 3,
-        "headline": "1 Big Winner and 1 Loser From the Upcoming Anthropic IPO",
-        "probability": 0.57,
-        "hit": true,
-        "matched": "Watch Anthropic Revenue Surges Ahead of IPO"
+        "headline": "The New York Times sues Brave web browser for AI scraping and bypassing paywalls",
+        "probability": 0.42,
+        "hit": false,
+        "matched": null
       }
     ],
-    "hits": 3
+    "hits": 2
   },
   "track": {
-    "days": 3,
-    "calls": 9,
-    "hits": 8,
+    "days": 4,
+    "calls": 12,
+    "hits": 10,
     "log": [
       {
         "date": "2026-11-01",
@@ -280,9 +282,14 @@
         "date": "2026-11-03",
         "hits": 3,
         "calls": 3
+      },
+      {
+        "date": "2026-11-04",
+        "hits": 2,
+        "calls": 3
       }
     ],
-    "hitRate": 0.89
+    "hitRate": 0.83
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
