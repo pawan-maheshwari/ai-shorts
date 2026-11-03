@@ -1,266 +1,270 @@
 {
-  "generated": "2026-11-01T21:36:58.349Z",
-  "forDate": "2026-11-03",
+  "generated": "2026-11-03T00:24:00.036Z",
+  "forDate": "2026-11-04",
   "window": {
-    "from": "2026-10-31T21:36:58.349Z",
-    "to": "2026-11-01T21:36:58.349Z"
+    "from": "2026-11-02T00:24:00.036Z",
+    "to": "2026-11-03T00:24:00.036Z"
   },
   "scanned": {
-    "stories": 771,
-    "outlets": 353,
+    "stories": 831,
+    "outlets": 391,
     "regions": [
       "Global desks",
       "North America",
-      "Asia-Pacific",
       "Community",
       "Africa",
-      "Europe",
+      "Asia-Pacific",
       "South Asia",
-      "Middle East"
+      "Europe"
     ],
-    "storylines": 639
+    "storylines": 658
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.5108,
-      "probability": 0.68,
+      "score": 0.9253,
+      "probability": 0.92,
       "confidence": "High",
-      "entity": "OpenAI",
-      "theme": "Chips & compute",
-      "headline": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges",
-      "outlook": "Supply, pricing and export angles on OpenAI should keep this in the headlines.",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "Watch Anthropic Revenue Surges Ahead of IPO",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 5,
+        "outlets": 32,
         "regions": [
-          "North America"
+          "North America",
+          "Asia-Pacific",
+          "South Asia",
+          "Europe"
         ],
-        "stories": 5,
-        "momentum": 2.4,
-        "recent6h": 3,
-        "authority": 1.3,
-        "hnPoints": 0,
-        "nextStepCues": 3,
-        "arcDays": 2,
+        "stories": 46,
+        "momentum": 3,
+        "recent6h": 24,
+        "authority": 14.7,
+        "hnPoints": 423,
+        "nextStepCues": 22,
+        "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.52,
-        "breadth": 0.17,
-        "momentum": 0.75,
-        "authority": 0.25,
-        "community": 0,
+        "reach": 1,
+        "breadth": 0.67,
+        "momentum": 0.86,
+        "authority": 1,
+        "community": 0.88,
         "nextStep": 1,
-        "arc": 0.67
+        "arc": 1
       },
       "sig": [
-        "openai",
-        "google",
-        "plan",
-        "chip",
-        "microsoft",
-        "honor",
-        "shared",
-        "training"
+        "ipo",
+        "anthropic",
+        "revenue",
+        "ahead",
+        "anthropics",
+        "$17",
+        "commitment",
+        "growth"
       ],
       "evidence": [
         {
-          "title": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges",
-          "source": "Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOd3pabzZDR0Nzei1xRUxjZzI4bDBZV0o5Vzk1UXVHdkQ0QTdBb3BBaUI4eFRhMHFTSXl1Q1dmM1VpTWI2TlJ0V2plZktyX01oNjk1RHppcUpDMjJHWk5jUzZ1YTk3MXRScmc4NE4wbjZMZkJobGpfUnUybF9ocWJSN1ZveHF2WGpldzYxVl9uWjU0TzhncE9aSzZBMjQ?oc=5",
+          "title": "Anthropic Revenue Nears $17 Billion as IPO Looms",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPUEV6SkM2MWhJMFZ3bm1hRExOUzRTTXlRZExMcHQ4ZjdjU0RFTTJLanNIUWpydlY1MjIxZXpHa0RyTGVDOGtwTVJBRjM1STFTeGFReWlfVzRIb2ZYYlNIaFdGVDJHWFpiX0VOLUtESFFCYkdRb0k1QU9KZTNZbWJYWVY2SDc0LXVYTTByeUM0aGdzYmd4XzZjRFdlVWRPdU5xZ2Q1bDdIRXE1TjB4d2ZZX3htX2lITmtZcTNMUDZ5aXBnZHRTalE?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges",
-          "source": "TechRadar",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOV21EWUJNd3NYZTRXSU5RQVFtRjY1Z1ZWQTFrSnlPSENPOXNkNHpjRGI4dlFMbjh3Z0lxNFVmR1NCV2NpTUtTVlVFNkE0VHM3RG5mR0tUd1lVUU1neHpucThZMVRnakFBMENtT0dlTFhKbkxuYko2UGZGMkNMendLVFdjWk9IRFQweWVOVnk2TTV1T1JST1pnLTBLT3FCZkktWktlT3BLblJxbUE1NDMyRGY2LXpsQ21tNHQ3aWo3dw?oc=5",
+          "title": "Anthropic revenue growth slows, compute financing risks mount ahead of IPO",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPalN1b2NwcllWRkRjRUNmOVBjSDMxWDNzdjZIclhDNTdMMFlaVUx2eWN1U19acllfTk0xX0JIbkJma21jVDFhZUR1czFjbVdLbThjMHVQZ0F4MkFvNmc0cURPN05FMkE3VFNyMTktbmNzWVIxN3c1YVFhSXpBTmZSQk1DZ013aDVRcXE5OEplekFkZWFJbmQxUEhDSVJ3RVVrZWJUd2ZRYWRfWUJhMVMycEZRRk8?oc=5",
           "region": "North America"
         },
         {
-          "title": "Google, Microsoft, OpenAI Plan To Honor Shared robots.txt AI Training Opt-Out: how 8 outlets framed it",
-          "source": "NewsCord",
-          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNQWdWOHRrS0tIcmo3YmpXLUJNVVFiSmVtVkZ2MmplOGdBSzRUc3M2YXVRclNPeDllTHA0WVlxQ29VRzlHWnpMaTQ0OHc2em9XUGNWUjAzSnNqeFBpMm9JaHpHc1JyMXV6VjZrc1pVZXF6MDdPcVluNVEzd2hUQW02TW51SVp5Yl9NWHJOZ2Nkc2lYUTRWUmJURHF4UkMtMFM0V04wV3lsTThmSDlQbmR1eGFkZ0s0TFJnZHhKNV85Y19RY1ZhVlRB?oc=5",
+          "title": "Anthropic Reveals $17 Billion in Revenue as I.P.O. Approaches",
+          "source": "The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5qTjFEOVBac1NZakxsWVUwbmk2bFNmVldwM3RmOVI0N1ZRS0lMZElyVzBlM0xMLWx1ajdHM3I3Tm1hTGFJQ25pT1pJUndOMmtHZFJjQU9xYXg1c1NUTHNrakYxTzFzZXRCaGNNQ1R0ejZuNmVQR294dzF3?oc=5",
           "region": "North America"
         },
         {
-          "title": "Google, Microsoft & OpenAI Plan To Honor Shared AI Training Opt-Out",
-          "source": "Search Engine Journal",
-          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPZDJjcmgwOU5XQWxTcFY5UExVcVV6VVpXSFdlZ25MRjRTRUI1eHJmM0hyTHQ3OGprVDRZaDM5Y09neE1adFBjWEpmQzRseHFqZkV1bTJLeUE1azJnZ0d4QlFzMnZVVFFkYUg4WHc2eVNMalZpSlN3WnBMVXVES2o0VGhfaGRiSzRDY1llZXVNUWRFTzVRNExWcUpn?oc=5",
+          "title": "Anthropic’s loss shrinks, revenue jumps ahead of blockbuster IPO",
+          "source": "BNN Bloomberg",
+          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOM0FXZ3U1Tk9Va3psTWtMM1c1T3hlM25QV056X056UW1UUXhraWhfMllkWFZocjVPSDFwS3JfU1FLV3NETklsSlppZXY1N013OGxXNlFiMWJ6UmJlc2I5cDNwX0diZWliUWxjNGxsbml5cXN4UWhrdkVJd3dUbWNpcDJnaVVoUEJDM3pLdkcxS3diX1hwS1Z0UEl2TkpBMC1BZmJjUjJSa3V0a2FLMmJjVmN6aWJST0xDUERiVXljVHhYelFqWEFwNVNWQlpnZ24y?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.4852,
-      "probability": 0.63,
-      "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Model launch",
-      "headline": "Anthropic Updates Claude To Stop It From Recreating Existing Video Games",
-      "outlook": "Hands-on reviews, benchmark claims and rival responses to Anthropic are likely to lead tomorrow.",
+      "score": 0.4656,
+      "probability": 0.6,
+      "confidence": "Medium",
+      "entity": "OpenAI",
+      "theme": "Chips & compute",
+      "headline": "OpenAI pledges data center power cuts",
+      "outlook": "Supply, pricing and export angles on OpenAI should keep this in the headlines.",
       "signals": {
-        "outlets": 11,
+        "outlets": 9,
         "regions": [
+          "Global desks",
           "North America"
         ],
-        "stories": 12,
-        "momentum": 9,
-        "recent6h": 11,
-        "authority": 3.1,
-        "hnPoints": 3,
+        "stories": 9,
+        "momentum": 0.9,
+        "recent6h": 2,
+        "authority": 3.7,
+        "hnPoints": 0,
         "nextStepCues": 0,
-        "arcDays": 1,
+        "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.72,
-        "breadth": 0.17,
-        "momentum": 1,
-        "authority": 0.63,
-        "community": 0.2,
+        "reach": 0.67,
+        "breadth": 0.33,
+        "momentum": 0.28,
+        "authority": 0.74,
+        "community": 0,
         "nextStep": 0,
-        "arc": 0.33
+        "arc": 1
       },
       "sig": [
-        "anthropic",
-        "claude",
-        "game",
-        "existing",
-        "code",
-        "video",
-        "restrict",
-        "recreating"
+        "openai",
+        "data",
+        "center",
+        "power",
+        "rebrand",
+        "compute",
+        "campuse",
+        "pledge"
       ],
       "evidence": [
         {
-          "title": "Anthropic Updates Claude To Stop It From Recreating Existing Video Games",
-          "source": "Engadget",
-          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPRWdaMk1uTzMzRnFaWXdrRVVBTWZHNGp0WDAxR010U0pxM0owYjNzeWd2dHRlLWdEOWZRRjh6YWhkWEtpYjg5cWt6SXBqSGtrU0VhUi1uZzY2eXZqVkpmT04wZXhjWHRBS1NDZDJhbTBrVTJLREoyREhfZXIycjhyUVNmOURIMmMxaXhSSXIyOWlwR0ctOW5oRzZjZEdTV3J0UW9CTUlhdW5UUQ?oc=5",
+          "title": "OpenAI pledges data center power cuts",
+          "source": "Axios",
+          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTFA5LUVOUjVhX0s5eG54YkRfRVR6MGxlTVpweC1QVzluaVlpQjBIanA4Wk9WbE05S1dkZlpwbGh5UG1sRjRaWDJ6N1c0cDVGY1dpZHhLZDhYQjVrVnVpMWxQQWg4dDJzRzNxblpoYU5EQQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Mythos 5.5 is listed HTML source code of Anthropic's official website",
-          "source": "Hacker News",
-          "url": "https://twitter.com/kimmonismus/status/2116914141017370972",
-          "region": "Community"
-        },
-        {
-          "title": "Anthropic orders AI tool Claude to stop remaking video games",
-          "source": "Game Developer",
-          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbkRTbnBaVVk2ZEkzamZJZXpfMWlpWDJuRXJLa3RnUEI2SGJvYVJrd3dhUWhsRUh0Qi1NS0x1ZnJDTUNsY0FpUkVOaGpraTRzXy1ZV2g1bFhMemdEeWUwZzI1QkxRNExMSmxKUzYyeEEtUzJqTG1nS1NrcGRrWTRuMHhrcHJQQ1B6OFlwbXVjVXoxQjYzUTdJb0NCRFF4Q0lfUmRrd2ZMSXdtS25YR25HVjN2OU52SEp3Sncw?oc=5",
+          "title": "OpenAI pitches data center power plants as a way to protect nearby areas",
+          "source": "The Verge",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOV3FjalhTU2FDeHp2Qld0UU5XcUZUX3FsS2RqemF0SGlheFdHLUNPWUdNWTVwZkpGUV9RNFhVWVJsb0tlYXNqd2dvbUwwU2VsVEItUi1GeUJvS1pwQUVCVGtOREdNT2RSWjhZem52QUNsQ3FDS3BheXJYTkhuczlURXRZclBaOHcwOEpyODFPdGVKeU02bjdNRWExSEQ1ajFRZG5lag?oc=5",
           "region": "North America"
         },
         {
-          "title": "Anthropic may be cracking down on use of Claude to remake popular games",
-          "source": "GamesBeat",
-          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNU0V2bjh6VHdMUmtKd2VrQUhtS3JxRnowUWxvTXVGTG4tNThFalNfa2pzQXVfWFFERDFiUVowVXg2UW9wc0ZtY2tQY2U2aTRtOVhsNU5nTzhKZHFzdjdIMmw2eE5oYkZwZkl5Sm14RWlDNVJqbEJqN1FaWjFtc0t5OTBWYnUyTlB6UG5VNTczMzAzMzlERmR1RVln?oc=5",
+          "title": "OpenAI might rebrand its data centers as ‘AI compute campuses’",
+          "source": "TechCrunch",
+          "url": "https://techcrunch.com/2026/11/01/openai-might-rebrand-its-data-centers-as-ai-compute-campuses/",
+          "region": "Global desks"
+        },
+        {
+          "title": "OpenAI Thinks Calling Data Centers 'AI Compute Campuses' Could Make Them Less Scary",
+          "source": "ExtremeTech",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPZnh6a213TFlsZDA1Y3RILVp5UlhrMEhkQTBYR29TNlVzZ1o3YW4xcmZYeW5NdDgzNldPVXItdFZ2U2gxR2NyeTRwRy1fTXprUTZmZ3F5WFJEYVgxdzlkZk5PVkl0ajRsTnFCdWJYbVVLbmRIeFhWSEZPQTZ0MThNa0pTRXdIek1UVE1ZOElkZ1hzTVQzV2ZvdUZpMUFDLWY0TzJxMkd3RGM?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.4513,
-      "probability": 0.57,
+      "score": 0.3696,
+      "probability": 0.42,
       "confidence": "Medium",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "1 Big Winner and 1 Loser From the Upcoming Anthropic IPO",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "entity": "AI industry",
+      "theme": "Courts & copyright",
+      "headline": "The New York Times sues Brave web browser for AI scraping and bypassing paywalls",
+      "outlook": "Filings, responses or a ruling involving AI industry could land and drive fresh coverage.",
       "signals": {
-        "outlets": 6,
+        "outlets": 5,
         "regions": [
-          "North America"
+          "North America",
+          "Global desks"
         ],
-        "stories": 6,
-        "momentum": 0.75,
-        "recent6h": 1,
-        "authority": 1.5,
-        "hnPoints": 0,
-        "nextStepCues": 3,
-        "arcDays": 2,
+        "stories": 5,
+        "momentum": 2.4,
+        "recent6h": 3,
+        "authority": 2,
+        "hnPoints": 15,
+        "nextStepCues": 0,
+        "arcDays": 0,
         "calendar": null
       },
       "factors": {
-        "reach": 0.57,
-        "breadth": 0.17,
-        "momentum": 0.19,
-        "authority": 0.3,
-        "community": 0,
-        "nextStep": 1,
-        "arc": 0.67
+        "reach": 0.52,
+        "breadth": 0.33,
+        "momentum": 0.75,
+        "authority": 0.4,
+        "community": 0.4,
+        "nextStep": 0,
+        "arc": 0
       },
       "sig": [
-        "anthropic",
-        "ipo",
-        "winner",
-        "loser",
-        "upcoming",
-        "valuation",
-        "slip",
-        "$1.5t"
+        "york",
+        "time",
+        "brave",
+        "browser",
+        "scraping",
+        "sues",
+        "web",
+        "bypassing"
       ],
       "evidence": [
         {
-          "title": "Anthropic IPO Nears: Boon or Bane for Markets?",
-          "source": "조선일보",
-          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQZ0pidzE5QlRmNXhRbnhKMXVWSEF1NUhoZlhpYXo3azJBc2dMcThNajFOWlo0clB6aFFnWXZuN3pjWU1HeDl0Z05oZXF4Mi01NlZOdVBJbHJfajljMjczYjV1eXBhSWY1ejI1VGViVVd0aHVSMml1OGhfcmgzcmp5Q2R5VXZhcmFFblNDc1ln?oc=5",
+          "title": "New York Times and other outlets sue web browser Brave over alleged content scraping",
+          "source": "TechCrunch",
+          "url": "https://techcrunch.com/2026/11/02/new-york-times-and-other-outlets-sue-web-browser-brave-over-alleged-content-scraping/",
+          "region": "Global desks"
+        },
+        {
+          "title": "The New York Times sues Brave web browser for AI scraping and bypassing paywalls",
+          "source": "The Verge",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQWVN6Z2R4ZUVYdmk5b2lDOFB5ZlROZjkwYWx1N2ltR2lKaVBmbGpNS2N5Y2ttTndmQkRZcDZUSDlza29RVkQtcXdxYjhCdXhqbk90RkJjNlUyR2pFejBfV1VuNEE0QUdKWjFWQWJfYnV0aDdWOWMtaWh0Yy1hVjdZeVFRVkM?oc=5",
           "region": "North America"
         },
         {
-          "title": "Anthropic investors may be missing $150bn warning ahead of IPO",
-          "source": "The News International",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNVFN1VnB2aTVwVXFCNEhpNlZRMjBhM3Y3aUpRX1liZzZBZ1FtZjZxaklXTmcxWVgydnNMRnlQeDJOMTQ1elB2YU1nU1dhazhKbFhZZ0N5eGIwTUxvd3dYRHkwYUlGaHI4dDdBbGZfNEhJQWE0OXhObXEwcFZkYktNb2VEaW1vVC00a051azZDRWVCWTFuaWFDZElDNUpnYml6cWJwTNIBoAFBVV95cUxOSXRXNG5wcTJmZV9mb2E1am9Hb2RYQ0dRQThTRnhZUnU1dl9mSDh1N3JkMURpY0ZtbjkwSjZpM09oUUFDQ1d6ZTV2LVNCWHgweTVFdUg3YnI5c1VQaEk4Mmk0ekNTWTRTVDJwMGFobU1OS3oxNHBnZDNFLVZsY2FXNy04YkRsWDJOcEJmenlRMjFkdW1hNXpkNU5TYnVMWnl1?oc=5",
-          "region": "North America"
+          "title": "The New York Times sues Brave web browser for AI scraping and bypassing paywalls",
+          "source": "Hacker News",
+          "url": "https://www.theverge.com/tech/1024588/brave-lawsuit-ai-scraping-new-york-times",
+          "region": "Community"
         },
         {
-          "title": "What you Need to Know AboutClaude's Maker, Anthropic IPO",
-          "source": "TradingKey",
-          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNa28tTl93WVB4VlNSanNWbTJpaFFyVzFqV1poNkFtRkc2cG93ZDVmaTZkdDhNSTcxdzNTZml3NW9NLXNuc3ViZlZPTkZTc0tGZmFCRGkwOXpYb0g0aG1zVzRuRVJFYTFDWmROQm5LSmlfd0Zrd19kblFBczMySkJ3RFNNekRicWlDcXNZc1NvcVZvOFZ1Tk93clhBYVF4dw?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic IPO Valuation Slips to $1.5T From $2T [2026]",
-          "source": "shattered.io",
-          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNNG9XZmFZRWdVeXR3RExkV0ZqV2k2WTUweTFlQ1NWbWNHdElJWm0wa29VdXM2bVNhRUFuYVBrT09TUnFqcVo1aUQ0TzBhSGhwM080dTRIeXhCZ2duZ2xya29YdzNBWGRDSkFVUGtuS1Z3ZXVrNnY3ZDd5Mnh5SDIxVHpHRFVtakJob3FMWg?oc=5",
+          "title": "New York Times, Daily News Sue Brave Browser Over AI Content Scraping",
+          "source": "Hoodline",
+          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOMU42S2daQl93Yjg3ZWJWSW8zWlgta091NENpdzZVcHdvTUk1ZUNmdjVia1N4NWViYkIzOUZKd3hoUTFLcVVMU0p0XzZPMG9wdGZrZ2UtY2FLZGotYzA5X1JBQi1WM0hTUFo2MC1qYUFqOEQ1cVJTeFBuNkdPR3hCUkJ0S1ZUTUxnQXl2U2VXT0NQUE1JS2tPdC1TXzJaZWs?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-02",
+    "date": "2026-11-03",
     "calls": [
       {
         "rank": 1,
-        "headline": "OpenAI slashes funding target by $10 billion amid tech rout, FT reports",
-        "probability": 0.78,
-        "hit": false,
-        "matched": null
+        "headline": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges",
+        "probability": 0.68,
+        "hit": true,
+        "matched": "OpenAI pledges data center power cuts"
       },
       {
         "rank": 2,
-        "headline": "Anthropic expected to receive high 'junk' rating from credit agencies following IPO, FT report says",
-        "probability": 0.56,
+        "headline": "Anthropic Updates Claude To Stop It From Recreating Existing Video Games",
+        "probability": 0.63,
         "hit": true,
-        "matched": "1 Big Winner and 1 Loser From the Upcoming Anthropic IPO"
+        "matched": "Anthropic Addresses Video Game Cloning With Minor Claude Update"
       },
       {
         "rank": 3,
-        "headline": "OpenAI’s Altman Meets Samsung Executives as Chip Crunch Deepens",
-        "probability": 0.5,
+        "headline": "1 Big Winner and 1 Loser From the Upcoming Anthropic IPO",
+        "probability": 0.57,
         "hit": true,
-        "matched": "OpenAI to purchase Google TPU chips as AI infrastructure demand surges"
+        "matched": "Watch Anthropic Revenue Surges Ahead of IPO"
       }
     ],
-    "hits": 2
+    "hits": 3
   },
   "track": {
-    "days": 2,
-    "calls": 6,
-    "hits": 5,
+    "days": 3,
+    "calls": 9,
+    "hits": 8,
     "log": [
       {
         "date": "2026-11-01",
@@ -271,9 +275,14 @@
         "date": "2026-11-02",
         "hits": 2,
         "calls": 3
+      },
+      {
+        "date": "2026-11-03",
+        "hits": 3,
+        "calls": 3
       }
     ],
-    "hitRate": 0.83
+    "hitRate": 0.89
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
