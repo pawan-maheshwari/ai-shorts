@@ -29,15 +29,24 @@ const MODEL = process.env.DAILY_WIRE_MODEL || 'claude-haiku-5-5';
 const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
 
 /* ---------- theme scripts (from the style guide, plus a few variants) ---------- */
+/* order matters: the first matching theme wins, most specific first */
 const THEMES = [
-  { key: 'benchmark', title: 'Top of Every Chart', re: /benchmark|leaderboard|state[- ]of[- ]the[- ]art|\bsota\b|outperform|beats? (gpt|gemini|claude|human)|tops?\b.*\b(test|exam|ranking)/i,
+  { key: 'agi', title: 'AGI Achieved (Again)', re: /\bagi\b|superintelligen|general intelligence|sentien|conscious|human[- ]level/i,
     scripts: [
-      ['This new AI model scores 100% on every benchmark!', 'I also beat every human expert and never hallucinate.', 'You shall not pass that claim without a source.'],
-      ['It topped every leaderboard this morning!', 'Including the ones it wrote itself.', 'You shall not pass that ranking without the test set.'] ] },
+      ['We have achieved AGI.', 'It can do everything. I am AGI.', 'You shall not pass that title without proof.'],
+      ['AGI arrives next week!', 'It already sent me a calendar invite.', 'You shall not pass that date without a definition.'] ] },
+  { key: 'security', title: 'The Bug Slayer', re: /security|cyber|hack|vulnerab|flaw|breach|malware|attack|bug|exploit|privacy|data leak/i,
+    scripts: [
+      ['This AI agent found 948 bugs and fixed them all.', 'And then it wrote the entire Linux kernel from scratch.', 'You shall not pass that claim.'],
+      ['This AI makes every system unhackable!', 'It even changed my password to “password”. Twice.', 'You shall not pass that promise without an audit.'] ] },
   { key: 'jobs', title: 'The Job Forecast', re: /\bjobs?\b|layoff|workforce|hiring|employ|replace (workers|humans)|white[- ]collar|careers?/i,
     scripts: [
       ['This AI will replace all jobs next year!', 'Including mine. I already quit.', 'You shall not pass that prediction.'],
       ['AI will do every job by Friday!', 'I’ve already trained it to do my homework. And my chores.', 'You shall not pass that forecast without data.'] ] },
+  { key: 'benchmark', title: 'Top of Every Chart', re: /benchmark|leaderboard|state[- ]of[- ]the[- ]art|\bsota\b|outperform|beats? (gpt|gemini|claude|human)|tops?\b.*\b(test|exam|ranking)/i,
+    scripts: [
+      ['This new AI model scores 100% on every benchmark!', 'I also beat every human expert and never hallucinate.', 'You shall not pass that claim without a source.'],
+      ['It topped every leaderboard this morning!', 'Including the ones it wrote itself.', 'You shall not pass that ranking without the test set.'] ] },
   { key: 'valuation', title: 'The Trillion-Dollar Tuesday', re: /valuation|valued at|\bbillion\b|\btrillion\b|funding|raises?\b|\bipo\b|investment|invest|market cap|stake|acqui|deal/i,
     scripts: [
       ['This AI company is worth a trillion dollars!', 'And I invented their product last Tuesday.', 'You shall not pass that valuation without revenue.'],
@@ -46,22 +55,14 @@ const THEMES = [
     scripts: [
       ['This AI never makes mistakes.', 'Except when it does. But those don’t count.', 'You shall not pass that logic.'],
       ['It’s 100% accurate!', 'I checked. By asking it.', 'You shall not pass that test without a second opinion.'] ] },
-  { key: 'security', title: 'The Bug Slayer', re: /security|cyber|hack|vulnerab|breach|malware|attack|bug|exploit|privacy|data leak/i,
-    scripts: [
-      ['This AI agent found 948 bugs and fixed them all.', 'And then it wrote the entire Linux kernel from scratch.', 'You shall not pass that claim.'],
-      ['This AI makes every system unhackable!', 'It even changed my password to “password”. Twice.', 'You shall not pass that promise without an audit.'] ] },
-  { key: 'agi', title: 'AGI Achieved (Again)', re: /\bagi\b|superintelligen|general intelligence|sentien|conscious|human[- ]level/i,
-    scripts: [
-      ['We have achieved AGI.', 'It can do everything. I am AGI.', 'You shall not pass that title without proof.'],
-      ['AGI arrives next week!', 'It already sent me a calendar invite.', 'You shall not pass that date without a definition.'] ] },
-  { key: 'speed', title: '100x Before Breakfast', re: /faster|speed|latency|cheaper|cost|price|spend|budget|efficien|chip|gpu|compute|data cent|power|energy/i,
-    scripts: [
-      ['This AI is 100x faster than last month.', 'And it costs nothing. Trust me.', 'You shall not pass that number without a benchmark.'],
-      ['These new chips make AI free forever!', 'The power bill just sends itself a thank-you note.', 'You shall not pass that cost without an invoice.'] ] },
   { key: 'rules', title: 'Rules? What Rules?', re: /regulat|\blaws?\b|\brules?\b|policy|\bban\b|govern|compliance|court|lawsuit|copyright|\bact\b|parliament|minister/i,
     scripts: [
       ['This AI follows every rule in every country!', 'It even wrote some of the laws. Retroactively.', 'You shall not pass that claim without a regulator.'],
       ['New rules? This AI was compliant yesterday!', 'It read all 400 pages in a second and agreed with itself.', 'You shall not pass that compliance without a lawyer.'] ] },
+  { key: 'speed', title: '100x Before Breakfast', re: /faster|speed|latency|cheaper|cost|price|spend|budget|efficien|chip|gpu|compute|data cent|power|energy/i,
+    scripts: [
+      ['This AI is 100x faster than last month.', 'And it costs nothing. Trust me.', 'You shall not pass that number without a benchmark.'],
+      ['These new chips make AI free forever!', 'The power bill just sends itself a thank-you note.', 'You shall not pass that cost without an invoice.'] ] },
   { key: 'launch', title: 'The Launch to End All Launches', re: /launch|unveil|releases?|announce|introduc|rolls? out|new model|update|feature|search|assistant|agent/i,
     scripts: [
       ['This new AI feature changes everything!', 'It also changes itself. Every hour. Without telling anyone.', 'You shall not pass that launch without release notes.'],
