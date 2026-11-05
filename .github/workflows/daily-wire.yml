@@ -1,0 +1,52 @@
+name: The Daily Wire (Pinocchio & Gandalf)
+
+# Writes the day's comic strip into daily-wire.json once the morning
+# headlines are in (headlines run at 02:00 UTC; this runs at 02:30 UTC =
+# 8:00 AM IST / 4:30 AM SAST). A strip already added by hand for the day
+# is never overwritten.
+#
+# Optional: add a repository secret ANTHROPIC_API_KEY to have Claude write
+# fresh, headline-specific lines. Without it the job uses the style-guide
+# scripts, matched to the headline's theme.
+on:
+  schedule:
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Replace today's auto-generated strip"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-wire
+  cancel-in-progress: false
+
+jobs:
+  strip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Write today's strip
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FORCE: ${{ inputs.force && '1' || '' }}
+        run: node tools/daily-wire.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name "aishorts-bot"
+          git config user.email "actions@github.com"
+          git add daily-wire.json
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "The Daily Wire: strip for $(TZ=Asia/Kolkata date +%F)"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push && exit 0; sleep 5; done
+          exit 1

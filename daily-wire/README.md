@@ -55,3 +55,13 @@ Cut-outs used in the panel's "Meet the cast": `cast/pinocchio.png`, `cast/gandal
 5. **Security agent** — This AI agent found 948 bugs and fixed them all. / And then it wrote the entire Linux kernel from scratch. / You shall not pass that claim.
 6. **AGI claim** — We have achieved AGI. / It can do everything. I am AGI. / You shall not pass that title without proof.
 7. **Speed claim** — This AI is 100x faster than last month. / And it costs nothing. Trust me. / You shall not pass that number without a benchmark.
+
+## Automatic daily strip
+
+`.github/workflows/daily-wire.yml` runs every day at 02:30 UTC (8:00 AM IST), after the morning headlines. It runs `tools/daily-wire.mjs`, which:
+
+1. reads the AI wire feed and picks a fresh headline that fits a claim theme (benchmark, jobs, valuation, accuracy, security, AGI, speed/cost, rules, launch);
+2. writes the three lines — from the scripts above, or, if the repo has an `ANTHROPIC_API_KEY` secret, fresh headline-specific lines drafted by Claude (validated, with a script fallback);
+3. adds the strip to `daily-wire.json` (auto strips carry `"auto": true`; the last 120 are kept).
+
+A strip you add by hand for a date is never overwritten. To regenerate today's auto strip, run the workflow manually (Actions → The Daily Wire → Run workflow) with **force** ticked.
