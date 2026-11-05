@@ -1445,6 +1445,109 @@
   @media (max-width:520px){ .pr-promo{left:16px;right:16px;width:auto;bottom:118px;} }
   @media print{ .pr-promo{display:none!important;} }
 
+
+  /* =================================================================
+     THE DAILY WIRE — a left-hand side panel holding the day's comic
+     strip (daily-wire.json). Slides in from the left so it never
+     competes with the Menu sheet on the right.
+  ================================================================= */
+  .dw-tab{position:fixed;z-index:60;left:0;top:50%;transform:translateY(-50%);
+    appearance:none;cursor:pointer;border:1.5px solid var(--rule-strong);border-left:0;
+    background:var(--paper);color:var(--ink);padding:12px 6px 12px 6px;
+    writing-mode:vertical-rl;
+    font:800 9px/1 "Libre Franklin",sans-serif;letter-spacing:1.6px;text-transform:uppercase;
+    box-shadow:2px 0 10px rgba(0,0,0,.12);display:flex;align-items:center;gap:7px;
+    transition:background var(--dur,.2s),color var(--dur,.2s);}
+  .dw-tab:hover,.dw-tab:focus-visible{background:var(--ink);color:var(--paper);}
+  .dw-tab .dw-dot{width:6px;height:6px;border-radius:50%;background:var(--live);flex:0 0 auto;}
+  .dw-tab .dw-dot[hidden]{display:none;}
+  @media (max-width:520px){ .dw-tab{padding:10px 5px 10px 4px;font-size:8px;top:62%;} }
+
+  .dw-scrim{position:fixed;inset:0;z-index:88;background:rgba(18,18,18,.5);opacity:0;transition:opacity .2s;}
+  .dw-scrim[hidden]{display:none;}
+  .dw-scrim.open{opacity:1;}
+  .dw-sheet{position:fixed;z-index:89;top:0;left:0;bottom:0;width:min(94vw,440px);
+    background:var(--paper);color:var(--body);border-right:2px solid var(--rule-strong);
+    box-shadow:18px 0 50px rgba(0,0,0,.28);display:flex;flex-direction:column;
+    transform:translateX(-102%);transition:transform .26s cubic-bezier(.2,.7,.2,1);}
+  .dw-sheet[hidden]{display:none;}
+  .dw-sheet.open{transform:none;}
+  .dw-head{flex:0 0 auto;padding:14px 16px 10px;border-bottom:3px double var(--rule-strong);position:relative;}
+  .dw-kick{font:800 8.5px/1 "Libre Franklin",sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:var(--live);}
+  .dw-title{font-family:var(--serif,Georgia,serif);font-weight:700;font-size:23px;line-height:1.08;
+    color:var(--ink);margin:6px 34px 3px 0;letter-spacing:-.3px;}
+  .dw-title em{font-style:italic;font-weight:600;}
+  .dw-sub{font:500 11px/1.35 "Libre Franklin",sans-serif;color:var(--meta);margin:0;}
+  .dw-x{position:absolute;top:10px;right:12px;appearance:none;border:0;background:transparent;
+    cursor:pointer;font-size:24px;line-height:1;color:var(--ink);padding:0 2px;}
+  .dw-body{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 20px;}
+
+  .dw-date{display:flex;justify-content:space-between;align-items:baseline;gap:8px;
+    font:700 9px/1 "Libre Franklin",sans-serif;letter-spacing:1.3px;text-transform:uppercase;
+    color:var(--meta);border-bottom:1px solid var(--rule);padding-bottom:7px;margin-bottom:10px;}
+  .dw-date b{color:var(--ink);}
+  .dw-strip-title{font-family:var(--serif,Georgia,serif);font-size:17px;font-weight:700;line-height:1.2;
+    color:var(--ink);margin:0 0 10px;}
+
+  .dw-frame{border:2px solid var(--rule-strong);background:#fff;margin:0 0 12px;}
+  .dw-frame img{display:block;width:100%;height:auto;}
+
+  /* text edition of the strip — used when no image has been uploaded yet,
+     and always available to screen readers */
+  .dw-panels{display:grid;gap:0;border:2px solid var(--rule-strong);margin:0 0 12px;}
+  .dw-p{position:relative;padding:12px 12px 13px 12px;border-top:1.5px solid var(--rule-strong);
+    background:var(--paper);}
+  .dw-p:first-child{border-top:0;}
+  .dw-p .dw-n{position:absolute;top:8px;left:10px;font:800 8px/1 "Libre Franklin",sans-serif;
+    letter-spacing:1.2px;color:var(--meta-2,var(--meta));}
+  .dw-p .dw-who{display:block;text-align:right;font:800 8.5px/1 "Libre Franklin",sans-serif;
+    letter-spacing:1.4px;text-transform:uppercase;color:var(--meta);margin-bottom:7px;}
+  .dw-bubble{position:relative;display:block;max-width:88%;margin-left:auto;
+    background:#fff;color:#14110f;border:1.6px solid #14110f;border-radius:16px;
+    padding:9px 12px;font-family:var(--serif,Georgia,serif);font-size:15px;line-height:1.35;}
+  .dw-bubble::after{content:"";position:absolute;right:22px;bottom:-9px;width:14px;height:14px;
+    background:#fff;border-right:1.6px solid #14110f;border-bottom:1.6px solid #14110f;
+    transform:rotate(45deg) skew(12deg,12deg);}
+  .dw-p.is-punch{background:var(--ink);}
+  .dw-p.is-punch .dw-who{color:var(--accent,#c9a961);text-align:left;}
+  .dw-p.is-punch .dw-n{left:auto;right:10px;color:var(--accent,#c9a961);}
+  .dw-p.is-punch .dw-bubble{margin-left:0;margin-right:auto;font-weight:600;}
+  .dw-p.is-punch .dw-bubble::after{right:auto;left:22px;}
+  .dw-p.is-grow .dw-bubble{border-style:dashed;}
+  .dw-p.is-grow .dw-who::after{content:" · nose growing";color:var(--live);}
+
+  .dw-src{display:block;border-left:3px solid var(--live);padding:6px 0 6px 10px;margin:0 0 14px;
+    text-decoration:none;color:var(--body);}
+  .dw-src .dw-src-k{display:block;font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.4px;
+    text-transform:uppercase;color:var(--meta);margin-bottom:4px;}
+  .dw-src .dw-src-h{font-family:var(--serif,Georgia,serif);font-size:14px;line-height:1.3;color:var(--ink);}
+  .dw-src:hover .dw-src-h{color:var(--link);text-decoration:underline;}
+  .dw-src .dw-src-o{font:600 10.5px/1 "Libre Franklin",sans-serif;color:var(--link);margin-top:5px;display:block;}
+
+  .dw-nav{display:flex;gap:8px;margin:0 0 16px;}
+  .dw-nav button{flex:1 1 0;appearance:none;cursor:pointer;border:1px solid var(--rule-strong);
+    background:transparent;color:var(--ink);padding:9px 6px;
+    font:800 9.5px/1 "Libre Franklin",sans-serif;letter-spacing:1.1px;text-transform:uppercase;}
+  .dw-nav button:hover:not(:disabled){background:var(--ink);color:var(--paper);}
+  .dw-nav button:disabled{opacity:.35;cursor:default;}
+
+  .dw-arch-lab{font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.6px;text-transform:uppercase;
+    color:var(--meta);border-top:2px solid var(--rule-strong);padding-top:9px;margin:4px 0 4px;}
+  .dw-arch{list-style:none;margin:0;padding:0;}
+  .dw-arch button{display:flex;gap:10px;align-items:baseline;width:100%;text-align:left;appearance:none;
+    border:0;border-bottom:1px solid var(--rule);background:transparent;cursor:pointer;padding:8px 0;color:var(--ink);}
+  .dw-arch .dw-a-d{flex:0 0 58px;font:700 9.5px/1.2 "Libre Franklin",sans-serif;color:var(--meta);text-transform:uppercase;letter-spacing:.6px;}
+  .dw-arch .dw-a-t{font-family:var(--serif,Georgia,serif);font-size:13.5px;line-height:1.25;}
+  .dw-arch button[aria-current="true"] .dw-a-t{font-weight:700;}
+  .dw-arch button:hover .dw-a-t{color:var(--link);}
+  .dw-empty{font-family:var(--serif,Georgia,serif);font-style:italic;color:var(--meta);padding:20px 0;}
+  .dw-foot{flex:0 0 auto;border-top:1px solid var(--rule);padding:9px 16px;
+    font:500 9.5px/1.35 "Libre Franklin",sans-serif;color:var(--meta);}
+  .dw-share{appearance:none;border:0;background:transparent;cursor:pointer;color:var(--link);
+    font:700 9.5px/1 "Libre Franklin",sans-serif;padding:0;margin-left:6px;}
+  html[data-theme="night"] .dw-frame{background:#fff;}
+  @media print{ .dw-tab,.dw-sheet,.dw-scrim{display:none!important;} }
+  @media (prefers-reduced-motion:reduce){ .dw-sheet,.dw-scrim{transition:none;} }
 </style>
 </head>
 <body>
@@ -1482,6 +1585,21 @@
     <a class="tb-link tb-site" href="https://world-of-ai.co.in" target="_blank" rel="noopener">planetAI LLP<span class="ext">&#8599;</span></a>
     <a class="tb-link" href="standards.html">Editorial Standards</a>
   </div>
+</aside>
+<!-- The Daily Wire — side panel (strips live in daily-wire.json; images in daily-wire/) -->
+<button class="dw-tab" id="dwTab" type="button" aria-controls="dwSheet" aria-expanded="false" aria-label="Open The Daily Wire comic strip">
+  <span class="dw-dot" id="dwDot" hidden></span>The Daily Wire
+</button>
+<div class="dw-scrim" id="dwScrim" hidden></div>
+<aside class="dw-sheet" id="dwSheet" hidden role="dialog" aria-modal="true" aria-labelledby="dwTitle">
+  <div class="dw-head">
+    <div class="dw-kick">The Daily Wire</div>
+    <h2 class="dw-title" id="dwTitle">Pinocchio <em>&amp;</em> Gandalf</h2>
+    <p class="dw-sub">One AI headline a day. One claim that grows. One wizard who checks it.</p>
+    <button class="dw-x" id="dwClose" aria-label="Close The Daily Wire">&times;</button>
+  </div>
+  <div class="dw-body" id="dwBody"><p class="dw-empty">Loading today&rsquo;s strip&hellip;</p></div>
+  <div class="dw-foot">Satire about AI claims, drawn from a real story on the wire. Every strip links to its source.<button class="dw-share" id="dwShare" type="button">Copy link</button></div>
 </aside>
 <div class="intro" id="intro" role="dialog" aria-label="AIShorts front page">
   <div class="intro-paper">
@@ -4068,5 +4186,158 @@ var showCutting;
 })();
 </script>
 
+<script>
+/* =====================================================================
+   THE DAILY WIRE — Pinocchio & Gandalf
+   ---------------------------------------------------------------------
+   Reads daily-wire.json (newest strip first or any order — sorted here).
+   Each strip: { date, title, headline, source, url, image?, alt?,
+                 panels:[{speaker,line},{speaker,line},{speaker,line}] }
+   If "image" is set the uploaded strip is shown; the three lines are
+   always rendered as a text edition (visible when there is no image,
+   and as the accessible description when there is).
+   Opens from the left-edge tab, the Menu ("Today"), or #daily-wire.
+--------------------------------------------------------------------- */
+(function(){
+  var tab=document.getElementById('dwTab'), sheet=document.getElementById('dwSheet'),
+      scrim=document.getElementById('dwScrim'), body=document.getElementById('dwBody'),
+      closeB=document.getElementById('dwClose'), shareB=document.getElementById('dwShare'),
+      dot=document.getElementById('dwDot');
+  if(!tab||!sheet) return;
+
+  var strips=[], idx=0, loaded=false, lastFocus=null, SEEN='aishorts_dw_seen';
+
+  function h(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+  function safeUrl(u){return /^https?:\/\//i.test(u||'')?u:'';}
+  function safeImg(u){return (u&&!/^\s*(javascript|data):/i.test(u))?u:'';}
+  function fmt(d,short){
+    var t=new Date(d+'T12:00:00'); if(isNaN(t)) return d||'';
+    return t.toLocaleDateString('en-GB',short?{day:'numeric',month:'short'}:{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  }
+  function today(){var t=new Date();return t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');}
+
+  function load(){
+    if(loaded) return Promise.resolve();
+    return fetch('daily-wire.json?v='+today(),{cache:'no-cache'})
+      .then(function(r){if(!r.ok)throw 0;return r.json();})
+      .then(function(d){
+        strips=((d&&d.strips)||[]).filter(function(s){return s&&s.date&&s.panels&&s.panels.length;})
+          .sort(function(a,b){return a.date<b.date?1:-1;});
+        loaded=true;
+      })
+      .catch(function(){strips=[];loaded=true;});
+  }
+
+  function render(){
+    body.textContent='';
+    if(!strips.length){body.appendChild(h('p','dw-empty','The first strip is on its way. Check back tomorrow.'));return;}
+    var s=strips[idx];
+
+    var dl=h('div','dw-date'); var b=h('b',null,idx===0?'Today’s strip':'From the archive');
+    dl.appendChild(b); dl.appendChild(h('span',null,fmt(s.date))); body.appendChild(dl);
+    if(s.title) body.appendChild(h('h3','dw-strip-title',s.title));
+
+    var lines=s.panels.slice(0,3);
+    var img=safeImg(s.image);
+    if(img){
+      var fr=h('figure','dw-frame'); var im=new Image(); im.loading='lazy'; im.decoding='async'; im.src=img;
+      im.alt=s.alt||('Three-panel comic. '+lines.map(function(p,i){return 'Panel '+(i+1)+', '+p.speaker+': '+p.line;}).join(' '));
+      im.onerror=function(){fr.remove(); grid.hidden=false;};
+      fr.appendChild(im); body.appendChild(fr);
+    }
+    var grid=h('div','dw-panels'); grid.setAttribute('aria-label','The strip, panel by panel');
+    lines.forEach(function(p,i){
+      var punch=i===lines.length-1, grow=(i===1&&/pinocchio/i.test(p.speaker||''));
+      var c=h('div','dw-p'+(punch?' is-punch':'')+(grow?' is-grow':''));
+      c.appendChild(h('span','dw-n',String(i+1)));
+      c.appendChild(h('span','dw-who',p.speaker||''));
+      c.appendChild(h('span','dw-bubble',p.line||''));
+      grid.appendChild(c);
+    });
+    if(img) grid.hidden=true;   /* image carries it; text stays as fallback */
+    body.appendChild(grid);
+
+    var url=safeUrl(s.url);
+    if(s.headline){
+      var src=h(url?'a':'div','dw-src');
+      if(url){src.href=url;src.target='_blank';src.rel='noopener noreferrer';}
+      src.appendChild(h('span','dw-src-k','On the wire'+(s.source?' · '+s.source:'')));
+      src.appendChild(h('span','dw-src-h',s.headline));
+      if(url) src.appendChild(h('span','dw-src-o','Read the original story ↗'));
+      body.appendChild(src);
+    }
+
+    var nav=h('div','dw-nav');
+    var older=h('button',null,'← Older'), newer=h('button',null,'Newer →');
+    older.type=newer.type='button';
+    older.disabled=idx>=strips.length-1; newer.disabled=idx===0;
+    older.onclick=function(){idx++;render();body.scrollTop=0;};
+    newer.onclick=function(){idx--;render();body.scrollTop=0;};
+    nav.appendChild(older); nav.appendChild(newer); body.appendChild(nav);
+
+    if(strips.length>1){
+      body.appendChild(h('div','dw-arch-lab','The archive'));
+      var ul=h('ul','dw-arch');
+      strips.slice(0,30).forEach(function(st,i){
+        var li=h('li'), bt=h('button'); bt.type='button';
+        if(i===idx) bt.setAttribute('aria-current','true');
+        bt.appendChild(h('span','dw-a-d',fmt(st.date,true)));
+        bt.appendChild(h('span','dw-a-t',st.title||st.headline||'Strip'));
+        bt.onclick=function(){idx=i;render();body.scrollTop=0;};
+        li.appendChild(bt); ul.appendChild(li);
+      });
+      body.appendChild(ul);
+    }
+  }
+
+  function open(){
+    lastFocus=document.activeElement;
+    scrim.hidden=false; sheet.hidden=false;
+    requestAnimationFrame(function(){scrim.classList.add('open');sheet.classList.add('open');});
+    tab.setAttribute('aria-expanded','true');
+    document.addEventListener('keydown',onKey);
+    load().then(function(){idx=0;render(); markSeen(); closeB.focus();});
+  }
+  function shut(){
+    scrim.classList.remove('open'); sheet.classList.remove('open');
+    tab.setAttribute('aria-expanded','false');
+    document.removeEventListener('keydown',onKey);
+    setTimeout(function(){scrim.hidden=true;sheet.hidden=true;},260);
+    if(location.hash==='#daily-wire') history.replaceState(null,'',location.pathname+location.search);
+    if(lastFocus&&lastFocus.focus) lastFocus.focus();
+  }
+  function onKey(e){ if(e.key==='Escape') shut(); }
+
+  function markSeen(){ if(strips[0]){ try{localStorage.setItem(SEEN,strips[0].date);}catch(e){} dot.hidden=true; } }
+
+  tab.addEventListener('click',function(){sheet.classList.contains('open')?shut():open();});
+  scrim.addEventListener('click',shut);
+  closeB.addEventListener('click',shut);
+  shareB.addEventListener('click',function(){
+    var link=location.origin+location.pathname+'#daily-wire';
+    var done=function(){shareB.textContent='Link copied';setTimeout(function(){shareB.textContent='Copy link';},1600);};
+    if(navigator.share){navigator.share({title:'The Daily Wire — Pinocchio & Gandalf',url:link}).catch(function(){});}
+    else if(navigator.clipboard){navigator.clipboard.writeText(link).then(done,function(){});}
+  });
+
+  /* entry in the Menu sheet, under "Today" */
+  var tools=document.getElementById('nsTools');
+  if(tools){
+    var mb=h('button','tb-link','The Daily Wire — Pinocchio & Gandalf'); mb.type='button';
+    mb.addEventListener('click',function(){setTimeout(open,260);});
+    tools.appendChild(mb); tools.classList.remove('is-empty');
+  }
+
+  /* red dot on the tab when there is a strip the reader hasn't opened */
+  load().then(function(){
+    var seen=null; try{seen=localStorage.getItem(SEEN);}catch(e){}
+    if(strips[0]&&strips[0].date!==seen) dot.hidden=false;
+  });
+
+  /* deep link: aishorts.biz/#daily-wire */
+  if(location.hash==='#daily-wire'){ var sk=document.getElementById('introSkip'); if(sk) sk.click(); setTimeout(open,400); }
+  window.addEventListener('hashchange',function(){ if(location.hash==='#daily-wire'&&!sheet.classList.contains('open')) open(); });
+})();
+</script>
 </body>
 </html>

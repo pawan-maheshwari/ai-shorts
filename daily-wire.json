@@ -1,0 +1,20 @@
+{
+  "series": "The Daily Wire — Pinocchio & Gandalf",
+  "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
+  "strips": [
+    {
+      "date": "2026-11-05",
+      "title": "There Is No Opting Out",
+      "headline": "Google says there’s no way to use Search without using artificial intelligence",
+      "source": "The Guardian",
+      "url": "https://news.google.com/search?q=Google%20says%20there%27s%20no%20way%20to%20use%20Search%20without%20using%20artificial%20intelligence",
+      "image": "",
+      "alt": "",
+      "panels": [
+        { "speaker": "Pinocchio", "line": "Every search is AI now. You can’t even opt out!" },
+        { "speaker": "Pinocchio", "line": "It also answered your question before you asked it. Twice." },
+        { "speaker": "Gandalf",   "line": "You shall not pass that answer without a source link." }
+      ]
+    }
+  ]
+}
