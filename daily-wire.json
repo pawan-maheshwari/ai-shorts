@@ -4,26 +4,26 @@
   "strips": [
     {
       "date": "2026-11-06",
-      "title": "100x Before Breakfast",
+      "title": "The Bug Slayer",
       "headline": "AI Is Finding Software Flaws Faster Than The World Can Fix Them",
       "source": "NDTV",
       "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOYVhoV0F2MVI4LXVGeDlZOE5nVUtLd0xGOVdRd3BrWmFQRlNESmQ5UVhDSlpKemU2MFV1THAxODZlU1VRVkJsbUtqOUt4YVRvWEFuV2JxVTM4UFlIcVJIMko2NlVVeUNCV1p6WUtPZmRjcUpuU1gySmRaZHhsYTlZai1QaDlyaWIwdFpNTHFzbTFkVXlIYWg1dmhVUWJNcEg0a0o2a2tEMmNxWjB2TlF2TzlOQmlUUXE10gHAAUFVX3lxTE52RGpyRzZvdEFlRHQyOEZuNDNIS05faVFqZ1Zqb1NJMlF2eXBmYmtlVDN0SlJzczBjVDd0eV9OdVNGMFJBbnZ1MzctYjlPTVBxd3lIS0JuNThkeEpjRWV5c3VQQlR4bGFBTlFUYlRzdzBKQ0VEZEwwMVdVdndSUm1oQ0FfcXNKNVNvcEhQRnJ3VkVBLUFWTmN3Ym1qbEp2OTRCd1ZPN0RLTzk1UDJpOXJDTzdGVFJsNkxHbVRmTl9qZQ?oc=5",
       "image": "",
       "alt": "",
-      "theme": "speed",
+      "theme": "security",
       "auto": true,
       "panels": [
         {
           "speaker": "Pinocchio",
-          "line": "These new chips make AI free forever!"
+          "line": "This AI makes every system unhackable!"
         },
         {
           "speaker": "Pinocchio",
-          "line": "The power bill just sends itself a thank-you note."
+          "line": "It even changed my password to “password”. Twice."
         },
         {
           "speaker": "Gandalf",
-          "line": "You shall not pass that cost without an invoice."
+          "line": "You shall not pass that promise without an audit."
         }
       ]
     },
