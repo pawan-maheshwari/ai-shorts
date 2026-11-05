@@ -1495,29 +1495,29 @@
   /* text edition of the strip — used when no image has been uploaded yet,
      and always available to screen readers */
   .dw-panels{display:grid;gap:0;border:2px solid var(--rule-strong);margin:0 0 12px;}
-  .dw-p{position:relative;display:flex;align-items:flex-end;gap:6px;min-height:150px;
-    padding:10px 10px 0 4px;border-top:2px solid var(--rule-strong);background:#fff;color:#14110f;overflow:hidden;}
+  .dw-p{position:relative;display:flex;align-items:flex-end;gap:8px;
+    padding:8px 10px 0 6px;border-top:2px solid var(--rule-strong);background:#fff;color:#14110f;overflow:hidden;}
   .dw-p:first-child{border-top:0;}
-  .dw-fig{flex:0 0 92px;align-self:flex-end;display:block;}
+  .dw-fig{flex:0 0 62px;align-self:flex-end;display:block;}
   .dw-fig img{display:block;width:100%;height:auto;}
-  .dw-say{flex:1 1 auto;align-self:center;padding:4px 0 14px;}
-  .dw-p .dw-n{position:absolute;top:6px;right:9px;font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.2px;color:#8a837a;}
+  .dw-say{flex:1 1 auto;align-self:center;padding:2px 0 10px;}
+  .dw-p .dw-n{display:none;position:absolute;top:6px;right:9px;font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.2px;color:#8a837a;}
   .dw-p .dw-who{display:block;font:800 8.5px/1 "Libre Franklin",sans-serif;letter-spacing:1.4px;
-    text-transform:uppercase;color:#6b645c;margin:0 0 6px 4px;}
+    text-transform:uppercase;color:#6b645c;margin:0 0 4px 4px;}
   .dw-bubble{position:relative;display:block;background:#fff;color:#14110f;border:1.8px solid #14110f;border-radius:16px;
-    padding:9px 12px;font-family:var(--serif,Georgia,serif);font-size:15px;line-height:1.33;}
-  .dw-bubble::after{content:"";position:absolute;left:-9px;bottom:14px;width:14px;height:14px;background:#fff;
+    padding:7px 11px;font-family:var(--serif,Georgia,serif);font-size:14px;line-height:1.3;}
+  .dw-bubble::after{content:"";position:absolute;left:-8px;bottom:12px;width:12px;height:12px;background:#fff;
     border-left:1.8px solid #14110f;border-bottom:1.8px solid #14110f;transform:rotate(45deg) skew(10deg,10deg);}
-  .dw-p.is-grow .dw-who::after{content:" \00b7 nose growing";color:#a8172a;}
+  .dw-p.is-grow .dw-who::after{content:" \00b7\00a0 nose growing";color:#a8172a;}
   .dw-p.is-grow .dw-bubble{border-style:dashed;}
-  .dw-p.is-grow .dw-fig{flex-basis:100px;}
-  .dw-p.is-punch{flex-direction:row-reverse;padding:10px 4px 0 10px;border-top-width:3px;}
+  .dw-p.is-grow .dw-fig{flex-basis:66px;}
+  .dw-p.is-punch{flex-direction:row-reverse;padding:8px 6px 0 10px;border-top-width:3px;}
   .dw-p.is-punch .dw-n{right:auto;left:9px;}
-  .dw-p.is-punch .dw-fig{flex-basis:104px;}
+  .dw-p.is-punch .dw-fig{flex-basis:66px;}
   .dw-p.is-punch .dw-bubble{font-weight:700;border-width:2.4px;}
-  .dw-p.is-punch .dw-bubble::after{left:auto;right:-10px;border-left:0;border-right:2.4px solid #14110f;border-bottom-width:2.4px;transform:rotate(-45deg) skew(-10deg,-10deg);}
+  .dw-p.is-punch .dw-bubble::after{left:auto;right:-9px;border-left:0;border-right:2.4px solid #14110f;border-bottom-width:2.4px;transform:rotate(-45deg) skew(-10deg,-10deg);}
   .dw-p.is-punch .dw-who{color:#8a6a2f;}
-  @media (max-width:360px){ .dw-fig{flex-basis:76px!important;} .dw-bubble{font-size:14px;} }
+  @media (max-width:360px){ .dw-fig{flex-basis:54px!important;} .dw-bubble{font-size:13.5px;} }
   .dw-src{display:block;border-left:3px solid var(--live);padding:6px 0 6px 10px;margin:0 0 14px;
     text-decoration:none;color:var(--body);}
   .dw-src .dw-src-k{display:block;font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.4px;
