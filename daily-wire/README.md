@@ -5,10 +5,17 @@ Same two characters every day. Only the conversation changes.
 
 ## Characters (lock these)
 
-| Character | Role & voice |
-|---|---|
-| **Pinocchio** | The AI. Eager, confident, slightly smug. Always has an answer. Nose grows when he lies or exaggerates. |
-| **Gandalf** | The observer. Dry, precise, delivers the short punchline. |
+Reference art: `cast/character-sheet.jpg` — attach it to every image-generation request.
+Cut-outs used in the panel's "Meet the cast": `cast/pinocchio.png`, `cast/gandalf.png`.
+
+| Character | Visual lock | Role & voice |
+|---|---|---|
+| **Pinocchio** | Wooden puppet boy, messy short brown hair, round dark eyes, cream short-sleeved button shirt, brown belted trousers rolled at the calf, brown shoes, visible wooden joints at elbows and knees. Long-nose version for panel 2. | The AI. Eager, confident, slightly smug. Always has an answer. Nose grows when he lies or exaggerates. |
+| **Gandalf** | Old wizard, tall grey pointed hat with a soft bent tip, plain grey robe with a sash, very long white beard, thick white eyebrows, gnarled brown wooden staff. Expressions: neutral, thoughtful, worried, stern (stern for the punchline). | The observer. Dry, precise, delivers the short punchline. |
+
+## Image prompt (change only the dialogue)
+
+> 3-panel comic strip, clean hand-drawn cartoon style with soft colour, white background. Use the two characters exactly as in the attached character sheet — same faces, clothes and colours. Panel 1: the wooden puppet boy (normal nose) says "[dialogue 1]". Panel 2: the same puppet boy, nose now long and growing, says "[dialogue 2]". Panel 3: the grey wizard with his staff, stern expression, says "[dialogue 3]". Clear speech bubbles, readable text, consistent characters, no other people.
 
 ## Publishing a strip (daily)
 

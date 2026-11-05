@@ -1531,6 +1531,20 @@
   .dw-nav button:hover:not(:disabled){background:var(--ink);color:var(--paper);}
   .dw-nav button:disabled{opacity:.35;cursor:default;}
 
+  .dw-cast{border-top:2px solid var(--rule-strong);margin:4px 0 14px;}
+  .dw-cast summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;
+    padding:9px 0;font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.6px;text-transform:uppercase;color:var(--meta);}
+  .dw-cast summary::-webkit-details-marker{display:none;}
+  .dw-cast summary::after{content:"+";font-size:14px;color:var(--ink);}
+  .dw-cast[open] summary::after{content:"\2212";}
+  .dw-cast-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:4px;}
+  .dw-card{border:1px solid var(--rule-strong);background:var(--paper);display:flex;flex-direction:column;}
+  .dw-card .dw-c-img{background:#fff;border-bottom:1px solid var(--rule-strong);height:170px;
+    display:flex;align-items:flex-end;justify-content:center;padding:8px 6px 0;}
+  .dw-card img{max-height:100%;max-width:100%;object-fit:contain;display:block;}
+  .dw-card .dw-c-n{font-family:var(--serif,Georgia,serif);font-weight:700;font-size:15px;color:var(--ink);padding:8px 9px 2px;}
+  .dw-card .dw-c-r{font:800 7.5px/1 "Libre Franklin",sans-serif;letter-spacing:1.3px;text-transform:uppercase;color:var(--live);padding:0 9px 5px;}
+  .dw-card .dw-c-d{font:500 10.5px/1.4 "Libre Franklin",sans-serif;color:var(--body);padding:0 9px 10px;}
   .dw-arch-lab{font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.6px;text-transform:uppercase;
     color:var(--meta);border-top:2px solid var(--rule-strong);padding-top:9px;margin:4px 0 4px;}
   .dw-arch{list-style:none;margin:0;padding:0;}
@@ -4228,9 +4242,32 @@ var showCutting;
       .catch(function(){strips=[];loaded=true;});
   }
 
+  /* the two locked characters — same look every day (daily-wire/cast/) */
+  var CAST=[
+    {n:'Pinocchio',r:'The AI',img:'daily-wire/cast/pinocchio.png',
+     alt:'Wooden puppet boy with brown hair, cream shirt and brown trousers, shown front-on and in profile with a long nose',
+     d:'Eager, confident, slightly smug. Always has an answer \u2014 and his nose grows when it\u2019s a stretch.'},
+    {n:'Gandalf',r:'The observer',img:'daily-wire/cast/gandalf.png',
+     alt:'Old wizard in grey robes and a grey pointed hat, long white beard, holding a wooden staff',
+     d:'Dry and precise. Says little, checks everything, and delivers the punchline.'}
+  ];
+  function cast(){
+    var d=document.createElement('details'); d.className='dw-cast';
+    if(!strips.length) d.open=true;
+    d.appendChild(h('summary',null,'Meet the cast'));
+    var g=h('div','dw-cast-grid');
+    CAST.forEach(function(c){
+      var k=h('div','dw-card'), w=h('div','dw-c-img'), im=new Image();
+      im.loading='lazy'; im.decoding='async'; im.src=c.img; im.alt=c.alt; w.appendChild(im);
+      k.appendChild(w); k.appendChild(h('div','dw-c-n',c.n)); k.appendChild(h('div','dw-c-r',c.r)); k.appendChild(h('div','dw-c-d',c.d));
+      g.appendChild(k);
+    });
+    d.appendChild(g); return d;
+  }
+
   function render(){
     body.textContent='';
-    if(!strips.length){body.appendChild(h('p','dw-empty','The first strip is on its way. Check back tomorrow.'));return;}
+    if(!strips.length){body.appendChild(h('p','dw-empty','The first strip is on its way. Check back tomorrow.'));body.appendChild(cast());return;}
     var s=strips[idx];
 
     var dl=h('div','dw-date'); var b=h('b',null,idx===0?'Today’s strip':'From the archive');
@@ -4274,6 +4311,8 @@ var showCutting;
     older.onclick=function(){idx++;render();body.scrollTop=0;};
     newer.onclick=function(){idx--;render();body.scrollTop=0;};
     nav.appendChild(older); nav.appendChild(newer); body.appendChild(nav);
+
+    body.appendChild(cast());
 
     if(strips.length>1){
       body.appendChild(h('div','dw-arch-lab','The archive'));
