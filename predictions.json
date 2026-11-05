@@ -1,268 +1,267 @@
 {
-  "generated": "2026-11-04T23:07:29.821Z",
-  "forDate": "2026-11-06",
+  "generated": "2026-11-05T23:11:14.382Z",
+  "forDate": "2026-11-07",
   "window": {
-    "from": "2026-11-03T23:07:29.821Z",
-    "to": "2026-11-04T23:07:29.821Z"
+    "from": "2026-11-04T23:11:14.382Z",
+    "to": "2026-11-05T23:11:14.382Z"
   },
   "scanned": {
-    "stories": 819,
-    "outlets": 373,
+    "stories": 845,
+    "outlets": 360,
     "regions": [
       "Global desks",
       "North America",
       "Community",
       "Asia-Pacific",
-      "Africa",
       "Europe",
+      "Africa",
       "South Asia"
     ],
-    "storylines": 629
+    "storylines": 656
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.4916,
-      "probability": 0.64,
+      "score": 0.6745,
+      "probability": 0.88,
       "confidence": "High",
       "entity": "OpenAI",
       "theme": "Chips & compute",
-      "headline": "OpenAI to Bring Pierre Computer’s Code Storage to Codex Through Acquisition",
+      "headline": "OpenAI Pledges to Give Locals More Say in Data Center Projects",
       "outlook": "Supply, pricing and export angles on OpenAI should keep this in the headlines.",
       "signals": {
-        "outlets": 8,
+        "outlets": 20,
         "regions": [
-          "North America"
+          "North America",
+          "Europe"
         ],
-        "stories": 11,
-        "momentum": 1.5,
-        "recent6h": 4,
-        "authority": 2.8,
-        "hnPoints": 154,
+        "stories": 21,
+        "momentum": 3.82,
+        "recent6h": 13,
+        "authority": 8.8,
+        "hnPoints": 5,
         "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.64,
-        "breadth": 0.17,
-        "momentum": 0.53,
-        "authority": 0.56,
-        "community": 0.73,
+        "reach": 0.89,
+        "breadth": 0.33,
+        "momentum": 0.98,
+        "authority": 1,
+        "community": 0.26,
         "nextStep": 0,
         "arc": 1
       },
       "sig": [
         "openai",
-        "pierre",
-        "acquire",
-        "computer",
-        "codex",
-        "developer",
-        "tool",
-        "lifeval"
+        "data",
+        "center",
+        "pledge",
+        "power",
+        "voter",
+        "cost",
+        "change"
       ],
       "evidence": [
         {
-          "title": "OpenAI to Bring Pierre Computer’s Code Storage to Codex Through Acquisition",
-          "source": "WSJ",
-          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQMHB3WDNrSi01NF8zXzUyZWdSb0U0ZUZyVlZWUF9jeVBfeHVTNkpESjFRSk1FWTk1aFZNcVl2LTRXdlpnR2N5eTRURXJMZkVRM0o5dlVSZWRuY0dVc2ZRTGRLb3M1WVZjRk54Z0doRGt2MVlDTURZaHR6LWpPR3RiT0FmU19vWWd6dE5iY3FLOWozZkNhSHJENktiRGtmc3dJM2xXSDFyOFNlM0N2b2FLWQ?oc=5",
+          "title": "OpenAI Pledges to Give Locals More Say in Data Center Projects",
+          "source": "The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOcEdYY1M2QU5OdnpSQU1ZcmUtNGozMDZYZGE1b202TVM1QjhpNy1INHRLZlZ2RmRORC1iY3dBRUR5OWhoYm1wR1NIbklRcTVLcTR4bEFmUzhQRXRnYTkxaTlnS0p4UHRBVmstRllPZlh3RXczTnhpM0p6WUxEbEZLbWtXUnVuUQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI to acquire Pierre Computer Company",
-          "source": "Hacker News",
-          "url": "https://openai.com/index/openai-to-acquire-pierre/",
-          "region": "Community"
-        },
-        {
-          "title": "OpenAI to acquire developer tooling startup Pierre Computer",
-          "source": "SiliconANGLE",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPWk5Rd0JvSVN2YzJIMlF4VzJpcmtoMWdMZGhEbjNKbmFETEROeEpiUy1xNXd6VEVxaVRjMFVkdGRGQTRwRjgwSGxWTVFUX05NekttNE1UN2FMYlJaanBRLU13Nm1vNXctMHdjSE5pbTAxYzBfVW9iMEF6dzdDb1g0Z1VtWlJGbTJCdDZULVUxTmFCeUk1ZnJPeVNpZVI?oc=5",
+          "title": "OpenAI kicks off charm offensive to change voters' view of data centers",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNT3pvX1VfZi1WbVpNTl9weHZ0YUJ5RmhvVTgyOVRadlVyc01HeW1rdm5uRjhzMFRSSkJ4TW1yVmxHbkFvSnpTWkxWSGRIalRXM0dndmdtUXNTNTlYc0V2TGlxNTEtZm5iZDJlZXd5VUhjWUc1ejFXeTJpNHBzY2g4NllDX3dNWmo0eFBZQW1MUVR5Z2NVOUFMcENoLWZzMThDaGNXdERwWXJ6Mi1MTHc?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI Buys Pierre, Adds 3 Tools to Codex [2026]",
-          "source": "shattered.io",
-          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNMmZyb0ZhYkVVbW9CWGNCM2p3UmVUX1otUEE0RFcwNjFqSlY0amh5dmxCcWFFVDdjbDZmMzhmYm00YTVpU3hFNUljeXh3Y0UxaEw0alI0dG9JYjdjWmtZRy1SN191YzBYRGoyMFpnQ0JudDkwMUlhUjZRM1pGN05BcVN0SVA2eW8?oc=5",
+          "title": "OpenAI pledges to halt NDAs in new data center policy proposal after election rebuke",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPZThLcjRmNUduOEJ4aUt0bmF0OXI4T0xhb0hQMk9BMjlYb3YzYWx1V05CaFRjR2xuMTROU1l3NUd6M0phTWE4ZG9hSHEzS21KTGVrUGxBWVBsRFA4UWtZVEtxVjM1V2x4NGFzY01UVkMzcEQzSW9pc013MDc3RXZRSFM4TENWcmxRbGExTHAwQzRHYlE3UEZlaHZvWldTTUVyNEZkWWZ5VdIBrAFBVV95cUxNb0ZKaGw3Qmh1WEFRTHV1Tk9RNDd5bnVudHhrR0pCQVJXUG5TUDdrXy1kXzA1Z2s2MFpSSlNzVEl0TFh2RURiejFETVZVZkNkSzhVZ1JFa3hPRHFFcUFOWFpWSE1EOTUwSDF6dEFCZU01Z2JMV3JKRjJ3ZkQ0Wkc2VHFwdzhkd1VodEtPdUg4REItby15c3d5azQ0MGdLbExuaEdxdjhlTS16MlhP?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI to Change How It Handles Data Center Efforts After Outcry",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNaEowNWhNQkUxQWk5Z2xWQ0NNc3hkTV92SzBjV1hGMmw3NEQ4QXlSTTRQRl9wZlNWWGtEZzVpN3Y2MXZPdVpLZTdBZUJnR0NxMXRpV2ROaElJRF9pYzlLXy1Sclp6Nmk0UU5QQ2JZSEw5VDVuNWNmSWFwZGp6UWwtWklwR1lIZDlQVERuMlZQVlk4ZEJURmlDd3RUaW9fdjhwY212UW9MZl9VRmtmRXJqdUcyS2RnUQ?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.4858,
-      "probability": 0.63,
+      "score": 0.6594,
+      "probability": 0.86,
       "confidence": "High",
-      "entity": "Google",
-      "theme": "Jobs & society",
-      "headline": "DuckDuckGo pitches itself to schools amid backlash over Google’s AI policy",
-      "outlook": "Expect workplace and society angles on Google to keep spreading across regions.",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "So, about that Anthropic IPO . . .",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 11,
+        "outlets": 9,
+        "regions": [
+          "North America"
+        ],
+        "stories": 11,
+        "momentum": 6,
+        "recent6h": 9,
+        "authority": 5.6,
+        "hnPoints": 11,
+        "nextStepCues": 1,
+        "arcDays": 3,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.67,
+        "breadth": 0.17,
+        "momentum": 1,
+        "authority": 1,
+        "community": 0.36,
+        "nextStep": 0.33,
+        "arc": 1
+      },
+      "sig": [
+        "anthropic",
+        "ipo",
+        "need",
+        "everyone",
+        "wreckage",
+        "hinge",
+        "disclose",
+        "tokenomics"
+      ],
+      "evidence": [
+        {
+          "title": "Breakingviews - COMMENTARY: Tech wreckage now hinges on Anthropic IPO",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPN196ZGZGUlVNQmwtOUNpNjVNcU44SGltYmpuQW1sdHVUMUJyODV5U0xGLUZiQVFrQXFNRXNCWS1MbzRQT1FtZGRYSTlMQ0RjaTQzNVFnQ0FXWTVOWGp6YktaTUo2MnNZS3VHN2MtbFk4S2Y4aHZKeVNyM1d3QUtiU3N3bnFKZU9LUXhMZFF1N3gwaXlrN3FNUGtIYW5GeDB5?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Alex Kantrowitz: Anthropic doesn't have a lot of flexibility on timing of its IPO",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOVG10SVg2WEFiMWxJdm9lbV9iUVF0RXNQNFVkV2VxYlc1X0tMRFc1TzZtTzhRQmhfQURUM2pVRGdyQ2hsa2l2V1NzdTA2OFZrcS1BQkwwWlpCaWJ1aTdNZHZleFNVRHRRZjlCNXVPOTM5WEltY19qdnBGenFDYVE1Y0g0RnJRQ2NsWFJSeE5VQk9ROUx2Z1prUEp0V293TzdnNGJMZkhmcmd1cFYtY0c2TF9ST2dDbExraGpidHlUUQ?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "The IPO Market Is Open For Anthropic. Not For Everyone Else.",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOUl9Idk9HS21XSzJpc0NwdVlmSXU1X0xlZnZVMWlWY2c4eGVFMGJpNGVMSl81Y1djWUVvZl81RkFpUXh4aFZCRnVxel8yckF1cjhKZmJhc2tvSWlDVmtiZWtsZW1CeHJVX2Z3S0FyMER0TFZxaGFPWS1PNjZnam1SWG1uMzAtOTNyc0RWcUI1d1pxOXN2MGFvVWRPTQ?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "So, about that Anthropic IPO . . .",
+          "source": "Financial Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPTDFpWXVOM3NsY0RVRENnZ0xaRXJlbXdmdGh6U3gtWDl4UnN2aWR0X2RWTzRCQnRZM1QzbzBfMzgwSEpiUFp0NUFXZmRIamNhSnFnRUowZUZiYkxNMzNueHdUMFdRWGd5aHVVVGdxcGFyOHJfM2VvajRaMDVSTk5SWFVPWXI?oc=5",
+          "region": "North America"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "score": 0.5508,
+      "probability": 0.74,
+      "confidence": "High",
+      "entity": "Nvidia",
+      "theme": "Chips & compute",
+      "headline": "EXCLUSIVE: Nvidia chips pile up in Hong Kong as China withholds import approval",
+      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
+      "signals": {
+        "outlets": 22,
         "regions": [
           "North America",
-          "Europe",
-          "Global desks",
-          "Africa"
+          "Asia-Pacific"
         ],
-        "stories": 12,
-        "momentum": 1.8,
-        "recent6h": 5,
-        "authority": 3.1,
+        "stories": 29,
+        "momentum": 1.95,
+        "recent6h": 12,
+        "authority": 6.6,
         "hnPoints": 0,
         "nextStepCues": 0,
         "arcDays": 1,
         "calendar": null
       },
       "factors": {
-        "reach": 0.72,
-        "breadth": 0.67,
-        "momentum": 0.62,
-        "authority": 0.62,
+        "reach": 0.91,
+        "breadth": 0.33,
+        "momentum": 0.65,
+        "authority": 1,
         "community": 0,
         "nextStep": 0,
         "arc": 0.33
       },
       "sig": [
-        "google",
-        "school",
-        "backlash",
-        "policy",
-        "face",
-        "search",
-        "off",
-        "clarifie"
-      ],
-      "evidence": [
-        {
-          "title": "DuckDuckGo pitches itself to schools amid backlash over Google’s AI policy",
-          "source": "TechCrunch",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOTXEtTVhlUlVrQk5XRElqWUxJTzFOQW9qUW9LZnNnTHhoUm9LOVFpVGlmUzM0YTFnaDA2cmNjdkJfYV9aaF9VR3NFTHFZaHhaM0dCX25OQjJZcFdaQ1NZSUNRLUhUcEg4cWtOYWYxcnJZdWRtbUJZbll1V2EtMkpEN0xObGhjaU5LSk44ZWFWaWg2UTVHa0Frb1dJRTVzRlR4TGtheExEZzNoRnlT?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Google's School AI Policy",
-          "source": "ABC7 WWSB",
-          "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE9EbFVaS0R2OXJuWHVsNHVNOVBRX0dNLTVQaTRmWkU4eGtud1VtbFllSm1mcWxvdmpkSDJaT2hpYUtrYldVUVlGeDdsblVpMlkzNkJNeVQ2aXlwUWVTYzBiMDR5b3N3S1FYdUdiRzVfUXJUY1k5UVE2bg?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Google turns off AI for schoolchildren by default",
-          "source": "Vanguard News",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPU3dsSjVHLW5UdTltSTR4TUU5LWk4bmF0akFkTnozNzlvckY1dTZkVjU3WXBuNkRULWFwZ0dWWElXejc5ZWt3YTBFVFh3NVBQbzFiUzQyVzkxRGRXdlY4czlOclRtUTVfSzJJcUtGUTZJNFlIbzNyTTZFOGtPX0FXbF9aOWVYeFIwNHplZVlQRdIBlAFBVV95cUxOZk0yN1VXbkI1R1drbG4zc3hzcWo1MFlWOWRDZndGdm5wTm1ucWhqNmplY180SVV4aG9KbnpYUVJraXM4Mml0eC1Cb0xibzJqeHhaX2w5cml4ZHlpLTR2SHpmay0xSnNBNEhEM3R2cjhQSjVLMkE3cnQwS3I2MmM5TzFBWTJBakFaMkwtT01GdUpJQ2hN?oc=5",
-          "region": "Africa"
-        },
-        {
-          "title": "Google Tells Schools They Can Reject AI—But They'll Lose Search, Too",
-          "source": "Decrypt",
-          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1sY2E3MHpYTDIyTFoyZ3NkVTNNQ09UeDhGbWFjazhtVEZSUk10X2NfemNVdUFVNjI4ZTJNNFZicEpsb0IxaHdqTFJIODdCN0syckhKajZfSjZpd2pSZE9aWG9Vb0ZyVUZwV0o2ZFB2cEhtb3p0?oc=5",
-          "region": "Africa"
-        }
-      ]
-    },
-    {
-      "rank": 3,
-      "score": 0.4735,
-      "probability": 0.61,
-      "confidence": "High",
-      "entity": "Nvidia",
-      "theme": "Chips & compute",
-      "headline": "Nvidia China Clients to Get 1% of $70 Billion RTX Chips Ordered",
-      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
-      "signals": {
-        "outlets": 12,
-        "regions": [
-          "North America"
-        ],
-        "stories": 12,
-        "momentum": 1.36,
-        "recent6h": 4,
-        "authority": 3.8,
-        "hnPoints": 0,
-        "nextStepCues": 1,
-        "arcDays": 1,
-        "calendar": null
-      },
-      "factors": {
-        "reach": 0.75,
-        "breadth": 0.17,
-        "momentum": 0.48,
-        "authority": 0.75,
-        "community": 0,
-        "nextStep": 0.33,
-        "arc": 0.33
-      },
-      "sig": [
-        "nvidia",
         "chip",
+        "nvidia",
+        "stock",
+        "hong",
+        "kong",
+        "approval",
         "china",
-        "rtx",
-        "client",
-        "$70",
-        "ordered",
-        "supply"
+        "import"
       ],
       "evidence": [
         {
-          "title": "Nvidia China Clients to Get 1% of $70 Billion RTX Chips Ordered",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOcDF2WGJ0VTU5c0hYZ3BSLTJzWHd4eHc2N0trQlNwZ2MzcjYwRnpOUXExalczVW9yODBJTXVnUDZ6MGVPQzI3allYS0Q3eG1qblB3Nm1oQlcyQ0xzOU9CTjdqR0dTeURvUzhSYkQ1dnJFbTVieFplUmU3Unh1VjlWNS02SVZWWk1NRVBWQ1hvWGxRczhqVWt4ektFUWRjMW1KMEpYRmpNY2N0X1dySmRuUzNB?oc=5",
+          "title": "EXCLUSIVE: Nvidia chips pile up in Hong Kong as China withholds import approval",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQZHNUQnlURFBWSTlTSE5wNWUzekR0cDZfcWQzQVRFLVNweXJiSGhtSFZ6cWdvMXF4SHpLRy1YT1Y2QjJZMGxRajNaRGQ1Y25SVGkycEphaU4zTTRJSzV0QjNPTFMxeEl0Mm9CdGFQc0JJTHBNemVoSXdkTnhsR1FNR0t1b2hoUHdfSW0yVnlGMl95Qkd4dDAtMGdhYTFhUzRhc0U1Mm9fdGxLRnhacUNr?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI Bit Its Tongue On China Chips To Keep Nvidia Happy, Report Finds",
-          "source": "The Daily Caller",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNYkQ0T1RBYmk4cTBDYkowV010a2hxQ1k4amFrcjdMSUtSMHZRcEROWDlraktmMmlTdC1PeGFHcjlqbFZKdnk0NXh3Q2FXWWpKeGg4QnZDdUxNRkFZcFlvMTNKTXNqSFU2OEJDYjZPZkxmWWZwYUdQSXJDc1Z2dFdHVi02YmdtY2VYS0t0Rl92NjQtNXZqc1dEaA?oc=5",
+          "title": "Jensen Huang drops from world’s top 10 richest after Nvidia chips selloff",
+          "source": "The Straits Times",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPdG5vR0drZE1TZzl2VkFFOEl5S1FrTnJMdm43NVVmQWNUWGxpR016WVJxRkVhNDFfZy1ENlJCMmprR2Z3aW9IbllOdHpDYm9OMlVnV041MnFjVllaQ1N0MjBkMm5WMDd1aHpZYmpMODBiNTE4d2NIclJiNDhQYTVpUUlZMUNGaEhkOExYcFllMlAzOVViYTFpZXdaRzNNQjA5ZXYwS3E4OTdyMGtNakhZ?oc=5",
+          "region": "Asia-Pacific"
+        },
+        {
+          "title": "Cathie Wood Just Sold AMD Stock and Bought This AI Chip Stock Instead",
+          "source": "The Motley Fool",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQV0xtQkJITndvRUR4ZjBEYVBib0E0dTFGUzV0OXVHU2FLaThRVHpXX0pVSGlETUlNd1lDNzNLSFUxekdEeHFrRHNIUC1VR0syMEh4SWRBWGpLdm1pVG5CazdiYzViemVFMEs0WUlhZUxmSllNbDJvOURxSGQ2azFOZmFEajRCRnpFdXpxWFV4dF9taFd2LXZaTg?oc=5",
           "region": "North America"
         },
         {
-          "title": "NVIDIA curbs China's backdoor access to AI chips with new cloud partner rules",
-          "source": "Fox Business",
-          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5lbG93UVN3U2MtaFpieXhEci02Z0hWZE83SWpzRTdfTHB1bnc4YllKYjFGQ3REaGU3OWxRbHhRWmIya3BpZ0NxZU9QSWxmZ284cGFCZUZySnJJV0k?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Nvidia (NVDA) Faces $70B China AI Chip Backlog as Supply Falls Short",
-          "source": "TipRanks",
-          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPTDZyV3FlWE01aE1GRzFsTTBEdDAzeHlHdzlrRDJnSFpTcDNweWQ3eFZkSHRuTHFiWThpaExGVzJiOEw4UnFtSmk0aVBSSjZnWlhhQlJUdnRqeXJ5VElXdjRod0NlWmU5VFJvaUo5Z0FLTTduQVU0bmdEbjBqcjJhd1E0ZUpGZzRQTGNPamFLZUFkMlJ4RkdpWi1HRQ?oc=5",
+          "title": "AI Chip Stocks Crash as Nvidia, AMD and Micron Plunge in Historic Selloff",
+          "source": "Stocks Down Under",
+          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9ySlBwX1M2WjMxMjdWUkVkN1NwY1hXTENzV1gyUlVXbEVya3FFT1VINWJtaTRPblRjNkZNcjlxcW5Vem5NUjl1WVlxbUpZSUE0c2dWam1qWjRQZW5QcjVpZ2VTb2pnVXlIUW9xRG9TTi1KSUQ0c3c?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-05",
+    "date": "2026-11-06",
     "calls": [
       {
         "rank": 1,
-        "headline": "Google Will Turn Off Search for Schools That Reject A.I.",
-        "probability": 0.89,
+        "headline": "OpenAI to Bring Pierre Computer’s Code Storage to Codex Through Acquisition",
+        "probability": 0.64,
         "hit": true,
-        "matched": "DuckDuckGo pitches itself to schools amid backlash over Google’s AI policy"
+        "matched": "OpenAI Pledges to Give Locals More Say in Data Center Projects"
       },
       {
         "rank": 2,
-        "headline": "The IPO Market Is Open For Anthropic. Not For Everyone Else.",
-        "probability": 0.81,
-        "hit": false,
-        "matched": null
+        "headline": "DuckDuckGo pitches itself to schools amid backlash over Google’s AI policy",
+        "probability": 0.63,
+        "hit": true,
+        "matched": "Google: Schools can keep search while skipping Gemini, but AI search is non-negotiable"
       },
       {
         "rank": 3,
-        "headline": "Nvidia Tells Data Center Clients to Trim China Business, FT Says",
-        "probability": 0.75,
+        "headline": "Nvidia China Clients to Get 1% of $70 Billion RTX Chips Ordered",
+        "probability": 0.61,
         "hit": true,
-        "matched": "Nvidia China Clients to Get 1% of $70 Billion RTX Chips Ordered"
+        "matched": "EXCLUSIVE: Nvidia chips pile up in Hong Kong as China withholds import approval"
       }
     ],
-    "hits": 2
+    "hits": 3
   },
   "track": {
-    "days": 5,
-    "calls": 15,
-    "hits": 12,
+    "days": 6,
+    "calls": 18,
+    "hits": 15,
     "log": [
       {
         "date": "2026-11-01",
@@ -288,9 +287,14 @@
         "date": "2026-11-05",
         "hits": 2,
         "calls": 3
+      },
+      {
+        "date": "2026-11-06",
+        "hits": 3,
+        "calls": 3
       }
     ],
-    "hitRate": 0.8
+    "hitRate": 0.83
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
