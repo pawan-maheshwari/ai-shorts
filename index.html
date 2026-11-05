@@ -1495,27 +1495,29 @@
   /* text edition of the strip — used when no image has been uploaded yet,
      and always available to screen readers */
   .dw-panels{display:grid;gap:0;border:2px solid var(--rule-strong);margin:0 0 12px;}
-  .dw-p{position:relative;padding:12px 12px 13px 12px;border-top:1.5px solid var(--rule-strong);
-    background:var(--paper);}
+  .dw-p{position:relative;display:flex;align-items:flex-end;gap:6px;min-height:150px;
+    padding:10px 10px 0 4px;border-top:2px solid var(--rule-strong);background:#fff;color:#14110f;overflow:hidden;}
   .dw-p:first-child{border-top:0;}
-  .dw-p .dw-n{position:absolute;top:8px;left:10px;font:800 8px/1 "Libre Franklin",sans-serif;
-    letter-spacing:1.2px;color:var(--meta-2,var(--meta));}
-  .dw-p .dw-who{display:block;text-align:right;font:800 8.5px/1 "Libre Franklin",sans-serif;
-    letter-spacing:1.4px;text-transform:uppercase;color:var(--meta);margin-bottom:7px;}
-  .dw-bubble{position:relative;display:block;max-width:88%;margin-left:auto;
-    background:#fff;color:#14110f;border:1.6px solid #14110f;border-radius:16px;
-    padding:9px 12px;font-family:var(--serif,Georgia,serif);font-size:15px;line-height:1.35;}
-  .dw-bubble::after{content:"";position:absolute;right:22px;bottom:-9px;width:14px;height:14px;
-    background:#fff;border-right:1.6px solid #14110f;border-bottom:1.6px solid #14110f;
-    transform:rotate(45deg) skew(12deg,12deg);}
-  .dw-p.is-punch{background:var(--ink);}
-  .dw-p.is-punch .dw-who{color:var(--accent,#c9a961);text-align:left;}
-  .dw-p.is-punch .dw-n{left:auto;right:10px;color:var(--accent,#c9a961);}
-  .dw-p.is-punch .dw-bubble{margin-left:0;margin-right:auto;font-weight:600;}
-  .dw-p.is-punch .dw-bubble::after{right:auto;left:22px;}
+  .dw-fig{flex:0 0 92px;align-self:flex-end;display:block;}
+  .dw-fig img{display:block;width:100%;height:auto;}
+  .dw-say{flex:1 1 auto;align-self:center;padding:4px 0 14px;}
+  .dw-p .dw-n{position:absolute;top:6px;right:9px;font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.2px;color:#8a837a;}
+  .dw-p .dw-who{display:block;font:800 8.5px/1 "Libre Franklin",sans-serif;letter-spacing:1.4px;
+    text-transform:uppercase;color:#6b645c;margin:0 0 6px 4px;}
+  .dw-bubble{position:relative;display:block;background:#fff;color:#14110f;border:1.8px solid #14110f;border-radius:16px;
+    padding:9px 12px;font-family:var(--serif,Georgia,serif);font-size:15px;line-height:1.33;}
+  .dw-bubble::after{content:"";position:absolute;left:-9px;bottom:14px;width:14px;height:14px;background:#fff;
+    border-left:1.8px solid #14110f;border-bottom:1.8px solid #14110f;transform:rotate(45deg) skew(10deg,10deg);}
+  .dw-p.is-grow .dw-who::after{content:" \00b7 nose growing";color:#a8172a;}
   .dw-p.is-grow .dw-bubble{border-style:dashed;}
-  .dw-p.is-grow .dw-who::after{content:" · nose growing";color:var(--live);}
-
+  .dw-p.is-grow .dw-fig{flex-basis:100px;}
+  .dw-p.is-punch{flex-direction:row-reverse;padding:10px 4px 0 10px;border-top-width:3px;}
+  .dw-p.is-punch .dw-n{right:auto;left:9px;}
+  .dw-p.is-punch .dw-fig{flex-basis:104px;}
+  .dw-p.is-punch .dw-bubble{font-weight:700;border-width:2.4px;}
+  .dw-p.is-punch .dw-bubble::after{left:auto;right:-10px;border-left:0;border-right:2.4px solid #14110f;border-bottom-width:2.4px;transform:rotate(-45deg) skew(-10deg,-10deg);}
+  .dw-p.is-punch .dw-who{color:#8a6a2f;}
+  @media (max-width:360px){ .dw-fig{flex-basis:76px!important;} .dw-bubble{font-size:14px;} }
   .dw-src{display:block;border-left:3px solid var(--live);padding:6px 0 6px 10px;margin:0 0 14px;
     text-decoration:none;color:var(--body);}
   .dw-src .dw-src-k{display:block;font:800 8px/1 "Libre Franklin",sans-serif;letter-spacing:1.4px;
@@ -4265,6 +4267,13 @@ var showCutting;
     d.appendChild(g); return d;
   }
 
+  /* the locked character art for each panel (daily-wire/cast/) */
+  function figFor(who,grow){
+    if(/gandalf|wizard/i.test(who||'')) return 'daily-wire/cast/gandalf-panel.png';
+    if(/pinocchio|puppet/i.test(who||'')) return grow?'daily-wire/cast/pinocchio-nose-panel.png':'daily-wire/cast/pinocchio-panel.png';
+    return '';
+  }
+
   function render(){
     body.textContent='';
     if(!strips.length){body.appendChild(h('p','dw-empty','The first strip is on its way. Check back tomorrow.'));body.appendChild(cast());return;}
@@ -4287,8 +4296,12 @@ var showCutting;
       var punch=i===lines.length-1, grow=(i===1&&/pinocchio/i.test(p.speaker||''));
       var c=h('div','dw-p'+(punch?' is-punch':'')+(grow?' is-grow':''));
       c.appendChild(h('span','dw-n',String(i+1)));
-      c.appendChild(h('span','dw-who',p.speaker||''));
-      c.appendChild(h('span','dw-bubble',p.line||''));
+      var fig=figFor(p.speaker,grow);
+      if(fig){var fw=h('span','dw-fig'),fi=new Image();fi.src=fig;fi.alt='';fi.decoding='async';fw.appendChild(fi);c.appendChild(fw);}
+      var say=h('span','dw-say');
+      say.appendChild(h('span','dw-who',p.speaker||''));
+      say.appendChild(h('span','dw-bubble',p.line||''));
+      c.appendChild(say);
       grid.appendChild(c);
     });
     if(img) grid.hidden=true;   /* image carries it; text stays as fallback */
