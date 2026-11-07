@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stock Lab (Beta) — AIShorts</title>
+<meta name="description" content="Stock Lab beta: rule-based NSE intraday and swing setups with entry, stop and target levels. Educational tool, under trials.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ffffff; --paper-2:#f7f7f5; --ink:#121212; --body:#333; --meta:#666;
+    --rule:#dcdcd6; --link:#326891; --live:#d0021b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --paper:#121212; --paper-2:#1b1b1b; --ink:#f2f2ee; --body:#d6d6d0; --meta:#9a9a94;
+           --rule:#33332f; --link:#7fb0d6; --live:#ff5a5f; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--paper);color:var(--body);font-family:"Newsreader",Georgia,serif;
+       display:flex;flex-direction:column;min-height:100vh}
+  a{color:var(--link)}
+  header{border-bottom:2px solid var(--ink);padding:10px 16px 8px;display:flex;align-items:center;
+         gap:14px;flex-wrap:wrap}
+  .home{font-family:"UnifrakturCook",serif;font-size:28px;color:var(--ink);text-decoration:none;line-height:1}
+  .title{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;flex:1;min-width:200px}
+  h1{margin:0;font-family:"Libre Franklin",sans-serif;font-weight:800;font-size:20px;color:var(--ink);
+     letter-spacing:.2px}
+  .beta{font-family:"Libre Franklin",sans-serif;font-size:10px;font-weight:800;letter-spacing:1.4px;
+        text-transform:uppercase;color:var(--paper);background:var(--live);padding:3px 7px;border-radius:2px}
+  .full{font-family:"Libre Franklin",sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;
+        letter-spacing:1px;color:var(--ink);border:1px solid var(--ink);padding:6px 10px;text-decoration:none;
+        white-space:nowrap}
+  .full:hover{background:var(--ink);color:var(--paper)}
+  .notice{font-family:"Libre Franklin",sans-serif;font-size:12px;line-height:1.45;color:var(--meta);
+          background:var(--paper-2);border-bottom:1px solid var(--rule);padding:8px 16px}
+  .notice b{color:var(--ink)}
+  main{flex:1;position:relative;display:flex;min-height:520px}
+  iframe{flex:1;border:0;width:100%;min-height:calc(100vh - 150px);background:var(--paper)}
+  .waking{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+          justify-content:center;gap:10px;text-align:center;padding:24px;background:var(--paper);
+          font-family:"Libre Franklin",sans-serif;color:var(--meta);font-size:14px;transition:opacity .4s}
+  .waking.gone{opacity:0;pointer-events:none}
+  .bar{width:160px;height:3px;background:var(--rule);overflow:hidden}
+  .bar i{display:block;width:40%;height:100%;background:var(--ink);animation:slide 1.2s ease-in-out infinite}
+  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
+  @media (prefers-reduced-motion: reduce){.bar i{animation:none;width:100%}}
+  .setup{max-width:640px;margin:32px auto;padding:0 16px;font-size:17px;line-height:1.55}
+  .setup h2{font-family:"Libre Franklin",sans-serif;color:var(--ink);font-size:18px}
+  .setup code{font-size:14px;background:var(--paper-2);padding:1px 5px}
+  footer{border-top:1px solid var(--rule);padding:10px 16px;font-family:"Libre Franklin",sans-serif;
+         font-size:11px;color:var(--meta);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  @media (max-width:560px){
+    .home{font-size:22px} h1{font-size:17px}
+    .notice{font-size:11px}
+    iframe{min-height:calc(100vh - 170px)}
+  }
+</style>
+</head>
+<body>
+<!--
+  STOCK LAB (BETA)
+  The app itself runs on Streamlit Community Cloud from apps/stock-lab/app.py in this repo.
+  After deploying it at share.streamlit.io, paste its address into data-app-url below.
+-->
+<header>
+  <a class="home" href="index.html" title="Back to AIShorts">AIShorts</a>
+  <div class="title">
+    <h1>Stock Lab</h1>
+    <span class="beta">Beta · Under trials</span>
+  </div>
+  <a class="full" id="fullLink" href="#" target="_blank" rel="noopener" hidden>Open full screen &#8599;</a>
+</header>
+
+<div class="notice">
+  <b>Educational tool, not investment advice.</b> AIShorts is not a SEBI-registered investment adviser or
+  research analyst. Signals are rule-based, prices can lag by several minutes, and past results do not
+  predict future returns. Confirm on your broker's chart and paper trade before risking money.
+</div>
+
+<main id="stage" data-app-url="">
+  <div class="setup" id="setup" hidden>
+    <h2>Stock Lab is being set up</h2>
+    <p>The app is not connected yet. Check back soon.</p>
+  </div>
+</main>
+
+<footer>
+  <span>Stock Lab · CHEETAH engine · NSE intraday &amp; swing setups</span>
+  <span><a href="index.html">Home</a> · <a href="privacy.html">Privacy</a> · <a href="contact.html">Feedback</a></span>
+</footer>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  var url = (stage.getAttribute('data-app-url') || '').trim().replace(/\/+$/, '');
+  if (!url) { document.getElementById('setup').hidden = false; return; }
+
+  var full = document.getElementById('fullLink');
+  full.href = url; full.hidden = false;
+
+  var wait = document.createElement('div');
+  wait.className = 'waking';
+  wait.innerHTML = '<div class="bar"><i></i></div><div>Starting Stock Lab…</div>' +
+    '<div style="font-size:12px;max-width:340px">The free server sleeps when nobody is using it, so the first load can take up to a minute. ' +
+    'If it asks you to wake the app, tap the button.</div>';
+
+  var f = document.createElement('iframe');
+  f.title = 'Stock Lab app';
+  var dark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+  f.src = url + '/?embed=true&embed_options=' + (dark ? 'dark_theme' : 'light_theme');
+  f.setAttribute('allow', 'clipboard-write');
+  f.addEventListener('load', function(){ wait.classList.add('gone'); });
+  setTimeout(function(){ wait.classList.add('gone'); }, 45000);
+
+  stage.appendChild(f);
+  stage.appendChild(wait);
+})();
+</script>
+</body>
+</html>
