@@ -1,126 +1,57 @@
 {
-  "generated": "2026-11-06T22:38:48.039Z",
-  "forDate": "2026-11-08",
+  "generated": "2026-11-07T21:22:08.321Z",
+  "forDate": "2026-11-09",
   "window": {
-    "from": "2026-11-05T22:38:48.039Z",
-    "to": "2026-11-06T22:38:48.039Z"
+    "from": "2026-11-06T21:22:08.321Z",
+    "to": "2026-11-07T21:22:08.321Z"
   },
   "scanned": {
-    "stories": 823,
-    "outlets": 368,
+    "stories": 649,
+    "outlets": 297,
     "regions": [
       "Global desks",
+      "Community",
       "North America",
       "Asia-Pacific",
-      "Community",
       "South Asia",
-      "Africa",
-      "Europe"
+      "Europe",
+      "Middle East",
+      "Africa"
     ],
-    "storylines": 583
+    "storylines": 498
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.8839,
-      "probability": 0.92,
-      "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Exclusive | Major Investors Are Skeptical Anthropic IPO Can Achieve $1.5 Trillion Valuation",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
-      "signals": {
-        "outlets": 30,
-        "regions": [
-          "South Asia",
-          "North America",
-          "Asia-Pacific"
-        ],
-        "stories": 44,
-        "momentum": 2.33,
-        "recent6h": 20,
-        "authority": 14.2,
-        "hnPoints": 378,
-        "nextStepCues": 3,
-        "arcDays": 3,
-        "calendar": null
-      },
-      "factors": {
-        "reach": 1,
-        "breadth": 0.5,
-        "momentum": 0.74,
-        "authority": 1,
-        "community": 0.86,
-        "nextStep": 1,
-        "arc": 1
-      },
-      "sig": [
-        "ipo",
-        "anthropic",
-        "valuation",
-        "anthropics",
-        "investor",
-        "trillion",
-        "$1.5t",
-        "buyer"
-      ],
-      "evidence": [
-        {
-          "title": "Anthropic's falling IPO valuation raises stakes for broader AI trade",
-          "source": "Axios",
-          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE4yTl96WG92c29IdFAtUW9FWXhGRDNRaFhyVXVEb1ZWMHNTTzRpcTk4cVBYbGJQSGc4S1R0c0RXSnVuUVA4LUJZc19IeGlzb3dlZFo2TWFxb3JNd0I1Q29mcXpKQ3hLS3Jka1VIRFp0aE1rTzlMN0E?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic to Proceed With IPO Roadshow Next Week",
-          "source": "The Information",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOM0E5dU1EcXJqdGxXTXIzLWVZSHBGcUZadC1zeDlfMS1sWnRDWndwVkpoczY5cGZldU5hS1hPNzZySVhHSWZySDRPdUlMcWFPVDRIOExhcDFfS0ZIR0I3UzlQYkR4czQtY2dvTUJFRDF0ODdwNGY5R0V0VWpKTDRPRmZLRzBkbHB3?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Investors brace for lower Anthropic valuation, calling $1.5 trillion a 'stretch'",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPc2xnRmphZ1JWMGh1OHplODE3ek1GTHFoLXBkNkY2RVlDM2NVRHJBdzBsYlNVMFlJSWdXMVpBMkV5TFRMbUxSaGsyVmN4T0pKSGhiYnhKWkg5Q1ZkZEVmUE9RVUhXTlJWSFAtOE4yM0JCbG5PdGVIbnE4VURQam9RNWcyNHFrZUFZdkdCNzlGbzJuRzhYYjBDb0JPSk91cUhlWnRaemVR?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic to press ahead with IPO targeting $1.5tn valuation",
-          "source": "Financial Times",
-          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPbjV5NWJDbm9FZ2VFTmNEWHdHVUt5ODJwdlZOQjgzZTdJdkFwN0FzQkNsVFdENVJ3MnZybWFvTXltVVFwYVUyWVY4UjRsaFlFajdwMk9QV1gyRmx2UzFpOTlzaWpZdGRrRG1HVTY1c2lMbGJ1eURCQ2E5M1ljSWZNanViUXI?oc=5",
-          "region": "North America"
-        }
-      ]
-    },
-    {
-      "rank": 2,
-      "score": 0.6666,
-      "probability": 0.87,
+      "score": 0.6319,
+      "probability": 0.84,
       "confidence": "High",
       "entity": "OpenAI",
-      "theme": "Chips & compute",
-      "headline": "OpenAI investing in AI data centers despite election results, CFO says",
-      "outlook": "Supply, pricing and export angles on OpenAI should keep this in the headlines.",
+      "theme": "Funding & markets",
+      "headline": "OpenAI gets $11 billion funding at $1.25 trillion valuation, source says",
+      "outlook": "Market reaction, analyst notes and deal details around OpenAI are the likely next chapter.",
       "signals": {
-        "outlets": 16,
+        "outlets": 23,
         "regions": [
           "North America",
-          "Global desks",
+          "South Asia",
+          "Asia-Pacific",
           "Europe"
         ],
-        "stories": 21,
-        "momentum": 2.77,
-        "recent6h": 11,
-        "authority": 7,
+        "stories": 24,
+        "momentum": 0.82,
+        "recent6h": 5,
+        "authority": 8.3,
         "hnPoints": 9,
         "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.83,
-        "breadth": 0.5,
-        "momentum": 0.82,
+        "reach": 0.93,
+        "breadth": 0.67,
+        "momentum": 0.24,
         "authority": 1,
         "community": 0.33,
         "nextStep": 0,
@@ -128,142 +59,213 @@
       },
       "sig": [
         "openai",
-        "data",
-        "center",
-        "cfo",
-        "election",
-        "despite",
-        "power",
-        "keep"
+        "valuation",
+        "$1.25",
+        "trillion",
+        "$11",
+        "funding",
+        "raise",
+        "$11b"
       ],
       "evidence": [
         {
-          "title": "OpenAI to press ahead with data-center expansion despite midterm sweep, CFO tells CNBC",
+          "title": "OpenAI gets $11 billion funding at $1.25 trillion valuation, source says",
           "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxNRFVIUW5SSGZmTGw2cnZmN0tEbE5zWGZVekdqazlncUFkSVo2Q3ZOMFlyS2xEbHY3NVhOalJzeFRCTWIxR2xydFdUaVQxZ3RMbk9yRzN1UEt6VnZHd0FycnVPTVhhWmx6QUhHeF92MVVqWFpQYWdaVEpia1c1Qk5qYXFpYTRWS3JMUkV6eXFUM1drV1RqdDJ3VkNKb3lELWhwbl9DU1Z5V0h3d3pHNmxIcWZQd3o3aV8yUU1OSkdmTF9KVENvRU5XQ0MyYV9UX0NsUEEyTA?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNdlpNRm5XVy11c3hLY0NRdjh2T3VmOE1LOWQ2LXlvcFhmZlFJYkQya3N3QWxud2UteUZpWVlCTXVHUXZZTjIwRlVQaUhqOGhyM2lDaDJTSGcxMnE5MzhOZ1NHYlJIc1p5bHRxaVZjZDd4MFY2RWMtRkNlYkhSVkdpMlRBWi1PYUNmZGNydXZnOTZFMTFoOHR0azBpUlU1aHpVdFA4dlhCV0dDNm91VE0xSVg0bXZhcF9jaVAzcXYzaldOdw?oc=5",
           "region": "North America"
         },
         {
-          "title": "CNBC Exclusive: Transcript: OpenAI CFO Sarah Friar Speaks with CNBC’s Sara Eisen on “Squawk on the Street” Today",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNM0VZUGN2Tm9Yd3RGUllkNUNKRnNRWDA4YXYzbmhpTjZTTURtOTRwTHVLM0lzX043V0gtVkJVbHRFbmFSVUQwRzI0N2o1cHk1SFVybnU1SzA3QVpkWTZfYW5oblZWcHZLRW5zaG8tbnpxWWpIS0hfdFVxeVR3QlBaRDhjeHQ3Y3pKaGFibTY3MTdXNlA0anBTQjQ4cUhFd29PTm15b3pYVXRsTlVHdE90OExUdG95M1gxUENhSHo2UHhzUWFScGYtbDRIeWFDWHdTNVZxTGRmajNjSURO0gHiAUFVX3lxTE9yeWtVTmxkbmtrRWltS2txUUdmNHpiZ3pjNG1lT0hSdHBLRmkyMU9kd0x6VHU2NzdyZFJ1anh4N2VrMkdzejlTZjEybWFWeWJKSjFXdk51dkxPY3p5cDB4ZTZQS29pb3pXU0dNMC1GRjZHV0lkWlQ1WEIydnE3Y2E5bUZiaGktQzBTTXMxa19zdEFjRlhYNXI2QWhVMUh2aFdMeGhNcXJLY0VkaXJvOGMzRVl5VlcyZEI2Z0ZaR0x4bEdBd2Y3M0FlUFV3UEhkQ3d0SDZaLXp6Q1MxemE0aVhuWmc?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "OpenAI to Change How It Handles Data Center Efforts After Outcry",
+          "title": "OpenAI Completes $11 Billion Portion of Funding at $1.25 Trillion Value",
           "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNaEowNWhNQkUxQWk5Z2xWQ0NNc3hkTV92SzBjV1hGMmw3NEQ4QXlSTTRQRl9wZlNWWGtEZzVpN3Y2MXZPdVpLZTdBZUJnR0NxMXRpV2ROaElJRF9pYzlLXy1Sclp6Nmk0UU5QQ2JZSEw5VDVuNWNmSWFwZGp6UWwtWklwR1lIZDlQVERuMlZQVlk4ZEJURmlDd3RUaW9fdjhwY212UW9MZl9VRmtmRXJqdUcyS2RnUQ?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOZUs1X0RZcHpSM0pJZVlZOHZrWEppOG5oemNaUHFVUGZYV1ZSQ2lVVVhxZENDQWVDTkVPRkN5XzRxT3JGVDExWFVVQ2VWejZ3a21tb2NCNlFrc29DVW11OC1ZRXdJX1lDNWp6Tk90STljUDdBMmltdEgyTVFJQTI5cEJFRkdHMno0Ni1CU2NFQ2M2dXRBdjFMTl8zZ1dZM1p5R2kyT2lGZmF1OGhoQm9zTDNYeWk2NG44SVlnUQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI wants to win over data-center opponents by calling them ‘compute campuses’ and promising local benefits",
-          "source": "Fortune",
-          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNcXdMUlBid3FOdmE1WmREMjJtRjc1NTBXLUxHUjBMMTBTRGJRcklBTEZkRHl4MXFSV1VOX3dQZEJRdXlISjc0cld5RXNFMjJXb1J0WEFVREhwT2VjN04yN2g3YzB2cUxmbHVfUFlwX1Q2bFE1S0pFbFJIeG55c2tBMmNPaEZxRThOZWVQVWNn?oc=5",
+          "title": "OpenAI Secures $11B In Funding As Valuation Reaches $1.25T: Report",
+          "source": "Forbes Middle East",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxPcXl2OWY2ZWYtYmVna0o0dEtfd29hWHJVZFRYbDdFVHZaOGVQNHhQYWdzcU0zMUVnVW9LSmNVOW5ya3dZY0lJSDZDSkF6TUJvTUh0QTR0d1VGM0s1VlJTOXZEZmk5NWVpb0xCTEJ2ajllTzNJRHh1MzVydldjVTVpUWVlVDJvY2hER3hhRXhyeTE4T0hSZXBYdVRxcVhZa25udFA3MkkzcEVJVmtTcW95M0FjV3hRLVMwb1pvNE9VNDVhQjdlYmNjRw?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI valued at $1.25 trillion, as rival Anthropic nears its IPO",
+          "source": "The Verge",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPTUFLWVAtU2RBOExLNGFGcm1lMzctY0xNXy1oUnlrSHBWcnJUWmRXOHkxcGZDYW5vWWR3RURYaWhkOU9DRFAxSjhnNG1hN0dYN3lMT2Z0bWJPb3FYOW80Um82ZFRoN2RqVG50aFFlc1lKcDY3Q2FuWkpQYkJIclk4dzZJTDhoN3R4S3dhTWJQTU1IQkpDcktTRzVwRHdYYjdMYnMw?oc=5",
+          "region": "North America"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "score": 0.6095,
+      "probability": 0.81,
+      "confidence": "High",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "Anthropic IPO Valuation Talk Falls To $1.3 Trillion After The AI Stock Rout",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "signals": {
+        "outlets": 24,
+        "regions": [
+          "North America"
+        ],
+        "stories": 28,
+        "momentum": 0.84,
+        "recent6h": 6,
+        "authority": 6.4,
+        "hnPoints": 4,
+        "nextStepCues": 1,
+        "arcDays": 3,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.94,
+        "breadth": 0.17,
+        "momentum": 0.25,
+        "authority": 1,
+        "community": 0.23,
+        "nextStep": 0.33,
+        "arc": 1
+      },
+      "sig": [
+        "ipo",
+        "anthropic",
+        "valuation",
+        "trillion",
+        "fall",
+        "spacex",
+        "stock",
+        "selloff"
+      ],
+      "evidence": [
+        {
+          "title": "Anthropic IPO Valuation Talk Falls To $1.3 Trillion After The AI Stock Rout",
+          "source": "Forbes",
+          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQVEttSUR3MjdkN1NhT0JMZ096YldsZUdDSW1sbVBEV093VHdUbU01ME5ZZms1VVFDMWpTUzZxbXJ6X19RaXo5QnZadFpfdGhqRi1aaUhyRkQ4ZnU1eFJqOVg4UUpuUExSbFZqY3hrS3lfS1hoLU8zNExsalUweHc0RXNQLTVnUHpoQnhySlpxNGNLVkdEWEZOZTRNWmN6aGdBakRiVEJfUUpXZXpKdEZha2o0YzhWX0ptNkpkYnZKUHliRXM?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Anthropic to press ahead with November IPO targeting $1.5T valuation",
+          "source": "Hacker News",
+          "url": "https://www.ft.com/content/314e17df-e7af-4814-b208-70a0557cb452",
+          "region": "Community"
+        },
+        {
+          "title": "AI Daily: Lenders Price AI Risk as Anthropic Readies IPO",
+          "source": "FourWeekMBA",
+          "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5ic1Rfd3RqLWdONU1HclJkSmpTMTRwbUZzUHdtclliZEN4ZjVrZ1JwM3Y4dWg5Ymp3WFpqMGdia3VIdmFBdXoxWWtDczNmcTZLUnZfS2RIN1pMZnU4bVRGU2xEaDFQMzVYLTFBRGRpT0JHdXZnUzJkWk9TcjFXTXM?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Anthropic Could Get a Junk Credit Rating After Its IPO. What It Would Mean for ANT Stock.",
+          "source": "Barchart.com",
+          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQUnRUcHpFQzVkcU5uU0hwc2Y4SE9XcXB1YVlfREJWLTNpZ2xTUGF4WkhPaWhCc3gxNXo5YXFiM2xYSXdzZ2k3NUM2bS1SUHY3MnNpOWlwem5GRkFUT3ZKZ2pjODRVQl9BZkNDaDFUMU03MVd2T2RfdUVVQU5pdG5hSE0wb2oyaWJYa0ptRDg1YTdYSnYzeVJja1Vrc0NiNVVsU29iRDNwM2kwbGZBV2pGeEFzWUpId29DLUNXZmlJeks0Vm5MUUMyTWxRQQ?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.5311,
-      "probability": 0.71,
+      "score": 0.5507,
+      "probability": 0.74,
       "confidence": "High",
       "entity": "Nvidia",
       "theme": "Chips & compute",
-      "headline": "Six pallets of Nvidia GPUs worth $11.4M stolen in California in Aug 2026",
+      "headline": "China’s Top Spy Agency Recruited Woman Who Targeted Jensen Huang",
       "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 19,
+        "outlets": 13,
         "regions": [
-          "North America"
+          "North America",
+          "Middle East",
+          "Global desks"
         ],
-        "stories": 21,
-        "momentum": 1.17,
-        "recent6h": 6,
-        "authority": 4.8,
-        "hnPoints": 7,
+        "stories": 14,
+        "momentum": 0.86,
+        "recent6h": 3,
+        "authority": 5,
+        "hnPoints": 0,
         "nextStepCues": 0,
-        "arcDays": 2,
+        "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.87,
-        "breadth": 0.17,
-        "momentum": 0.41,
-        "authority": 0.96,
-        "community": 0.3,
+        "reach": 0.77,
+        "breadth": 0.5,
+        "momentum": 0.26,
+        "authority": 1,
+        "community": 0,
         "nextStep": 0,
-        "arc": 0.67
+        "arc": 1
       },
       "sig": [
+        "spy",
+        "jensen",
+        "huang",
         "nvidia",
-        "chip",
-        "china",
-        "hong",
-        "kong",
-        "h200",
-        "approval",
-        "nvda"
+        "ceo",
+        "chinese",
+        "had",
+        "china"
       ],
       "evidence": [
         {
-          "title": "Six pallets of Nvidia GPUs worth $11.4M stolen in California in Aug 2026",
-          "source": "Hacker News",
-          "url": "https://www.tomshardware.com/pc-components/gpus/six-pallets-of-nvidia-gpus-worth-usd11-4-million-stolen-in-california-cargo-heist-authorities-investigate-after-truck-posing-as-a-food-transport-company-disappears",
-          "region": "Community"
-        },
-        {
-          "title": "Nvidia's Quiet New Ultimatum to Stop China Chip Smuggling",
-          "source": "TradingView",
-          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNdW45bVRpaDVhMGpLbU5paU44WkRtUEU3T1hwd2xuNkVscFRZTzhsclA4VEthTnhvS2FNR0JibG9idmg1NmRiQl91VURZTjU2TXBKdW9QUV8zVGpoNk5ERHNaRlc5S2ZibUVoeXZEOHEwV2hyQXhBSzRUc0JTaWFvaGhqdkVzREdEdE9iS291MzNkWGtLdk9KRHRHSU1CM0twa3Y2NUpoQVoySWJTMmFpZ05ZaXV6TklK?oc=5",
+          "title": "China’s Top Spy Agency Recruited Woman Who Targeted Jensen Huang",
+          "source": "The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNQlRKTG9WNHBINWg3VkxadkZGV0dCbHZPWUpFclJJNFZBdzNmbGNLbldyWVgtblFfUk1famJaZUlzX3JSTHpyYnRIa25Qd01jNWhPbVV0QllXRW5pTGdBam9NaE1iTXBXMmhCNVFoNTI3ZHFDVEFSU0F5dXNTMHVfY0Z1RzltVGpRdDdaUUlYNzQwWVlz?oc=5",
           "region": "North America"
         },
         {
-          "title": "Why Did 149 Million Nvidia (NASDAQ:NVDA) Shares Change Hands as Money Left AI Chips?",
-          "source": "kalkine.ca",
-          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxPZXEwZFAxeDhKSHdCbW9EcG91M3VMQVJvZEpiQ0s5VE9RdHJrZUd4ek5wS2p1YVBGLXAwb00zai1ZeUNrVl9la3c5M1QyOEp0alpmaTFtVlUwVWZvMEoxTW1LVnhQeWc4ZEtFUmZEQmdlRTFjZ2p4eVdldGx5SVJ0R0xEeGRQSlZhdm05WU91U1JtdEpnR0VxeUNib1dhOHB3bTdTUHNuclVyQTV1OVAteG1FMzVNbXZ6R3ZsVWNvRW1PX01kcXJn?oc=5",
+          "title": "Megaspeed exec was recruited to spy on Nvidia CEO, according to US intelligence memo",
+          "source": "TechCrunch",
+          "url": "https://techcrunch.com/2026/11/07/chinese-exec-was-recruited-to-spy-on-nvidia-ceo-according-to-us-intelligence-memo/",
+          "region": "Global desks"
+        },
+        {
+          "title": "Spy targeting Nvidia CEO was alleged China intelligence service recruit: Report",
+          "source": "The Economic Times",
+          "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQMVExaTZiWVdzMlFDQmo0SDVIUVZJLWRSZ3RMeEpyWjQzbUtJaTRTWV9nLVlzcUZieEJ4R3ZuOVJKaTlqX3JNcXFYS2ZxUU9oNWZvdi1tRnZxQk9mYmR5elEyejN2MEMzZmpKR3FsQmo0ay0zQmtSczlNbUVobTdZYzdQRndQVjh0Rkp1Y3oyVkpPVU03VlF0X1BuckJ1Y1c3WW90b1A4Sy0yNTFDZmFuaUlkRGNPNXFMRmpxR2pYNmtLN1FDalIzRWM3TWMtV1piVUlfeXN1ZXNBQldsLXfSAfoBQVVfeXFMTXo2cGNEWkduV0dsSndYejJiZkJfLUlBZEpESWNjNDVGLVR4ZElUMVpWck9lcHZEREx0TnRtT2xHTGdaYWpJelI3OXBJQzN0SmZrRzFtTjk3c3JxOElvZUU2TnhTSlpLWGxlaW9XZWlwX212LUFEbVNDR0tLbl9UOWw1Tmx2LXlSbFNUb0Nod1A4SGJiMm9zS1ZmRjJNS2h5VlA3YVpYODZBZFBZVjl2N0Y3R3BxWEwwMEZLM3J0NUtxbFJSMDNXVnN0ZDRQOUEzMmNrSnd1bndhZV9CN2hsbVh1U1FDR0ozYmhGM2d3X29mUXI4UHFUaDhQQQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "TSMC Makes the Chips for Both Nvidia and AMD. Here's What a $5,000 Investment Could Be Worth by 2030.",
-          "source": "The Motley Fool",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQMXFsYkRzLWZITVoyRGlFX0szVFlyNzVCVWNBTnJtX2c0YW1PU28yMVNlcm1FVDlZajFRRGhBVTJnWkVOWXl5Yk9OZXNLS29DT3J5ZllaR0JOdTZBV3BqbzYxcUE2LVIxeThFNjlka0NfaGxmMjdtOGtZVHRIMDZfbXRvWm9kekxDXzlLb3pDVmFIZmp6NkJpag?oc=5",
+          "title": "China reportedly recruited AI exec to spy on Jensen Huang",
+          "source": "The Verge",
+          "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTFB5SXpaOWZleWQzNG5uTGI4STBQTE16UzFqeGRrR1VuQ3gxUlJjckFnRTllYllfNmNnaHFwSEtNbnd6UVFtWXBCQTBWc21zajF6Q2xmOVB4Tld5a1VEcVRucERPWXo3Vk1BVEZjSTExVTFFLTE5U0NlU3pWNA?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-07",
+    "date": "2026-11-08",
     "calls": [
       {
         "rank": 1,
-        "headline": "OpenAI Pledges to Give Locals More Say in Data Center Projects",
-        "probability": 0.88,
+        "headline": "Exclusive | Major Investors Are Skeptical Anthropic IPO Can Achieve $1.5 Trillion Valuation",
+        "probability": 0.92,
         "hit": true,
-        "matched": "OpenAI investing in AI data centers despite election results, CFO says"
+        "matched": "Anthropic IPO Valuation Talk Falls To $1.3 Trillion After The AI Stock Rout"
       },
       {
         "rank": 2,
-        "headline": "So, about that Anthropic IPO . . .",
-        "probability": 0.86,
+        "headline": "OpenAI investing in AI data centers despite election results, CFO says",
+        "probability": 0.87,
         "hit": true,
-        "matched": "Exclusive | Major Investors Are Skeptical Anthropic IPO Can Achieve $1.5 Trillion Valuation"
+        "matched": "OpenAI moves to rebuild trust after voters reject data centers in local measures"
       },
       {
         "rank": 3,
-        "headline": "EXCLUSIVE: Nvidia chips pile up in Hong Kong as China withholds import approval",
-        "probability": 0.74,
+        "headline": "Six pallets of Nvidia GPUs worth $11.4M stolen in California in Aug 2026",
+        "probability": 0.71,
         "hit": true,
-        "matched": "Six pallets of Nvidia GPUs worth $11.4M stolen in California in Aug 2026"
+        "matched": "China’s Top Spy Agency Recruited Woman Who Targeted Jensen Huang"
       }
     ],
     "hits": 3
   },
   "track": {
-    "days": 7,
-    "calls": 21,
-    "hits": 18,
+    "days": 8,
+    "calls": 24,
+    "hits": 21,
     "log": [
       {
         "date": "2026-11-01",
@@ -299,9 +301,14 @@
         "date": "2026-11-07",
         "hits": 3,
         "calls": 3
+      },
+      {
+        "date": "2026-11-08",
+        "hits": 3,
+        "calls": 3
       }
     ],
-    "hitRate": 0.86
+    "hitRate": 0.88
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
