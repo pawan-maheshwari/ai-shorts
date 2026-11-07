@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-07",
+      "title": "The Trillion-Dollar Tuesday",
+      "headline": "AI is the new dating dealbreaker",
+      "source": "The Verge",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPUFZ3LVQwc2kxYWpneG9GUW85TFp5TG12a2lMUWFEdjFEOXZJZWo3enp6cVN1aWlYbTdGbGFQRFA2WE9faW01SEg4QlBiQjRMMTR6TGFWMW9WVkR0eG00S1hUbEJWbzkzYzNBcHNDclU5OTF1UG84WXhWWUZOVVJKQTFGM0hDTGpGUDJZbXJ3eHB5dDNKcXo4ZmNTTkNqWVU?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "valuation",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI company is worth a trillion dollars!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "And I invented their product last Tuesday."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that valuation without revenue."
+        }
+      ]
+    },
+    {
       "date": "2026-11-06",
       "title": "The Bug Slayer",
       "headline": "AI Is Finding Software Flaws Faster Than The World Can Fix Them",
