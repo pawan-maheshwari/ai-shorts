@@ -111,8 +111,7 @@
 
   var f = document.createElement('iframe');
   f.title = 'Stock Lab app';
-  var dark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
-  f.src = url + '/?embed=true&embed_options=' + (dark ? 'dark_theme' : 'light_theme');
+  f.src = url + '/?embed=true&embed_options=light_theme';  // app is styled as light newsprint
   f.setAttribute('allow', 'clipboard-write');
   f.addEventListener('load', function(){ wait.classList.add('gone'); });
   setTimeout(function(){ wait.classList.add('gone'); }, 45000);

@@ -523,7 +523,8 @@ def day_signals(g, prev_close, avg_or_vol, p):
     relvol = or_vol / avg_or_vol if avg_or_vol and avg_or_vol > 0 else np.nan
     or_pct = (orh - orl) / o[0] * 100
     info = dict(gap_pct=gap, relvol=relvol, or_high=orh, or_low=orl, or_pct=or_pct,
-                last=c[-1], vwap=vwap[-1])
+                last=c[-1], vwap=vwap[-1], prev_close=prev_close, chg_pct=(c[-1] / prev_close - 1) * 100,
+                last_bar=t[-1])
 
     ok_day = (np.isnan(relvol) or relvol >= p.min_relvol) and abs(gap) <= p.max_gap
     if not ok_day:
@@ -713,7 +714,8 @@ def run_scan(data, a):
         if not info:
             continue
         bars[s] = g
-        r = dict(symbol=s, date=d, **{k: info[k] for k in ["gap_pct", "relvol", "or_high", "or_low", "last", "vwap"]})
+        r = dict(symbol=s, date=d, **{k: info[k] for k in ["gap_pct", "relvol", "or_high", "or_low", "last", "vwap",
+                                                    "prev_close", "chg_pct", "last_bar"]})
         r["vs_vwap"] = "above" if info["last"] > info["vwap"] else "below"
         r.update(setup=None, side=0, signal_time=None, status=None, exit_price=np.nan,
                  entry=np.nan, stop=np.nan, target=np.nan, qty=np.nan)
