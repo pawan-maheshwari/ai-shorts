@@ -6,6 +6,7 @@ Educational tool. Not investment advice.
 """
 import argparse
 import html
+import json
 import time
 from datetime import time as dtime
 
@@ -14,7 +15,9 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+import agents as ag
 import cheetah_engine as ce
+from store import SUPABASE_SQL, Store
 
 st.set_page_config(page_title="AIShorts Stock Lab (Beta)", page_icon="📈", layout="wide",
                    initial_sidebar_state="collapsed")
@@ -94,6 +97,23 @@ header[data-testid="stHeader"]{background:transparent}
 /* tabs */
 .stTabs [data-baseweb="tab-list"]{gap:4px;border-bottom:1px solid var(--rule)}
 .stTabs [data-baseweb="tab"] p{font-family:"Libre Franklin",sans-serif;font-weight:700;font-size:14px;letter-spacing:.3px}
+/* agents */
+.pulse{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;border:1px solid var(--rule);padding:8px 12px;
+ margin:-4px 0 12px;font-size:12.5px;color:var(--meta);background:#fff}
+.pulse b.rg{font-size:13px;letter-spacing:.4px;text-transform:uppercase;color:var(--ink)}
+.pulse.on{border-left:4px solid var(--up)} .pulse.off{border-left:4px solid var(--down)}
+.pulse.vol{border-left:4px solid #b45309} .pulse.mid{border-left:4px solid #9a9a94}
+.agents{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.ag{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:4px;background:var(--paper2);border:1px solid var(--rule);color:var(--ink)}
+.ag i{font-style:normal;font-weight:500;color:var(--meta);margin-right:4px}
+.ag.good{background:var(--upbg);border-color:#bfe3cc;color:var(--up)} .ag.bad{background:var(--downbg);border-color:#f3c3c3;color:var(--down)}
+.ag.warn{background:var(--amberbg);border-color:#f0d78c;color:var(--amber)}
+.pm{margin-top:8px;font-size:12.5px;background:var(--downbg);color:#7a1015;padding:7px 10px;border-radius:4px}
+.alert{display:flex;gap:10px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--rule);font-size:13px}
+.alert .t{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--meta);min-width:44px}
+.lesson{border:1px solid var(--rule);border-left:4px solid var(--down);padding:8px 11px;margin-bottom:6px;font-size:13.5px;background:#fff}
+.lesson.favour{border-left-color:var(--up)} .lesson.weaker{border-left-color:#b45309}
+.lesson small{color:var(--meta)}
 div[data-testid="stExpander"] details summary p{font-family:"Libre Franklin",sans-serif;font-weight:600;font-size:13px}
 </style>""", unsafe_allow_html=True)
 
@@ -149,6 +169,68 @@ def load_daily(symbols, demo):
         return px
     start = (pd.Timestamp.today() - pd.Timedelta(days=500)).strftime("%Y-%m-%d")
     return ce.yahoo_daily(list(symbols), start)
+
+
+def _secret(name):
+    try:
+        return st.secrets.get(name)
+    except Exception:
+        return None
+
+
+API_KEY = _secret("ANTHROPIC_API_KEY")
+
+
+@st.cache_resource
+def get_store(demo):
+    """Live data → Supabase if configured, else local file. Demo data never touches the live store."""
+    if demo:
+        import os
+        return Store(path=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".data", "demo.db"))
+    st_ = Store(_secret("SUPABASE_URL"), _secret("SUPABASE_KEY"))
+    st_.purge()
+    return st_
+
+
+@st.cache_data(ttl=3600, show_spinner=False, max_entries=6)
+def fetch_index_cached(demo, token):
+    return ag.fetch_index(demo, ce.demo_intraday(days=15) if demo else None)
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def ban_cached(day):
+    return ag.fo_ban_list()
+
+
+@st.cache_data(ttl=1800, show_spinner=False, max_entries=300)
+def sentinel_cached(sym, demo, day, use_llm):
+    return ag.sentinel(sym, demo, API_KEY if use_llm else None, None if demo else ban_cached(day))
+
+
+@st.cache_data(ttl=3600, show_spinner=False, max_entries=300)
+def narrate_cached(key, status, row_json, mood_json, sent_json, score_json, use_llm):
+    return ag.narrate(pd.Series(json.loads(row_json)), json.loads(mood_json), json.loads(sent_json),
+                      json.loads(score_json), API_KEY if use_llm else None)
+
+
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
+def train_coach(demo, symbols, day, args_key, _a):
+    """Once a day: replay recent sessions so the Coach learns from every signal, not just the ones you saw."""
+    data = ce.demo_intraday(days=45) if demo else ce.yahoo_intraday(list(symbols), 59)
+    if not data:
+        return 0
+    idx = ag.fetch_index(demo, data) if demo else fetch_index_cached(False, f"train-{day}")
+    rows = ag.history_trades(data, idx, _a)
+    store = get_store(demo)
+    store.upsert_trades(rows)
+    store.log("Coach", "training", f"Studied {len(rows)} signals from the last {len({r['day'] for r in rows})} sessions",
+              detail={"trades": len(rows)}, dkey=f"coach-train|{day}|{args_key}")
+    return len(rows)
+
+
+@st.cache_data(ttl=300, show_spinner=False, max_entries=4)
+def coach_trades(demo, token):
+    return get_store(demo).trades()
 
 
 def inr(x, dp=2):
@@ -231,7 +313,7 @@ def intraday_chart(g, row):
     return fig
 
 
-def signal_card(r, exit_time):
+def signal_card(r, exit_time, agt=None):
     side_cls = "long" if r.side == 1 else "short"
     side_txt = "▲ Long" if r.side == 1 else "▼ Short"
     st_txt = str(r.status)
@@ -274,8 +356,30 @@ def signal_card(r, exit_time):
          f'<div class="now" style="left:{pos * 100:.1f}%;background:{now_col}"></div></div>'
          f'<div class="tl"><span class="down">Stop {inr(r.stop)}</span>'
          f'<span style="color:{now_col}">{ref_lab} {inr(ref)}</span><span class="up">Target {inr(r.target)}</span></div>'
-         f'<div class="foot">{foot}</div></div>')
+         f'<div class="foot">{foot}</div>{agent_strip(agt)}</div>')
     st.markdown(h, unsafe_allow_html=True)
+
+
+def agent_strip(a):
+    if not a:
+        return ""
+    chips = []
+    al = a["align"]
+    chips.append(f'<span class="ag {"good" if al == "with" else "bad" if al == "against" else ""}"><i>Pulse</i>'
+                 f'{"▲ with market" if al == "with" else "▼ against market" if al == "against" else "• market neutral"}</span>')
+    lv = a["sentinel"]
+    chips.append(f'<span class="ag {"bad" if lv == "HIGH" else "warn" if lv == "WATCH" else "good" if lv == "CLEAR" else ""}">'
+                 f'<i>Sentinel</i>{"⚠ " if lv == "HIGH" else ""}{lv.title() if lv else "not checked"}</span>')
+    sc = a["coach"]
+    if sc.get("conf") is not None:
+        v = sc["verdict"]
+        chips.append(f'<span class="ag {"good" if v == "Favourable" else "bad" if v == "Caution" else ""}"><i>Coach</i>'
+                     f'{sc["conf"] * 100:.0f}% win odds · {v}</span>')
+    else:
+        chips.append('<span class="ag"><i>Coach</i>learning</span>')
+    chips.append(f'<span class="ag"><i>Agent-sized qty</i>{a["qty_adj"]:,} (×{a["mult"]:g})</span>')
+    pm = f'<div class="pm"><b>Coach post-mortem:</b> {html.escape(a["pm"]["primary"])}</div>' if a.get("pm") else ""
+    return f'<div class="agents">{"".join(chips)}</div>{pm}'
 
 
 # ============================================================================ sidebar
@@ -297,6 +401,12 @@ with st.sidebar:
                                help="Brokerage + STT + exchange + GST + stamp + slippage.")
     wl_text = st.text_area("Watchlist (NSE symbols)", ", ".join(ce.WATCHLIST), height=150)
     symbols = tuple(sorted({s.strip().upper() for s in wl_text.replace("\n", ",").split(",") if s.strip()}))
+    st.caption("AGENTS")
+    coach_filter = st.toggle("Coach hides 'Caution' signals", value=False,
+                             help="Signals the Coach rates below the usual win rate move to a collapsed section "
+                                  "and don't raise alerts.")
+    st.caption("Claude API: " + ("connected — richer news reading and explanations" if API_KEY
+                                 else "not set — agents run rule-based"))
 
 A = intraday_args(setup=setup, shorts=shorts, rr=rr, min_relvol=min_relvol, capital=float(capital),
                   risk_pct=risk_pct, cost_pct=cost_pct)
@@ -311,7 +421,7 @@ st.markdown(
 if demo:
     st.info("Demo mode: synthetic prices. Switch it off in Settings for the live market feed.")
 
-tab_i, tab_s, tab_b = st.tabs(["⚡ Intraday", "📈 Swing picks", "🧪 Backtest"])
+tab_i, tab_s, tab_b, tab_a = st.tabs(["⚡ Intraday", "📈 Swing picks", "🧪 Backtest", "🗂 Audit log"])
 
 # ============================================================================ intraday
 REFRESH = {"Off": 0, "30 seconds": 30, "1 minute": 60, "2 minutes": 120, "5 minutes": 300,
@@ -366,6 +476,124 @@ with tab_i:
         sig = S[S.setup.notna()].copy()
         sig["is_open"] = sig.status == "OPEN"
         sig = sig.sort_values(["is_open", "signal_time"], ascending=[False, False])
+
+        # ------------------------------------------------ agents
+        store = get_store(demo)
+        day = S.date.iloc[0]
+        day_s = str(day)
+        args_key = f"{A.setup}|{A.shorts}|{A.rr}|{A.min_relvol}|{A.cost_pct}"
+        with st.spinner("Coach is studying recent sessions (once a day)…"):
+            train_coach(demo, symbols, day_s, args_key, A)
+        idx = fetch_index_cached(demo, 0 if demo else ss.tok)
+        mood = ag.pulse(idx, day)
+        store.log("Pulse", "regime", f"{mood['regime']} — position size ×{mood['mult']:g}. " + "; ".join(mood["reasons"]),
+                  detail=mood, dkey=f"pulse|{day_s}|{mood['regime']}")
+        coach = ag.Coach(coach_trades(demo, ss.tok))
+        targets = list(dict.fromkeys(sig.symbol.tolist() + S[S.in_play].symbol.tolist()))[:12]
+        sents = {sym: sentinel_cached(sym, demo, day_s, bool(API_KEY)) for sym in targets}
+        for sym, v in sents.items():
+            if v["level"] != "CLEAR":
+                store.log("Sentinel", v["level"].lower(), f"{v['level']}: " + "; ".join(v["reasons"][:2]) +
+                          (f" — {v['llm']}" if v.get("llm") else ""), symbol=sym, detail=v,
+                          dkey=f"sentinel|{day_s}|{sym}|{v['level']}")
+        if targets:
+            store.log("Sentinel", "scan", f"Checked news, results dates and F&O ban for {len(targets)} stocks: "
+                      f"{sum(v['level'] == 'HIGH' for v in sents.values())} high-risk, "
+                      f"{sum(v['level'] == 'WATCH' for v in sents.values())} to watch",
+                      dkey=f"sentinel-scan|{day_s}|{','.join(sorted(targets))}")
+        for l in coach.lessons():
+            store.log("Coach", "lesson", f"{l['direction'].title()}: {l['text']} — won "
+                      f"{l['win_rate'] * 100:.0f}% of {l['n']} trades (avg {l['avg_r']:+.2f}R)", detail=l,
+                      dkey=f"lesson|{day_s}|{l['feature']}={l['bucket']}|{l['direction']}")
+
+        agt, journal = {}, []
+        idd = ag.index_day(idx, day)
+        for _, r in sig.iterrows():
+            key = ag.trade_key(day, r.symbol, r.setup, r.side)
+            g = bars[r.symbol]
+            sv = sents.get(r.symbol)
+            news = "unknown" if sv is None else ("event" if sv["level"] != "CLEAR" else "clear")
+            info = dict(relvol=r.relvol, gap_pct=r.gap_pct, or_pct=(r.or_high - r.or_low) / g.Open.iloc[0] * 100)
+            feats = ag.signal_features(g, dict(i=g.index.get_loc(r.signal_time), side=r.side, entry=r.entry,
+                                               setup=r.setup), info, idd, news)
+            sc = coach.score(feats)
+            closed = r.status != "OPEN"
+            r_mult = None
+            if closed and not pd.isna(r.exit_price):
+                rk = abs(r.entry - r.stop)
+                r_mult = ((r.exit_price - r.entry) * r.side - r.entry * A.cost_pct / 100) / rk if rk else 0
+            pm = coach.postmortem(feats, r_mult) if closed else None
+            status_w = "open" if not closed else "target" if "TARGET" in r.status else "stop" if "STOP" in r.status else "time"
+            journal.append(dict(key=key, ts=r.signal_time, day=day, source="live", symbol=r.symbol, setup=r.setup,
+                                side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
+                                exit=r.exit_price if closed else None, r=r_mult, status=status_w, features=feats,
+                                reason=pm["primary"] if pm else None))
+            if pm:
+                store.log("Coach", "post-mortem", f"{r.symbol} {r.setup} lost {r_mult:+.2f}R. Main reason: {pm['primary']}",
+                          symbol=r.symbol, detail=dict(pm, features=feats), dkey=f"pm|{key}")
+            align = "with" if mood["bias"] == r.side else "against" if mood["bias"] == -r.side else "neutral"
+            row_min = dict(symbol=r.symbol, side=int(r.side), setup=r.setup, entry=float(r.entry),
+                           stop=float(r.stop), target=float(r.target))
+            narr = narrate_cached(key, r.status, json.dumps(row_min), json.dumps(mood, default=float),
+                                  json.dumps(sv or {}, default=str), json.dumps(sc, default=float), bool(API_KEY))
+            store.log("Narrator", "explain", narr, symbol=r.symbol, dkey=f"narr|{key}")
+            agt[key] = dict(align=align, sentinel=sv["level"] if sv else None, sent=sv, coach=sc, pm=pm, narr=narr,
+                            mult=mood["mult"], qty_adj=int((0 if pd.isna(r.qty) else r.qty) * mood["mult"]),
+                            feats=feats)
+        store.upsert_trades(journal)
+        sig["key"] = [ag.trade_key(day, a_, b_, c_) for a_, b_, c_ in zip(sig.symbol, sig.setup, sig.side)]
+        sig["caution"] = [agt[k]["coach"].get("verdict") == "Caution" for k in sig.key]
+
+        # ------------------------------------------------ alerts
+        ss.setdefault("seen", {})
+        ss.setdefault("alerts", [])
+        fresh = []
+        def _alert(k, val, msg, sym=None, icon="🔔"):
+            if ss.seen.get(k) == val:
+                return
+            ss.seen[k] = val
+            fresh.append(dict(t=pd.Timestamp.now(tz=ce.IST), msg=msg, icon=icon))
+            store.log("Alerts", "alert", msg, symbol=sym, dkey=f"alert|{day_s}|{k}|{val}")
+        _alert("pulse", mood["regime"], f"Market mood: {mood['regime']} — position size ×{mood['mult']:g}", icon="🧭")
+        for _, r in sig.iterrows():
+            if coach_filter and r.caution:
+                continue
+            a = agt[r.key]
+            side_t = "LONG" if r.side == 1 else "SHORT"
+            if r.status == "OPEN":
+                _alert(r.key, r.status, f"New {side_t} · {r.symbol} {r.setup} — entry {inr(r.entry)}, stop {inr(r.stop)}, "
+                       f"target {inr(r.target)}, qty {a['qty_adj']:,}", r.symbol, "🟢" if r.side == 1 else "🔴")
+            else:
+                _alert(r.key, r.status, f"{r.symbol} {side_t} {r.setup}: {r.status}", r.symbol,
+                       "✅" if "TARGET" in r.status else "⛔" if "STOP" in r.status else "⏹️")
+            if a["sentinel"] == "HIGH":
+                _alert(f"sent|{r.symbol}", "HIGH", f"Sentinel: {r.symbol} is high-risk today — {a['sent']['reasons'][0]}",
+                       r.symbol, "⚠️")
+        ss.alerts = (fresh[::-1] + ss.alerts)[:60]
+        if not ss.get("alerts_init"):
+            ss.alerts_init = True
+            st.toast(f"{len(sig)} signal(s) today · market {mood['regime'].lower()}", icon="🔔")
+        else:
+            for a in fresh[:4]:
+                st.toast(a["msg"], icon=a["icon"])
+
+        cls = {"Risk-on": "on", "Mildly positive": "on", "Risk-off": "off", "Mildly negative": "off",
+               "Volatile": "vol"}.get(mood["regime"], "mid")
+        st.markdown(f'<div class="sl pulse {cls}"><b class="rg">🧭 Pulse · {mood["regime"]}</b>'
+                    f'<span>Position size ×{mood["mult"]:g}</span>'
+                    f'<span>Nifty {arrow(mood["nifty_chg"])}</span>'
+                    f'<span>{" · ".join(html.escape(x) for x in mood["reasons"][:3])}</span></div>',
+                    unsafe_allow_html=True)
+        with st.expander(f"🔔 Alerts · {len(ss.alerts)}" + (f" · {len(fresh)} new" if fresh else ""),
+                         expanded=bool(fresh) and ss.get("alerts_shown", False)):
+            if not ss.alerts:
+                st.markdown('<div class="sl note">No alerts yet. New signals, exits, news risks and market-mood '
+                            'changes appear here while the app is open.</div>', unsafe_allow_html=True)
+            st.markdown("".join(f'<div class="sl alert"><span class="t">{a["t"]:%H:%M}</span><span>{a["icon"]}</span>'
+                                f'<span>{html.escape(a["msg"])}</span></div>' for a in ss.alerts[:25]),
+                        unsafe_allow_html=True)
+            st.caption("Alerts show while this page is open. Everything is also kept in the Audit log tab for 7 days.")
+        ss.alerts_shown = True
         adv, dec = int((S.chg_pct > 0).sum()), int((S.chg_pct < 0).sum())
         kpis([("Session", f'{pd.Timestamp(S.date.iloc[0]):%d %b %Y}', f"{len(S)} stocks scanned"),
               ("Breadth", f'<span class="up">▲{adv}</span> <span class="down">▼{dec}</span>', "up vs down on the day"),
@@ -378,11 +606,40 @@ with tab_i:
             st.markdown('<div class="sl empty">No setups have triggered yet. Watch the trigger levels below — '
                         'a 5-minute close beyond the opening range with rising volume starts a breakout.</div>',
                         unsafe_allow_html=True)
-        for _, r in sig.iterrows():
-            signal_card(r, A.exit_time)
+        def render(r):
+            a = agt[r.key]
+            signal_card(r, A.exit_time, a)
+            with st.expander(f"Why this signal · agents · {r.symbol}"):
+                st.markdown(f'<div class="sl" style="font-size:14px;line-height:1.55"><b>Narrator</b><br>'
+                            f'{html.escape(a["narr"])}</div>', unsafe_allow_html=True)
+                sc = a["coach"]
+                if sc.get("drivers"):
+                    st.markdown('<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Coach — what past trades say</b><br>' +
+                                "<br>".join(f'{"▼" if d[0] < 0 else "▲"} {html.escape(d[1])} — won {d[3] * 100:.0f}% of {d[2]}'
+                                            for d in sc["drivers"]) +
+                                f'<br><span class="note">Usual win rate across all signals: {sc["base"] * 100:.0f}%</span></div>',
+                                unsafe_allow_html=True)
+                sv = a.get("sent")
+                if sv:
+                    hl = "".join(f'<br>· <a href="{html.escape(h["link"])}" target="_blank">{html.escape(h["title"])}</a>'
+                                 f' <span class="note">{html.escape(h["publisher"] or "")}</span>' if h["link"] else
+                                 f'<br>· {html.escape(h["title"])}' for h in sv["headlines"][:4])
+                    st.markdown(f'<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Sentinel — {sv["level"].title()}</b><br>'
+                                + "<br>".join(html.escape(x) for x in sv["reasons"]) +
+                                (f'<br><i>{html.escape(sv["llm"])}</i>' if sv.get("llm") else "") +
+                                (f'<br><span class="note">Recent headlines</span>{hl}' if hl else "") + '</div>',
+                                unsafe_allow_html=True)
             with st.expander(f"Chart · {r.symbol}"):
                 st.plotly_chart(intraday_chart(bars[r.symbol], r), width="stretch",
                                 key=f"c_{r.symbol}_{r.setup}_{ss.tok}", config={"displayModeBar": False})
+
+        shown = sig[~sig.caution] if coach_filter else sig
+        for _, r in shown.iterrows():
+            render(r)
+        if coach_filter and sig.caution.any():
+            with st.expander(f"Filtered by Coach · {int(sig.caution.sum())} signal(s) rated Caution"):
+                for _, r in sig[sig.caution].iterrows():
+                    render(r)
 
         section("Watchlist", "sorted by in play, then relative volume")
         w = pd.DataFrame({
@@ -520,3 +777,129 @@ with tab_b:
             st.download_button("Download trade log", T.to_csv(index=False), "intraday_trades.csv", "text/csv")
     st.caption("Swing backtest (original vs enhanced vs score vs neural net) needs a dated fundamentals history file; "
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
+
+# ============================================================================ audit log
+with tab_a:
+    store = get_store(demo)
+    if demo:
+        st.info("Demo mode: this log holds demo activity only and is kept separate from the live log.")
+    elif not store.remote:
+        st.warning("The log is currently temporary: it is wiped whenever the hosted app restarts or redeploys. "
+                   "Connect Supabase to keep a full week.")
+        with st.expander("How to connect Supabase (5 minutes)"):
+            st.markdown("1. In your Supabase project, open **SQL editor**, paste the SQL below and run it.\n"
+                        "2. In Streamlit (Manage app → Settings → Secrets) add:\n"
+                        "```\nSUPABASE_URL = \"https://<your-project>.supabase.co\"\nSUPABASE_KEY = \"<service-role key>\"\n"
+                        "ANTHROPIC_API_KEY = \"<optional — richer agents>\"\n```\n"
+                        "3. Save. The app restarts and the Audit log becomes permanent (events kept 7 days, "
+                        "trade journal 90 days).")
+            st.code(SUPABASE_SQL, language="sql")
+    if store.last_error:
+        st.caption(f"Storage note: {store.last_error}")
+
+    ev = store.events()
+    tr = store.trades()
+    coach_all = ag.Coach(tr)
+    live = tr[tr.source == "live"] if not tr.empty else tr
+    kpis([("Events · 7 days", len(ev), f"{ev.agent.nunique() if len(ev) else 0} agents active"),
+          ("Alerts", int((ev.agent == "Alerts").sum()) if len(ev) else 0, "raised in 7 days"),
+          ("Live signals", len(live), "journaled"),
+          ("Post-mortems", int((ev.kind == "post-mortem").sum()) if len(ev) else 0, "losses diagnosed"),
+          ("Coach studied", coach_all.n, f"trades · {coach_all.p0 * 100:.0f}% win rate")])
+
+    section("Agent activity", "last 7 days · newest first")
+    if ev.empty:
+        st.markdown('<div class="sl empty">No activity yet. Open the Intraday tab — agents log what they check, '
+                    'flag and learn here.</div>', unsafe_allow_html=True)
+    else:
+        f1, f2, f3 = st.columns([2, 1.2, 1.6])
+        agents_sel = f1.multiselect("Agents", sorted(ev.agent.unique()), default=sorted(ev.agent.unique()))
+        days_avail = sorted({t.date() for t in ev.ts}, reverse=True)
+        day_sel = f2.selectbox("Day", ["All 7 days"] + [f"{d:%a %d %b}" for d in days_avail])
+        q = f3.text_input("Search", placeholder="symbol or word")
+        view = ev[ev.agent.isin(agents_sel)]
+        if day_sel != "All 7 days":
+            view = view[view.ts.map(lambda t: f"{t:%a %d %b}") == day_sel]
+        if q:
+            ql = q.lower()
+            view = view[view.message.str.lower().str.contains(ql, regex=False) |
+                        view.symbol.fillna("").str.lower().str.contains(ql, regex=False)]
+        icons = {"Pulse": "🧭", "Sentinel": "🛡️", "Narrator": "🗣️", "Coach": "🎓", "Alerts": "🔔"}
+        out = pd.DataFrame({"Time": view.ts.map(lambda t: f"{t:%d %b %H:%M}"), "Agent": view.agent,
+                            "Type": view.kind, "Symbol": view.symbol.fillna(""), "What happened": view.message})
+        show_n = st.select_slider("Show", [25, 50, 100, 250, 500], 50, key="audit_n") if len(out) > 25 else 25
+        rows_html = "".join(
+            f'<div class="alert"><span class="t">{html.escape(r.Time)}</span><span>{icons.get(r.Agent, "•")}</span>'
+            f'<span><b>{html.escape(r.Agent)}</b> <span class="note">{html.escape(r.Type)}</span>'
+            f'{f" · <b>{html.escape(r.Symbol)}</b>" if r.Symbol else ""}<br>{html.escape(r._5)}</span></div>'
+            for r in out.head(show_n).itertuples())
+        st.markdown(f'<div class="sl">{rows_html}</div>', unsafe_allow_html=True)
+        st.caption(f"Showing {min(show_n, len(out))} of {len(out)} events.")
+        st.download_button("Download log (CSV)", out.to_csv(index=False), "stocklab_audit_log.csv", "text/csv")
+
+    section("Coach · what it has learned", f"from {coach_all.n} trades (recent history + live signals)")
+    lessons = coach_all.lessons()
+    if not lessons:
+        st.markdown('<div class="sl empty">Not enough trades yet for clear lessons. The Coach needs about 15 trades '
+                    'in a condition before it trusts a pattern.</div>', unsafe_allow_html=True)
+    else:
+        st.markdown("".join(
+            f'<div class="sl lesson {l["direction"]}"><b>{ {"avoid": "▼ Avoid", "weaker": "▼ Weaker", "favour": "▲ Favour"}[l["direction"]] }:</b> '
+            f'{html.escape(l["text"])} <small>— won {l["win_rate"] * 100:.0f}% of {l["n"]} trades, '
+            f'avg {l["avg_r"]:+.2f}R (all signals: {coach_all.p0 * 100:.0f}%)</small></div>' for l in lessons),
+            unsafe_allow_html=True)
+        st.caption("How it uses this: each new signal gets a win-odds score from these patterns (shown on the card), "
+                   "so conditions that keep failing lower the score of future signals.")
+    tbl = coach_all.table
+    if not tbl.empty:
+        t2 = tbl[tbl.n >= 8].copy()
+        t2["label"] = [ag.FEATURE_TEXT.get(f, {}).get(b, b) for f, b in zip(t2.feature, t2.bucket)]
+        t2 = t2.sort_values("win_rate")
+        fig = go.Figure(go.Bar(x=t2.win_rate * 100, y=t2.label, orientation="h",
+                               marker_color=[UP if e > 0 else DOWN for e in t2.edge],
+                               text=[f"{w * 100:.0f}% · n={n}" for w, n in zip(t2.win_rate, t2.n)],
+                               textposition="outside", cliponaxis=False))
+        fig.add_vline(x=coach_all.p0 * 100, line=dict(color="#121212", dash="dash"),
+                      annotation_text=f"all signals {coach_all.p0 * 100:.0f}%", annotation_position="top")
+        fig.update_layout(height=max(260, 26 * len(t2) + 60), margin=dict(l=8, r=60, t=28, b=8),
+                          template="plotly_white", xaxis_title="Win rate %", xaxis_range=[0, 100],
+                          font=dict(family="Libre Franklin, sans-serif", size=11))
+        with st.expander("Win rate by condition"):
+            st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
+
+    section("Why trades went wrong", "losing trades in the last 7 days, diagnosed by the Coach")
+    if tr.empty:
+        st.markdown('<div class="sl empty">No trades recorded yet.</div>', unsafe_allow_html=True)
+    else:
+        recent = tr.copy()
+        recent["day"] = pd.to_datetime(recent.day)
+        recent = recent[(recent.day >= pd.Timestamp.now() - pd.Timedelta(days=7)) & (recent.r < 0)]
+        if recent.empty:
+            st.markdown('<div class="sl empty">No losing trades in the last 7 days.</div>', unsafe_allow_html=True)
+        else:
+            def _reason(row):
+                if isinstance(row.reason, str) and row.reason:
+                    return row.reason
+                pm = coach_all.postmortem(row.features if isinstance(row.features, dict) else json.loads(row.features or "{}"), row.r)
+                return pm["primary"] if pm else "—"
+            recent["why"] = recent.apply(_reason, axis=1)
+            counts = recent.why.map(lambda x: x.split(" — ")[0]).value_counts()
+            mx = counts.max()
+            st.markdown('<div class="sl">' + "".join(
+                f'<div style="margin:6px 0"><div style="font-size:13px">{html.escape(k)} '
+                f'<b class="num">{v}</b></div><div style="height:8px;background:var(--paper2);border-radius:4px">'
+                f'<div style="height:8px;width:{v / mx * 100:.0f}%;background:var(--down);border-radius:4px"></div></div></div>'
+                for k, v in counts.items()) + '</div>', unsafe_allow_html=True)
+            lt = pd.DataFrame({"Day": recent.day.dt.strftime("%d %b"), "Symbol": recent.symbol, "Setup": recent.setup,
+                               "Side": recent.side.map({1: "▲ Long", -1: "▼ Short"}), "Result": recent.r.map(lambda v: f"{v:+.2f}R"),
+                               "Source": recent.source, "Main reason": recent.why})
+            st.dataframe(lt, hide_index=True, width="stretch")
+    if st.button("Re-train Coach now"):
+        train_coach.clear()
+        coach_trades.clear()
+        with st.spinner("Coach is studying recent sessions…"):
+            n = train_coach(demo, symbols, f"{pd.Timestamp.now(tz=ce.IST):%Y-%m-%d}",
+                            f"{A.setup}|{A.shorts}|{A.rr}|{A.min_relvol}|{A.cost_pct}", A)
+        st.success(f"Coach studied {n} signals.")
+    st.caption("Agents: 🧭 Pulse market mood · 🛡️ Sentinel news & events · 🗣️ Narrator explanations · "
+               "🎓 Coach learning & post-mortems · 🔔 Alerts. Events are kept 7 days; the trade journal 90 days.")
