@@ -15,9 +15,30 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-import agents as ag
-import cheetah_engine as ce
-from store import SUPABASE_SQL, Store
+import importlib
+import os
+import sys
+
+
+def _fresh_local_modules():
+    """Streamlit Cloud keeps imported helper modules in memory across redeploys, so an update can run new
+    app.py against old store/agents code. Reload any local module whose file changed since it was loaded."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    for name in ("cheetah_engine", "store", "agents"):          # dependency order
+        mod = sys.modules.get(name)
+        path = os.path.join(here, name + ".py")
+        if mod is None or not os.path.exists(path):
+            continue
+        mtime = os.path.getmtime(path)
+        if getattr(mod, "__stocklab_mtime__", None) != mtime:
+            mod = importlib.reload(mod)
+            mod.__stocklab_mtime__ = mtime
+
+
+_fresh_local_modules()
+import agents as ag  # noqa: E402
+import cheetah_engine as ce  # noqa: E402
+from store import SUPABASE_SQL, Store  # noqa: E402
 
 st.set_page_config(page_title="AIShorts Stock Lab (Beta)", page_icon="📈", layout="wide",
                    initial_sidebar_state="collapsed")
