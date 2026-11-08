@@ -1,71 +1,127 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-font="m">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Stock Lab (Beta) — AIShorts</title>
 <meta name="description" content="Stock Lab beta: rule-based NSE intraday and swing setups with entry, stop and target levels. Educational tool, under trials.">
 <meta name="robots" content="noindex, nofollow">
+<script>
+  // apply the saved text size before first paint
+  try { var f = localStorage.getItem('stocklab_font'); if (/^[sml]$/.test(f)) document.documentElement.setAttribute('data-font', f); } catch (e) {}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 <style>
   :root{
     --paper:#ffffff; --paper-2:#f7f7f5; --ink:#121212; --body:#333; --meta:#666;
-    --rule:#dcdcd6; --link:#326891; --live:#d0021b;
+    --rule:#dcdcd6; --link:#326891; --live:#d0021b; --tick-bg:#121212; --tick-ink:#f7f7f5;
+    --fs:1;
   }
+  html[data-font="s"]{--fs:.9} html[data-font="l"]{--fs:1.18}
   @media (prefers-color-scheme: dark){
     :root{ --paper:#121212; --paper-2:#1b1b1b; --ink:#f2f2ee; --body:#d6d6d0; --meta:#9a9a94;
-           --rule:#33332f; --link:#7fb0d6; --live:#ff5a5f; }
+           --rule:#33332f; --link:#7fb0d6; --live:#ff5a5f; --tick-bg:#f2f2ee; --tick-ink:#121212; }
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
   body{background:var(--paper);color:var(--body);font-family:"Newsreader",Georgia,serif;
        display:flex;flex-direction:column;min-height:100vh}
   a{color:var(--link)}
-  header{border-bottom:2px solid var(--ink);padding:10px 16px 8px;display:flex;align-items:center;
-         gap:14px;flex-wrap:wrap}
-  .home{font-family:"UnifrakturCook",serif;font-size:28px;color:var(--ink);text-decoration:none;line-height:1}
+  button{font:inherit;cursor:pointer}
+  :focus-visible{outline:2px solid var(--link);outline-offset:2px}
+
+  /* header */
+  header{border-bottom:2px solid var(--ink);padding:10px 16px 8px;display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap}
+  .home{font-family:"UnifrakturCook",serif;font-size:calc(28px * var(--fs));color:var(--ink);text-decoration:none;line-height:1}
   .title{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;flex:1;min-width:200px}
-  h1{margin:0;font-family:"Libre Franklin",sans-serif;font-weight:800;font-size:20px;color:var(--ink);
-     letter-spacing:.2px}
+  h1{margin:0;font-family:"Libre Franklin",sans-serif;font-weight:800;font-size:calc(20px * var(--fs));color:var(--ink);letter-spacing:.2px}
   .beta{font-family:"Libre Franklin",sans-serif;font-size:10px;font-weight:800;letter-spacing:1.4px;
         text-transform:uppercase;color:var(--paper);background:var(--live);padding:3px 7px;border-radius:2px}
+  .tools{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
   .full{font-family:"Libre Franklin",sans-serif;font-size:12px;font-weight:700;text-transform:uppercase;
-        letter-spacing:1px;color:var(--ink);border:1px solid var(--ink);padding:6px 10px;text-decoration:none;
-        white-space:nowrap}
+        letter-spacing:1px;color:var(--ink);border:1px solid var(--ink);padding:7px 10px;text-decoration:none;white-space:nowrap}
   .full:hover{background:var(--ink);color:var(--paper)}
-  .notice{font-family:"Libre Franklin",sans-serif;font-size:12px;line-height:1.45;color:var(--meta);
-          background:var(--paper-2);border-bottom:1px solid var(--rule);padding:8px 16px}
-  .notice b{color:var(--ink)}
+  .size{display:inline-flex;align-items:center;border:1px solid var(--ink);font-family:"Libre Franklin",sans-serif}
+  .size span{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--meta);padding:0 8px}
+  .size button{border:0;border-left:1px solid var(--rule);background:transparent;color:var(--ink);
+               min-width:36px;height:32px;font-weight:700;line-height:1}
+  .size button[data-f="s"]{font-size:12px} .size button[data-f="m"]{font-size:15px} .size button[data-f="l"]{font-size:18px}
+  .size button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+
+  /* running disclaimer banner */
+  .ticker{position:relative;display:flex;align-items:stretch;background:var(--tick-bg);color:var(--tick-ink);
+          font-family:"Libre Franklin",sans-serif;font-size:calc(13px * var(--fs));border-bottom:1px solid var(--ink)}
+  .ticker[hidden]{display:none}
+  .ticker .lab{flex:none;display:flex;align-items:center;gap:6px;padding:0 10px 0 14px;font-weight:800;font-size:11px;
+               letter-spacing:1.2px;text-transform:uppercase;background:var(--live);color:#fff}
+  .ticker .lab::before{content:"";width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .ticker .rail{flex:1;overflow:hidden;white-space:nowrap;padding:9px 0;
+                mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);
+                -webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+  .ticker .track{display:inline-flex;animation:run var(--dur,38s) linear infinite}
+  .ticker .track > span{padding-right:64px}
+  .ticker b{color:inherit}
+  .ticker:hover .track,.ticker:focus-within .track,.ticker.paused .track{animation-play-state:paused}
+  @keyframes run{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker .x{flex:none;border:0;border-left:1px solid rgba(127,127,127,.4);background:transparent;color:inherit;
+             width:44px;font-size:20px;line-height:1}
+  .ticker .x:hover{background:rgba(127,127,127,.2)}
+  @media (prefers-reduced-motion: reduce){
+    .ticker .rail{white-space:normal;mask-image:none;-webkit-mask-image:none;padding:9px 12px}
+    .ticker .track{animation:none;display:block}
+    .ticker .track > span + span{display:none}
+    .ticker .lab::before{animation:none}
+  }
+
   main{flex:1;position:relative;display:flex;min-height:520px}
-  iframe{flex:1;border:0;width:100%;min-height:calc(100vh - 150px);background:var(--paper)}
+  iframe{flex:1;border:0;width:100%;min-height:calc(100vh - 140px);background:var(--paper)}
   .waking{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
           justify-content:center;gap:10px;text-align:center;padding:24px;background:var(--paper);
-          font-family:"Libre Franklin",sans-serif;color:var(--meta);font-size:14px;transition:opacity .4s}
+          font-family:"Libre Franklin",sans-serif;color:var(--meta);font-size:calc(14px * var(--fs));transition:opacity .4s}
   .waking.gone{opacity:0;pointer-events:none}
   .bar{width:160px;height:3px;background:var(--rule);overflow:hidden}
   .bar i{display:block;width:40%;height:100%;background:var(--ink);animation:slide 1.2s ease-in-out infinite}
   @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(250%)}}
   @media (prefers-reduced-motion: reduce){.bar i{animation:none;width:100%}}
-  .setup{max-width:640px;margin:32px auto;padding:0 16px;font-size:17px;line-height:1.55}
+  .setup{max-width:640px;margin:32px auto;padding:0 16px;font-size:calc(17px * var(--fs));line-height:1.55}
   .setup h2{font-family:"Libre Franklin",sans-serif;color:var(--ink);font-size:18px}
-  .setup code{font-size:14px;background:var(--paper-2);padding:1px 5px}
   footer{border-top:1px solid var(--rule);padding:10px 16px calc(10px + env(safe-area-inset-bottom));font-family:"Libre Franklin",sans-serif;
-         font-size:11px;color:var(--meta);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+         font-size:calc(11px * var(--fs));color:var(--meta);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  footer button{border:0;background:none;color:var(--link);text-decoration:underline;padding:0;font-size:inherit}
+
+  /* cookie consent */
+  .cookie{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:50;max-width:560px;margin:0 auto;
+          background:var(--paper);color:var(--body);border:1px solid var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.18);
+          padding:14px 16px;font-family:"Libre Franklin",sans-serif;font-size:calc(13px * var(--fs));line-height:1.5;
+          transform:translateY(0);transition:transform .3s,opacity .3s}
+  .cookie[hidden]{display:none}
+  .cookie h2{margin:0 0 4px;font-size:calc(15px * var(--fs));color:var(--ink)}
+  .cookie p{margin:0 0 10px}
+  .cookie .row{display:flex;gap:8px;flex-wrap:wrap}
+  .cookie .row button{flex:1 1 140px;min-height:40px;font-weight:700;font-size:13px;border:1px solid var(--ink)}
+  .cookie .acc{background:var(--ink);color:var(--paper)}
+  .cookie .ess{background:var(--paper);color:var(--ink)}
+
   @media (max-width:560px){
-    .home{font-size:22px} h1{font-size:17px}
-    .notice{font-size:11px}
+    header{padding:8px 12px}
+    .home{font-size:calc(22px * var(--fs))} h1{font-size:calc(17px * var(--fs))}
+    .tools{width:100%;justify-content:space-between}
     iframe{min-height:calc(100vh - 170px)}
     footer{padding-bottom:calc(84px + env(safe-area-inset-bottom))}  /* clear Safari's floating toolbar */
+    .cookie{bottom:calc(76px + env(safe-area-inset-bottom))}
   }
 </style>
 </head>
 <body>
 <!--
   STOCK LAB (BETA)
-  The app itself runs on Streamlit Community Cloud from apps/stock-lab/app.py in this repo.
-  After deploying it at share.streamlit.io, paste its address into data-app-url below.
+  The app runs on Streamlit Community Cloud from apps/stock-lab/app.py in this repo; its address is in data-app-url.
+  • Disclaimer ticker: closing it hides it until the page is reloaded (by design — it returns on every visit/refresh).
+  • Text size: saved in this browser (localStorage 'stocklab_font') and passed to the app as ?font=s|m|l.
+  • Cookie choice: saved site-wide in localStorage + cookie 'aishorts_cookie_consent' for 180 days; reuse on other pages.
 -->
 <header>
   <a class="home" href="index.html" title="Back to AIShorts">AIShorts</a>
@@ -73,13 +129,27 @@
     <h1>Stock Lab</h1>
     <span class="beta">Beta · Under trials</span>
   </div>
-  <a class="full" id="fullLink" href="#" target="_blank" rel="noopener" hidden>Open full screen &#8599;</a>
+  <div class="tools">
+    <div class="size" role="group" aria-label="Text size">
+      <span aria-hidden="true">Text</span>
+      <button type="button" data-f="s" aria-pressed="false" aria-label="Small text" title="Small text">A</button>
+      <button type="button" data-f="m" aria-pressed="true" aria-label="Medium text" title="Medium text">A</button>
+      <button type="button" data-f="l" aria-pressed="false" aria-label="Large text" title="Large text">A</button>
+    </div>
+    <a class="full" id="fullLink" href="#" target="_blank" rel="noopener" hidden>Open full screen &#8599;</a>
+  </div>
 </header>
 
-<div class="notice">
-  <b>Educational tool, not investment advice.</b> AIShorts is not a SEBI-registered investment adviser or
-  research analyst. Signals are rule-based, prices can lag by several minutes, and past results do not
-  predict future returns. Confirm on your broker's chart and paper trade before risking money.
+<div class="ticker" id="ticker" role="region" aria-label="Disclaimer">
+  <div class="lab">Notice</div>
+  <div class="rail" tabindex="0" aria-label="Disclaimer — tap to pause">
+    <div class="track" id="track">
+      <span id="msg"><b>Educational tool, not investment advice.</b> AIShorts is not a SEBI-registered investment adviser or
+        research analyst. Signals are rule-based, prices can lag by several minutes, and past results do not
+        predict future returns. Confirm on your broker's chart and paper trade before risking money.</span>
+    </div>
+  </div>
+  <button type="button" class="x" id="tickerClose" aria-label="Close disclaimer" title="Close (it returns when you reload the page)">&times;</button>
 </div>
 
 <main id="stage" data-app-url="https://aishorts-stocklab.streamlit.app">
@@ -91,33 +161,103 @@
 
 <footer>
   <span>Stock Lab · CHEETAH engine · NSE intraday &amp; swing setups</span>
-  <span><a href="index.html">Home</a> · <a href="privacy.html">Privacy</a> · <a href="contact.html">Feedback</a></span>
+  <span><a href="index.html">Home</a> · <a href="privacy.html">Privacy</a> · <button type="button" id="cookieSettings">Cookie settings</button> · <a href="contact.html">Feedback</a></span>
 </footer>
+
+<div class="cookie" id="cookie" role="dialog" aria-live="polite" aria-labelledby="cookieTitle" hidden>
+  <h2 id="cookieTitle">Cookies on AIShorts</h2>
+  <p>We use essential cookies to run Stock Lab and remember your settings. With your permission we'd also use
+    analytics and advertising cookies to understand usage and keep the site free.
+    <a href="privacy.html">Privacy policy</a></p>
+  <div class="row">
+    <button type="button" class="ess" data-choice="essential">Essential only</button>
+    <button type="button" class="acc" data-choice="all">Accept all</button>
+  </div>
+</div>
 
 <script>
 (function(){
+  var store = {
+    get: function(k){ try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  /* ---------- running disclaimer: duplicate text for a seamless loop; closing lasts until reload ---------- */
+  var ticker = document.getElementById('ticker'), track = document.getElementById('track'),
+      msg = document.getElementById('msg');
+  var copy = msg.cloneNode(true); copy.removeAttribute('id'); copy.setAttribute('aria-hidden', 'true');
+  track.appendChild(copy);
+  function pace(){ track.style.setProperty('--dur', Math.max(20, msg.offsetWidth / 55) + 's'); }
+  pace(); window.addEventListener('resize', pace);
+  ticker.querySelector('.rail').addEventListener('click', function(){ ticker.classList.toggle('paused'); });
+  document.getElementById('tickerClose').addEventListener('click', function(){ ticker.hidden = true; });
+
+  /* ---------- text size ---------- */
+  var root = document.documentElement;
+  var font = /^[sml]$/.test(store.get('stocklab_font') || '') ? store.get('stocklab_font') : 'm';
+  var btns = document.querySelectorAll('.size button');
+  function paintSize(){
+    root.setAttribute('data-font', font);
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.getAttribute('data-f') === font)); });
+    pace();
+  }
+  paintSize();
+
+  /* ---------- app iframe ---------- */
   var stage = document.getElementById('stage');
   var url = (stage.getAttribute('data-app-url') || '').trim().replace(/\/+$/, '');
-  if (!url) { document.getElementById('setup').hidden = false; return; }
+  var full = document.getElementById('fullLink'), frame = null, wait = null;
+  function appUrl(embed){
+    return url + '/?' + (embed ? 'embed=true&embed_options=light_theme&src=aishorts&' : '') + 'font=' + font;
+  }
+  function load(){
+    if (!url) { document.getElementById('setup').hidden = false; return; }
+    full.href = appUrl(false); full.hidden = false;
+    if (!wait) {
+      wait = document.createElement('div'); wait.className = 'waking';
+      wait.innerHTML = '<div class="bar"><i></i></div><div>Starting Stock Lab…</div>' +
+        '<div style="font-size:12px;max-width:340px">The free server sleeps when nobody is using it, so the first load can take up to a minute. ' +
+        'If it asks you to wake the app, tap the button.</div>';
+      stage.appendChild(wait);
+    }
+    wait.classList.remove('gone');
+    if (!frame) {
+      frame = document.createElement('iframe'); frame.title = 'Stock Lab app';
+      frame.setAttribute('allow', 'clipboard-write');
+      frame.addEventListener('load', function(){ wait.classList.add('gone'); });
+      stage.insertBefore(frame, wait);
+    }
+    frame.src = appUrl(true);
+    setTimeout(function(){ wait.classList.add('gone'); }, 45000);
+  }
+  load();
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      var f = b.getAttribute('data-f'); if (f === font) return;
+      font = f; store.set('stocklab_font', f); paintSize(); load();   // reload app at the new size
+    });
+  });
 
-  var full = document.getElementById('fullLink');
-  full.href = url; full.hidden = false;
-
-  var wait = document.createElement('div');
-  wait.className = 'waking';
-  wait.innerHTML = '<div class="bar"><i></i></div><div>Starting Stock Lab…</div>' +
-    '<div style="font-size:12px;max-width:340px">The free server sleeps when nobody is using it, so the first load can take up to a minute. ' +
-    'If it asks you to wake the app, tap the button.</div>';
-
-  var f = document.createElement('iframe');
-  f.title = 'Stock Lab app';
-  f.src = url + '/?embed=true&embed_options=light_theme';  // app is styled as light newsprint
-  f.setAttribute('allow', 'clipboard-write');
-  f.addEventListener('load', function(){ wait.classList.add('gone'); });
-  setTimeout(function(){ wait.classList.add('gone'); }, 45000);
-
-  stage.appendChild(f);
-  stage.appendChild(wait);
+  /* ---------- cookie consent (site-wide key, 180 days) ---------- */
+  var KEY = 'aishorts_cookie_consent', box = document.getElementById('cookie');
+  function saved(){
+    try { var v = JSON.parse(store.get(KEY) || 'null');
+          return v && (Date.now() - v.ts) < 180 * 864e5 ? v : null; } catch (e) { return null; }
+  }
+  function choose(c){
+    var v = { choice: c, ts: Date.now() };
+    store.set(KEY, JSON.stringify(v));
+    document.cookie = KEY + '=' + c + ';max-age=' + (180 * 86400) + ';path=/;SameSite=Lax' + (location.protocol === 'https:' ? ';Secure' : '');
+    box.hidden = true;
+    window.dispatchEvent(new CustomEvent('aishorts:consent', { detail: v }));
+  }
+  box.querySelectorAll('button[data-choice]').forEach(function(b){
+    b.addEventListener('click', function(){ choose(b.getAttribute('data-choice')); });
+  });
+  document.getElementById('cookieSettings').addEventListener('click', function(){
+    box.hidden = false; box.querySelector('.acc').focus();
+  });
+  if (!saved()) box.hidden = false;
 })();
 </script>
 </body>

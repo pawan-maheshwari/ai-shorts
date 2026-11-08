@@ -519,12 +519,31 @@ ADMIN_PIN = _secret("ADMIN_PIN")
 cfg_slot.caption(f"Agent settings v{CFG_STATE['version']} · exit: {CFG['exit_policy']} · Coach filter "
                  f"{'on' if CFG['coach_filter'] else 'off'} · review in 🎯 Agent scores")
 
+# ============================================================================ text size
+FONT_ZOOM = {"s": 0.9, "m": 1.0, "l": 1.18}
+EMBEDDED = st.query_params.get("src") == "aishorts"
+_fq = st.query_params.get("font", "m")
+st.session_state.setdefault("font", _fq if _fq in FONT_ZOOM else "m")
+with st.sidebar:
+    _f = st.radio("Text size", ["s", "m", "l"], horizontal=True, key="font",
+                  format_func={"s": "Small", "m": "Medium", "l": "Large"}.get,
+                  help="Saved in the page address, so bookmarks and the aishorts.biz page keep your choice.")
+if st.query_params.get("font") != _f:
+    st.query_params["font"] = _f
+if FONT_ZOOM[_f] != 1.0:
+    st.markdown(f"""<style>
+    [data-testid="stMainBlockContainer"], [data-testid="stSidebarContent"] {{ zoom: {FONT_ZOOM[_f]}; }}
+    </style>""", unsafe_allow_html=True)
+
 # ============================================================================ masthead
 st.markdown(
-    '<div class="sl mast"><div><span class="brand">Stock Lab</span><span class="beta">Beta · Under trials</span></div>'
-    '<div class="mast-r">CHEETAH engine · NSE · AIShorts</div></div>'
-    '<div class="dek">Rule-based setups with entry, stop and target. Educational tool — not investment advice. '
-    'Prices can lag a few minutes; confirm on your broker\'s chart. Settings: tap <b>›</b> top-left.</div>',
+    ('' if EMBEDDED else
+     '<div class="sl mast"><div><span class="brand">Stock Lab</span><span class="beta">Beta · Under trials</span></div>'
+     '<div class="mast-r">CHEETAH engine · NSE · AIShorts</div></div>')
+    + ('<div class="dek">Rule-based setups with entry, stop and target. Settings: tap <b>›</b> top-left.</div>'
+       if EMBEDDED else
+       '<div class="dek">Rule-based setups with entry, stop and target. Educational tool — not investment advice. '
+       'Prices can lag a few minutes; confirm on your broker\'s chart. Settings: tap <b>›</b> top-left.</div>'),
     unsafe_allow_html=True)
 if demo:
     st.info("Demo mode: synthetic prices. Switch it off in Settings for the live market feed.")
@@ -560,7 +579,7 @@ with tab_i:
             ss.tok += 1
             ss.tok_t = now_t
         with st.spinner("Pulling the latest 5-minute bars…"):
-            data, fetched = fetch_intraday(symbols, demo, 15, ss.tok)
+            data, fetched = fetch_intraday(symbols, demo, 15, f"{ss.tok}-{int(ss.tok_t // 60)}")
         now = pd.Timestamp.now(tz=ce.IST)
         is_open, mkt_txt = market_state(now)
         if demo:
@@ -592,7 +611,7 @@ with tab_i:
         day_s = str(day)
         with st.spinner("Coach is studying recent sessions (once a day)…"):
             train_coach(demo, symbols, day_s, ARGS_KEY, A)
-        idx = fetch_index_cached(demo, 0 if demo else ss.tok)
+        idx = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}")
         mood = ag.pulse(idx, day, mults=CFG["mults"])
         size_mult = mood["mult"] if CFG["pulse_sizing"] else 1.0
         store.log("Pulse", "regime", f"{mood['regime']} — position size ×{size_mult:g}. " + "; ".join(mood["reasons"]),
