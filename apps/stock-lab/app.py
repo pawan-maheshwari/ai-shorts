@@ -182,14 +182,28 @@ API_KEY = _secret("ANTHROPIC_API_KEY")
 
 
 @st.cache_resource
-def get_store(demo):
-    """Live data → Supabase if configured, else local file. Demo data never touches the live store."""
+def _make_store(demo, schema):
+    """Live data → Supabase if configured, else local file. Demo data never touches the live store.
+    `schema` changes whenever store.py changes, so an app update never reuses a stale connection object."""
     if demo:
         import os
         return Store(path=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".data", "demo.db"))
     st_ = Store(_secret("SUPABASE_URL"), _secret("SUPABASE_KEY"))
     st_.purge()
     return st_
+
+
+def _store_schema():
+    import hashlib, inspect, store as _sm
+    return hashlib.md5(inspect.getsource(_sm).encode()).hexdigest()[:10]
+
+
+def get_store(demo):
+    s_ = _make_store(demo, _store_schema())
+    if not all(hasattr(s_, m) for m in ("kv_get", "kv_set", "trades", "events", "log")):
+        _make_store.clear()
+        s_ = _make_store(demo, _store_schema())
+    return s_
 
 
 @st.cache_data(ttl=3600, show_spinner=False, max_entries=6)
