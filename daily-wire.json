@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-08",
+      "title": "The Job Forecast",
+      "headline": "Fearing AI disruption, white-collar workers are quitting their jobs",
+      "source": "The Guardian",
+      "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQTnFTWWhzamcxS0dYX1JlNHRkaDhzdlhEbkhZRGNWdlV1REhMdkFPNmlGRmJtTHJnbjNzQ053aUtoQy1jYWlkcFNIaGNRS2ZNY1JmQlJDcEZ4V0Nodm10N05WcDFNcHBiczdtVUNZRmNFQ2RMNHAzQ01kS2RWRW5GS211QQ?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "jobs",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "AI will do every job by Friday!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "I’ve already trained it to do my homework. And my chores."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that forecast without data."
+        }
+      ]
+    },
+    {
       "date": "2026-11-07",
       "title": "The Trillion-Dollar Tuesday",
       "headline": "AI is the new dating dealbreaker",
