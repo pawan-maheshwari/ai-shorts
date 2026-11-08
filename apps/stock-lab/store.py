@@ -36,7 +36,12 @@ create table if not exists stocklab_trades (
 );
 create index if not exists stocklab_trades_day on stocklab_trades (day desc);
 
+create table if not exists stocklab_kv (
+  key text primary key, value jsonb, updated timestamptz default now()
+);
+
 alter table stocklab_events enable row level security;
+alter table stocklab_kv enable row level security;
 alter table stocklab_trades enable row level security;
 -- The app uses the service-role key from Streamlit secrets (server side only), which bypasses RLS.
 """
@@ -85,6 +90,7 @@ class Store:
             create table if not exists stocklab_trades (key text primary key, ts text, day text, source text,
               symbol text, setup text, side integer, entry real, stop real, target real, exit real, r real,
               status text, features text, reason text, updated text);
+            create table if not exists stocklab_kv (key text primary key, value text, updated text);
             """)
         self.last_error = None
 
@@ -203,6 +209,32 @@ class Store:
                 with self._lock:
                     self.db.execute("delete from stocklab_events where ts < ?", (ev,))
                     self.db.execute("delete from stocklab_trades where day < ?", (tr,))
+                    self.db.commit()
+        except Exception as e:
+            self.last_error = str(e)
+
+    # ------------------------------------------------------------------ key/value (agent config, proposals)
+    def kv_get(self, key, default=None):
+        try:
+            if self.remote:
+                rows = self._get("stocklab_kv", {"select": "value", "key": f"eq.{key}"})
+                return rows[0]["value"] if rows else default
+            with self._lock:
+                row = self.db.execute("select value from stocklab_kv where key = ?", (key,)).fetchone()
+            return json.loads(row[0]) if row else default
+        except Exception as e:
+            self.last_error = str(e)
+            return default
+
+    def kv_set(self, key, value):
+        try:
+            if self.remote:
+                self._post("stocklab_kv", [dict(key=key, value=value, updated=_now().isoformat())],
+                           "resolution=merge-duplicates,return=minimal", "key")
+            else:
+                with self._lock:
+                    self.db.execute("insert or replace into stocklab_kv (key, value, updated) values (?,?,?)",
+                                    (key, json.dumps(value, default=str), _now().isoformat()))
                     self.db.commit()
         except Exception as e:
             self.last_error = str(e)

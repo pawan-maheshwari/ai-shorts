@@ -214,13 +214,21 @@ def narrate_cached(key, status, row_json, mood_json, sent_json, score_json, use_
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
-def train_coach(demo, symbols, day, args_key, _a):
-    """Once a day: replay recent sessions so the Coach learns from every signal, not just the ones you saw."""
+def history_cached(demo, symbols, day, args_key, _a):
+    """Point-in-time replay of recent sessions: every signal, its features at signal time, every exit policy."""
     data = ce.demo_intraday(days=45) if demo else ce.yahoo_intraday(list(symbols), 59)
     if not data:
-        return 0
+        return [], {}
     idx = ag.fetch_index(demo, data) if demo else fetch_index_cached(False, f"train-{day}")
-    rows = ag.history_trades(data, idx, _a)
+    return ag.replay(data, idx, _a)
+
+
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
+def train_coach(demo, symbols, day, args_key, _a):
+    """Once a day: replay recent sessions so the Coach learns from every signal, not just the ones you saw."""
+    rows, _ = history_cached(demo, symbols, day, args_key, _a)
+    if not rows:
+        return 0
     store = get_store(demo)
     store.upsert_trades(rows)
     store.log("Coach", "training", f"Studied {len(rows)} signals from the last {len({r['day'] for r in rows})} sessions",
@@ -231,6 +239,50 @@ def train_coach(demo, symbols, day, args_key, _a):
 @st.cache_data(ttl=300, show_spinner=False, max_entries=4)
 def coach_trades(demo, token):
     return get_store(demo).trades()
+
+
+@st.cache_data(ttl=3600, show_spinner=False, max_entries=24)
+def scorecard_cached(demo, symbols, day, args_key, cfg_json, risk_rs, live_token, _a):
+    rows, corr = history_cached(demo, symbols, day, args_key, _a)
+    tr = get_store(demo).trades()
+    live = tr[tr.source == "live"] if not tr.empty else tr
+    return ag.scorecard(rows, json.loads(cfg_json), live, corr, risk_rs)
+
+
+def now_ist():
+    return pd.Timestamp.now(tz=ce.IST)
+
+
+def load_cfg(store):
+    state = store.kv_get("agent_config")
+    if not state or "active" not in state:
+        p = ag.merged({})
+        state = dict(version=1, active=p, history=[dict(version=1, ts=now_ist().isoformat(), by="system",
+                                                        note="Initial default settings", change={}, params=p)])
+        store.kv_set("agent_config", state)
+    state["active"] = ag.merged(state["active"])
+    return state
+
+
+def save_cfg(store, state, params, note, by, change):
+    v = int(state["version"]) + 1
+    params = ag.merged(params)
+    hist = (state.get("history") or []) + [dict(version=v, ts=now_ist().isoformat(), by=by, note=note,
+                                                change=change, params=params)]
+    store.kv_set("agent_config", dict(version=v, active=params, history=hist[-60:]))
+    store.log("Reviewer", "config", f"Settings v{v} by {by}: {note}", detail=dict(change=change, version=v),
+              dkey=f"cfg|{v}|{now_ist():%Y%m%d%H%M%S}")
+    for c_ in [scorecard_cached]:
+        c_.clear()
+    return v
+
+
+def cfg_diff(a, b):
+    out = {}
+    for k in b:
+        if a.get(k) != b.get(k):
+            out[k] = b[k] if k != "mults" else {m: v for m, v in b[k].items() if a.get(k, {}).get(m) != v}
+    return out
 
 
 def inr(x, dp=2):
@@ -317,9 +369,13 @@ def signal_card(r, exit_time, agt=None):
     side_cls = "long" if r.side == 1 else "short"
     side_txt = "▲ Long" if r.side == 1 else "▼ Short"
     st_txt = str(r.status)
-    st_cls = "open" if st_txt == "OPEN" else "win" if "TARGET" in st_txt else "loss" if "STOP" in st_txt else "time"
-    st_icon = {"open": "●", "win": "✓", "loss": "✕", "time": "■"}[st_cls]
     risk_ps = abs(r.entry - r.stop)
+    if st_txt == "OPEN":
+        st_cls = "open"
+    else:
+        _rr = (r.exit_price - r.entry) * r.side / risk_ps if risk_ps and not pd.isna(r.exit_price) else 0
+        st_cls = "win" if _rr > 0.05 else "loss" if _rr < -0.05 else "time"
+    st_icon = {"open": "●", "win": "✓", "loss": "✕", "time": "■"}[st_cls]
     qty = 0 if pd.isna(r.qty) else int(r.qty)
     # where price is now (or where it exited) on the stop → target track
     ref = r.last if st_cls == "open" or pd.isna(r.exit_price) else r.exit_price
@@ -331,6 +387,8 @@ def signal_card(r, exit_time, agt=None):
     ref_lab = "Now" if st_cls == "open" else "Exit"
     stop_pct = (r.stop / r.entry - 1) * 100
     tgt_pct = (r.target / r.entry - 1) * 100
+    if agt and agt.get("exit_r") is not None and st_cls != "open":
+        rmult = agt["exit_r"]
     if st_cls == "open":
         foot = (f"Exit at the stop, the target, or {exit_time} — whichever comes first. "
                 f"Running <b class='{'up' if rmult >= 0 else 'down'}'>{rmult:+.2f}R</b> "
@@ -377,7 +435,16 @@ def agent_strip(a):
                      f'{sc["conf"] * 100:.0f}% win odds · {v}</span>')
     else:
         chips.append('<span class="ag"><i>Coach</i>learning</span>')
-    chips.append(f'<span class="ag"><i>Agent-sized qty</i>{a["qty_adj"]:,} (×{a["mult"]:g})</span>')
+    if a.get("exp_r") is not None:
+        er = a["exp_r"]
+        chips.append(f'<span class="ag {"good" if er > 0.05 else "bad" if er < 0 else ""}"><i>Expected</i>'
+                     f'{er:+.2f}R ≈ {"₹" if er >= 0 else "−₹"}{abs(er) * a["risk_rs"]:,.0f}</span>')
+    ex = a["exit"]
+    chips.append(f'<span class="ag"><i>Exit · {html.escape(a["policy"])}</i>'
+                 + (f'stop now {inr(ex["stop_now"])}' if a["is_open"] else html.escape(a["status"])) + '</span>')
+    v = a["risk_verdict"]
+    chips.append(f'<span class="ag {"bad" if v == "BLOCK" else "warn" if v == "REDUCE" else "good"}"><i>Risk</i>'
+                 f'{v} · qty {a["qty_final"]:,}</span>')
     pm = f'<div class="pm"><b>Coach post-mortem:</b> {html.escape(a["pm"]["primary"])}</div>' if a.get("pm") else ""
     return f'<div class="agents">{"".join(chips)}</div>{pm}'
 
@@ -402,14 +469,20 @@ with st.sidebar:
     wl_text = st.text_area("Watchlist (NSE symbols)", ", ".join(ce.WATCHLIST), height=150)
     symbols = tuple(sorted({s.strip().upper() for s in wl_text.replace("\n", ",").split(",") if s.strip()}))
     st.caption("AGENTS")
-    coach_filter = st.toggle("Coach hides 'Caution' signals", value=False,
-                             help="Signals the Coach rates below the usual win rate move to a collapsed section "
-                                  "and don't raise alerts.")
+    cfg_slot = st.empty()
     st.caption("Claude API: " + ("connected — richer news reading and explanations" if API_KEY
                                  else "not set — agents run rule-based"))
 
 A = intraday_args(setup=setup, shorts=shorts, rr=rr, min_relvol=min_relvol, capital=float(capital),
                   risk_pct=risk_pct, cost_pct=cost_pct)
+STORE = get_store(demo)
+CFG_STATE = load_cfg(STORE)
+CFG = CFG_STATE["active"]
+RISK_RS = A.capital * A.risk_pct / 100
+ARGS_KEY = f"{A.setup}|{A.shorts}|{A.rr}|{A.min_relvol}|{A.cost_pct}"
+ADMIN_PIN = _secret("ADMIN_PIN")
+cfg_slot.caption(f"Agent settings v{CFG_STATE['version']} · exit: {CFG['exit_policy']} · Coach filter "
+                 f"{'on' if CFG['coach_filter'] else 'off'} · review in 🎯 Agent scores")
 
 # ============================================================================ masthead
 st.markdown(
@@ -421,7 +494,8 @@ st.markdown(
 if demo:
     st.info("Demo mode: synthetic prices. Switch it off in Settings for the live market feed.")
 
-tab_i, tab_s, tab_b, tab_a = st.tabs(["⚡ Intraday", "📈 Swing picks", "🧪 Backtest", "🗂 Audit log"])
+tab_i, tab_s, tab_b, tab_g, tab_a = st.tabs(["⚡ Intraday", "📈 Swing picks", "🧪 Backtest", "🎯 Agent scores",
+                                             "🗂 Audit log"])
 
 # ============================================================================ intraday
 REFRESH = {"Off": 0, "30 seconds": 30, "1 minute": 60, "2 minutes": 120, "5 minutes": 300,
@@ -478,17 +552,17 @@ with tab_i:
         sig = sig.sort_values(["is_open", "signal_time"], ascending=[False, False])
 
         # ------------------------------------------------ agents
-        store = get_store(demo)
+        store = STORE
         day = S.date.iloc[0]
         day_s = str(day)
-        args_key = f"{A.setup}|{A.shorts}|{A.rr}|{A.min_relvol}|{A.cost_pct}"
         with st.spinner("Coach is studying recent sessions (once a day)…"):
-            train_coach(demo, symbols, day_s, args_key, A)
+            train_coach(demo, symbols, day_s, ARGS_KEY, A)
         idx = fetch_index_cached(demo, 0 if demo else ss.tok)
-        mood = ag.pulse(idx, day)
-        store.log("Pulse", "regime", f"{mood['regime']} — position size ×{mood['mult']:g}. " + "; ".join(mood["reasons"]),
+        mood = ag.pulse(idx, day, mults=CFG["mults"])
+        size_mult = mood["mult"] if CFG["pulse_sizing"] else 1.0
+        store.log("Pulse", "regime", f"{mood['regime']} — position size ×{size_mult:g}. " + "; ".join(mood["reasons"]),
                   detail=mood, dkey=f"pulse|{day_s}|{mood['regime']}")
-        coach = ag.Coach(coach_trades(demo, ss.tok))
+        coach = ag.Coach(coach_trades(demo, ss.tok), CFG["half_life"], day)
         targets = list(dict.fromkeys(sig.symbol.tolist() + S[S.in_play].symbol.tolist()))[:12]
         sents = {sym: sentinel_cached(sym, demo, day_s, bool(API_KEY)) for sym in targets}
         for sym, v in sents.items():
@@ -502,47 +576,83 @@ with tab_i:
                       f"{sum(v['level'] == 'WATCH' for v in sents.values())} to watch",
                       dkey=f"sentinel-scan|{day_s}|{','.join(sorted(targets))}")
         for l in coach.lessons():
-            store.log("Coach", "lesson", f"{l['direction'].title()}: {l['text']} — won "
-                      f"{l['win_rate'] * 100:.0f}% of {l['n']} trades (avg {l['avg_r']:+.2f}R)", detail=l,
+            store.log("Coach", "lesson", f"{l['direction'].title()}: {l['text']} — averages {l['avg_r']:+.2f}R, won "
+                      f"{l['win_rate'] * 100:.0f}% of {l['n']} trades", detail=l,
                       dkey=f"lesson|{day_s}|{l['feature']}={l['bucket']}|{l['direction']}")
 
         agt, journal = {}, []
         idd = ag.index_day(idx, day)
-        for _, r in sig.iterrows():
-            key = ag.trade_key(day, r.symbol, r.setup, r.side)
+        policy = CFG["exit_policy"]
+        sig["key"] = [ag.trade_key(day, a_, b_, c_) for a_, b_, c_ in zip(sig.symbol, sig.setup, sig.side)]
+        sig["qty_base"] = sig.qty
+        for ix, r in sig.iterrows():
+            key = r.key
             g = bars[r.symbol]
+            sd = dict(i=g.index.get_loc(r.signal_time), side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
+                      setup=r.setup)
+            sims = {p: ag.simulate_exit(g, sd, p, A) for p in ag.EXIT_POLICIES}
+            act = sims[policy]
+            status = ag.exit_status(act)
+            closed = status != "OPEN"
+            sig.at[ix, "status"] = status
+            sig.at[ix, "exit_price"] = act["exit"] if closed else np.nan
             sv = sents.get(r.symbol)
             news = "unknown" if sv is None else ("event" if sv["level"] != "CLEAR" else "clear")
             info = dict(relvol=r.relvol, gap_pct=r.gap_pct, or_pct=(r.or_high - r.or_low) / g.Open.iloc[0] * 100)
-            feats = ag.signal_features(g, dict(i=g.index.get_loc(r.signal_time), side=r.side, entry=r.entry,
-                                               setup=r.setup), info, idd, news)
-            sc = coach.score(feats)
-            closed = r.status != "OPEN"
-            r_mult = None
-            if closed and not pd.isna(r.exit_price):
-                rk = abs(r.entry - r.stop)
-                r_mult = ((r.exit_price - r.entry) * r.side - r.entry * A.cost_pct / 100) / rk if rk else 0
-            pm = coach.postmortem(feats, r_mult) if closed else None
-            status_w = "open" if not closed else "target" if "TARGET" in r.status else "stop" if "STOP" in r.status else "time"
-            journal.append(dict(key=key, ts=r.signal_time, day=day, source="live", symbol=r.symbol, setup=r.setup,
-                                side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
-                                exit=r.exit_price if closed else None, r=r_mult, status=status_w, features=feats,
-                                reason=pm["primary"] if pm else None))
+            m_at = ag.pulse(idx, day, asof=r.signal_time, mults=CFG["mults"])
+            feats = ag.signal_features(g, sd, info, idd, news, mood=m_at["regime"])
+            sc = coach.score(feats, CFG["coach_threshold"])
+            pm = coach.postmortem(feats, act["r"]) if closed else None
+            if closed:
+                feats_j = dict(feats, _exits={p: [round(v["r"], 4), v["t"].isoformat()] for p, v in sims.items()},
+                               _bias=m_at["bias"])
+                journal.append(dict(key=key, ts=r.signal_time, day=day, source="live", symbol=r.symbol, setup=r.setup,
+                                    side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
+                                    exit=sims["fixed"]["exit"], r=sims["fixed"]["r"], status=sims["fixed"]["reason"],
+                                    features=feats_j, reason=pm["primary"] if pm else None))
             if pm:
-                store.log("Coach", "post-mortem", f"{r.symbol} {r.setup} lost {r_mult:+.2f}R. Main reason: {pm['primary']}",
+                store.log("Coach", "post-mortem", f"{r.symbol} {r.setup} lost {act['r']:+.2f}R. Main reason: {pm['primary']}",
                           symbol=r.symbol, detail=dict(pm, features=feats), dkey=f"pm|{key}")
+            if act["note"]:
+                store.log("Exit", "manage", f"{r.symbol} ({policy}): {act['note']}", symbol=r.symbol,
+                          dkey=f"exit|{key}|{act['note']}")
             align = "with" if mood["bias"] == r.side else "against" if mood["bias"] == -r.side else "neutral"
             row_min = dict(symbol=r.symbol, side=int(r.side), setup=r.setup, entry=float(r.entry),
                            stop=float(r.stop), target=float(r.target))
-            narr = narrate_cached(key, r.status, json.dumps(row_min), json.dumps(mood, default=float),
+            narr = narrate_cached(key, status, json.dumps(row_min), json.dumps(mood, default=float),
                                   json.dumps(sv or {}, default=str), json.dumps(sc, default=float), bool(API_KEY))
             store.log("Narrator", "explain", narr, symbol=r.symbol, dkey=f"narr|{key}")
             agt[key] = dict(align=align, sentinel=sv["level"] if sv else None, sent=sv, coach=sc, pm=pm, narr=narr,
-                            mult=mood["mult"], qty_adj=int((0 if pd.isna(r.qty) else r.qty) * mood["mult"]),
-                            feats=feats)
+                            feats=feats, exp_r=sc.get("exp_r"), risk_rs=RISK_RS, exit=act, sims=sims, policy=policy,
+                            status=status, is_open=not closed, exit_r=act["r"] if closed else None)
         store.upsert_trades(journal)
-        sig["key"] = [ag.trade_key(day, a_, b_, c_) for a_, b_, c_ in zip(sig.symbol, sig.setup, sig.side)]
-        sig["caution"] = [agt[k]["coach"].get("verdict") == "Caution" for k in sig.key]
+
+        # Risk agent — chronological, so each decision only knows what had happened by then
+        corr = ag.corr_pairs(data, sorted(set(sig.symbol)), day) if len(sig) > 1 else {}
+        book = []
+        for ix, r in sig.sort_values("signal_time").iterrows():
+            a = agt[r.key]
+            caution = CFG["coach_filter"] and a["coach"].get("verdict") == "Caution"
+            if caution:
+                verdict, rmul, why = "BLOCK", 0.0, [f"Coach filter: expected {a['exp_r']:+.2f}R is below "
+                                                   f"{CFG['coach_threshold']:+.2f}R"]
+            else:
+                verdict, rmul, why = ag.risk_check(dict(symbol=r.symbol, side=int(r.side), setup=r.setup,
+                                                        t=r.signal_time, exp_r=a["exp_r"], sentinel=a["sentinel"]),
+                                                   book, CFG, corr)
+            qty_final = int((0 if pd.isna(r.qty_base) else r.qty_base) * size_mult * rmul)
+            a.update(risk_verdict=verdict, risk_why=why, risk_mult=rmul, qty_final=qty_final, caution=caution)
+            sig.at[ix, "qty"] = qty_final
+            if verdict != "BLOCK":
+                book.append(dict(symbol=r.symbol, side=int(r.side), t=r.signal_time,
+                                 t_exit=None if a["is_open"] else a["exit"]["t"],
+                                 r=(a["exit"]["r"] if not a["is_open"] else 0) * size_mult * rmul))
+            if verdict != "ALLOW":
+                store.log("Risk", verdict.lower(), f"{verdict} {r.symbol} {r.setup}: {why[0]}", symbol=r.symbol,
+                          dkey=f"risk|{r.key}|{verdict}")
+        sig["blocked"] = [agt[k]["risk_verdict"] == "BLOCK" for k in sig.key]
+        sig["is_open"] = sig.status == "OPEN"
+        sig = sig.sort_values(["blocked", "is_open", "signal_time"], ascending=[True, False, False])
 
         # ------------------------------------------------ alerts
         ss.setdefault("seen", {})
@@ -554,18 +664,22 @@ with tab_i:
             ss.seen[k] = val
             fresh.append(dict(t=pd.Timestamp.now(tz=ce.IST), msg=msg, icon=icon))
             store.log("Alerts", "alert", msg, symbol=sym, dkey=f"alert|{day_s}|{k}|{val}")
-        _alert("pulse", mood["regime"], f"Market mood: {mood['regime']} — position size ×{mood['mult']:g}", icon="🧭")
+        _alert("pulse", mood["regime"], f"Market mood: {mood['regime']} — position size ×{size_mult:g}", icon="🧭")
         for _, r in sig.iterrows():
-            if coach_filter and r.caution:
+            if r.blocked:
                 continue
             a = agt[r.key]
             side_t = "LONG" if r.side == 1 else "SHORT"
             if r.status == "OPEN":
-                _alert(r.key, r.status, f"New {side_t} · {r.symbol} {r.setup} — entry {inr(r.entry)}, stop {inr(r.stop)}, "
-                       f"target {inr(r.target)}, qty {a['qty_adj']:,}", r.symbol, "🟢" if r.side == 1 else "🔴")
+                _alert(r.key, "OPEN", f"New {side_t} · {r.symbol} {r.setup} — entry {inr(r.entry)}, stop {inr(r.stop)}, "
+                       f"target {inr(r.target)}, qty {a['qty_final']:,} · expected {a['exp_r'] or 0:+.2f}R",
+                       r.symbol, "🟢" if r.side == 1 else "🔴")
+                if a["exit"]["note"]:
+                    _alert(f"exit|{r.key}", a["exit"]["note"], f"Exit agent · {r.symbol}: {a['exit']['note']} — "
+                           f"stop now {inr(a['exit']['stop_now'])}", r.symbol, "🚪")
             else:
-                _alert(r.key, r.status, f"{r.symbol} {side_t} {r.setup}: {r.status}", r.symbol,
-                       "✅" if "TARGET" in r.status else "⛔" if "STOP" in r.status else "⏹️")
+                _alert(r.key, r.status, f"{r.symbol} {side_t} {r.setup}: {r.status} ({a['exit_r']:+.2f}R)", r.symbol,
+                       "✅" if a["exit_r"] > 0 else "⛔" if a["exit_r"] < 0 else "⏹️")
             if a["sentinel"] == "HIGH":
                 _alert(f"sent|{r.symbol}", "HIGH", f"Sentinel: {r.symbol} is high-risk today — {a['sent']['reasons'][0]}",
                        r.symbol, "⚠️")
@@ -580,7 +694,7 @@ with tab_i:
         cls = {"Risk-on": "on", "Mildly positive": "on", "Risk-off": "off", "Mildly negative": "off",
                "Volatile": "vol"}.get(mood["regime"], "mid")
         st.markdown(f'<div class="sl pulse {cls}"><b class="rg">🧭 Pulse · {mood["regime"]}</b>'
-                    f'<span>Position size ×{mood["mult"]:g}</span>'
+                    f'<span>Position size ×{size_mult:g}{"" if CFG["pulse_sizing"] else " (sizing off)"}</span>'
                     f'<span>Nifty {arrow(mood["nifty_chg"])}</span>'
                     f'<span>{" · ".join(html.escape(x) for x in mood["reasons"][:3])}</span></div>',
                     unsafe_allow_html=True)
@@ -601,7 +715,8 @@ with tab_i:
               ("Signals", len(sig), "triggered today"),
               ("Open", int(sig.is_open.sum()), f"exit by {A.exit_time}")])
 
-        section("Signals", f"max {A.max_trades} trades · stop after {A.max_losses} losses a day")
+        section("Signals", f"Risk agent: max {CFG['max_trades']} trades, {CFG['max_open']} open, "
+                           f"stop at −{CFG['daily_loss_R']:g}R a day")
         if sig.empty:
             st.markdown('<div class="sl empty">No setups have triggered yet. Watch the trigger levels below — '
                         'a 5-minute close beyond the opening range with rising volume starts a breakout.</div>',
@@ -615,10 +730,25 @@ with tab_i:
                 sc = a["coach"]
                 if sc.get("drivers"):
                     st.markdown('<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Coach — what past trades say</b><br>' +
-                                "<br>".join(f'{"▼" if d[0] < 0 else "▲"} {html.escape(d[1])} — won {d[3] * 100:.0f}% of {d[2]}'
-                                            for d in sc["drivers"]) +
-                                f'<br><span class="note">Usual win rate across all signals: {sc["base"] * 100:.0f}%</span></div>',
+                                f'Expected <b>{sc["exp_r"]:+.2f}R</b> after costs · win odds {sc["conf"] * 100:.0f}%<br>' +
+                                "<br>".join(f'{"▼" if d[0] < 0 else "▲"} {html.escape(d[1])} — averages {d[4]:+.2f}R, '
+                                            f'won {d[3] * 100:.0f}% of {d[2]}' for d in sc["drivers"]) +
+                                f'<br><span class="note">All signals: {sc["r0"]:+.2f}R per trade, '
+                                f'{sc["base"] * 100:.0f}% win rate</span></div>',
                                 unsafe_allow_html=True)
+                ex = a["exit"]
+                alt = " · ".join(f'{p} {v["r"]:+.2f}R' for p, v in a["sims"].items())
+                st.markdown(f'<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Exit — {html.escape(a["policy"])}</b><br>'
+                            f'{html.escape(ag.EXIT_POLICIES[a["policy"]])}<br>'
+                            + (f'{html.escape(ex["note"])}<br>' if ex["note"] else "")
+                            + (f'Stop now <b class="num">{inr(ex["stop_now"])}</b>' if a["is_open"] else
+                               f'Result {a["exit_r"]:+.2f}R after costs')
+                            + (f'<br><span class="note">Same trade under each policy so far: {html.escape(alt)}</span>'
+                               if not a["is_open"] else "") + '</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Risk — {a["risk_verdict"]}</b><br>'
+                            + "<br>".join(html.escape(x) for x in a["risk_why"]) +
+                            f'<br>Quantity {int(r.qty_base) if not pd.isna(r.qty_base) else 0:,} × Pulse {size_mult:g} × '
+                            f'Risk {a["risk_mult"]:.2f} = <b>{a["qty_final"]:,}</b></div>', unsafe_allow_html=True)
                 sv = a.get("sent")
                 if sv:
                     hl = "".join(f'<br>· <a href="{html.escape(h["link"])}" target="_blank">{html.escape(h["title"])}</a>'
@@ -633,12 +763,12 @@ with tab_i:
                 st.plotly_chart(intraday_chart(bars[r.symbol], r), width="stretch",
                                 key=f"c_{r.symbol}_{r.setup}_{ss.tok}", config={"displayModeBar": False})
 
-        shown = sig[~sig.caution] if coach_filter else sig
-        for _, r in shown.iterrows():
+        for _, r in sig[~sig.blocked].iterrows():
             render(r)
-        if coach_filter and sig.caution.any():
-            with st.expander(f"Filtered by Coach · {int(sig.caution.sum())} signal(s) rated Caution"):
-                for _, r in sig[sig.caution].iterrows():
+        if sig.blocked.any():
+            with st.expander(f"Blocked by agents · {int(sig.blocked.sum())} signal(s) — not to be taken"):
+                for _, r in sig[sig.blocked].iterrows():
+                    st.caption(f"{r.symbol} {r.setup}: {agt[r.key]['risk_why'][0]}")
                     render(r)
 
         section("Watchlist", "sorted by in play, then relative volume")
@@ -778,9 +908,241 @@ with tab_b:
     st.caption("Swing backtest (original vs enhanced vs score vs neural net) needs a dated fundamentals history file; "
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
 
+# ============================================================================ agent scores + human-in-the-loop
+AG_ICON = {"Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️"}
+AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak ones",
+           "Pulse": "Reads market mood and shrinks positions on weak days",
+           "Exit": "Chooses and runs the exit policy",
+           "Risk": "Daily loss cap, trade and position caps, correlation check",
+           "Sentinel": "Flags results dates, F&O ban and red-flag news",
+           "Narrator": "Explains each signal in plain English"}
+
+
+def score_card_html(name, a):
+    sc_ = a.get("score")
+    tone = a.get("tone", "mid")
+    col = {"good": UP, "bad": DOWN}.get(tone, "#9a9a94")
+    eff = a.get("effect")
+    eff_txt = ("" if eff is None or pd.isna(eff) else
+               f'<div class="se"><b class="{"up" if eff > 0 else "down" if eff < 0 else ""}">{eff:+.3f}R</b> '
+               f'{html.escape(a.get("effect_label", ""))}'
+               + (f' · ≈ {"₹" if a["rs_month"] >= 0 else "−₹"}{abs(a["rs_month"]):,.0f}/month'
+                  if pd.notna(a.get("rs_month")) else "") + '</div>')
+    bar = (f'<div class="sbar"><div style="width:{sc_}%;background:{col}"></div><span style="left:50%"></span></div>'
+           if sc_ is not None else '<div class="sbar dim"></div>')
+    return (f'<div class="scard"><div class="sh2"><span>{AG_ICON.get(name, "")} <b>{name}</b></span>'
+            f'<span class="sscore" style="color:{col}">{sc_ if sc_ is not None else "—"}<small>/100</small></span></div>'
+            f'<div class="role">{html.escape(AG_ROLE.get(name, ""))}</div>{bar}'
+            f'<div class="grade" style="color:{col}">{html.escape(a["grade"])}'
+            + (f' <small>· {a["n"]} trades, z={a["z"]:+.1f}</small>' if a.get("n") and a.get("z") is not None else "")
+            + f'</div>{eff_txt}<div class="det">{html.escape(a.get("detail", ""))}</div>'
+            f'<div class="set">Setting: {html.escape(a.get("setting", ""))}</div></div>')
+
+
+st.markdown("""<style>
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px}
+@media (max-width:900px){.sgrid{grid-template-columns:1fr}}
+.scard{border:1px solid var(--rule);background:#fff;padding:12px 13px;font-family:"Libre Franklin",sans-serif}
+.scard .sh2{display:flex;justify-content:space-between;align-items:baseline;font-size:16px}
+.sscore{font-size:26px;font-weight:800;font-family:"JetBrains Mono",monospace}.sscore small{font-size:12px;color:var(--meta)}
+.scard .role{font-size:12px;color:var(--meta);margin:2px 0 8px}
+.sbar{position:relative;height:8px;background:var(--paper2);border-radius:4px;overflow:hidden}
+.sbar div{height:8px;border-radius:4px}.sbar span{position:absolute;top:0;width:2px;height:8px;background:#121212;opacity:.35}
+.sbar.dim{background:repeating-linear-gradient(45deg,#eee,#eee 4px,#f7f7f5 4px,#f7f7f5 8px)}
+.scard .grade{font-weight:700;font-size:13.5px;margin-top:7px}.scard .grade small{font-weight:500;color:var(--meta)}
+.scard .se{font-size:12.5px;margin-top:3px}.scard .det{font-size:12.5px;color:#333;margin-top:6px;line-height:1.45}
+.scard .set{font-size:11.5px;color:var(--meta);margin-top:6px;border-top:1px dashed var(--rule);padding-top:5px}
+.prop{border:1px solid var(--rule);border-left:5px solid var(--blue);background:#fff;padding:11px 13px;margin:6px 0 4px;
+ font-family:"Libre Franklin",sans-serif}
+.prop .t{font-weight:800;font-size:15px}.prop .w{font-size:13px;color:#333;margin-top:4px;line-height:1.45}
+.prop .wi{font-size:12.5px;margin-top:6px;color:var(--meta)}
+</style>""", unsafe_allow_html=True)
+
+
+def sys_line(m):
+    return (f'{m["trades"]} trades · <b>{m["exp"]:+.3f}R</b> per trade · total {m["total"]:+.1f}R · '
+            f'max drawdown {m["maxdd"]:+.1f}R · win {m["win"] * 100:.0f}%' if m["trades"] else "no trades")
+
+
+with tab_g:
+    ss = st.session_state
+    can_edit = (not ADMIN_PIN) or ss.get("admin_ok", False)
+    st.markdown('<div class="sl note">Every agent is tested <b>walk-forward</b>: each day\'s signals are judged by agents '
+                'that only learned from earlier days, so the scores show how they would really have done. '
+                'Agents can only <b>propose</b> changes — you approve, reject or fine-tune them here, and every '
+                'decision is versioned and logged.</div>', unsafe_allow_html=True)
+    with st.spinner("Scoring the agents on recent sessions…"):
+        SC = scorecard_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY, json.dumps(CFG, sort_keys=True),
+                              RISK_RS, ss.get("tok", 0) // 10, A)
+    if SC is None:
+        st.markdown('<div class="sl empty">Not enough history yet to score the agents (needs about 12 sessions with '
+                    'signals). Try more symbols or a lower relative-volume filter in Settings.</div>',
+                    unsafe_allow_html=True)
+    else:
+        b_, s_ = SC["base"], SC["system"]
+        per_day = lambda m: m["total"] / SC["days"]
+        kpis([("Test period", f'{SC["days"]} days', f'{SC["period"][0]} → {SC["period"][1]}'),
+              ("Baseline", f'{b_["exp"]:+.2f}R', f'per trade · {b_["trades"]} trades, no agents'),
+              ("With agents", f'<span class="{"up" if s_["exp"] >= b_["exp"] else "down"}">{s_["exp"]:+.2f}R</span>',
+               f'per trade · {s_["trades"]} trades'),
+              ("Drawdown", f'{b_["maxdd"]:+.1f} → {s_["maxdd"]:+.1f}R', "worst peak-to-trough"),
+              ("Profit / month", f'{"₹" if per_day(s_) >= 0 else "−₹"}{abs(per_day(s_)) * 21 * RISK_RS:,.0f}',
+               f'vs ₹{per_day(b_) * 21 * RISK_RS:,.0f} baseline · ₹{RISK_RS:,.0f} risk/trade')])
+        cv = SC["curves"]
+        fig = go.Figure()
+        for c_, colr in [("Baseline (no agents)", "#9a9a94"), ("With agents (active config)", "#121212")]:
+            fig.add_trace(go.Scatter(x=cv.ts, y=cv[c_], name=c_, mode="lines", line=dict(color=colr, width=2)))
+        fig.update_layout(height=260, margin=dict(l=8, r=8, t=8, b=8), template="plotly_white",
+                          yaxis_title="Cumulative R", legend=dict(orientation="h", y=1.12),
+                          font=dict(family="Libre Franklin, sans-serif", size=11))
+        st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
+        st.caption("Totals are in R (1R = the amount risked per trade). Drawdown shrinking matters as much as total profit.")
+
+        section("Agent scores", "0–100 · 50 = no measurable effect · based on strength of evidence")
+        st.markdown('<div class="sgrid">' + "".join(score_card_html(n_, SC["agents"][n_]) for n_ in
+                    ["Coach", "Exit", "Risk", "Pulse", "Sentinel", "Narrator"]) + '</div>', unsafe_allow_html=True)
+        with st.expander("Exit policies compared on the same trades"):
+            et = SC["exits"].copy()
+            st.dataframe(pd.DataFrame({"Policy": et.policy, "How it exits": et.desc, "R per trade": et.exp.round(3),
+                                       "vs fixed": et.vs_fixed.round(3), "Evidence z": et.z.round(1),
+                                       "Win %": (et.win * 100).round(0)}), hide_index=True, width="stretch")
+
+        # ---------------- admin gate
+        section("Review & approve", "human-in-the-loop")
+        if ADMIN_PIN and not can_edit:
+            c1, c2 = st.columns([2, 1], vertical_alignment="bottom")
+            pin = c1.text_input("Reviewer PIN", type="password")
+            if c2.button("Unlock", width="stretch"):
+                ss.admin_ok = pin == str(ADMIN_PIN)
+                st.rerun()
+            st.caption("Scores are visible to everyone; approving or changing settings needs the reviewer PIN.")
+        elif not ADMIN_PIN:
+            st.caption("⚠️ No reviewer PIN set — anyone with the link can approve changes. Add ADMIN_PIN in Streamlit "
+                       "Secrets to lock this section.")
+        reviewer = st.text_input("Reviewer name", value=ss.get("reviewer", "Reviewer"), key="reviewer",
+                                 disabled=not can_edit)
+
+        # ---------------- proposals
+        decisions = STORE.kv_get("proposal_decisions", {}) or {}
+        fresh_cut = (now_ist() - pd.Timedelta(days=7)).isoformat()
+        props = [p for p in ag.proposals(SC, CFG)
+                 if not (decisions.get(p["id"], {}).get("status") == "rejected"
+                         and decisions[p["id"]].get("ts", "") >= fresh_cut)]
+        st.markdown(f'<div class="sl" style="font-weight:700;margin:4px 0">Proposals from agents · {len(props)}</div>',
+                    unsafe_allow_html=True)
+        if not props:
+            st.markdown('<div class="sl empty">No changes proposed — the evidence doesn\'t clearly favour any other '
+                        'setting right now. Rejected proposals stay hidden for 7 days.</div>', unsafe_allow_html=True)
+        for k_, p in enumerate(props):
+            cand = ag.merged({**CFG, **p["change"]})
+            wi = scorecard_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY, json.dumps(cand, sort_keys=True),
+                                  RISK_RS, ss.get("tok", 0) // 10, A)
+            wis = wi["system"] if wi else None
+            st.markdown(f'<div class="sl prop"><div class="t">{AG_ICON.get(p["agent"], "")} {html.escape(p["title"])}</div>'
+                        f'<div class="w">{html.escape(p["why"])}</div>'
+                        + (f'<div class="wi">What-if on the same days — now: {sys_line(s_)}<br>'
+                           f'after: {sys_line(wis)}</div>' if wis else "") + '</div>', unsafe_allow_html=True)
+            c1, c2, c3 = st.columns([3, 1, 1], vertical_alignment="bottom")
+            note = c1.text_input("Note (optional)", key=f"pn_{k_}", disabled=not can_edit,
+                                 placeholder="why you approve or reject")
+            if c2.button("✓ Approve", key=f"pa_{k_}", disabled=not can_edit, type="primary", width="stretch"):
+                v = save_cfg(STORE, CFG_STATE, cand, f"Approved: {p['title']}" + (f" — {note}" if note else ""),
+                             reviewer, p["change"])
+                decisions[p["id"]] = dict(status="approved", ts=now_ist().isoformat(), by=reviewer, note=note, version=v)
+                STORE.kv_set("proposal_decisions", decisions)
+                st.toast(f"Approved — settings v{v} are live", icon="✅")
+                st.rerun()
+            if c3.button("✕ Reject", key=f"pr_{k_}", disabled=not can_edit, width="stretch"):
+                decisions[p["id"]] = dict(status="rejected", ts=now_ist().isoformat(), by=reviewer, note=note)
+                STORE.kv_set("proposal_decisions", decisions)
+                STORE.log("Reviewer", "reject", f"{reviewer} rejected: {p['title']}" + (f" — {note}" if note else ""),
+                          dkey=f"rej|{p['id']}|{now_ist():%Y%m%d%H%M%S}")
+                st.toast("Rejected — hidden for 7 days", icon="✕")
+                st.rerun()
+
+        # ---------------- manual fine-tuning with what-if
+        with st.expander("🛠 Fine-tune settings yourself (simulate before applying)", expanded=False):
+            with st.form("tune"):
+                st.markdown("**🎓 Coach**")
+                t1, t2, t3 = st.columns(3)
+                f_cf = t1.toggle("Filter weak signals", CFG["coach_filter"])
+                f_th = t2.slider("Skip if expected R below", -0.5, 0.5, float(CFG["coach_threshold"]), 0.05)
+                f_hl = t3.slider("Memory half-life (days)", 3, 40, int(CFG["half_life"]),
+                                 help="Lower = adapts faster to recent sessions, but noisier.")
+                st.markdown("**🧭 Pulse**")
+                f_ps = st.toggle("Mood-based sizing", CFG["pulse_sizing"])
+                mc = st.columns(3)
+                f_m = {m: mc[i % 3].number_input(f"{m} ×", 0.0, 1.5, float(CFG["mults"][m]), 0.05, key=f"m_{m}")
+                       for i, m in enumerate(ag.DEFAULT_MULTS)}
+                st.markdown("**🚪 Exit**")
+                f_ex = st.selectbox("Exit policy", list(ag.EXIT_POLICIES), list(ag.EXIT_POLICIES).index(CFG["exit_policy"]),
+                                    format_func=lambda p: ag.EXIT_POLICIES[p])
+                st.markdown("**⚖️ Risk**")
+                r1, r2, r3 = st.columns(3)
+                f_re = r1.toggle("Risk rules on", CFG["risk_enabled"])
+                f_dl = r2.slider("Daily loss cap (R)", 0.5, 6.0, float(CFG["daily_loss_R"]), 0.5)
+                f_mt = r3.slider("Max trades / day", 1, 10, int(CFG["max_trades"]))
+                r4, r5, r6 = st.columns(3)
+                f_mo = r4.slider("Max open at once", 1, 8, int(CFG["max_open"]))
+                f_cl = r5.slider("Correlation limit", 0.4, 0.95, float(CFG["corr_limit"]), 0.05)
+                f_ps2 = r6.multiselect("Paused setups", ["ORB", "VWAP"], CFG["paused_setups"])
+                r7, r8, r9 = st.columns(3)
+                f_es = r7.toggle("Edge-based sizing", CFG["edge_sizing"], help="Size up/down (0.5–1.5×) by Coach's expected R")
+                f_ek = r8.slider("Edge sizing strength", 0.5, 3.0, float(CFG["edge_k"]), 0.25)
+                f_sb = r9.toggle("Block Sentinel HIGH", CFG["sentinel_block"])
+                sim = st.form_submit_button("Simulate on recent sessions")
+            if sim:
+                ss.tune_cand = ag.merged(dict(coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, pulse_sizing=f_ps,
+                                              mults=f_m, exit_policy=f_ex, risk_enabled=f_re, daily_loss_R=f_dl,
+                                              max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, paused_setups=f_ps2,
+                                              edge_sizing=f_es, edge_k=f_ek, sentinel_block=f_sb))
+            cand = ss.get("tune_cand")
+            if cand:
+                diff = cfg_diff(CFG, cand)
+                if not diff:
+                    st.info("These are the current settings.")
+                else:
+                    wi = scorecard_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY,
+                                          json.dumps(cand, sort_keys=True), RISK_RS, ss.get("tok", 0) // 10, A)
+                    st.markdown(f'<div class="sl prop"><div class="t">What-if: {html.escape(", ".join(diff))}</div>'
+                                f'<div class="wi">Current v{CFG_STATE["version"]}: {sys_line(s_)}<br>'
+                                f'Your settings: {sys_line(wi["system"]) if wi else "—"}</div></div>',
+                                unsafe_allow_html=True)
+                    if wi:
+                        st.caption("Agent scores with your settings: " + " · ".join(
+                            f'{n_} {wi["agents"][n_]["score"] if wi["agents"][n_]["score"] is not None else "—"}'
+                            for n_ in ["Coach", "Exit", "Risk", "Pulse"]))
+                    note = st.text_input("Reason for this change (required)", key="tune_note", disabled=not can_edit)
+                    if st.button("Apply as new version", type="primary", disabled=not (can_edit and note.strip())):
+                        v = save_cfg(STORE, CFG_STATE, cand, f"Manual tune — {note}", reviewer, diff)
+                        ss.tune_cand = None
+                        st.toast(f"Settings v{v} are live", icon="✅")
+                        st.rerun()
+
+        # ---------------- history & rollback
+        with st.expander(f"🕘 Settings history · v{CFG_STATE['version']} active"):
+            hist = list(reversed(CFG_STATE.get("history") or []))
+            st.dataframe(pd.DataFrame({
+                "Version": [f"v{h['version']}" + (" (active)" if h["version"] == CFG_STATE["version"] else "") for h in hist],
+                "When": [pd.Timestamp(h["ts"]).tz_convert(ce.IST).strftime("%d %b %H:%M") for h in hist],
+                "By": [h.get("by", "") for h in hist], "What changed": [h.get("note", "") for h in hist]}),
+                hide_index=True, width="stretch")
+            older = [h for h in hist if h["version"] != CFG_STATE["version"] and h.get("params")]
+            if older:
+                c1, c2 = st.columns([2, 1], vertical_alignment="bottom")
+                pick = c1.selectbox("Roll back to", [f"v{h['version']} — {h.get('note', '')[:60]}" for h in older])
+                if c2.button("Roll back", disabled=not can_edit, width="stretch"):
+                    h = older[[f"v{x['version']} — {x.get('note', '')[:60]}" for x in older].index(pick)]
+                    v = save_cfg(STORE, CFG_STATE, h["params"], f"Rolled back to v{h['version']}", reviewer,
+                                 cfg_diff(CFG, ag.merged(h["params"])))
+                    st.toast(f"Rolled back — settings v{v} are live", icon="↩️")
+                    st.rerun()
+        st.caption("Scores update daily from the last ~60 sessions (Yahoo 5-minute data limit), so treat anything under "
+                   "a few hundred trades as early evidence. Sentinel can only be scored on live signals as they build up.")
+
 # ============================================================================ audit log
 with tab_a:
-    store = get_store(demo)
+    store = STORE
     if demo:
         st.info("Demo mode: this log holds demo activity only and is kept separate from the live log.")
     elif not store.remote:
@@ -824,7 +1186,7 @@ with tab_a:
             ql = q.lower()
             view = view[view.message.str.lower().str.contains(ql, regex=False) |
                         view.symbol.fillna("").str.lower().str.contains(ql, regex=False)]
-        icons = {"Pulse": "🧭", "Sentinel": "🛡️", "Narrator": "🗣️", "Coach": "🎓", "Alerts": "🔔"}
+        icons = {"Pulse": "🧭", "Sentinel": "🛡️", "Narrator": "🗣️", "Coach": "🎓", "Alerts": "🔔", "Exit": "🚪", "Risk": "⚖️", "Reviewer": "👤"}
         out = pd.DataFrame({"Time": view.ts.map(lambda t: f"{t:%d %b %H:%M}"), "Agent": view.agent,
                             "Type": view.kind, "Symbol": view.symbol.fillna(""), "What happened": view.message})
         show_n = st.select_slider("Show", [25, 50, 100, 250, 500], 50, key="audit_n") if len(out) > 25 else 25
@@ -846,7 +1208,8 @@ with tab_a:
         st.markdown("".join(
             f'<div class="sl lesson {l["direction"]}"><b>{ {"avoid": "▼ Avoid", "weaker": "▼ Weaker", "favour": "▲ Favour"}[l["direction"]] }:</b> '
             f'{html.escape(l["text"])} <small>— won {l["win_rate"] * 100:.0f}% of {l["n"]} trades, '
-            f'avg {l["avg_r"]:+.2f}R (all signals: {coach_all.p0 * 100:.0f}%)</small></div>' for l in lessons),
+            f'avg {l["avg_r"]:+.2f}R (all signals: {coach_all.r0:+.2f}R, {coach_all.p0 * 100:.0f}% won)</small></div>'
+            for l in lessons),
             unsafe_allow_html=True)
         st.caption("How it uses this: each new signal gets a win-odds score from these patterns (shown on the card), "
                    "so conditions that keep failing lower the score of future signals.")
@@ -897,9 +1260,11 @@ with tab_a:
     if st.button("Re-train Coach now"):
         train_coach.clear()
         coach_trades.clear()
+        scorecard_cached.clear()
         with st.spinner("Coach is studying recent sessions…"):
-            n = train_coach(demo, symbols, f"{pd.Timestamp.now(tz=ce.IST):%Y-%m-%d}",
-                            f"{A.setup}|{A.shorts}|{A.rr}|{A.min_relvol}|{A.cost_pct}", A)
+            history_cached.clear()
+            n = train_coach(demo, symbols, f"{pd.Timestamp.now(tz=ce.IST):%Y-%m-%d}", ARGS_KEY, A)
         st.success(f"Coach studied {n} signals.")
     st.caption("Agents: 🧭 Pulse market mood · 🛡️ Sentinel news & events · 🗣️ Narrator explanations · "
-               "🎓 Coach learning & post-mortems · 🔔 Alerts. Events are kept 7 days; the trade journal 90 days.")
+               "🎓 Coach learning & post-mortems · 🚪 Exit · ⚖️ Risk · 🔔 Alerts · 👤 Reviewer decisions. "
+               "Events are kept 7 days; the trade journal 90 days.")
