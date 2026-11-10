@@ -1,271 +1,276 @@
 {
-  "generated": "2026-11-10T01:06:08.460Z",
-  "forDate": "2026-11-11",
+  "generated": "2026-11-10T22:45:17.718Z",
+  "forDate": "2026-11-12",
   "window": {
-    "from": "2026-11-09T01:06:08.460Z",
-    "to": "2026-11-10T01:06:08.460Z"
+    "from": "2026-11-09T22:45:17.718Z",
+    "to": "2026-11-10T22:45:17.718Z"
   },
   "scanned": {
-    "stories": 846,
-    "outlets": 384,
+    "stories": 944,
+    "outlets": 385,
     "regions": [
       "Global desks",
       "North America",
       "Community",
-      "South Asia",
       "Asia-Pacific",
-      "Europe",
-      "Africa"
+      "South Asia",
+      "Africa",
+      "Europe"
     ],
-    "storylines": 565
+    "storylines": 596
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.8959,
+      "score": 0.9778,
       "probability": 0.92,
       "confidence": "High",
       "entity": "Anthropic",
-      "theme": "Model launch",
-      "headline": "Anthropic Unveils New Fable, Mythos AI Models Ahead of IPO",
-      "outlook": "Hands-on reviews, benchmark claims and rival responses to Anthropic are likely to lead tomorrow.",
+      "theme": "Funding & markets",
+      "headline": "Anthropic Targets $1.4 Trillion Valuation in Blockbuster IPO",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 38,
+        "outlets": 53,
         "regions": [
+          "Global desks",
           "North America",
-          "Europe",
-          "South Asia"
+          "South Asia",
+          "Africa",
+          "Asia-Pacific",
+          "Europe"
         ],
-        "stories": 41,
-        "momentum": 8.25,
-        "recent6h": 32,
-        "authority": 14.2,
-        "hnPoints": 924,
-        "nextStepCues": 11,
-        "arcDays": 2,
+        "stories": 92,
+        "momentum": 4.78,
+        "recent6h": 58,
+        "authority": 23.9,
+        "hnPoints": 111,
+        "nextStepCues": 17,
+        "arcDays": 3,
         "calendar": null
       },
       "factors": {
         "reach": 1,
-        "breadth": 0.5,
+        "breadth": 1,
         "momentum": 1,
         "authority": 1,
-        "community": 0.99,
+        "community": 0.68,
         "nextStep": 1,
-        "arc": 0.67
+        "arc": 1
       },
       "sig": [
-        "fable",
         "anthropic",
-        "5.2",
-        "mytho",
-        "claude",
-        "model",
         "ipo",
-        "launche"
+        "valuation",
+        "trillion",
+        "$1.4",
+        "target",
+        "ahead",
+        "seek"
       ],
       "evidence": [
         {
-          "title": "Anthropic unveils new Fable, Mythos models as competition heats up ahead of IPO",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNVzhYdUhsNzNPQkZ3aVh2eGJ4NEgtNlpiX0tRaDA3UFpFclkzMWRycGVrQlhaZVRNSnVoSlFBY2tWR0dyV2JTWWRBcy1qVnZyQ0VFWWE4SkozSFgyMmdzSXdQMkVLaXVJS0dFUUh5WXd6N1UyRjFGczJvU2VycHVEemxlZkRKQk5PRWtyakNiM0dSdzllZ1ItcjlJRzcyWnhkVE0zTy1paTZpWmJhLWZPaFVpeVFvWjMwNDdn?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic unveils updated Fable, Mythos frontier models ahead of anticipated IPO",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPQUJueFltbVZzRS05TzdyT0FKbkNOd3ZZeE5mcW5YTDNYOU9LQjB5N2EyenBkVkFZSDVhamtjZGY4TkdSMmYwbHJNR1MwZVdaX01BNzZSTFpCdjczazQ2V05pNm9LT2xDYmc1aWtEOTA2cnlFdldDcHBuNFdQYTV6bDkzY2xSWjh3M0l2M3JubkQ2MjNVcHIzQUdqLVdmQllWM1dqOVBXZGxjUExXbkItQm43am9JNFRoTnJ6ZUtJZw?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic Unveils New Fable, Mythos AI Models Ahead of IPO",
+          "title": "What to Know About the Anthropic IPO",
           "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNaGNFTXptZ1NYTjh3SWxCeUlTQmZ2elFyZG80bW9hdG94NGszVXE5cmxjRV83QVg5UGEwTGVLVjlzXzBKT0xPdVAwc1NCMlhUcEVOY2tBNGxQRHJPQW80bkNvbGp4cW1OazY2NU5IRXRraG93RUhmbzdGMmlVZDU5LVpoczVFOWE0NkNnQjl0eGNCTUpabk1lLTFUa3ItNUQ5MmhvS25IZ1loaG9Q?oc=5",
-          "region": "Europe"
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPNFZlX0FjZThoNGMzVHJ3VTJid3RxRFJ5Qk1CV2REODVEdTJUR1g0OVRZSjVHVzkwNGhYWXJxeWpubnlhaUtFWjgwT3R3TVNJTFBYbjdibWRBOXhzSGdXRWV5RW5lTmt0SzhKNmIyMjh4Y3g4RTJ1M211X1JLeklBMkpwR09OTzVCY2xlUGljWUUwUzVPT3MzNzdBYllEbU1DUUdIcHRB?oc=5",
+          "region": "North America"
         },
         {
-          "title": "Anthropic Introduces New Fable 5.2 and Mythos 5.2 AI Models",
-          "source": "CNET",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPclhvZzYxckdzRVZ2dzNHMUZoSHd3RllabVFSSUxJUWRZRE5yaDNRQUFITi1hdG9lQ2RvamFJWERCQ3JIMllOcmxNZVJGSFNuQkROSlRPQm9TNDVMQldGZktKLXlmdXMxSHloOFllWXo5Unh1LWgzLUx3Q2g5ZnkydlRvRmpqRmliQ3VVdUlubw?oc=5",
+          "title": "Anthropic IPO could give AI stocks a needed spark",
+          "source": "Axios",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9WcnpXY25VdUZRMy1MdVlJczZxWVVsMXRTaE1JYU9xMkVPZ3VuV1E5QWt5Y0x4Yi1yWnZxOHRFRFdzTkNTNWRkam1RVTRmX0ZoYWxaenhwRWQtNE40U2FMZEljbzRxbUZReWF4OXdnYW1FNmts?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Amazon and Google Will See Big Paydays from Anthropic IPO",
+          "source": "The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNclRTcWRENnlRX3NlYnFEWFU3c1d1dEFPRGt1RGZmSk1CeXF0RGxQV203TkVkQVhXMEJncUVjYkNXdDByaGZsWi00eGtRdmg2cmUzczdJLU9GSVAxNVlaNUk0YmVHcXhUSWdfb3dRbzJvaTlxUC1oSGdkRkJFQjQyWVY1dkM?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Anthropic targets a company value of more than $1 trillion in its IPO",
+          "source": "The Washington Post",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPVFE0dU4wY2luc29lUDBBNmx1bFA1VUVNb000aFNwLWd2OHREbml5ck5GRWFRcU1jeUxxOTdwWVduR1p5azFHUFUwN0NBMjRMQjBIaWR2RHh2Unh5RjVZLVo1SEdyc0o5V19sZ1FDZVZUWUhaaWxBYnRHN29XRC1BMS1wVTJWQ1JZc3JWOFpkdFpMclktYVdyQ2prNEdVZVl3dW1Pb2s3SE1BZUZIanh6b3pn?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.7959,
-      "probability": 0.92,
+      "score": 0.6994,
+      "probability": 0.9,
       "confidence": "High",
       "entity": "Nvidia",
-      "theme": "Chips & compute",
-      "headline": "What to Know About Nvidia’s Investigation of CEO Jensen Huang",
-      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
+      "theme": "Funding & markets",
+      "headline": "Jensen Huang's affair with alleged Chinese spy further complicates Nvidia’s China problem",
+      "outlook": "Market reaction, analyst notes and deal details around Nvidia are the likely next chapter.",
       "signals": {
-        "outlets": 55,
+        "outlets": 27,
         "regions": [
           "Global desks",
-          "Asia-Pacific",
-          "Europe",
           "North America",
-          "South Asia"
+          "South Asia",
+          "Europe"
         ],
-        "stories": 90,
-        "momentum": 3.41,
-        "recent6h": 49,
-        "authority": 25.4,
+        "stories": 32,
+        "momentum": 2.68,
+        "recent6h": 16,
+        "authority": 13.4,
         "hnPoints": 0,
-        "nextStepCues": 1,
+        "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
-        "breadth": 0.83,
-        "momentum": 0.92,
+        "reach": 0.97,
+        "breadth": 0.67,
+        "momentum": 0.81,
         "authority": 1,
         "community": 0,
-        "nextStep": 0.33,
+        "nextStep": 0,
         "arc": 1
       },
       "sig": [
         "nvidia",
+        "affair",
+        "spy",
         "huang",
         "jensen",
-        "ceo",
-        "spy",
-        "chip",
-        "china",
-        "scandal"
+        "alleged",
+        "chinese",
+        "ceo"
       ],
       "evidence": [
         {
-          "title": "Nvidia’s Next Headache: New Push For Export Controls in Wake of Spy Scandal",
-          "source": "The Information",
-          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPQnNsYzdpaDRKS3c2Yi1LdVdWczlkM3QwSEJPMUowOUxxeTZZMUZodGt5SGxucEFkcVkybHhsOTFfWjVyeGdYcTNxbGR1VmNVNHRFc19fMUVoVGJTS1FBS2NaV3pKbzBJZWZOdnBVcXV3ZW55dWZ3WkhSVlBNSlpNc0hBNXBnTlJ0Y3dOQzhoUlJ2TkNBdlM0THVXMDVUcVFxZFFLeEN3?oc=5",
+          "title": "What we know so far about Jensen Huang's affair with suspected Chinese spy",
+          "source": "BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBLdVRudVhSejZlMXpvRlVhd1B0UlhUdmtmanU3NjNHNFhVVi1TUEMwVmpaZktkNG5XeV9CZ0ZOQ2duOEt2UlE5YWxSUkdwVU1acHBJTS13NndtS0U?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia spy allegations likely to spur laws to tighten China's access to AI chips",
+          "title": "Nvidia heads for $470 billion two-day wipeout as CEO affair fallout deepens",
           "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPd3I1WGxHazNEeGdYc1VaNnZPbWZwN2xOQjVRZFhEbHBXVU9iYUNxQzRpZ0wtaktjcjV5NHFBNDgyWTN5OEkyRlcwMFhEbFRSZTc3ZUhjbm5nRkFrRmNQQnlIWk5WeE5RYWNPbDZlLWFWdkhuY1puVDNqaFVySUN6WWRoUWxOaDJYNGtPRVZncGh6cENyNjU5NkVSU3VnTFM3d29iOE9LZGp5TTlKclhiVUtfUzZKMWwwdnVOZ2Y2SF9PaEUt?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNUWZQSk5PbzdVdVhLaVFuakFlTy16TkhEdzcyaDJ6dmQyeDh1UFpBWFk3VjNrT24yZDgtNVU3cUZZODZyTFNxS3JScWdYWmxzcGFLOHNvVEJWSlBVckZHelJDcENpb0t1QkVyRkNON2hXX2hjcWRHN3piNFJxVWRDSEN3VHRWNVJZdHVRUHlhbFVUQ242emtCUXl5cmV4RVlnSWNjeEU1UklHZ3pBWGNCNUo5clRaWkVjRjNJUnVMbmlhUQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Who is Alice Huang, the woman linked to Nvidia’s CEO?",
-          "source": "The Guardian",
-          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQejZNZ0Y4bjNmdmViQ0tadW9KRlN5aC1CaGxxcEVqc2hBR2xka1RBYTFseUNlZDhHS282UGd3RlpGY0V4WHBsdERCNUk4NG5oRERZVDM4RDQ1U3RKT3J1VFF3eWEtNThjbW5vUlY3NnlYQllfbVJrUHh5TE5UY2xaQmczbTF6T1dEeTdBdlp0dTNyMWl3Y1RseHI3dWkyS21BV3BR?oc=5",
+          "title": "Huang’s Close Ties to Trump Come Under Scrutiny After Spy Claim",
+          "source": "Bloomberg Government News",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOMnJ2WTV3VjFmYmZWY21HblFMSDNoWncwanotY0ZNVGlEcTlldVVHQjRKS0JkVFpmVGU1QWRBVHpFR3ZSaFBtbS16cHlNZC1UYnQ0YWgxZmtfMDlwajh3a0hkbHNjRFV1b2tUdFRzTElGdk8yT1M0Yk9fMUtJUGpLVzIxc21iZTY2RUFkZG5WRndubGw3UUZEV1U1eDUwMHZYazNxZGcwRUVDWnVa?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia Scandal Creates Risk for Entire AI Industry, Not Just CEO",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOeU5sZExFMm9PT0FDekcxMEVUWTFWVEJVNUNBcmx0bFlzNkI2SnZYLWVlanJfdEtxN0lMV1RMZ2lfRHlYVHMwMm05dU1lNlQzS21OQlJwY1J2VThCVUpxZU5hcmxRWE8yTUNaVzlnZzRCTUJUNFFfSERTZ0RQaU9QdmRTMUZ1dEwxVDR5MzFOOXNBVmt4eW0zbHlEaWVRWWdFQUYydXVXWFIxcE5scC05YlZ4ckw1VkNtUDd1UXBGa2I2cjg?oc=5",
+          "title": "Nvidia CEO’s affair with an alleged Chinese spy could be a problem for the economy",
+          "source": "The Washington Post",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPc3lyMzJwdnl2WkRzbnM2UjAwT3ZSTUZDQTgzbzBiNnJnZWVaRXloREtmSl85dGhjRUZnd2lvUlpkWTFja3BoMHZwbDJIZXl0MWdkdnpwRGlwUHpkMUZ1Vzd4NnpKMWdrN29yczBZa19MSk41Y1lFZTJIT2NfSlVtQTUtMmROZFFqRm9BcFN3QVdpbEtWN29qM3hPOUVUTWI5QkdBQUdRSEhsZnM2NlJjRVZn?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.6165,
-      "probability": 0.82,
+      "score": 0.6446,
+      "probability": 0.85,
       "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Countdown to Anthropic IPO",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "entity": "Nvidia",
+      "theme": "Chips & compute",
+      "headline": "How Jensen Huang’s Yearslong Ties to Alice Huang Enabled $7 Billion-Plus Nvidia Chip Sales to China",
+      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 8,
+        "outlets": 14,
         "regions": [
-          "North America"
+          "Global desks",
+          "North America",
+          "South Asia",
+          "Asia-Pacific"
         ],
-        "stories": 8,
-        "momentum": 3,
-        "recent6h": 5,
-        "authority": 3.1,
-        "hnPoints": 5,
-        "nextStepCues": 2,
+        "stories": 17,
+        "momentum": 1.85,
+        "recent6h": 7,
+        "authority": 5.8,
+        "hnPoints": 3,
+        "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.64,
-        "breadth": 0.17,
-        "momentum": 0.86,
-        "authority": 0.63,
-        "community": 0.26,
-        "nextStep": 0.67,
+        "reach": 0.79,
+        "breadth": 0.67,
+        "momentum": 0.63,
+        "authority": 1,
+        "community": 0.2,
+        "nextStep": 0,
         "arc": 1
       },
       "sig": [
-        "anthropic",
-        "ipo",
-        "november",
-        "launch",
-        "nasdaq",
-        "tuesday",
-        "meet",
-        "backlash"
+        "huang",
+        "jensen",
+        "nvidia",
+        "china",
+        "chip",
+        "alice",
+        "leave",
+        "$7.5"
       ],
       "evidence": [
         {
-          "title": "Countdown to Anthropic IPO",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTFB2VjJmaUxYTHNlQ3VoVnRla3ZjTXg4MU11MDRNTkx3U1g3ZTQtR0RVeGFaNGFpWllnMU9hQ2Vka3AyQkcxSlFFVHZDU3FSMDIwQ0JzSWtacUdvYUNBcF80SXdIWl9iQ2dkcllwZ3BCVDJKUXdUQlhJag?oc=5",
+          "title": "How Jensen Huang’s Yearslong Ties to Alice Huang Enabled $7 Billion-Plus Nvidia Chip Sales to China",
+          "source": "The Information",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQSnFMNEF5UjJUczd5eWdTQlQxOWRrMUQwSno4b2FETmM2bzVEckRLdVFqOWp1cGc5YlZVaFo0UG1FMFo2amRya1hGS2JsNVJsTnFCbDk2X3IydVhLTEJiX1VFN2tGdlQ4OGczNGpfSUZZcHRBVzFINU1VT2JRVVNteU16S01SRTZBdjdfTzNrT3p1Z0hOVk40UE9LTGlQSnVxUDRuMlRDT3ZjYjhEMzFTQlRR?oc=5",
           "region": "North America"
         },
         {
-          "title": "'It is not the savior of the universe': A faith-based investor's view on the Anthropic IPO",
-          "source": "Business Insider",
-          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNTGc3VGlCT0U0X09yaVRPaUw0eC1yQ3V0cE9uMEVRdzlBVFRpLVNaeGR0a1A5cnMzSnVfUU9JeHlZMFhOQS1HQ2l4YTZ1OHVkcUVzN2pndWN2QVo2Sm9UWnNuX0M3dkxQQlUzSzRMb1B6c0hrTjhnMEhlY0ZkaWJnZXRVSHhqLVdYV2VRV2NR?oc=5",
+          "title": "Jensen Huang’s image has been shattered. Could he be pushed out at Nvidia?",
+          "source": "The Guardian",
+          "url": "https://www.theguardian.com/technology/2026/nov/09/jensen-huang-image-nvidia",
+          "region": "Global desks"
+        },
+        {
+          "title": "The US is winning the AI race. Jensen Huang could have blown it",
+          "source": "The Verge",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNMGs0bGlyZ3JydVZBNy1fTFJOX19FUS0tWnNwUjd0SnhwWnpZc3ZYZHloSDlCbVdHekxCd2x4YnNqc3FfMzZZcEI1UV8tcGVnc29RWUhFbF80T3NTcU4tZGFqdGl6aWM4VTlVbTk4bUFIc3NiMDhPTWF3Vzd1TkUwMkxtMFkwZTI0eWxHT1lqcmtvRVNlbHNvNQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Anthropic IPO meets AI backlash",
-          "source": "Hacker News",
-          "url": "https://www.cnbc.com/2026/11/07/anthropic-ipo-ai-data-center-backlash.html",
-          "region": "Community"
-        },
-        {
-          "title": "Anthropic IPO Becomes Litmus Test for AI Investment Appetite",
-          "source": "The Tech Buzz",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQa3ZjTngtSmxnZ01Eb045bHJMSEtvTkZOb2hZY1hvOXl3NEZmakFySENrbnZOM1lFZ2Q4UVJIaTQ3a2NKZWg2X0JBdHNPY3VxMGk3MUxYSmE5NlN2T1VuSVRpQXZQUW5iYTluQWczXzVLX2g2M0hFOTFmeTEzbVF4Wm1ULXlCcVREOGJpaWVTTDhPd1I3amFwZw?oc=5",
-          "region": "North America"
+          "title": "Jensen Huang’s Troubles Leave the AI Industry Reeling",
+          "source": "Wired",
+          "url": "https://www.wired.com/story/jensen-huangs-troubles-leaves-the-ai-industry-reeling/",
+          "region": "Global desks"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-10",
+    "date": "2026-11-11",
     "calls": [
       {
         "rank": 1,
-        "headline": "Nvidia Opens Investigation Into Jensen Huang’s Relationship With Chinese Spy",
-        "probability": 0.79,
-        "hit": true,
-        "matched": "What to Know About Nvidia’s Investigation of CEO Jensen Huang"
+        "headline": "Anthropic Unveils New Fable, Mythos AI Models Ahead of IPO",
+        "probability": 0.92,
+        "hit": false,
+        "matched": null
       },
       {
         "rank": 2,
-        "headline": "Anthropic strikes $3.4bn deal to generate gas-fired power for data centres",
-        "probability": 0.71,
+        "headline": "What to Know About Nvidia’s Investigation of CEO Jensen Huang",
+        "probability": 0.92,
         "hit": true,
-        "matched": "Anthropic secures $3.4B generator deal for AI data centers"
+        "matched": "Jensen Huang's affair with alleged Chinese spy further complicates Nvidia’s China problem"
       },
       {
         "rank": 3,
-        "headline": "How sustainable is the AI investment boom after Thursday’s selloff? By Investing.com",
-        "probability": 0.55,
-        "hit": false,
-        "matched": null
+        "headline": "Countdown to Anthropic IPO",
+        "probability": 0.82,
+        "hit": true,
+        "matched": "Anthropic Targets $1.4 Trillion Valuation in Blockbuster IPO"
       }
     ],
     "hits": 2
   },
   "track": {
-    "days": 10,
-    "calls": 30,
-    "hits": 25,
+    "days": 11,
+    "calls": 33,
+    "hits": 27,
     "log": [
       {
         "date": "2026-11-01",
@@ -316,9 +321,14 @@
         "date": "2026-11-10",
         "hits": 2,
         "calls": 3
+      },
+      {
+        "date": "2026-11-11",
+        "hits": 2,
+        "calls": 3
       }
     ],
-    "hitRate": 0.83
+    "hitRate": 0.82
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
