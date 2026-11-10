@@ -1,268 +1,271 @@
 {
-  "generated": "2026-11-08T21:36:06.045Z",
-  "forDate": "2026-11-10",
+  "generated": "2026-11-10T01:06:08.460Z",
+  "forDate": "2026-11-11",
   "window": {
-    "from": "2026-11-07T21:36:06.045Z",
-    "to": "2026-11-08T21:36:06.045Z"
+    "from": "2026-11-09T01:06:08.460Z",
+    "to": "2026-11-10T01:06:08.460Z"
   },
   "scanned": {
-    "stories": 614,
-    "outlets": 276,
+    "stories": 846,
+    "outlets": 384,
     "regions": [
       "Global desks",
       "North America",
       "Community",
-      "Asia-Pacific",
       "South Asia",
+      "Asia-Pacific",
       "Europe",
       "Africa"
     ],
-    "storylines": 486
+    "storylines": 565
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.5928,
-      "probability": 0.79,
+      "score": 0.8959,
+      "probability": 0.92,
       "confidence": "High",
-      "entity": "Nvidia",
-      "theme": "Funding & markets",
-      "headline": "Nvidia Opens Investigation Into Jensen Huang’s Relationship With Chinese Spy",
-      "outlook": "Market reaction, analyst notes and deal details around Nvidia are the likely next chapter.",
+      "entity": "Anthropic",
+      "theme": "Model launch",
+      "headline": "Anthropic Unveils New Fable, Mythos AI Models Ahead of IPO",
+      "outlook": "Hands-on reviews, benchmark claims and rival responses to Anthropic are likely to lead tomorrow.",
       "signals": {
-        "outlets": 20,
+        "outlets": 38,
         "regions": [
-          "Global desks",
-          "North America"
+          "North America",
+          "Europe",
+          "South Asia"
         ],
-        "stories": 22,
-        "momentum": 5.67,
-        "recent6h": 16,
-        "authority": 7.9,
-        "hnPoints": 0,
-        "nextStepCues": 0,
-        "arcDays": 1,
+        "stories": 41,
+        "momentum": 8.25,
+        "recent6h": 32,
+        "authority": 14.2,
+        "hnPoints": 924,
+        "nextStepCues": 11,
+        "arcDays": 2,
         "calendar": null
       },
       "factors": {
-        "reach": 0.89,
-        "breadth": 0.33,
+        "reach": 1,
+        "breadth": 0.5,
         "momentum": 1,
         "authority": 1,
-        "community": 0,
-        "nextStep": 0,
-        "arc": 0.33
+        "community": 0.99,
+        "nextStep": 1,
+        "arc": 0.67
       },
       "sig": [
-        "nvidia",
-        "spy",
-        "huang",
-        "jensen",
-        "ceo",
-        "chinese",
-        "investigation",
-        "china"
+        "fable",
+        "anthropic",
+        "5.2",
+        "mytho",
+        "claude",
+        "model",
+        "ipo",
+        "launche"
       ],
       "evidence": [
         {
-          "title": "Nvidia opens investigation after report CEO Jensen Huang was target of foreign intelligence",
-          "source": "The Guardian",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxQNEhNT1F4dmwzQm9NQ2xCTXJwM2pIanQzZ3YxdFJmRGdKbkg4V1JQbkpLV1NJR252SWF2V3Y4T1JUSE9EVm8wendNMEVJUU9QMXk0UUdXV1d0QmJPTnVJZGwwSlU2Rm9QTHpwakNXYmg3YmtISjlGNXdRbnpXcFNVR25OS2U0dUNL?oc=5",
+          "title": "Anthropic unveils new Fable, Mythos models as competition heats up ahead of IPO",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxNVzhYdUhsNzNPQkZ3aVh2eGJ4NEgtNlpiX0tRaDA3UFpFclkzMWRycGVrQlhaZVRNSnVoSlFBY2tWR0dyV2JTWWRBcy1qVnZyQ0VFWWE4SkozSFgyMmdzSXdQMkVLaXVJS0dFUUh5WXd6N1UyRjFGczJvU2VycHVEemxlZkRKQk5PRWtyakNiM0dSdzllZ1ItcjlJRzcyWnhkVE0zTy1paTZpWmJhLWZPaFVpeVFvWjMwNDdn?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia Opens Investigation Into Jensen Huang’s Relationship With Chinese Spy",
-          "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQaHdZZkpucG9aOVF5R2JPeHljWV85XzlhbUxnbUREYWlKQzBiR1UzeWxwaF9EMnpDajI1aXlmMlo0aENzeGdyRzJDSEtJR0xVanhFSkN3bXE0R1FYV2VWZHdIV1A1MmFlczN4VnRZcVZ5QV9xdUlxZXVlZVl3eHRqVWxsVmE1dktHZzdnelB0ZjUwejJj?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Nvidia CEO Jensen Huang faces bipartisan congressional scrutiny over reported China spy link",
+          "title": "Anthropic unveils updated Fable, Mythos frontier models ahead of anticipated IPO",
           "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPTlFBMTZ4RFd1bzZnam9ka1FLSTYwWFBVYmt2aHpxZlJ4YnlpWGJabUZMVEt1cENPOU84VnhRLVJWM3YyaFlMeFNxNWExLUNqWk8wQ1NoTmdUZVY0ckpyUlJlVHc5aHZ0V1RtUmFib1J2Rl8waXBiLVZyNzZoNWU5Nw?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPQUJueFltbVZzRS05TzdyT0FKbkNOd3ZZeE5mcW5YTDNYOU9LQjB5N2EyenBkVkFZSDVhamtjZGY4TkdSMmYwbHJNR1MwZVdaX01BNzZSTFpCdjczazQ2V05pNm9LT2xDYmc1aWtEOTA2cnlFdldDcHBuNFdQYTV6bDkzY2xSWjh3M0l2M3JubkQ2MjNVcHIzQUdqLVdmQllWM1dqOVBXZGxjUExXbkItQm43am9JNFRoTnJ6ZUtJZw?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia will investigate CEO Jensen Huang’s relationship with possible Chinese spy",
-          "source": "TechCrunch",
-          "url": "https://techcrunch.com/2026/11/08/nvidia-says-its-investigating-ceo-jensen-huangs-relationship-with-possible-chinese-spy/",
-          "region": "Global desks"
+          "title": "Anthropic Unveils New Fable, Mythos AI Models Ahead of IPO",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNaGNFTXptZ1NYTjh3SWxCeUlTQmZ2elFyZG80bW9hdG94NGszVXE5cmxjRV83QVg5UGEwTGVLVjlzXzBKT0xPdVAwc1NCMlhUcEVOY2tBNGxQRHJPQW80bkNvbGp4cW1OazY2NU5IRXRraG93RUhmbzdGMmlVZDU5LVpoczVFOWE0NkNnQjl0eGNCTUpabk1lLTFUa3ItNUQ5MmhvS25IZ1loaG9Q?oc=5",
+          "region": "Europe"
+        },
+        {
+          "title": "Anthropic Introduces New Fable 5.2 and Mythos 5.2 AI Models",
+          "source": "CNET",
+          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPclhvZzYxckdzRVZ2dzNHMUZoSHd3RllabVFSSUxJUWRZRE5yaDNRQUFITi1hdG9lQ2RvamFJWERCQ3JIMllOcmxNZVJGSFNuQkROSlRPQm9TNDVMQldGZktKLXlmdXMxSHloOFllWXo5Unh1LWgzLUx3Q2g5ZnkydlRvRmpqRmliQ3VVdUlubw?oc=5",
+          "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.533,
-      "probability": 0.71,
+      "score": 0.7959,
+      "probability": 0.92,
       "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Anthropic strikes $3.4bn deal to generate gas-fired power for data centres",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "entity": "Nvidia",
+      "theme": "Chips & compute",
+      "headline": "What to Know About Nvidia’s Investigation of CEO Jensen Huang",
+      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 20,
+        "outlets": 55,
         "regions": [
-          "North America"
+          "Global desks",
+          "Asia-Pacific",
+          "Europe",
+          "North America",
+          "South Asia"
         ],
-        "stories": 23,
-        "momentum": 0.38,
-        "recent6h": 2,
-        "authority": 7.6,
-        "hnPoints": 37,
-        "nextStepCues": 0,
+        "stories": 90,
+        "momentum": 3.41,
+        "recent6h": 49,
+        "authority": 25.4,
+        "hnPoints": 0,
+        "nextStepCues": 1,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.89,
-        "breadth": 0.17,
-        "momentum": 0,
+        "reach": 1,
+        "breadth": 0.83,
+        "momentum": 0.92,
         "authority": 1,
-        "community": 0.53,
-        "nextStep": 0,
+        "community": 0,
+        "nextStep": 0.33,
         "arc": 1
       },
       "sig": [
-        "anthropic",
-        "deal",
-        "data",
-        "power",
-        "gas",
-        "generator",
-        "$3.4b",
-        "strike"
+        "nvidia",
+        "huang",
+        "jensen",
+        "ceo",
+        "spy",
+        "chip",
+        "china",
+        "scandal"
       ],
       "evidence": [
         {
-          "title": "Anthropic secures $3.4 billion generator deal for AI data centers, FT reports",
+          "title": "Nvidia’s Next Headache: New Push For Export Controls in Wake of Spy Scandal",
+          "source": "The Information",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPQnNsYzdpaDRKS3c2Yi1LdVdWczlkM3QwSEJPMUowOUxxeTZZMUZodGt5SGxucEFkcVkybHhsOTFfWjVyeGdYcTNxbGR1VmNVNHRFc19fMUVoVGJTS1FBS2NaV3pKbzBJZWZOdnBVcXV3ZW55dWZ3WkhSVlBNSlpNc0hBNXBnTlJ0Y3dOQzhoUlJ2TkNBdlM0THVXMDVUcVFxZFFLeEN3?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia spy allegations likely to spur laws to tighten China's access to AI chips",
           "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNTUktcGxpNENhQ1llV2F3a3V5RUZya0dDc0ZLeFVTZmFqclBqSVhuYkNiSFpSTkkwVnZ2NkFVVEVjQjZPLTJzMGMyU0dnaFg0X1pPd2pMV0ZCWWtMWlpSdTNvckRlaGxLcWs1SnljenEwcUs0N0doWG0yRDdET2o4YlZMVWl6c2lpYWJ1emstVFI1S3VyUXdIdG1xdmZpS3k3ZW5LVUpibUZ0SWxmZUNLNXN0SDBMZE5nWFJZdDlQSQ?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPd3I1WGxHazNEeGdYc1VaNnZPbWZwN2xOQjVRZFhEbHBXVU9iYUNxQzRpZ0wtaktjcjV5NHFBNDgyWTN5OEkyRlcwMFhEbFRSZTc3ZUhjbm5nRkFrRmNQQnlIWk5WeE5RYWNPbDZlLWFWdkhuY1puVDNqaFVySUN6WWRoUWxOaDJYNGtPRVZncGh6cENyNjU5NkVSU3VnTFM3d29iOE9LZGp5TTlKclhiVUtfUzZKMWwwdnVOZ2Y2SF9PaEUt?oc=5",
           "region": "North America"
         },
         {
-          "title": "Anthropic Buys Power for AI Data Centers in $3.4B Deal, FT Says",
+          "title": "Who is Alice Huang, the woman linked to Nvidia’s CEO?",
+          "source": "The Guardian",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQejZNZ0Y4bjNmdmViQ0tadW9KRlN5aC1CaGxxcEVqc2hBR2xka1RBYTFseUNlZDhHS282UGd3RlpGY0V4WHBsdERCNUk4NG5oRERZVDM4RDQ1U3RKT3J1VFF3eWEtNThjbW5vUlY3NnlYQllfbVJrUHh5TE5UY2xaQmczbTF6T1dEeTdBdlp0dTNyMWl3Y1RseHI3dWkyS21BV3BR?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia Scandal Creates Risk for Entire AI Industry, Not Just CEO",
           "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQSi00VTRySXpJSXQwU3ZiRnZUYzk3MDYtTEJLZ3V0cm0zRlBMVDV1czVMalNRbmRldHhCSWNaaFNoMEpfZkI1dU9HVW9pVXN5VGhYQ1VwRV9UOVF4cmVTY0ViMFhwZll3NjNjVE9sTDZFM0xFUzRFZ1VuSE5WNXdweFdJaU1NaURWanYxUG1VRkQ3emo0clAwRFFya3BBUDVLWHVENjQ4SkdrdGU3Q1FYZGdR?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic strikes $3.4bn deal to generate gas-fired power for data centres",
-          "source": "Financial Times",
-          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQaDhoaHlMZk8tNWhZWlFEczhOc1FpNnZjcnlZTF9MUDJrVG5mb2NvUkdzZlBldmx2YkhEMkQtdVRuaXpWYkhTcDd2N3VLWlFvLW81S0ttcWxKTUlkdXBOMWRNZUIzS0o4ZVM1Y1dpbUIxRG4waXdxRVlncjJiVTM2TGtTZ0g?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic strikes $3.4bn deal to generate gas-fired power for data centres: Report",
-          "source": "The Economic Times",
-          "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxOaGI3WWx0ZTA5dXQ0enRkeXZkbjkxQi15dVMyTzEzdmpaaTZRdHZhVkw2M3EzVDQ0UzZvX3hoMS0wTUpXUGdnSUVlUW1lQzR2akJ0Y3MtcEFNcnpzR2hHR2RVVkVGYkJHUzN3N1BXMDRnaUZTbkRackMxWWZoS2NHeTRJbGNaWVVNVV9WS2U2Ull3YTBmMVJCZTEwVEFMY0JnOEJheHFsMzBNWmx4UmJNNy1ZRFdQejhONkRWcERaNTNxdGc5cmZFTFZnZjgyRjRMLWxHS082dmVJWVhLZmtQQUdRb0R3NzNwUU4tZ2hzOG9XaE8teVHSAfsBQVVfeXFMTk5vTmd5WnV3V0ctNy1RNHZlVTJ0cjJrZXR2T1ZGajJrMDF0bHZKcDU3QndJZnFTSG5SazhsSi1fR3d2THN5c1hPQlQzWE53UXFlRnVncFJnOHZLaDhsMU5BNDlkaWZnUmlfVElGZDNwY2pvZTJYYjhYcm1NcXM5aGpUV0JNV0FjNE0ydnVQQjA3SExFYWNHeEM0dS1BOHdnNThfUWtCb2xnejJkLW1GRW5LemRCMTI1OHR0NV9uLVNhZXJZeWNyYkh2YTVHNzJNc2NQYVJWMW5xOXktQmpIc0VzVjlqd1FVLUFxY1djNmJlakpyME1NRlYtMFk?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxOeU5sZExFMm9PT0FDekcxMEVUWTFWVEJVNUNBcmx0bFlzNkI2SnZYLWVlanJfdEtxN0lMV1RMZ2lfRHlYVHMwMm05dU1lNlQzS21OQlJwY1J2VThCVUpxZU5hcmxRWE8yTUNaVzlnZzRCTUJUNFFfSERTZ0RQaU9QdmRTMUZ1dEwxVDR5MzFOOXNBVmt4eW0zbHlEaWVRWWdFQUYydXVXWFIxcE5scC05YlZ4ckw1VkNtUDd1UXBGa2I2cjg?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.4407,
-      "probability": 0.55,
-      "confidence": "Medium",
-      "entity": "AI industry",
+      "score": 0.6165,
+      "probability": 0.82,
+      "confidence": "High",
+      "entity": "Anthropic",
       "theme": "Funding & markets",
-      "headline": "How sustainable is the AI investment boom after Thursday’s selloff? By Investing.com",
-      "outlook": "Market reaction, analyst notes and deal details around AI industry are the likely next chapter.",
+      "headline": "Countdown to Anthropic IPO",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 6,
+        "outlets": 8,
         "regions": [
-          "Europe",
-          "North America",
-          "Asia-Pacific",
-          "South Asia",
-          "Africa"
+          "North America"
         ],
-        "stories": 6,
-        "momentum": 7,
-        "recent6h": 6,
-        "authority": 1.5,
-        "hnPoints": 0,
-        "nextStepCues": 0,
-        "arcDays": 0,
+        "stories": 8,
+        "momentum": 3,
+        "recent6h": 5,
+        "authority": 3.1,
+        "hnPoints": 5,
+        "nextStepCues": 2,
+        "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.57,
-        "breadth": 0.83,
-        "momentum": 1,
-        "authority": 0.3,
-        "community": 0,
-        "nextStep": 0,
-        "arc": 0
+        "reach": 0.64,
+        "breadth": 0.17,
+        "momentum": 0.86,
+        "authority": 0.63,
+        "community": 0.26,
+        "nextStep": 0.67,
+        "arc": 1
       },
       "sig": [
-        "sustainable",
-        "investment",
-        "boom",
-        "thursday",
-        "selloff",
-        "investing.com"
+        "anthropic",
+        "ipo",
+        "november",
+        "launch",
+        "nasdaq",
+        "tuesday",
+        "meet",
+        "backlash"
       ],
       "evidence": [
         {
-          "title": "How sustainable is the AI investment boom after Thursday’s selloff? By Investing.com",
-          "source": "Investing.com South Africa",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOcGhhY1BIRE44TGZlSjZicGRuLUVyZXIwbGhvSTBRWXRmVVY5M3BXckdtOWVocGpWbzc2QjRqN1lqUjN5Z1N2M0RRX1VObklpZ0NyYTNzZXFNelhYaVZ5UFhUMFliYlRmd3hwVXNFaXh3OUhQdVFLemJvSnZCblpKY1N0bW5nc0dsNHVEbFdoc0g4T1d4TEpsM3EtT3VMbndRZzdtdU1jT3k4VnN1aGR5VV9fZ2FfdC1QLTlGdGNB?oc=5",
-          "region": "Africa"
+          "title": "Countdown to Anthropic IPO",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTFB2VjJmaUxYTHNlQ3VoVnRla3ZjTXg4MU11MDRNTkx3U1g3ZTQtR0RVeGFaNGFpWllnMU9hQ2Vka3AyQkcxSlFFVHZDU3FSMDIwQ0JzSWtacUdvYUNBcF80SXdIWl9iQ2dkcllwZ3BCVDJKUXdUQlhJag?oc=5",
+          "region": "North America"
         },
         {
-          "title": "How sustainable is the AI investment boom after Thursday’s selloff? By Investing.com",
-          "source": "Investing.com Nigeria",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPcG5TREF0ZFcyRklnWklfNkxNWE9TT2VsdFctWXlDY3ljbkVmTWpsUjUtR013dkZtX01Ba05WRlFyMGZ6b3JYUDgweUdmby1iYmZKWVQ1UEJNcGxOekJYQ1lYd3lvWFBWZnA1RmVKRzZCVlZhTTBUczltLVJfNU1GYkxmcC1GSTMyN1FBc09yN01USWZLN0xsekp5alhMNUJ2R0M2NVN2bTZlUWx5THBfRF9QWXUwTWtzWFZkNkl3?oc=5",
-          "region": "Africa"
+          "title": "'It is not the savior of the universe': A faith-based investor's view on the Anthropic IPO",
+          "source": "Business Insider",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNTGc3VGlCT0U0X09yaVRPaUw0eC1yQ3V0cE9uMEVRdzlBVFRpLVNaeGR0a1A5cnMzSnVfUU9JeHlZMFhOQS1HQ2l4YTZ1OHVkcUVzN2pndWN2QVo2Sm9UWnNuX0M3dkxQQlUzSzRMb1B6c0hrTjhnMEhlY0ZkaWJnZXRVSHhqLVdYV2VRV2NR?oc=5",
+          "region": "North America"
         },
         {
-          "title": "How sustainable is the AI investment boom after Thursday’s selloff? By Investing.com",
-          "source": "Investing.com India",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxONXI3c1UtU3JETEktb0pFSWRWaG9xTnJxRjl6Y3FITlFQWnVJcjFaWV82WlJaem1LY20zaXo4VFZUUlR3ZmloNkdUXzdsVFRFejNxSW5iWnZJX2dlWVd5ODZFSDVEaXRwZjlYS3B6Ql94YkFWUWdLZmU1dGg0bFR4ZThFc0N2RGVZNnpaLVBlRkduSFpMSV9NNnpaVUgxbWs3dGJPb19PMTB4VVBhcTNtdUkwUEJWc1BySHQ0R1lB?oc=5",
-          "region": "South Asia"
+          "title": "Anthropic IPO meets AI backlash",
+          "source": "Hacker News",
+          "url": "https://www.cnbc.com/2026/11/07/anthropic-ipo-ai-data-center-backlash.html",
+          "region": "Community"
         },
         {
-          "title": "How sustainable is the AI investment boom after Thursday’s selloff? By Investing.com",
-          "source": "Investing.com Australia",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQOWp2Y0ZqbmdSOHhPMDQyVUFpdk5Td05raTliYlVheGhCbXBsLU1zVGgyX2N1MU9OOC1idlU0NEdJak0yTUtSeUxBUnBBTVJaNXF3a2l3TmtIV2hjX3BHaGVsM3NCNlJTM2YtOTJxWjIwV2JGeTY5N3RsRnlreEVtd19CVnBxR3VjbVA3eW5qYk0ycnlIWXl3NzhXYkFqVEdRSVJUSTdlQ3d0TmNwZE1sS3BfMGhSbVdEUGR3TjdB?oc=5",
-          "region": "Asia-Pacific"
+          "title": "Anthropic IPO Becomes Litmus Test for AI Investment Appetite",
+          "source": "The Tech Buzz",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQa3ZjTngtSmxnZ01Eb045bHJMSEtvTkZOb2hZY1hvOXl3NEZmakFySENrbnZOM1lFZ2Q4UVJIaTQ3a2NKZWg2X0JBdHNPY3VxMGk3MUxYSmE5NlN2T1VuSVRpQXZQUW5iYTluQWczXzVLX2g2M0hFOTFmeTEzbVF4Wm1ULXlCcVREOGJpaWVTTDhPd1I3amFwZw?oc=5",
+          "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-09",
+    "date": "2026-11-10",
     "calls": [
       {
         "rank": 1,
-        "headline": "OpenAI gets $11 billion funding at $1.25 trillion valuation, source says",
-        "probability": 0.84,
-        "hit": false,
-        "matched": null
+        "headline": "Nvidia Opens Investigation Into Jensen Huang’s Relationship With Chinese Spy",
+        "probability": 0.79,
+        "hit": true,
+        "matched": "What to Know About Nvidia’s Investigation of CEO Jensen Huang"
       },
       {
         "rank": 2,
-        "headline": "Anthropic IPO Valuation Talk Falls To $1.3 Trillion After The AI Stock Rout",
-        "probability": 0.81,
+        "headline": "Anthropic strikes $3.4bn deal to generate gas-fired power for data centres",
+        "probability": 0.71,
         "hit": true,
-        "matched": "Anthropic strikes $3.4bn deal to generate gas-fired power for data centres"
+        "matched": "Anthropic secures $3.4B generator deal for AI data centers"
       },
       {
         "rank": 3,
-        "headline": "China’s Top Spy Agency Recruited Woman Who Targeted Jensen Huang",
-        "probability": 0.74,
-        "hit": true,
-        "matched": "Nvidia Opens Investigation Into Jensen Huang’s Relationship With Chinese Spy"
+        "headline": "How sustainable is the AI investment boom after Thursday’s selloff? By Investing.com",
+        "probability": 0.55,
+        "hit": false,
+        "matched": null
       }
     ],
     "hits": 2
   },
   "track": {
-    "days": 9,
-    "calls": 27,
-    "hits": 23,
+    "days": 10,
+    "calls": 30,
+    "hits": 25,
     "log": [
       {
         "date": "2026-11-01",
@@ -308,9 +311,14 @@
         "date": "2026-11-09",
         "hits": 2,
         "calls": 3
+      },
+      {
+        "date": "2026-11-10",
+        "hits": 2,
+        "calls": 3
       }
     ],
-    "hitRate": 0.85
+    "hitRate": 0.83
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
