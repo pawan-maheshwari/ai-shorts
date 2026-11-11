@@ -417,6 +417,11 @@ def run(data, idx, cost_pct, objective="win", split=0.6, min_disc=30, min_conf=1
                 held_rate=float(shortlist.held.mean()) if len(shortlist) else np.nan)
 
 
+def adopt_change(spec):
+    """Settings change for adopting a strategy: Scout's results assume holding to stop / target / 15:15."""
+    return {"strategy": spec, "paper_window_min": 0, "exit_policy": "fixed"}
+
+
 def proposal(res, cfg):
     """Scout's proposal for the shared settings, or None. Same shape as agents.proposals entries."""
     if not res:
@@ -433,9 +438,11 @@ def proposal(res, cfg):
                    f"(won {b.d_win * 100:.0f}%, {b.d_exp:+.2f}R per trade) and then checked on the newest "
                    f"{res['n_conf_days']} sessions it had never seen: won {b.c_win * 100:.0f}%, {b.c_exp:+.2f}R per trade "
                    f"over {int(b.c_n)} trades, vs {base['win'] * 100:.0f}% and {base_exp:+.2f}R for the current engine. "
-                   f"About {b.c_pm:.0f} signals a month before the Risk agent's caps. Rules: {describe(b.spec)}")
+                   f"About {b.c_pm:.0f} signals a month before the Risk agent's caps. Rules: {describe(b.spec)} "
+                   f"Scout tested it held to its stop, target or 15:15, so approving also sets the execution window "
+                   f"to 'hold' and the exit to fixed — otherwise live trades would not match what was tested.")
             return dict(id="Scout:" + b.id, agent="Scout", title=f"Switch the signal engine to: {b.label}", why=why,
-                        change={"strategy": b.spec})
+                        change=adopt_change(b.spec))
     if cur_spec and res["current"] and (res["current"]["c"]["n"] >= 15 and res["current"]["c"]["exp"] <= 0):
         return dict(id="Scout:revert:" + spec_id(cur_spec), agent="Scout", title="Return to the classic signal engine",
                     why=f"The approved strategy lost money on the newest {res['n_conf_days']} sessions "

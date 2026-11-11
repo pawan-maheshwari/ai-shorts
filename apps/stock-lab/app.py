@@ -1647,7 +1647,7 @@ with tab_r:
                               yaxis_title="Cumulative R (every signal)", legend=dict(orientation="h", y=1.14),
                               font=dict(family="Libre Franklin, sans-serif", size=11))
             st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
-            cand = ag.merged({**CFG, "strategy": spec})
+            cand = ag.merged({**CFG, **rs.adopt_change(spec)})
             if CFG.get("strategy") and rs.spec_id(CFG["strategy"]) == pick:
                 st.success("This is the signal engine in use now.")
             elif st.toggle("What-if: run this strategy through all the agents (Coach, Risk, Exit, Trader)",
@@ -1659,15 +1659,15 @@ with tab_r:
                             f'<div class="wi">Now: {sys_line(now_sc["system"]) if now_sc else "—"}<br>'
                             f'With this strategy: {sys_line(wi["system"]) if wi else "not enough trades to score"}</div></div>',
                             unsafe_allow_html=True)
-                st.caption("The what-if includes your current execution window, exit policy and risk caps, so it can "
-                           "differ from the raw strategy numbers above.")
+                st.caption("The what-if holds each trade to its stop, target or 15:15 (as Scout tested it) and applies "
+                           "the Risk agent's caps, so it covers fewer trades than the raw numbers above.")
                 if ADMIN_PIN and not can_edit_r:
                     st.caption("Unlock with the reviewer PIN in 🎯 Agent scores to adopt a strategy.")
                 note_r = st.text_input("Reason for adopting it (required)", key="scout_note", disabled=not can_edit_r)
                 if st.button("Adopt as the signal engine (new settings version)", type="primary",
                              disabled=not (can_edit_r and note_r.strip()), key="scout_apply"):
                     v = save_cfg(STORE, CFG_STATE, cand, f"Scout strategy adopted: {row.label} — {note_r}",
-                                 ss.get("reviewer", "Reviewer"), {"strategy": spec})
+                                 ss.get("reviewer", "Reviewer"), rs.adopt_change(spec))
                     st.toast(f"Settings v{v} are live — new signals use this strategy", icon="✅")
                     st.rerun()
         if CFG.get("strategy"):
