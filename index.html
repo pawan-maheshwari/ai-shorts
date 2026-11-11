@@ -2603,7 +2603,7 @@ async function fetchEdition(){
             summary:dedupeSummary(it.headline,it.summary)||it.summary,
             source:it.source,
             url:it.url,image:it.image||"",category:it.category,
-            region:it.region||"Global",date:it.date,note:it.note||""};
+            region:it.region||"Global",date:normDate(it.date),note:it.note||""};
   });
 }
 

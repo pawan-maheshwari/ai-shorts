@@ -25,12 +25,30 @@ import crypto from "node:crypto";
 
 const SITE     = "https://aishorts.biz";
 const DOMAIN   = "aishorts.biz";
-const MAX      = 12;                 // dispatches per edition
+const MAX      = 12;                 // front-page dispatches from the main wire
+const MIN_SEC  = 3;                  // every section tab carries at least this many
 const KEEP     = 120;                // editions to retain on disk
 const FRESH_D  = 7;                  // discard anything older than this
 const RSS = "https://news.google.com/rss/search?q="
           + encodeURIComponent("artificial intelligence when:5d")
           + "&hl=en-US&gl=US&ceid=US:en";
+
+const gnews = q => "https://news.google.com/rss/search?q="
+          + encodeURIComponent(q + " when:5d") + "&hl=en-US&gl=US&ceid=US:en";
+
+/* One targeted query per section tab on the front page. The main wire is
+   sorted into sections by keyword, which on most days leaves some tabs
+   empty; any section short of MIN_SEC is topped up from its own query.
+   Keys must match CATS in index.html. */
+const SECTIONS = {
+  Models:         "AI model launch OR release (OpenAI OR Anthropic OR Gemini OR Llama OR Mistral)",
+  Business:       "AI startup funding OR acquisition OR earnings OR IPO",
+  Policy:         "AI regulation OR policy OR law OR \"AI Act\"",
+  Research:       "AI research study OR paper OR benchmark OR breakthrough",
+  Safety:         "AI safety OR \"AI security\" OR deepfake OR alignment",
+  Robotics:       "AI robotics OR humanoid robot OR \"self-driving\"",
+  Infrastructure: "AI data center OR chips OR GPU OR compute"
+};
 
 /* ------------------------------------------------------------- fetching */
 function get(url, {hops = 0, method = "GET", timeout = 12000} = {}){
@@ -149,13 +167,12 @@ const idFor = (url, headline, day) =>
   `tag:${DOMAIN},${day}:story/` +
   crypto.createHash("sha1").update(String(url || headline)).digest("hex").slice(0, 16);
 
-function toEdition(raw, day){
-  const seen = new Set();
+function toEdition(raw, day, {seen = new Set(), limit = MAX, category = ""} = {}){
   const items = [];
   const cutoff = Date.now() - FRESH_D * 86400000;
 
   for(const r of raw){
-    if(items.length >= MAX) break;
+    if(items.length >= limit) break;
     const key = r.title.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
     if(!key || seen.has(key)) continue;
     const when = new Date(r.pub);
@@ -171,7 +188,7 @@ function toEdition(raw, day){
       summary,
       source: r.source,
       url: r.url || r.link,
-      category: guessCat(r.title + " " + r.desc),
+      category: category || guessCat(r.title + " " + r.desc),
       region: "Global",
       date: iso(when),
       note: "via Google News"
@@ -223,8 +240,11 @@ const args = new Set(process.argv.slice(2));
 async function main(){
   const day = new Date().toISOString().slice(0, 10);
 
+  const fixture = args.has("--fixture");
+  const seen = new Set();
+
   let raw;
-  if(args.has("--fixture")){
+  if(fixture){
     raw = parseItems(fs.readFileSync("tools/fixture-rss.xml", "utf8"));
   }else{
     const r = await get(RSS);
@@ -232,11 +252,36 @@ async function main(){
     for(const it of raw.slice(0, MAX * 2)) it.url = await resolvePublisher(it.link);
   }
 
-  const items = toEdition(raw, day);
+  const items = toEdition(raw, day, {seen});
   if(items.length < 3){
     console.error(`Only ${items.length} usable dispatches — keeping the previous edition.`);
     process.exit(0);                      // leave yesterday's files in place
   }
+
+  /* Top up any section tab the main wire left thin. A failed section query
+     is logged and skipped — it must never cost us the whole edition. */
+  for(const [cat, q] of Object.entries(SECTIONS)){
+    const need = MIN_SEC - items.filter(it => it.category === cat).length;
+    if(need <= 0) continue;
+    try{
+      let more;
+      if(fixture){
+        const f = `tools/fixture-rss-${cat.toLowerCase()}.xml`;
+        more = fs.existsSync(f) ? parseItems(fs.readFileSync(f, "utf8")) : [];
+      }else{
+        more = parseItems((await get(gnews(q))).body).slice(0, need * 4);
+        for(const it of more) it.url = await resolvePublisher(it.link);
+      }
+      const added = toEdition(more, day, {seen, limit: need, category: cat});
+      items.push(...added);
+      if(added.length < need) console.warn(`Section ${cat}: only ${added.length} of ${need} top-up dispatches found.`);
+    }catch(e){
+      console.warn(`Section ${cat}: top-up failed (${e.message}).`);
+    }
+  }
+
+  const tally = Object.keys(SECTIONS)
+    .map(c => `${c} ${items.filter(it => it.category === c).length}`).join(", ");
 
   const edition = {
     edition: day,
@@ -265,6 +310,7 @@ async function main(){
   fs.writeFileSync("feed.xml", atom(edition));
 
   console.log(`Edition ${day}: ${items.length} dispatches, ${all.length} on file.`);
+  console.log(`Sections: ${tally}`);
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
