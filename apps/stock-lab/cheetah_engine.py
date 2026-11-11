@@ -490,6 +490,21 @@ def yahoo_intraday(symbols, days):
                 out[s] = df
         except KeyError:
             pass
+    missing = [s for s in symbols if s not in out]
+    if missing and len(missing) < len(symbols):   # e.g. yfinance's own cache "database is locked" under threads
+        for s in missing:
+            try:
+                df = yf.download(s + ".NS", period=f"{min(days, 59)}d", interval="5m", auto_adjust=False,
+                                 progress=False, threads=False)
+                if isinstance(df.columns, pd.MultiIndex):
+                    df.columns = df.columns.get_level_values(0)
+                df = df[["Open", "High", "Low", "Close", "Volume"]].dropna()
+                if len(df):
+                    idx = df.index.tz_convert(IST) if df.index.tz else df.index.tz_localize("UTC").tz_convert(IST)
+                    df.index = idx.tz_localize(None)
+                    out[s] = df
+            except Exception:
+                pass
     return out
 
 
