@@ -15,13 +15,12 @@
      editions/index.json        every edition on file, newest first
      feed.xml                   Atom 1.0
 
-   Each dispatch also gets an AIShorts brief — a short summary in our own
+   Each dispatch can also get an AIShorts brief — a short summary in our own
    words plus "why it matters" and "what to watch" — written by a model on
-   GitHub Models using the workflow's own GITHUB_TOKEN (no API key, free
-   within rate limits). Any OpenAI-compatible service works instead: set
-   BRIEF_ENDPOINT, BRIEF_MODEL and BRIEF_API_KEY. Briefs are optional: with
-   no token, a rate limit or a bad answer, the dispatch keeps the
-   publisher's own description of the story.
+   any OpenAI-compatible service. It is off until all three of
+   BRIEF_ENDPOINT, BRIEF_MODEL and BRIEF_API_KEY are set. With briefs off,
+   a rate limit or a bad answer, the dispatch keeps the publisher's own
+   description of the story.
 
    No dependencies — plain Node 22, so CI needs no install step.
    ===================================================================== */
@@ -292,10 +291,10 @@ async function gather(items){
 }
 
 /* ---------------------------------------------------------- AI briefs */
-const BRIEF_ENDPOINT = process.env.BRIEF_ENDPOINT || "https://models.github.ai/inference/chat/completions";
-const BRIEF_MODEL    = process.env.BRIEF_MODEL    || "openai/gpt-4o-mini";
+const BRIEF_ENDPOINT = process.env.BRIEF_ENDPOINT || "";
+const BRIEF_MODEL    = process.env.BRIEF_MODEL    || "";
 const BRIEF_BATCH    = 3;                 // dispatches per request
-const BRIEF_GAP_MS   = Number(process.env.BRIEF_GAP_MS || 4500);   // free tier allows ~15 requests a minute
+const BRIEF_GAP_MS   = Number(process.env.BRIEF_GAP_MS || 4500);   // stay well inside free-tier request limits
 
 const BRIEF_SYSTEM = `You write story briefs for AIShorts, a daily artificial-intelligence news wire.
 For each story you are given a headline, the publisher and, when available, source material from the publisher's page.
@@ -335,7 +334,8 @@ async function writeBriefs(items, material, token){
   const stats = {model: BRIEF_MODEL, attempted: 0, written: 0, fromSource: 0, reused: 0};
   const todo = items.filter(it => !it.briefBy);
   stats.reused = items.length - todo.length;
-  if(!token || !todo.length) return stats;
+  if(!token || !BRIEF_ENDPOINT || !BRIEF_MODEL){ stats.off = true; return stats; }
+  if(!todo.length) return stats;
 
   let misses = 0;
   for(let i = 0; i < todo.length; i += BRIEF_BATCH){
@@ -350,8 +350,7 @@ async function writeBriefs(items, material, token){
     try{
       res = await fetch(BRIEF_ENDPOINT, {
         method: "POST",
-        headers: {"Authorization": `Bearer ${token}`, "Content-Type": "application/json",
-                  "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28"},
+        headers: {"Authorization": `Bearer ${token}`, "Content-Type": "application/json"},
         body: JSON.stringify({model: BRIEF_MODEL, temperature: 0.2, max_tokens: 900,
           response_format: {type: "json_object"},
           messages: [{role: "system", content: BRIEF_SYSTEM}, {role: "user", content: user}]}),
@@ -496,10 +495,10 @@ async function main(){
 
   /* Briefs. Everything here is best-effort: a failure leaves the dispatch
      with the line it already has. */
-  let briefs = {model: BRIEF_MODEL, attempted: 0, written: 0, fromSource: 0, reused: 0};
+  let briefs = {model: BRIEF_MODEL, attempted: 0, written: 0, fromSource: 0, reused: 0, off: true};
   try{
     reuseBriefs(items, day);
-    const token = process.env.BRIEF_API_KEY || process.env.GITHUB_TOKEN || "";
+    const token = process.env.BRIEF_API_KEY || "";
     const fresh = items.filter(it => !it.briefBy);
     const {material, descs} = (fixture || !fresh.length)
       ? {material: new Map(), descs: new Map()} : await gather(fresh);
@@ -555,7 +554,8 @@ async function main(){
   console.log(`Edition ${day}: ${items.length} dispatches, ${all.length} on file.`);
   console.log(`Sections: ${tally}`);
   console.log(`Briefs: ${briefs.written} written (${briefs.fromSource} from source text), ${briefs.reused} reused, `
-            + `${briefs.publisherLines ?? 0} publisher lines, ${briefs.publisherLinks ?? 0} publisher links, model ${briefs.model}.`);
+            + `${briefs.publisherLines ?? 0} publisher lines, ${briefs.publisherLinks ?? 0} publisher links, `
+            + (briefs.off ? "AI briefs off (no BRIEF_* settings)." : `model ${briefs.model}.`));
 }
 
 if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){

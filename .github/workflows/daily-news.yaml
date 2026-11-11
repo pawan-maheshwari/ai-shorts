@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  models: read        # lets GITHUB_TOKEN call GitHub Models for the story briefs (free, rate-limited)
 
 jobs:
   fetch:
@@ -24,10 +23,9 @@ jobs:
       - name: Build today's edition and Atom feed
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Briefs default to GitHub Models with the token above. To use another
-          # OpenAI-compatible service, add a BRIEF_API_KEY secret and set repo
-          # variables BRIEF_ENDPOINT and BRIEF_MODEL (Settings > Secrets and variables > Actions).
+          # AI briefs are off until all three are set (Settings > Secrets and
+          # variables > Actions): secret BRIEF_API_KEY, variables BRIEF_ENDPOINT
+          # (an OpenAI-compatible chat-completions URL) and BRIEF_MODEL.
           BRIEF_API_KEY: ${{ secrets.BRIEF_API_KEY }}
           BRIEF_ENDPOINT: ${{ vars.BRIEF_ENDPOINT }}
           BRIEF_MODEL: ${{ vars.BRIEF_MODEL }}
