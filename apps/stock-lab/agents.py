@@ -1209,7 +1209,9 @@ def model_predictions(rows, cfg, study=None, warmup=10):
         return None
     Xs, ys, rs, ds = _xyr(sd)
     Xa, _, _, da = _xyr(df)
-    wf = ml.walk_forward((Xs, ys, rs, ds), {"actual": (Xa, da), "study": (Xs, ds)}, sorted(df.day.unique()), warmup)
+    test_days = sorted(df.day.unique())
+    step = max(3, -(-(len(test_days) - warmup) // 20))   # ~20 refits whatever the history length (memory grows it)
+    wf = ml.walk_forward((Xs, ys, rs, ds), {"actual": (Xa, da), "study": (Xs, ds)}, test_days, warmup, step=step)
     out = pd.DataFrame({"key": df.key.values})
     st = pd.DataFrame({"y": ys, "r": rs, "day": ds})
     for k in ml.KINDS:

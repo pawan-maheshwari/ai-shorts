@@ -24,7 +24,7 @@ def _fresh_local_modules():
     """Streamlit Cloud keeps imported helper modules in memory across redeploys, so an update can run new
     app.py against old store/agents code. Reload any local module whose file changed since it was loaded."""
     here = os.path.dirname(os.path.abspath(__file__))
-    for name in ("cheetah_engine", "store", "models", "research", "agents"):          # dependency order
+    for name in ("cheetah_engine", "store", "models", "research", "learning", "agents"):          # dependency order
         mod = sys.modules.get(name)
         path = os.path.join(here, name + ".py")
         if mod is None or not os.path.exists(path):
@@ -39,7 +39,8 @@ _fresh_local_modules()
 import agents as ag
 import research as rs  # noqa: E402
 import cheetah_engine as ce  # noqa: E402
-from store import SUPABASE_SQL, Store  # noqa: E402
+import learning as ln  # noqa: E402
+from store import SUPABASE_SQL, MIGRATION_SQL, Store, StoreError, TABLE_ROLE, TRADE_DAYS, MEMORY_DAYS, EVENT_DAYS  # noqa: E402
 
 st.set_page_config(page_title="AIShorts Stock Lab (Beta)", page_icon="📈", layout="wide",
                    initial_sidebar_state="collapsed")
@@ -211,6 +212,8 @@ def _make_store(demo, schema):
         import os
         return Store(path=os.path.join(os.path.dirname(os.path.abspath(__file__)), ".data", "demo.db"))
     st_ = Store(_secret("SUPABASE_URL"), _secret("SUPABASE_KEY"))
+    if st_.remote:
+        st_.health(force=True)          # finds a wrong key type or missing tables before the agents rely on them
     st_.purge()
     return st_
 
@@ -222,7 +225,8 @@ def _store_schema():
 
 def get_store(demo):
     s_ = _make_store(demo, _store_schema())
-    if not all(hasattr(s_, m) for m in ("kv_get", "kv_set", "trades", "events", "log")):
+    if not all(hasattr(s_, m) for m in ("kv_get", "kv_set", "trades", "events", "log", "flush",
+                                       "memory_list", "health")):
         _make_store.clear()
         s_ = _make_store(demo, _store_schema())
     return s_
@@ -251,6 +255,15 @@ def sentinel_rows(verdicts, day, scanned=True):
             back.append(dict(day=d, symbol=sym, level="HIGH", data=dict(types=["results_day"], scanned=False,
                                                                         reasons=["Results day (back-filled from the exchange calendar)"])))
     return rows, back
+
+
+@st.cache_resource
+def _memo():
+    """What the learning memory added to today's history (filled when the daily replays run)."""
+    return {}
+
+
+MEMO = _memo()
 
 
 @st.cache_resource
@@ -302,6 +315,7 @@ def ensure_daily_scan(demo, symbols, store):
                       f"{lv.count('WATCH')} to watch, {lv.count('CLEAR')} clear, {lv.count('UNCHECKED')} not checked. Sources — "
                       + "; ".join(f"{n} {ok_}/{ok_ + bad_}" for n, (ok_, bad_) in src.items()),
                       detail=dict(sources=src), dkey=f"sentinel-daily|{day_s}")
+            store.flush()
             job.update(status="done", results=res, sources=src, finished=time.time())
         except Exception as e:                           # never let the scan take the app down
             job.update(status="failed", note=str(e)[:200])
@@ -332,7 +346,22 @@ def history_cached(demo, symbols, day, args_key, _a):
     if not data:
         return [], {}, []
     rows, corr = ag.replay(data, idx, _a)
-    return rows, corr, ag.day_stats(data).to_dict("records")
+    store = get_store(demo)
+    eng = ln.eng_id(args_key)
+    ln.tag_engine(rows, eng)
+    rows, info = ln.remember_replay(store, "sig", eng, rows, today=day)
+    keep = set(data)                                  # only stocks still on the watchlist
+    rows = [r for r in rows if r["symbol"] in keep]
+    corr = ln.remember_corr(store, corr, today=day)
+    stats = ln.remember_day_stats(store, ag.day_stats(data).to_dict("records"), today=day)
+    stats = [s_ for s_ in stats if s_["symbol"] in keep]
+    nb = ln.backfill_news(rows, store.sentinel_list(days=MEMORY_DAYS))
+    MEMO.update(sig=dict(info, news_backfilled=nb, eng=eng, day=day))
+    if info["memory_days"] or nb:
+        store.log("Coach", "memory", f"History: {info['fresh_days']} sessions from Yahoo + {info['memory_days']} "
+                  f"remembered from the database ({info['n']} signals since {info['first_day']}); "
+                  f"news filled in from the Sentinel archive on {nb}", detail=info, dkey=f"memory|{day}|{eng}")
+    return rows, corr, stats
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
@@ -342,7 +371,14 @@ def train_coach(demo, symbols, day, args_key, _a):
     if not rows:
         return 0
     store = get_store(demo)
-    old = store.trades()
+    try:
+        old = store.trades(strict=True)
+    except StoreError:            # never overwrite live journal rows we could not read; not cached, so it retries
+        store.log("Coach", "training", "Skipped training: the trade journal could not be read "
+                  f"({store.last_error})", dkey=f"coach-train-skip|{day}|{args_key}")
+        raise
+    cut = str((pd.Timestamp(day) - pd.Timedelta(days=TRADE_DAYS - 1)).date())
+    rows = [r for r in rows if str(r["day"]) >= cut]
     live = {k: (f if isinstance(f, dict) else json.loads(f or "{}"), rs)
             for k, f, rs, src in zip(old.key, old.features, old.reason, old.source) if src == "live"} if not old.empty else {}
     out = []
@@ -371,7 +407,16 @@ def study_cached(demo, symbols, day, study_key, _a):
     data, idx = intraday_history(demo, symbols, day)
     if not data:
         return []
-    return ag.replay(data, idx, _a)[0]
+    rows = ag.replay(data, idx, _a)[0]
+    store = get_store(demo)
+    eng = ln.eng_id("study|" + study_key)
+    ln.tag_engine(rows, eng)
+    rows, info = ln.remember_replay(store, "study", eng, rows, today=day)
+    keep = set(data)
+    rows = [r for r in rows if r["symbol"] in keep]
+    nb = ln.backfill_news(rows, store.sentinel_list(days=MEMORY_DAYS))
+    MEMO.update(study=dict(info, news_backfilled=nb, eng=eng, day=day))
+    return rows
 
 
 def _study_key(sa):
@@ -445,6 +490,24 @@ def now_ist():
     return pd.Timestamp.now(tz=ce.IST)
 
 
+@st.cache_data(ttl=3600, show_spinner=False, max_entries=4)
+def distill_audit(demo, hour):
+    """Hourly: turn the 7-day audit log into daily digests kept 180 days, then read the trends back.
+    The oldest day in the log is skipped — retention has already trimmed it, and a partial digest would
+    overwrite the complete one written earlier."""
+    store = get_store(demo)
+    first_full = str((now_ist() - pd.Timedelta(days=EVENT_DAYS - 1)).date())
+    rows = [r for r in ln.distill_events(store.events()) if r["day"] >= first_full]
+    if rows:
+        store.memory_upsert("audit", "all", rows)
+    return ln.audit_trends(store.memory_list("audit", "all"), today=now_ist().tz_localize(None))
+
+
+@st.cache_data(ttl=3600, show_spinner=False, max_entries=4)
+def store_memory_stats(demo, token):
+    return get_store(demo).memory_stats()
+
+
 def score_for(cfg, demo, token, lab=False):
     """Scorecard for any settings — the engine, paper account and watchlist come from the settings themselves."""
     a_ = ag.engine_args(cfg)
@@ -454,7 +517,13 @@ def score_for(cfg, demo, token, lab=False):
 
 
 def load_cfg(store):
-    state = store.kv_get("agent_config")
+    """Shared settings. If the database cannot be read, run on defaults for this visit WITHOUT writing them —
+    writing defaults during an outage would overwrite the real, reviewer-approved settings and their history."""
+    try:
+        state = store.kv_get("agent_config", strict=True)
+    except StoreError:
+        p = ag.merged({})
+        return dict(version=0, active=p, history=[], offline=True)
     if not state or "active" not in state:
         p = ag.merged({})
         state = dict(version=1, active=p, history=[dict(version=1, ts=now_ist().isoformat(), by="system",
@@ -465,11 +534,17 @@ def load_cfg(store):
 
 
 def save_cfg(store, state, params, note, by, change):
+    if state.get("offline"):
+        st.error("Settings were not saved: the database could not be read when this page loaded, so saving now "
+                 "could overwrite the approved settings. Reload the page once storage is back.")
+        st.stop()
     v = int(state["version"]) + 1
     params = ag.merged(params)
     hist = (state.get("history") or []) + [dict(version=v, ts=now_ist().isoformat(), by=by, note=note,
                                                 change=change, params=params)]
-    store.kv_set("agent_config", dict(version=v, active=params, history=hist[-60:]))
+    if not store.kv_set("agent_config", dict(version=v, active=params, history=hist[-60:])):
+        st.error(f"Settings were not saved: {store.last_error}")
+        st.stop()
     store.log("Reviewer", "config", f"Settings v{v} by {by}: {note}", detail=dict(change=change, version=v),
               dkey=f"cfg|{v}|{now_ist():%Y%m%d%H%M%S}")
     scorecard_cached.clear()
@@ -677,6 +752,9 @@ with st.sidebar:
 
 STORE = get_store(demo)
 CFG_STATE = load_cfg(STORE)
+if CFG_STATE.get("offline"):
+    st.warning("⚠️ The database did not answer, so this visit runs on default settings and nothing will be saved. "
+               f"Details in 🗂 Audit log → Storage. ({STORE.last_error})")
 CFG = CFG_STATE["active"]
 # The signal engine, paper account and watchlist are shared settings (versioned, reviewer-approved), so the
 # trade log, the Coach's training and every visitor's screen describe the same system.
@@ -684,6 +762,7 @@ A = ag.engine_args(CFG)
 symbols = tuple(sorted({str(x).strip().upper() for x in CFG["watchlist"] if str(x).strip()}))
 RISK_RS = A.capital * A.risk_pct / 100
 ARGS_KEY = ag.engine_key(CFG)
+ENG_ID = ln.eng_id(ARGS_KEY)
 PLAN = ag.plan_key(CFG)
 ENGINE_SETUPS = [rs.FAMILIES[CFG["strategy"]["fam"]][0]] if CFG.get("strategy") else ["ORB", "VWAP"]
 with eng_slot:
@@ -810,7 +889,11 @@ with tab_i:
         day = S.date.iloc[0]
         day_s = str(day)
         with st.spinner("Coach is studying recent sessions (once a day)…"):
-            train_coach(demo, symbols, day_s, ARGS_KEY, A)
+            try:
+                train_coach(demo, symbols, day_s, ARGS_KEY, A)
+            except StoreError:
+                st.caption(f"⚠️ Coach training skipped — the database did not answer ({STORE.last_error}). "
+                           "It retries on the next refresh.")
         idx = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}")
         mood = ag.pulse(idx, day, mults=CFG["mults"])
         size_mult = mood["mult"] if CFG["pulse_sizing"] else 1.0
@@ -819,6 +902,8 @@ with tab_i:
         ct_ = coach_trades(demo, ss.tok)
         if not ct_.empty:            # learn only from the signal engine that is live now
             ct_ = ct_[ct_.setup.isin(ENGINE_SETUPS)]
+            _e = ct_.features.map(lambda f: ag._feats(f).get("_eng"))
+            ct_ = ct_[_e.isna() | (_e == ENG_ID)]       # rows from older engine settings are left out
         coach = ag.Coach(ct_, CFG["half_life"], day, plan=PLAN)
         brain = None
         if CFG["coach_model"] in ag.ml.KINDS:
@@ -879,7 +964,7 @@ with tab_i:
                     for w_ in ag.WINDOWS:
                         v_ = ag.simulate_exit(g, sd, p_, A, r.signal_time + pd.Timedelta(minutes=w_) if w_ else None)
                         pw[f"{p_}|{w_}"] = [round(v_["r"], 4), v_["t"].isoformat()]
-                feats_j = dict(feats, _bias=m_at["bias"], _pw=pw,
+                feats_j = dict(feats, _bias=m_at["bias"], _pw=pw, _eng=ENG_ID,
                                _exits={p_: pw[f"{p_}|0"] for p_ in ag.EXIT_POLICIES})
                 journal.append(dict(key=key, ts=r.signal_time, day=day, source="live", symbol=r.symbol, setup=r.setup,
                                     side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
@@ -985,6 +1070,7 @@ with tab_i:
                           + " | hurt: " + ("; ".join(neg) or "nothing notable"), symbol=r.symbol,
                           detail=dict(factors=rec["factors"]), dkey=f"analyst|{r.key}")
         STORE.paper_upsert(prow)
+        STORE.flush()                    # one write for every audit event this refresh produced
         sig = sig.sort_values(["blocked", "is_open", "signal_time"], ascending=[True, False, False])
 
         # ------------------------------------------------ alerts
@@ -1503,7 +1589,7 @@ with tab_b:
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
 
 # ============================================================================ agent scores + human-in-the-loop
-AG_ICON = {"Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
+AG_ICON = {"Reviewer": "👤", "Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
            "Trader": "📝", "Analyst": "🔎"}
 AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak ones",
            "Pulse": "Reads market mood and shrinks positions on weak days",
@@ -1849,6 +1935,37 @@ with tab_g:
                        "without waiting for enough trades. Headlines are read by "
                        + ("Claude, with rules as a fallback." if API_KEY else "rules; add ANTHROPIC_API_KEY in Secrets for Claude to read them."))
 
+        # ---------------- human reviews: how each agent lines up with the reviewer
+        PL = paper_frame(STORE.paper_list())
+        HS = ln.hitl_scores(PL)
+        nrev = len(ln.reviewed(PL))
+        section("👤 Your reviews", f"{nrev} reviewed trades · how each agent agrees with you")
+        if not nrev:
+            st.markdown('<div class="sl empty">No reviews yet. In 📒 Trade log → Review a trade, mark recommendations '
+                        '👍 / 👎 and tag what drove them. Each agent is then scored on whether it had warned about the '
+                        'trades you disagreed with, and your tags can turn into proposals below.</div>', unsafe_allow_html=True)
+        else:
+            def _hitl_card(name, h):
+                a_ = dict(score=h["score"], tone=h.get("tone", "mid"), grade=h["grade"],
+                          detail=(f'Warned on {h["catch"] * 100:.0f}% of the {h["n_disagree"]} trades you disagreed with, '
+                                  f'and on {h["false_alarm"] * 100:.0f}% of the {h["n_agree"]} you agreed with '
+                                  f'({ln.AGENT_WARN_TEXT[name]}).') if pd.notna(h["catch"]) and pd.notna(h["false_alarm"])
+                          else f'{h["n_disagree"]} disagree · {h["n_agree"]} agree reviews so far.',
+                          setting="Score = 50 + 50 × (catch rate − false-alarm rate)")
+                return score_card_html(name, a_)
+            st.markdown('<div class="sgrid">' + "".join(_hitl_card(n_, HS[n_]) for n_ in HS) + '</div>',
+                        unsafe_allow_html=True)
+            TT = ln.tag_table(PL)
+            if len(TT):
+                with st.expander(f"What you said drove the trades · {int(TT.n.sum())} tags"):
+                    st.dataframe(pd.DataFrame({"Tag": TT.tag, "Times": TT.n, "On 👎 trades": TT.disagree,
+                                               "Avg result (R)": TT.avg_r.round(2)}), hide_index=True, width="stretch")
+                    st.caption(f"A tag used on {ln.MIN_TAG_REVIEWS}+ trades becomes a Reviewer proposal when the trade "
+                               "data backs it up (window, target, news blocking, mood sizing, pausing a setup).")
+            for n_ in ln.reviewer_notes(PL, 5):
+                st.markdown(f'<div class="sl note">“{html.escape(n_["note"])}” — {html.escape(n_["by"] or "Reviewer")}, '
+                            f'{html.escape(n_["symbol"])} {n_["when"]:%d %b} ({n_["verdict"]})</div>', unsafe_allow_html=True)
+
         # ---------------- admin gate
         section("Review & approve", "human-in-the-loop")
         if ADMIN_PIN and not can_edit:
@@ -1865,17 +1982,26 @@ with tab_g:
                                  disabled=not can_edit)
 
         # ---------------- proposals
-        decisions = STORE.kv_get("proposal_decisions", {}) or {}
-        fresh_cut = (now_ist() - pd.Timedelta(days=7)).isoformat()
+        try:
+            decisions = STORE.kv_get("proposal_decisions", {}, strict=True) or {}
+            dec_ok = True
+        except StoreError:               # don't let an outage wipe the decision history on the next click
+            decisions, dec_ok = {}, False
+            st.warning("Past approve / reject decisions could not be read, so deciding is paused for now.")
+        can_decide = can_edit and dec_ok and not CFG_STATE.get("offline")
+
+        def _hidden(p):
+            d_ = decisions.get(p["id"], {})
+            return d_.get("status") == "rejected" and d_.get("ts", "") >= (
+                now_ist() - pd.Timedelta(days=ln.rejection_window_days(d_))).isoformat()
         _sp = rs.proposal(scout_for(CFG, demo), CFG)
-        props = [p for p in ([_sp] if _sp else []) + ag.proposals(SC, CFG)
-                 if not (decisions.get(p["id"], {}).get("status") == "rejected"
-                         and decisions[p["id"]].get("ts", "") >= fresh_cut)]
+        props = [p for p in ([_sp] if _sp else []) + ag.proposals(SC, CFG) + ln.reviewer_proposals(PL, CFG, SC, ag.WINDOWS)
+                 if not _hidden(p)]
         st.markdown(f'<div class="sl" style="font-weight:700;margin:4px 0">Proposals from agents · {len(props)}</div>',
                     unsafe_allow_html=True)
         if not props:
             st.markdown('<div class="sl empty">No changes proposed — the evidence doesn\'t clearly favour any other '
-                        'setting right now. Rejected proposals stay hidden for 7 days.</div>', unsafe_allow_html=True)
+                        'setting right now. Rejected proposals stay hidden for 7 days (30 if rejected twice).</div>', unsafe_allow_html=True)
         for k_, p in enumerate(props):
             cand = ag.merged({**CFG, **p["change"]})
             wi = score_for(cand, demo, ss.get("tok", 0) // 10)
@@ -1885,21 +2011,21 @@ with tab_g:
                         + (f'<div class="wi">What-if on the same days — now: {sys_line(s_)}<br>'
                            f'after: {sys_line(wis)}</div>' if wis else "") + '</div>', unsafe_allow_html=True)
             c1, c2, c3 = st.columns([3, 1, 1], vertical_alignment="bottom")
-            note = c1.text_input("Note (optional)", key=f"pn_{k_}", disabled=not can_edit,
+            note = c1.text_input("Note (optional)", key=f"pn_{k_}", disabled=not can_decide,
                                  placeholder="why you approve or reject")
-            if c2.button("✓ Approve", key=f"pa_{k_}", disabled=not can_edit, type="primary", width="stretch"):
+            if c2.button("✓ Approve", key=f"pa_{k_}", disabled=not can_decide, type="primary", width="stretch"):
                 v = save_cfg(STORE, CFG_STATE, cand, f"Approved: {p['title']}" + (f" — {note}" if note else ""),
                              reviewer, p["change"])
                 decisions[p["id"]] = dict(status="approved", ts=now_ist().isoformat(), by=reviewer, note=note, version=v)
                 STORE.kv_set("proposal_decisions", decisions)
                 st.toast(f"Approved — settings v{v} are live", icon="✅")
                 st.rerun()
-            if c3.button("✕ Reject", key=f"pr_{k_}", disabled=not can_edit, width="stretch"):
-                decisions[p["id"]] = dict(status="rejected", ts=now_ist().isoformat(), by=reviewer, note=note)
+            if c3.button("✕ Reject", key=f"pr_{k_}", disabled=not can_decide, width="stretch"):
+                decisions[p["id"]] = ln.record_rejection(decisions.get(p["id"]), reviewer, note, now_ist().isoformat())
                 STORE.kv_set("proposal_decisions", decisions)
                 STORE.log("Reviewer", "reject", f"{reviewer} rejected: {p['title']}" + (f" — {note}" if note else ""),
                           dkey=f"rej|{p['id']}|{now_ist():%Y%m%d%H%M%S}")
-                st.toast("Rejected — hidden for 7 days", icon="✕")
+                st.toast(f"Rejected — hidden for {ln.rejection_window_days(decisions[p['id']])} days", icon="✕")
                 st.rerun()
 
         # ---------------- manual fine-tuning with what-if
@@ -2012,16 +2138,27 @@ with tab_g:
                                  cfg_diff(CFG, ag.merged(h["params"])))
                     st.toast(f"Rolled back — settings v{v} are live", icon="↩️")
                     st.rerun()
-        st.caption("Scores update daily from the last ~60 sessions (Yahoo 5-minute data limit), so treat anything under "
-                   "a few hundred trades as early evidence. Sentinel can only be scored on live signals as they build up.")
+        _mi = MEMO.get("sig") or {}
+        st.caption(f"Scores update daily from the last ~60 sessions Yahoo serves"
+                   + (f" plus {_mi['memory_days']} older sessions remembered in the database" if _mi.get("memory_days") else
+                      " — older sessions are archived each day, so the history grows past that limit")
+                   + ". Treat anything under a few hundred trades as early evidence. Sentinel can only be scored on "
+                   "live signals as they build up.")
 
 # ============================================================================ audit log
 with tab_a:
     store = STORE
+    HL = store.health()
     if demo:
         st.info("Demo mode: this log holds demo activity only and is kept separate from the live log.")
+    elif store.remote and HL["ok"]:
+        st.success("Storage: Supabase (persistent) — the log, trade journal, settings, Sentinel archive and the agents' "
+                   "learning memory survive restarts.")
     elif store.remote:
-        st.success("Storage: Supabase (persistent) — the log, trade journal, settings and Sentinel archive survive restarts.")
+        st.error("Storage: Supabase is connected but not fully working — " + " ".join(HL["notes"] or
+                 ["see the table check below."]))
+        if HL.get("sql"):
+            st.code(HL["sql"], language="sql")
     elif not store.remote:
         st.warning("The log is currently temporary: it is wiped whenever the hosted app restarts or redeploys. "
                    "Connect Supabase to keep a full week.")
@@ -2033,8 +2170,21 @@ with tab_a:
                         "3. Save. The app restarts and the Audit log becomes permanent (events kept 7 days, "
                         "trade journal 90 days).")
             st.code(SUPABASE_SQL, language="sql")
-    if store.last_error:
-        st.caption(f"Storage note: {store.last_error}")
+    with st.expander("🔌 Storage check" + ("" if HL["ok"] else " · needs attention"), expanded=not HL["ok"] and not demo):
+        if store.remote:
+            st.markdown(f"Key: **{HL['key_kind']}** · URL: `{store.url}`")
+        st.dataframe(pd.DataFrame({"Table": list(HL["tables"]), "Holds": [TABLE_ROLE.get(t, "") for t in HL["tables"]],
+                                   "Status": [v["status"] for v in HL["tables"].values()],
+                                   "Rows": [v.get("rows") for v in HL["tables"].values()]}), hide_index=True, width="stretch")
+        st.caption(f"Writes this session: " + (", ".join(f"{t.replace('stocklab_', '')} {n:,}" for t, n in store.writes.items())
+                                               or "none yet") + f" · audit events waiting to be written: {store.pending}")
+        if store.errors:
+            st.caption("Recent storage errors (newest last):")
+            st.code("\n".join(f"{t[11:19]}Z  {m}" for t, m in list(store.errors)[-6:]), language=None)
+        if st.button("Re-check storage", key="hc_btn"):
+            store.health(force=True)
+            store_memory_stats.clear()
+            st.rerun()
 
     ev = store.events()
     tr = store.trades()
@@ -2076,6 +2226,47 @@ with tab_a:
         st.markdown(f'<div class="sl">{rows_html}</div>', unsafe_allow_html=True)
         st.caption(f"Showing {min(show_n, len(out))} of {len(out)} events.")
         st.download_button("Download log (CSV)", out.to_csv(index=False), "stocklab_audit_log.csv", "text/csv")
+
+    # ---------------- learning memory: what the database adds to the agents' training
+    section("🧠 Learning memory", f"what the database feeds back into training · kept {MEMORY_DAYS} days")
+    AT, AT_tot = distill_audit(demo, f"{now_ist():%Y%m%d%H}")
+    mi = MEMO.get("sig") or {}
+    mstat = store_memory_stats(demo, f"{now_ist():%Y%m%d%H}")
+    PL_a = paper_frame(store.paper_list())
+    kpis([("Sessions in history", (mi.get("fresh_days", 0) + mi.get("memory_days", 0)) if mi else "—",
+           f"{mi.get('memory_days', 0)} beyond Yahoo's ~60" if mi else "builds once a day"),
+          ("Signals studied", f"{mi.get('n', 0):,}" if mi else "—", f"since {mi.get('first_day') or '—'}"),
+          ("News filled in", mi.get("news_backfilled", "—") if mi else "—", "history rows tagged from the Sentinel archive"),
+          ("Audit days digested", AT_tot.get("days", 0) if AT_tot else 0, f"{AT_tot.get('post_mortems', 0) if AT_tot else 0} losses diagnosed"),
+          ("Your reviews", len(ln.reviewed(PL_a)), "scoring agents in 🎯 Agent scores")])
+    if not store.memory_ok:
+        st.warning("The learning-memory table is missing, so history still stops at ~60 sessions and audit digests are "
+                   "not kept. Run this once in Supabase → SQL editor:")
+        st.code(MIGRATION_SQL, language="sql")
+    st.markdown('<div class="sl note">How the stored logs train the agents: <b>(1)</b> every finished session\'s signals are '
+                'archived per signal engine, so the 🎓 Coach, the model lab and the agent scores keep learning from sessions '
+                'Yahoo no longer serves; <b>(2)</b> the 🛡️ Sentinel\'s pre-open archive fills in the news condition on those '
+                'signals — only where it was recorded before the signal fired; <b>(3)</b> the audit log is digested daily so '
+                'recurring loss causes outlive its 7-day window; <b>(4)</b> your reviews in the 📒 Trade log score each agent '
+                'and can become proposals. Nothing changes the live settings without a reviewer\'s approval.</div>',
+                unsafe_allow_html=True)
+    KIND_TXT = {"sig": "Live-engine signals", "study": "Practice signals (models)", "corr": "Daily correlations",
+                "dstat": "Daily movement per stock", "audit": "Audit-log digests"}
+    if mstat:
+        mrows = [dict(What=KIND_TXT.get(k, k), Engine=("current" if e in (ENG_ID, (MEMO.get("study") or {}).get("eng"))
+                                                         else "all" if e == "all" else f"older settings ({e[:6]})"),
+                      Rows=n, From=a, To=b) for k, by in mstat.items() for e, (n, a, b) in by.items()]
+        with st.expander(f"What is stored · {sum(r['Rows'] for r in mrows):,} rows"):
+            st.dataframe(pd.DataFrame(mrows), hide_index=True, width="stretch")
+            st.caption("Signals from older engine settings are kept but not mixed into training — they come back "
+                       "into use if those settings are restored.")
+    if AT is not None and len(AT):
+        st.markdown('<div class="sl" style="font-weight:700;margin:8px 0 2px">Recurring loss causes · last 30 days vs the 30 before</div>',
+                    unsafe_allow_html=True)
+        st.dataframe(pd.DataFrame({"Main reason (Coach post-mortems)": AT.text, "Last 30 days": AT.recent,
+                                   "30 days before": AT.before,
+                                   "Trend": AT.change.map(lambda c: f"▲ +{c}" if c > 0 else f"▼ {c}" if c < 0 else "•")}).head(10),
+                     hide_index=True, width="stretch")
 
     section("Coach · what it has learned", f"from {coach_all.n} trades (recent history + live signals)")
     lessons = coach_all.lessons()
@@ -2141,8 +2332,12 @@ with tab_a:
         scorecard_cached.clear()
         with st.spinner("Coach is studying recent sessions…"):
             history_cached.clear()
-            n = train_coach(demo, symbols, f"{pd.Timestamp.now(tz=ce.IST):%Y-%m-%d}", ARGS_KEY, A)
-        st.success(f"Coach studied {n} signals.")
+            try:
+                n = train_coach(demo, symbols, f"{pd.Timestamp.now(tz=ce.IST):%Y-%m-%d}", ARGS_KEY, A)
+                st.success(f"Coach studied {n} signals.")
+            except StoreError:
+                st.error(f"The trade journal could not be read, so training was skipped: {store.last_error}")
     st.caption("Agents: 🧭 Pulse market mood · 🛡️ Sentinel news & events · 🗣️ Narrator explanations · "
                "🎓 Coach learning & post-mortems · 🚪 Exit · ⚖️ Risk · 🔔 Alerts · 👤 Reviewer decisions. "
-               "Events are kept 7 days; the trade journal 90 days.")
+               "Events are kept 7 days (digested into learning memory for 180); the trade journal 90 days.")
+STORE.flush()
