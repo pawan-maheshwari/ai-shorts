@@ -1,8 +1,8 @@
 {
   "edition": "2026-11-11",
-  "updated": "2026-11-11T22:18:34.739Z",
+  "updated": "2026-11-11T22:21:53.495Z",
   "source": "Google News · artificial intelligence",
-  "count": 28,
+  "count": 27,
   "briefs": {
     "model": "openai/gpt-4o-mini",
     "attempted": 6,
@@ -10,13 +10,14 @@
     "fromSource": 0,
     "reused": 0,
     "stopped": "unreadable",
-    "publisherLinks": 28
+    "publisherLines": 16,
+    "publisherLinks": 27
   },
   "items": [
     {
       "id": "tag:aishorts.biz,2026-11-11:story/0baf842d4d7eb8eb",
       "headline": "Saint Vincent College approves new artificial intelligence minor",
-      "summary": "Open the full report at Saint Vincent College for the complete story.",
+      "summary": "Saint Vincent College approves new 18-credit AI minor combining computer science, data science, math and ethics to prepare students for AI-driven careers.",
       "source": "Saint Vincent College",
       "url": "https://www.stvincent.edu/news/2026/11/saint-vincent-college-approves-new-artificial-intelligence-minor.html",
       "category": "Business",
@@ -24,18 +25,6 @@
       "date": "2026-11-11T17:24:05.000Z",
       "note": "via Google News",
       "image": "https://www.stvincent.edu/news/2026/11/files/news-thumbnail-svc-approves-new-ai-minor.webp"
-    },
-    {
-      "id": "tag:aishorts.biz,2026-11-11:story/715f00fed0116d70",
-      "headline": "What May Artificial Intelligence Do for Writers? (updated)",
-      "summary": "Open the full report at Daily Nous for the complete story.",
-      "source": "Daily Nous",
-      "url": "https://dailynous.com/2026/11/11/what-may-artificial-intelligence-do-for-writers/",
-      "category": "Business",
-      "region": "Global",
-      "date": "2026-11-11T14:21:54.000Z",
-      "note": "via Google News",
-      "image": "https://dailynous.com/wp-content/uploads/2026/11/ai-writing-assistant.png"
     },
     {
       "id": "tag:aishorts.biz,2026-11-11:story/fc622b83d2a030de",
@@ -51,7 +40,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/22fd5d01b427b700",
       "headline": "Accelerating generative AI delivery with reusable assets",
-      "summary": "Open the full report at Amazon Web Services (AWS) for the complete story.",
+      "summary": "Every generative AI team keeps rebuilding the same components: RAG pipelines, document processors, and agent scaffolding. This post shows how to access a curated catalog of 23 production-ready, open source reusable assets from the AWS Generative AI Innovation Center, with real delivery…",
       "source": "Amazon Web Services (AWS)",
       "url": "https://aws.amazon.com/blogs/machine-learning/accelerating-generative-ai-delivery-with-reusable-assets/",
       "category": "Business",
@@ -63,7 +52,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/ee7067645949d3b3",
       "headline": "Webinar to share how to build an effective AI training program",
-      "summary": "Open the full report at American Hospital Association for the complete story.",
+      "summary": "The AHA will host a webinar Dec. 1 at 1 p.m. ET on how to create and build an effective artificial intelligence training program.",
       "source": "American Hospital Association",
       "url": "https://www.aha.org/news/headline/2026-11-11-webinar-share-how-build-effective-ai-training-program",
       "category": "Business",
@@ -86,7 +75,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/3e9f8465fb61c7f1",
       "headline": "Can A.I. Help Us Engage More Closely with Art? Some Museums Think So.",
-      "summary": "Open the full report at Observer for the complete story.",
+      "summary": "Administrators argue that artificial intelligence can replace one-size-fits-all wall text with experiences tailored to an individual’s background and interests. But while the technology promises de…",
       "source": "Observer",
       "url": "https://observer.com/2026/11/remuseum-ai-report-art-artificial-intelligence-in-museums-report/",
       "category": "Business",
@@ -98,7 +87,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/a4af53e4b49dd9c1",
       "headline": "Democrats Have Big Plans for Artificial Intelligence",
-      "summary": "Open the full report at Reason Magazine for the complete story.",
+      "summary": "Democrats plan to waste no time using their forthcoming majority to start giving the government much more control over the AI industry.",
       "source": "Reason Magazine",
       "url": "https://reason.com/2026/11/11/democrats-have-big-plans-for-artificial-intelligence/",
       "category": "Business",
@@ -110,7 +99,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/5539ddc397a1a4b7",
       "headline": "3 Artificial Intelligence (AI) Stocks to Buy on the Post-Election Dip and Hold for 5 Years",
-      "summary": "Open the full report at The Motley Fool for the complete story.",
+      "summary": "Equity markets are experiencing significant volatility following the midterm elections, but investors should look beyond that.",
       "source": "The Motley Fool",
       "url": "https://www.fool.com/investing/2026/11/11/3-artificial-intelligence-ai-stocks-to-buy-on-the-post-election-dip-and-hold-for-5-years/",
       "category": "Business",
@@ -133,7 +122,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/3d90a82c2b070e89",
       "headline": "UT San Antonio researchers discuss AI’s promise, challenges at brain health conferences",
-      "summary": "Open the full report at UT Health San Antonio for the complete story.",
+      "summary": "Artificial intelligence (AI) is opening new possibilities for biomedical research, particularly in the field of brain health. AI shows promise for expanding what’s possible, from analyzing brain scans to expanding participation in studies of cognitive decline. At the same time, ensuring these…",
       "source": "UT Health San Antonio",
       "url": "https://news.uthscsa.edu/ut-san-antonio-researchers-discuss-ais-promise-challenges-at-brain-health-conferences/",
       "category": "Research",
@@ -145,7 +134,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/acd1a12907bab8a9",
       "headline": "Dr. Or Cohen-Sasson’s AI and access-to-justice study accepted for presentation at AI4Law",
-      "summary": "Open the full report at University of Miami News for the complete story.",
+      "summary": "Dr. Cohen-Sasson connects computer science and legal access through a study accepted for presentation at AI4Law, a workshop held in conjunction with a leading international artificial intelligence conference.",
       "source": "University of Miami News",
       "url": "https://news.miami.edu/law/stories/2026/11/dr-or-cohen-sassons-ai-and-access-to-justice-study-accepted-for-presentation-at-ai4law.html",
       "category": "Research",
@@ -155,9 +144,21 @@
       "image": "https://news.miami.edu/law/_assets/images/images-stories/2026/11/or-cohen-sasson-rvs-news-940x529.jpg"
     },
     {
+      "id": "tag:aishorts.biz,2026-11-11:story/3b3bb7a958201990",
+      "headline": "Greg Morrisett to co-lead new NYS AI safety research center",
+      "summary": "The center is a new statewide initiative launched by Gov. Kathy Hochul to advance artificial intelligence science and safety.",
+      "source": "Cornell Chronicle",
+      "url": "https://news.cornell.edu/stories/2026/11/greg-morrisett-co-lead-new-nys-ai-safety-research-center",
+      "category": "Safety",
+      "region": "Global",
+      "date": "2026-11-11T14:58:21.000Z",
+      "note": "via Google News",
+      "image": "https://news.cornell.edu/sites/default/files/styles/story_thumbnail_lg/public/2026-11/1110_tech.jpg?itok=7AVLYuoR"
+    },
+    {
       "id": "tag:aishorts.biz,2026-11-11:story/3598d711d9cdfc2d",
       "headline": "Google is letting staff test a 'fast' new Gemini AI model named Hydrogen",
-      "summary": "Open the full report at Business Insider for the complete story.",
+      "summary": "Google&#x27;s streak of new models may be set to continue, as the company has been testing what it calls a fast and efficient offering named \"Hydrogen.\"",
       "source": "Business Insider",
       "url": "https://www.businessinsider.com/google-hydrogen-test-new-gemini-4-flash-model-ai-2026-11",
       "category": "Models",
@@ -169,7 +170,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/2b41a6e455fc6308",
       "headline": "Anthropic releases first frontier models since Amodei's call for slowdown as IPO buzz builds",
-      "summary": "Open the full report at CNBC for the complete story.",
+      "summary": "The launch comes as Anthropic is gearing up for what is widely expected to be a blockbuster IPO",
       "source": "CNBC",
       "url": "https://www.cnbc.com/2026/11/09/anthropic-claude-fable-5-2-mythos-5-2.html",
       "category": "Models",
@@ -203,7 +204,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/0b05a266f540d791",
       "headline": "Inside Greece's new AI Act framework",
-      "summary": "Open the full report at IAPP for the complete story.",
+      "summary": "Greece&#x27;s new AI Act framework distributes regulatory oversight, supports innovation and strengthens enforcement and transparency requirements.",
       "source": "IAPP",
       "url": "https://iapp.org/news/a/inside-greece-s-new-ai-act-framework",
       "category": "Policy",
@@ -226,7 +227,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/8dead739c04ac584",
       "headline": "Drug ads can influence AI treatment recommendations, study finds",
-      "summary": "Open the full report at Medical Xpress for the complete story.",
+      "summary": "As people increasingly turn to artificial intelligence (AI) for health information, a new study by researchers at the Icahn School of Medicine at Mount Sinai raises questions about what happens when commercial advertising appears alongside a clinical question. The findings were reported…",
       "source": "Medical Xpress",
       "url": "https://medicalxpress.com/news/2026-11-drug-ads-ai-treatment.html",
       "category": "Research",
@@ -234,18 +235,6 @@
       "date": "2026-11-11T17:00:11.000Z",
       "note": "via Google News",
       "image": "https://scx2.b-cdn.net/gfx/news/hires/2026/drug-ads-can-influence.jpg"
-    },
-    {
-      "id": "tag:aishorts.biz,2026-11-11:story/3b3bb7a958201990",
-      "headline": "Greg Morrisett to co-lead new NYS AI safety research center",
-      "summary": "Open the full report at Cornell Chronicle for the complete story.",
-      "source": "Cornell Chronicle",
-      "url": "https://news.cornell.edu/stories/2026/11/greg-morrisett-co-lead-new-nys-ai-safety-research-center",
-      "category": "Safety",
-      "region": "Global",
-      "date": "2026-11-11T14:58:21.000Z",
-      "note": "via Google News",
-      "image": "https://news.cornell.edu/sites/default/files/styles/story_thumbnail_lg/public/2026-11/1110_tech.jpg?itok=7AVLYuoR"
     },
     {
       "id": "tag:aishorts.biz,2026-11-11:story/9fdc0f0989cf769c",
@@ -262,7 +251,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/bdfb3539b61f8337",
       "headline": "New York Launches AI Safety Center Ahead of RAISE Act Deadline",
-      "summary": "Open the full report at PYMNTS.com for the complete story.",
+      "summary": "New York Gov. Kathy Hochul launched a statewide artificial intelligence (AI) research and safety testing initiative on Tuesday (Nov. 10), building",
       "source": "PYMNTS.com",
       "url": "https://www.pymnts.com/news/artificial-intelligence/2026/new-york-launches-ai-safety-center-ahead-of-raise-act-deadline/",
       "category": "Safety",
@@ -285,7 +274,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/e8976610f8f9e1e8",
       "headline": "Serve Robotics opens robot delivery network for others to build on",
-      "summary": "Open the full report at The Robot Report for the complete story.",
+      "summary": "Serve Robotics says its on-demand delivery API allows third parties to develop new delivery services on its fleet of more than 2,000 robots.",
       "source": "The Robot Report",
       "url": "https://www.therobotreport.com/serve-robotics-opens-robot-delivery-network-for-others-to-build-on/",
       "category": "Robotics",
@@ -320,7 +309,7 @@
     {
       "id": "tag:aishorts.biz,2026-11-11:story/ed3cc06517ef6f07",
       "headline": "Microsoft data center in Washington state brings \"a kind of boom\" despite growing AI pushback",
-      "summary": "Open the full report at CBS News for the complete story.",
+      "summary": "Microsoft outlines the pledges it makes to data center communities as industry tries to sway public opinion on AI.",
       "source": "CBS News",
       "url": "https://www.cbsnews.com/news/microsoft-data-center-quincy-ai-pushback/",
       "category": "Infrastructure",
@@ -330,14 +319,14 @@
       "image": "https://assets3.cbsnewsstatic.com/hub/i/r/2026/11/11/7c5f17ef-625f-4298-b21a-8c3ded1d80f1/thumbnail/1200x630/ca497ee1f9a911b3a1ddb4777366b8ce/gettyimages-2270237750.jpg"
     },
     {
-      "id": "tag:aishorts.biz,2026-11-11:story/21d16fd6f316de5d",
-      "headline": "Proposal for AI data center at former paper mill in Maine resurfaces",
-      "summary": "Open the full report at Data Center Dynamics for the complete story.",
-      "source": "Data Center Dynamics",
-      "url": "https://www.datacenterdynamics.com/en/news/proposal-for-ai-data-center-at-former-paper-mill-in-maine-resurfaces/",
+      "id": "tag:aishorts.biz,2026-11-11:story/4ca6d83806ffe5b5",
+      "headline": "Data center poster child strikes back",
+      "summary": "Open the full report at The Washington Post for the complete story.",
+      "source": "The Washington Post",
+      "url": "https://www.washingtonpost.com/wp-intelligence/ai-tech-brief/2026/11/11/data-center-poster-child-strikes-back/",
       "category": "Infrastructure",
       "region": "Global",
-      "date": "2026-11-11T14:42:08.000Z",
+      "date": "2026-11-11T20:27:29.000Z",
       "note": "via Google News"
     }
   ]

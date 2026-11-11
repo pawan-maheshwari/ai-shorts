@@ -5,7 +5,7 @@
   <id>tag:aishorts.biz,2026:feed</id>
   <link rel="self" type="application/atom+xml" href="https://aishorts.biz/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://aishorts.biz/"/>
-  <updated>2026-11-11T22:18:34.739Z</updated>
+  <updated>2026-11-11T22:21:53.495Z</updated>
   <icon>https://aishorts.biz/assets/icon-192.png</icon>
   <logo>https://aishorts.biz/assets/icon-512.png</logo>
   <author><name>AIShorts</name><uri>https://aishorts.biz/</uri></author>
@@ -19,19 +19,8 @@
     <published>2026-11-11T17:24:05.000Z</published>
     <author><name>Saint Vincent College</name></author>
     <category term="Business"/>
-    <summary type="text">Open the full report at Saint Vincent College for the complete story.</summary>
+    <summary type="text">Saint Vincent College approves new 18-credit AI minor combining computer science, data science, math and ethics to prepare students for AI-driven careers.</summary>
     <rights type="text">Headline and summary belong to Saint Vincent College. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">What May Artificial Intelligence Do for Writers? (updated)</title>
-    <id>tag:aishorts.biz,2026-11-11:story/715f00fed0116d70</id>
-    <link rel="alternate" type="text/html" href="https://dailynous.com/2026/11/11/what-may-artificial-intelligence-do-for-writers/"/>
-    <updated>2026-11-11T14:21:54.000Z</updated>
-    <published>2026-11-11T14:21:54.000Z</published>
-    <author><name>Daily Nous</name></author>
-    <category term="Business"/>
-    <summary type="text">Open the full report at Daily Nous for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Daily Nous. Linked, not republished.</rights>
   </entry>
   <entry>
     <title type="text">Exploring How Autistic Individuals Interact With Artificial Intelligence</title>
@@ -52,7 +41,7 @@
     <published>2026-11-11T19:19:21.000Z</published>
     <author><name>Amazon Web Services (AWS)</name></author>
     <category term="Business"/>
-    <summary type="text">Open the full report at Amazon Web Services (AWS) for the complete story.</summary>
+    <summary type="text">Every generative AI team keeps rebuilding the same components: RAG pipelines, document processors, and agent scaffolding. This post shows how to access a curated catalog of 23 production-ready, open source reusable assets from the AWS Generative AI Innovation Center, with real delivery…</summary>
     <rights type="text">Headline and summary belong to Amazon Web Services (AWS). Linked, not republished.</rights>
   </entry>
   <entry>
@@ -63,7 +52,7 @@
     <published>2026-11-11T20:26:05.000Z</published>
     <author><name>American Hospital Association</name></author>
     <category term="Business"/>
-    <summary type="text">Open the full report at American Hospital Association for the complete story.</summary>
+    <summary type="text">The AHA will host a webinar Dec. 1 at 1 p.m. ET on how to create and build an effective artificial intelligence training program.</summary>
     <rights type="text">Headline and summary belong to American Hospital Association. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -85,7 +74,7 @@
     <published>2026-11-11T19:15:23.000Z</published>
     <author><name>Observer</name></author>
     <category term="Business"/>
-    <summary type="text">Open the full report at Observer for the complete story.</summary>
+    <summary type="text">Administrators argue that artificial intelligence can replace one-size-fits-all wall text with experiences tailored to an individual’s background and interests. But while the technology promises de…</summary>
     <rights type="text">Headline and summary belong to Observer. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -96,7 +85,7 @@
     <published>2026-11-11T16:45:42.000Z</published>
     <author><name>Reason Magazine</name></author>
     <category term="Business"/>
-    <summary type="text">Open the full report at Reason Magazine for the complete story.</summary>
+    <summary type="text">Democrats plan to waste no time using their forthcoming majority to start giving the government much more control over the AI industry.</summary>
     <rights type="text">Headline and summary belong to Reason Magazine. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -107,7 +96,7 @@
     <published>2026-11-11T15:01:00.000Z</published>
     <author><name>The Motley Fool</name></author>
     <category term="Business"/>
-    <summary type="text">Open the full report at The Motley Fool for the complete story.</summary>
+    <summary type="text">Equity markets are experiencing significant volatility following the midterm elections, but investors should look beyond that.</summary>
     <rights type="text">Headline and summary belong to The Motley Fool. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -129,7 +118,7 @@
     <published>2026-11-11T17:11:38.000Z</published>
     <author><name>UT Health San Antonio</name></author>
     <category term="Research"/>
-    <summary type="text">Open the full report at UT Health San Antonio for the complete story.</summary>
+    <summary type="text">Artificial intelligence (AI) is opening new possibilities for biomedical research, particularly in the field of brain health. AI shows promise for expanding what’s possible, from analyzing brain scans to expanding participation in studies of cognitive decline. At the same time, ensuring these…</summary>
     <rights type="text">Headline and summary belong to UT Health San Antonio. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -140,8 +129,19 @@
     <published>2026-11-11T20:28:35.000Z</published>
     <author><name>University of Miami News</name></author>
     <category term="Research"/>
-    <summary type="text">Open the full report at University of Miami News for the complete story.</summary>
+    <summary type="text">Dr. Cohen-Sasson connects computer science and legal access through a study accepted for presentation at AI4Law, a workshop held in conjunction with a leading international artificial intelligence conference.</summary>
     <rights type="text">Headline and summary belong to University of Miami News. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Greg Morrisett to co-lead new NYS AI safety research center</title>
+    <id>tag:aishorts.biz,2026-11-11:story/3b3bb7a958201990</id>
+    <link rel="alternate" type="text/html" href="https://news.cornell.edu/stories/2026/11/greg-morrisett-co-lead-new-nys-ai-safety-research-center"/>
+    <updated>2026-11-11T14:58:21.000Z</updated>
+    <published>2026-11-11T14:58:21.000Z</published>
+    <author><name>Cornell Chronicle</name></author>
+    <category term="Safety"/>
+    <summary type="text">The center is a new statewide initiative launched by Gov. Kathy Hochul to advance artificial intelligence science and safety.</summary>
+    <rights type="text">Headline and summary belong to Cornell Chronicle. Linked, not republished.</rights>
   </entry>
   <entry>
     <title type="text">Google is letting staff test a &apos;fast&apos; new Gemini AI model named Hydrogen</title>
@@ -151,7 +151,7 @@
     <published>2026-11-11T16:08:00.000Z</published>
     <author><name>Business Insider</name></author>
     <category term="Models"/>
-    <summary type="text">Open the full report at Business Insider for the complete story.</summary>
+    <summary type="text">Google&amp;#x27;s streak of new models may be set to continue, as the company has been testing what it calls a fast and efficient offering named &quot;Hydrogen.&quot;</summary>
     <rights type="text">Headline and summary belong to Business Insider. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -162,7 +162,7 @@
     <published>2026-11-09T19:00:01.000Z</published>
     <author><name>CNBC</name></author>
     <category term="Models"/>
-    <summary type="text">Open the full report at CNBC for the complete story.</summary>
+    <summary type="text">The launch comes as Anthropic is gearing up for what is widely expected to be a blockbuster IPO</summary>
     <rights type="text">Headline and summary belong to CNBC. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -195,7 +195,7 @@
     <published>2026-11-11T16:49:40.000Z</published>
     <author><name>IAPP</name></author>
     <category term="Policy"/>
-    <summary type="text">Open the full report at IAPP for the complete story.</summary>
+    <summary type="text">Greece&amp;#x27;s new AI Act framework distributes regulatory oversight, supports innovation and strengthens enforcement and transparency requirements.</summary>
     <rights type="text">Headline and summary belong to IAPP. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -217,19 +217,8 @@
     <published>2026-11-11T17:00:11.000Z</published>
     <author><name>Medical Xpress</name></author>
     <category term="Research"/>
-    <summary type="text">Open the full report at Medical Xpress for the complete story.</summary>
+    <summary type="text">As people increasingly turn to artificial intelligence (AI) for health information, a new study by researchers at the Icahn School of Medicine at Mount Sinai raises questions about what happens when commercial advertising appears alongside a clinical question. The findings were reported…</summary>
     <rights type="text">Headline and summary belong to Medical Xpress. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">Greg Morrisett to co-lead new NYS AI safety research center</title>
-    <id>tag:aishorts.biz,2026-11-11:story/3b3bb7a958201990</id>
-    <link rel="alternate" type="text/html" href="https://news.cornell.edu/stories/2026/11/greg-morrisett-co-lead-new-nys-ai-safety-research-center"/>
-    <updated>2026-11-11T14:58:21.000Z</updated>
-    <published>2026-11-11T14:58:21.000Z</published>
-    <author><name>Cornell Chronicle</name></author>
-    <category term="Safety"/>
-    <summary type="text">Open the full report at Cornell Chronicle for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Cornell Chronicle. Linked, not republished.</rights>
   </entry>
   <entry>
     <title type="text">Anthropic says a key AI safety alarm has been triggered, days before its IPO</title>
@@ -250,7 +239,7 @@
     <published>2026-11-11T19:39:46.000Z</published>
     <author><name>PYMNTS.com</name></author>
     <category term="Safety"/>
-    <summary type="text">Open the full report at PYMNTS.com for the complete story.</summary>
+    <summary type="text">New York Gov. Kathy Hochul launched a statewide artificial intelligence (AI) research and safety testing initiative on Tuesday (Nov. 10), building</summary>
     <rights type="text">Headline and summary belong to PYMNTS.com. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -272,7 +261,7 @@
     <published>2026-11-11T13:48:45.000Z</published>
     <author><name>The Robot Report</name></author>
     <category term="Robotics"/>
-    <summary type="text">Open the full report at The Robot Report for the complete story.</summary>
+    <summary type="text">Serve Robotics says its on-demand delivery API allows third parties to develop new delivery services on its fleet of more than 2,000 robots.</summary>
     <rights type="text">Headline and summary belong to The Robot Report. Linked, not republished.</rights>
   </entry>
   <entry>
@@ -305,18 +294,18 @@
     <published>2026-11-11T17:06:37.000Z</published>
     <author><name>CBS News</name></author>
     <category term="Infrastructure"/>
-    <summary type="text">Open the full report at CBS News for the complete story.</summary>
+    <summary type="text">Microsoft outlines the pledges it makes to data center communities as industry tries to sway public opinion on AI.</summary>
     <rights type="text">Headline and summary belong to CBS News. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Proposal for AI data center at former paper mill in Maine resurfaces</title>
-    <id>tag:aishorts.biz,2026-11-11:story/21d16fd6f316de5d</id>
-    <link rel="alternate" type="text/html" href="https://www.datacenterdynamics.com/en/news/proposal-for-ai-data-center-at-former-paper-mill-in-maine-resurfaces/"/>
-    <updated>2026-11-11T14:42:08.000Z</updated>
-    <published>2026-11-11T14:42:08.000Z</published>
-    <author><name>Data Center Dynamics</name></author>
+    <title type="text">Data center poster child strikes back</title>
+    <id>tag:aishorts.biz,2026-11-11:story/4ca6d83806ffe5b5</id>
+    <link rel="alternate" type="text/html" href="https://www.washingtonpost.com/wp-intelligence/ai-tech-brief/2026/11/11/data-center-poster-child-strikes-back/"/>
+    <updated>2026-11-11T20:27:29.000Z</updated>
+    <published>2026-11-11T20:27:29.000Z</published>
+    <author><name>The Washington Post</name></author>
     <category term="Infrastructure"/>
-    <summary type="text">Open the full report at Data Center Dynamics for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Data Center Dynamics. Linked, not republished.</rights>
+    <summary type="text">Open the full report at The Washington Post for the complete story.</summary>
+    <rights type="text">Headline and summary belong to The Washington Post. Linked, not republished.</rights>
   </entry>
 </feed>
