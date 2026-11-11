@@ -12,12 +12,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          U=https://models.github.ai/inference/chat/completions
-          B='{"model":"MODEL","messages":[{"role":"user","content":"Reply with the single word: ready"}],"max_tokens":20}'
-          p(){ echo "=== $1"; shift; curl -sS -m 40 -w '\n[http %{http_code} %{content_type}]\n' "$@" | head -c 700; echo; }
-          echo "=== catalog"; curl -sS -m 30 -H "Authorization: Bearer $GITHUB_TOKEN" https://models.github.ai/catalog/models | jq -r '.[] | "\(.id) | \(.rate_limit_tier // "-") | in \(.limits.max_input_tokens // "-")"' | head -80
-          p "A docs form gpt-4.1" -L -X POST $U -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" -H "X-GitHub-Api-Version: 2026-03-10" -H "Content-Type: application/json" -d "${B/MODEL/openai\/gpt-4.1}"
-          p "B docs form gpt-4o-mini" -L -X POST $U -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" -H "X-GitHub-Api-Version: 2026-03-10" -H "Content-Type: application/json" -d "${B/MODEL/openai\/gpt-4o-mini}"
-          p "C bare gpt-4o-mini" $U -H "Authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/json" -d "${B/MODEL/openai\/gpt-4o-mini}"
-          p "D old version header" -X POST $U -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" -H "X-GitHub-Api-Version: 2022-11-28" -H "Content-Type: application/json" -d "${B/MODEL/openai\/gpt-4o-mini}"
-          p "E node UA" -A node $U -H "Authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/json" -d "${B/MODEL/openai\/gpt-4o-mini}"
+          echo "=== headers catalog"; curl -sS -m 30 -D - -o /dev/null -H "Authorization: Bearer $GITHUB_TOKEN" https://models.github.ai/catalog/models | head -30
+          echo "=== headers inference"; curl -sS -m 30 -D - -H "Authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/json" https://models.github.ai/inference/chat/completions -d '{"model":"openai/gpt-4.1","messages":[{"role":"user","content":"Say ready"}]}' | head -40
+          echo "=== no auth"; curl -sS -m 30 -w '\n[http %{http_code}]\n' https://models.github.ai/inference/chat/completions -H "Content-Type: application/json" -d '{}' | head -c 300
+          echo "=== azure endpoint"; curl -sS -m 40 -w '\n[http %{http_code} %{content_type}]\n' https://models.inference.ai.azure.com/chat/completions -H "Authorization: Bearer $GITHUB_TOKEN" -H "Content-Type: application/json" -d '{"model":"gpt-4o-mini","messages":[{"role":"user","content":"Reply with the single word: ready"}],"max_tokens":20}' | head -c 700
+          echo "=== dns"; getent hosts models.github.ai || true
