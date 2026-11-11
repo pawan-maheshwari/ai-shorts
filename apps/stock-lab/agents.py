@@ -403,8 +403,9 @@ def corr_pairs(data, symbols, before_day, lookback=10):
 
 
 def risk_check(c, book, cfg, corr):
-    """c: candidate (symbol, side, setup, t, exp_r, sentinel). book: earlier ALLOWED trades today with
-    t, t_exit (None while open) and r. Returns verdict ALLOW / REDUCE / BLOCK, size multiplier, reasons."""
+    """c: candidate (symbol, side, setup, t, exp_r, sentinel, value_x). book: earlier ALLOWED trades today with
+    symbol, side, t, t_exit (None while open), r and value_x. value_x = position value as a multiple of capital
+    (after sizing multipliers). Returns verdict ALLOW / REDUCE / BLOCK, size multiplier, reasons."""
     if not cfg.get("risk_enabled", True):
         return "ALLOW", 1.0, ["Risk agent switched off"]
     t = c["t"]
@@ -421,11 +422,26 @@ def risk_check(c, book, cfg, corr):
         return "BLOCK", 0.0, [f"{len(open_now)} positions already open (cap {cfg['max_open']})"]
     if cfg.get("sentinel_block") and c.get("sentinel") == "HIGH":
         return "BLOCK", 0.0, ["Sentinel rated news risk HIGH"]
+    same = [b for b in open_now if b["symbol"] == c["symbol"]]
+    if same:
+        return "BLOCK", 0.0, [f"Already holding {c['symbol']} from {same[0]['t']:%H:%M} — no second position in the same stock"]
     twins = [(b["symbol"], corr.get((c["symbol"], b["symbol"]), 0)) for b in open_now if b["side"] == c["side"]]
     twins = [x for x in twins if x[1] >= cfg["corr_limit"]]
     if twins:
         mult *= 0.5
         reasons.append(f"Moves with open {twins[0][0]} (correlation {twins[0][1]:.2f}) — half size")
+    # total exposure across open positions, in multiples of capital
+    cap_x = float(cfg.get("max_exposure_x", 0) or 0)
+    val = c.get("value_x")
+    if cap_x and val:
+        used = sum(b.get("value_x", 0.0) for b in open_now)
+        room = cap_x - used
+        want = val * mult
+        if room <= 0.02:
+            return "BLOCK", 0.0, [f"Exposure limit reached — open positions already {used:.1f}× capital (cap {cap_x:g}×)"]
+        if want > room:
+            mult *= room / want
+            reasons.append(f"Exposure cap {cap_x:g}× capital: {used:.1f}× already open, size cut to fit")
     if cfg.get("edge_sizing") and c.get("exp_r") is not None:
         m = float(np.clip(1 + cfg.get("edge_k", 1.0) * c["exp_r"], 0.5, 1.5))
         mult *= m
@@ -485,11 +501,17 @@ class Coach:
     K = 20          # shrinkage: a condition needs ~20 (recency-weighted) trades before it moves the estimate much
     DAMP = 0.6      # dampens the sum of correlated conditions
 
-    def __init__(self, trades, half_life=None, asof_day=None):
+    def __init__(self, trades, half_life=None, asof_day=None, plan=None):
+        """plan = 'policy|window' (see plan_key): learn from each trade's result under the plan that is actually
+        executed, not the plain hold-to-target plan. Rows without that variant fall back to their stored r."""
         t = trades.copy() if trades is not None else pd.DataFrame()
+        self.plan = plan
         if not t.empty:
             t = t[t.r.notna()].copy()
             t["features"] = t.features.map(_feats)
+            if plan:
+                t["r"] = [f["_pw"][plan][0] if isinstance(f.get("_pw"), dict) and plan in f["_pw"] else r
+                          for f, r in zip(t.features, t.r)]
             t["win"] = (t.r > 0).astype(float)
             if half_life and asof_day is not None and len(t):
                 age = (pd.Timestamp(asof_day) - pd.to_datetime(t.day)).dt.days.clip(lower=0)
@@ -590,7 +612,33 @@ DEFAULT_CONFIG = dict(
     risk_enabled=True, daily_loss_R=2.0, max_open=3, max_trades=3, corr_limit=0.7,
     edge_sizing=False, edge_k=1.0, sentinel_block=False, paused_setups=[],
     paper_window_min=15,
+    # signal engine and paper account — shared by everyone, so the trade log and the learning use one system
+    setup="both", shorts=False, rr=2.0, min_relvol=1.5, cost_pct=0.10,
+    capital=200000.0, risk_pct=0.5, leverage=5.0, max_exposure_x=5.0,
+    watchlist=list(ce.WATCHLIST),
 )
+ENGINE_KEYS = ["setup", "shorts", "rr", "min_relvol", "cost_pct", "capital", "risk_pct", "leverage"]
+
+
+def engine_args(cfg):
+    """The signal engine's parameters, taken from the shared settings."""
+    import argparse
+    c = merged(cfg)
+    return argparse.Namespace(setup=c["setup"], shorts=bool(c["shorts"]), or_bars=3, min_relvol=float(c["min_relvol"]),
+                              max_gap=4.0, min_or_pct=0.3, max_or_pct=2.0, rr=float(c["rr"]), last_entry="14:30",
+                              exit_time="15:15", capital=float(c["capital"]), risk_pct=float(c["risk_pct"]),
+                              leverage=float(c["leverage"]), cost_pct=float(c["cost_pct"]), max_trades=3, max_losses=2)
+
+
+def engine_key(cfg):
+    c = merged(cfg)
+    return "|".join(f"{k}={c[k]}" for k in ENGINE_KEYS)
+
+
+def plan_key(cfg):
+    """The plan a recommendation is actually executed with: exit policy + execution window."""
+    c = merged(cfg)
+    return f"{c['exit_policy']}|{int(c.get('paper_window_min', 0) or 0)}"
 
 
 def merged(cfg):
@@ -676,12 +724,13 @@ def _apply(T, cfg, corr_by_day, use_coach, use_pulse, policy, use_risk):
                 k = pos[row.Index]
                 if w[k] == 0:
                     continue
-                c = dict(symbol=row.symbol, side=row.side, setup=row.setup, t=row.ts, exp_r=row.exp_r)
+                c = dict(symbol=row.symbol, side=row.side, setup=row.setup, t=row.ts, exp_r=row.exp_r,
+                         value_x=row.value_x * w[k])
                 v, m, why = risk_check(c, book, rc, corr)
                 reasons[k] = why[0] if v == "BLOCK" else ""
                 w[k] *= m
                 if v != "BLOCK":
-                    book.append(dict(symbol=row.symbol, side=row.side, t=row.ts,
+                    book.append(dict(symbol=row.symbol, side=row.side, t=row.ts, value_x=row.value_x * w[k],
                                      t_exit=pd.Timestamp(getattr(row, "t_" + policy)), r=r[k] * w[k]))
     return r, w, reasons
 
@@ -704,6 +753,11 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10)
     if has_pw:
         for w in WINDOWS:
             df[f"w_{w}"] = df.features.map(lambda f: f["_pw"][f"{cfg['exit_policy']}|{w}"][0])
+    df["r_plain"] = df.r
+    df["r"] = df["r_" + cfg["exit_policy"]]          # the Coach is trained and judged on the executed plan
+    risk_frac = float(cfg["risk_pct"]) / 100.0
+    df["value_x"] = [min(risk_frac * e / abs(e - s_), float(cfg["leverage"])) if abs(e - s_) > 0 else 0.0
+                     for e, s_ in zip(df.entry, df.stop)]
     T = walk_forward(df, cfg["half_life"], cfg["coach_threshold"], warmup)
     if T.empty:
         return None
@@ -715,17 +769,21 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10)
     agents = {}
 
     # Coach — does its expected R separate good trades from bad, and does its filter help?
+    r_act = T["r_" + cfg["exit_policy"]]
     hi = T.exp_r >= T.exp_r.median()
-    z_rank = _welch(T.r_fixed[hi], T.r_fixed[~hi])
+    z_rank = _welch(r_act[hi], r_act[~hi])
     kept = T.exp_r >= cfg["coach_threshold"]
-    m_c = _metrics(T.r_fixed, kept.astype(float).values, ts)
+    m_c = _metrics(r_act, kept.astype(float).values, ts)
+    m_all = _metrics(r_act, np.ones(len(T)), ts)
     agents["Coach"] = dict(evidence(z_rank, len(T)), on=cfg["coach_filter"],
                            setting=f"Filter {'ON' if cfg['coach_filter'] else 'OFF'} · skip below {cfg['coach_threshold']:+.2f}R · "
                                    f"memory half-life {cfg['half_life']} days",
-                           effect=m_c["exp"] - base["exp"], effect_label="per trade if the filter is on",
-                           detail=f"Top half of its picks averaged {T.r_fixed[hi].mean():+.2f}R vs bottom half "
-                                  f"{T.r_fixed[~hi].mean():+.2f}R. Filter would skip {int((~kept).sum())} of {len(T)} "
-                                  f"trades (they averaged {T.r_fixed[~kept].mean() if (~kept).any() else float('nan'):+.2f}R).")
+                           effect=m_c["exp"] - m_all["exp"], effect_label="per trade if the filter is on",
+                           detail=f"Judged on the plan that is executed ({cfg['exit_policy']} exit, "
+                                  f"{WINDOW_TEXT.get(W, str(W) + ' min').lower()}). Top half of its picks averaged "
+                                  f"{r_act[hi].mean():+.2f}R vs bottom half {r_act[~hi].mean():+.2f}R. Filter would skip "
+                                  f"{int((~kept).sum())} of {len(T)} trades (they averaged "
+                                  f"{r_act[~kept].mean() if (~kept).any() else float('nan'):+.2f}R).")
     # Pulse — are reduced-size trades really worse?
     w_p = T.features.map(lambda f: cfg["mults"].get(f.get("mood"), 1.0)).values
     full = w_p >= w_p.max() - 1e-9
@@ -768,7 +826,8 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10)
     cap_hits = T.r_fixed[blocked.str.startswith("Already")]
     agents["Risk"] = dict(evidence(_paired(daily["with"] - daily["without"]), len(daily) * 3), on=cfg["risk_enabled"],
                           setting=f"{'ON' if cfg['risk_enabled'] else 'OFF'} · loss cap −{cfg['daily_loss_R']:g}R · "
-                                  f"max {cfg['max_trades']} trades, {cfg['max_open']} open · corr ≥ {cfg['corr_limit']:g} halves size",
+                                  f"max {cfg['max_trades']} trades, {cfg['max_open']} open · one position per stock · "
+                                  f"exposure ≤ {cfg['max_exposure_x']:g}× capital · corr ≥ {cfg['corr_limit']:g} halves size",
                           effect=(m_r["total"] - base["total"]) / n_days, effect_label="per day vs no risk rules",
                           dd_change=m_r["maxdd"] - base["maxdd"],
                           detail=f"Max drawdown {base['maxdd']:+.1f}R → {m_r['maxdd']:+.1f}R. Blocked "

@@ -265,7 +265,19 @@ def train_coach(demo, symbols, day, args_key, _a):
     if not rows:
         return 0
     store = get_store(demo)
-    store.upsert_trades(rows)
+    old = store.trades()
+    live = {k: (f if isinstance(f, dict) else json.loads(f or "{}"), rs)
+            for k, f, rs, src in zip(old.key, old.features, old.reason, old.source) if src == "live"} if not old.empty else {}
+    out = []
+    for r in rows:
+        if r["key"] in live:          # keep what was only known live (news flag, post-mortem) and stay 'live'
+            lf, lreason = live[r["key"]]
+            feats = dict(r["features"])
+            if lf.get("news") not in (None, "unknown"):
+                feats["news"] = lf["news"]
+            r = dict(r, source="live", features=feats, reason=lreason or r.get("reason"))
+        out.append(r)
+    store.upsert_trades(out)
     store.log("Coach", "training", f"Studied {len(rows)} signals from the last {len({r['day'] for r in rows})} sessions",
               detail={"trades": len(rows)}, dkey=f"coach-train|{day}|{args_key}")
     return len(rows)
@@ -286,6 +298,14 @@ def scorecard_cached(demo, symbols, day, args_key, cfg_json, risk_rs, live_token
 
 def now_ist():
     return pd.Timestamp.now(tz=ce.IST)
+
+
+def score_for(cfg, demo, token):
+    """Scorecard for any settings — the engine, paper account and watchlist come from the settings themselves."""
+    a_ = ag.engine_args(cfg)
+    sy = tuple(sorted({str(x).strip().upper() for x in cfg["watchlist"] if str(x).strip()}))
+    return scorecard_cached(demo, sy, f"{now_ist():%Y-%m-%d}", ag.engine_key(cfg), json.dumps(cfg, sort_keys=True),
+                            a_.capital * a_.risk_pct / 100, token, a_)
 
 
 def load_cfg(store):
@@ -461,7 +481,8 @@ def agent_strip(a):
         return ""
     chips = []
     al = a["align"]
-    chips.append(f'<span class="ag {"good" if al == "with" else "bad" if al == "against" else ""}"><i>Pulse</i>'
+    chips.append(f'<span class="ag {"good" if al == "with" else "bad" if al == "against" else ""}">'
+                 f'<i>Pulse · {html.escape(a["m_at"]["regime"])} ×{a.get("size_mult", 1):g}</i>'
                  f'{"▲ with market" if al == "with" else "▼ against market" if al == "against" else "• market neutral"}</span>')
     lv = a["sentinel"]
     chips.append(f'<span class="ag {"bad" if lv == "HIGH" else "warn" if lv == "WATCH" else "good" if lv == "CLEAR" else ""}">'
@@ -499,32 +520,32 @@ with st.sidebar:
     st.markdown('<div class="sl" style="font-weight:800;font-size:18px">Settings</div>', unsafe_allow_html=True)
     demo = st.toggle("Demo data (no market feed)", value=st.query_params.get("demo") == "1",
                      help="Synthetic prices — use to try the app outside market hours.")
-    st.caption("INTRADAY")
-    capital = st.number_input("Capital (₹)", 10000, 100_000_000, 200000, step=10000)
-    risk_pct = st.slider("Risk per trade (%)", 0.1, 2.0, 0.5, 0.1)
-    setup = st.selectbox("Setups", ["both", "orb", "vwap"],
-                         format_func={"both": "ORB + VWAP pullback", "orb": "Opening range breakout",
-                                      "vwap": "VWAP pullback"}.get)
-    shorts = st.toggle("Include short trades", value=False)
-    rr = st.slider("Target (× risk)", 1.0, 4.0, 2.0, 0.5)
-    min_relvol = st.slider("Min relative volume", 1.0, 3.0, 1.5, 0.1,
-                           help="First-15-min volume vs average of the prior 10 sessions.")
-    cost_pct = st.number_input("Round-trip costs (%)", 0.0, 1.0, 0.10, 0.01,
-                               help="Brokerage + STT + exchange + GST + stamp + slippage.")
-    wl_text = st.text_area("Watchlist (NSE symbols)", ", ".join(ce.WATCHLIST), height=150)
-    symbols = tuple(sorted({s.strip().upper() for s in wl_text.replace("\n", ",").split(",") if s.strip()}))
+    eng_slot = st.container()
     st.caption("AGENTS")
     cfg_slot = st.empty()
     st.caption("Claude API: " + ("connected — richer news reading and explanations" if API_KEY
                                  else "not set — agents run rule-based"))
 
-A = intraday_args(setup=setup, shorts=shorts, rr=rr, min_relvol=min_relvol, capital=float(capital),
-                  risk_pct=risk_pct, cost_pct=cost_pct)
 STORE = get_store(demo)
 CFG_STATE = load_cfg(STORE)
 CFG = CFG_STATE["active"]
+# The signal engine, paper account and watchlist are shared settings (versioned, reviewer-approved), so the
+# trade log, the Coach's training and every visitor's screen describe the same system.
+A = ag.engine_args(CFG)
+symbols = tuple(sorted({str(x).strip().upper() for x in CFG["watchlist"] if str(x).strip()}))
 RISK_RS = A.capital * A.risk_pct / 100
-ARGS_KEY = f"{A.setup}|{A.shorts}|{A.rr}|{A.min_relvol}|{A.cost_pct}"
+ARGS_KEY = ag.engine_key(CFG)
+PLAN = ag.plan_key(CFG)
+with eng_slot:
+    st.caption("SHARED SETTINGS · v%s" % CFG_STATE["version"])
+    st.markdown(
+        f'<div class="sl" style="font-size:12.5px;line-height:1.6;color:#333">'
+        f'Paper capital <b>₹{A.capital:,.0f}</b> · risk <b>{A.risk_pct:g}%</b> per trade<br>'
+        f'Setups <b>{ {"both": "ORB + VWAP", "orb": "ORB", "vwap": "VWAP"}[A.setup] }</b> · shorts <b>{"on" if A.shorts else "off"}</b><br>'
+        f'Target <b>{A.rr:g}× risk</b> · min rel. volume <b>{A.min_relvol:g}×</b> · costs <b>{A.cost_pct:g}%</b><br>'
+        f'Watchlist <b>{len(symbols)}</b> stocks · exposure cap <b>{CFG["max_exposure_x"]:g}×</b></div>',
+        unsafe_allow_html=True)
+    st.caption("These are the same for everyone. A reviewer changes them in 🎯 Agent scores → Fine-tune.")
 ADMIN_PIN = _secret("ADMIN_PIN")
 
 
@@ -641,7 +662,7 @@ with tab_i:
         size_mult = mood["mult"] if CFG["pulse_sizing"] else 1.0
         store.log("Pulse", "regime", f"{mood['regime']} — position size ×{size_mult:g}. " + "; ".join(mood["reasons"]),
                   detail=mood, dkey=f"pulse|{day_s}|{mood['regime']}")
-        coach = ag.Coach(coach_trades(demo, ss.tok), CFG["half_life"], day)
+        coach = ag.Coach(coach_trades(demo, ss.tok), CFG["half_life"], day, plan=PLAN)
         targets = list(dict.fromkeys(sig.symbol.tolist() + S[S.in_play].symbol.tolist()))[:12]
         sents = {sym: sentinel_cached(sym, demo, day_s, bool(API_KEY)) for sym in targets}
         for sym, v in sents.items():
@@ -686,7 +707,13 @@ with tab_i:
             sc = coach.score(feats, CFG["coach_threshold"])
             pm = coach.postmortem(feats, act["r"]) if closed else None
             if plain["reason"] != "close":
-                feats_j = dict(feats, _bias=m_at["bias"])
+                pw = {}
+                for p_ in ag.EXIT_POLICIES:
+                    for w_ in ag.WINDOWS:
+                        v_ = ag.simulate_exit(g, sd, p_, A, r.signal_time + pd.Timedelta(minutes=w_) if w_ else None)
+                        pw[f"{p_}|{w_}"] = [round(v_["r"], 4), v_["t"].isoformat()]
+                feats_j = dict(feats, _bias=m_at["bias"], _pw=pw,
+                               _exits={p_: pw[f"{p_}|0"] for p_ in ag.EXIT_POLICIES})
                 journal.append(dict(key=key, ts=r.signal_time, day=day, source="live", symbol=r.symbol, setup=r.setup,
                                     side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
                                     exit=plain["exit"], r=plain["r"], status=plain["reason"],
@@ -697,7 +724,7 @@ with tab_i:
             if act["note"]:
                 store.log("Exit", "manage", f"{r.symbol} ({policy}): {act['note']}", symbol=r.symbol,
                           dkey=f"exit|{key}|{act['note']}")
-            align = "with" if mood["bias"] == r.side else "against" if mood["bias"] == -r.side else "neutral"
+            align = "with" if m_at["bias"] == r.side else "against" if m_at["bias"] == -r.side else "neutral"
             row_min = dict(symbol=r.symbol, side=int(r.side), setup=r.setup, entry=float(r.entry),
                            stop=float(r.stop), target=float(r.target))
             narr = narrate_cached(key, status, json.dumps(row_min), json.dumps(mood, default=float),
@@ -714,21 +741,25 @@ with tab_i:
         book = []
         for ix, r in sig.sort_values("signal_time").iterrows():
             a = agt[r.key]
+            sm = a["m_at"]["mult"] if CFG["pulse_sizing"] else 1.0      # mood at the moment the signal fired
+            base_q = 0 if pd.isna(r.qty_base) else int(r.qty_base)
+            value_x = base_q * sm * float(r.entry) / A.capital          # position value in multiples of capital
             caution = CFG["coach_filter"] and a["coach"].get("verdict") == "Caution"
             if caution:
                 verdict, rmul, why = "BLOCK", 0.0, [f"Coach filter: expected {a['exp_r']:+.2f}R is below "
                                                    f"{CFG['coach_threshold']:+.2f}R"]
             else:
                 verdict, rmul, why = ag.risk_check(dict(symbol=r.symbol, side=int(r.side), setup=r.setup,
-                                                        t=r.signal_time, exp_r=a["exp_r"], sentinel=a["sentinel"]),
-                                                   book, CFG, corr)
-            qty_final = int((0 if pd.isna(r.qty_base) else r.qty_base) * size_mult * rmul)
-            a.update(risk_verdict=verdict, risk_why=why, risk_mult=rmul, qty_final=qty_final, caution=caution)
+                                                        t=r.signal_time, exp_r=a["exp_r"], sentinel=a["sentinel"],
+                                                        value_x=value_x), book, CFG, corr)
+            qty_final = int(base_q * sm * rmul)
+            a.update(risk_verdict=verdict, risk_why=why, risk_mult=rmul, qty_final=qty_final, caution=caution,
+                     size_mult=sm)
             sig.at[ix, "qty"] = qty_final
             if verdict != "BLOCK":
-                book.append(dict(symbol=r.symbol, side=int(r.side), t=r.signal_time,
+                book.append(dict(symbol=r.symbol, side=int(r.side), t=r.signal_time, value_x=value_x * rmul,
                                  t_exit=None if a["is_open"] else a["exit"]["t"],
-                                 r=(a["exit"]["r"] if not a["is_open"] else 0) * size_mult * rmul))
+                                 r=(a["exit"]["r"] if not a["is_open"] else 0) * sm * rmul))
             if verdict != "ALLOW":
                 store.log("Risk", verdict.lower(), f"{verdict} {r.symbol} {r.setup}: {why[0]}", symbol=r.symbol,
                           dkey=f"risk|{r.key}|{verdict}")
@@ -744,7 +775,7 @@ with tab_i:
             a = agt[r.key]
             skipped = a["risk_verdict"] == "BLOCK"
             base_q = 0 if pd.isna(r.qty_base) else int(r.qty_base)
-            qty = int(base_q * size_mult) if skipped else a["qty_final"]
+            qty = int(base_q * a["size_mult"]) if skipped else a["qty_final"]
             pt = ag.paper_trade(bars[r.symbol], a["sd"], A, policy, WIN, qty, idd)
             status = "SKIPPED" if skipped else pt["status"]
             if skipped and pt["status"] == "OPEN":
@@ -755,10 +786,10 @@ with tab_i:
                         coach_verdict=sc.get("verdict"),
                         drivers=[dict(edge=d[0], text=d[1], n=d[2]) for d in (sc.get("drivers") or [])][:6],
                         risk_verdict=a["risk_verdict"], risk_why=a["risk_why"], features=a["feats"], narr=a["narr"],
-                        size_mult=size_mult, risk_mult=a["risk_mult"])
+                        size_mult=a["size_mult"], risk_mult=a["risk_mult"])
             rec = dict(pt, symbol=r.symbol, setup=r.setup, side=int(r.side), entry=float(r.entry), stop=float(r.stop),
                        target=float(r.target), qty=qty, window_min=WIN, policy=policy, snapshot=snap, status=status,
-                       skip_reason=a["risk_why"][0] if skipped else None)
+                       skip_reason=a["risk_why"][0] if skipped else None, cfg_version=CFG_STATE["version"])
             done = status == "CLOSED" or (status == "SKIPPED" and pt["status"] == "CLOSED")
             rec["factors"] = ag.review_factors(rec) if done else []
             old = prev.get(r.key)
@@ -832,7 +863,7 @@ with tab_i:
         cls = {"Risk-on": "on", "Mildly positive": "on", "Risk-off": "off", "Mildly negative": "off",
                "Volatile": "vol"}.get(mood["regime"], "mid")
         st.markdown(f'<div class="sl pulse {cls}"><b class="rg">🧭 Pulse · {mood["regime"]}</b>'
-                    f'<span>Position size ×{size_mult:g}{"" if CFG["pulse_sizing"] else " (sizing off)"}</span>'
+                    f'<span>New signals sized ×{size_mult:g}{"" if CFG["pulse_sizing"] else " (sizing off)"}</span>'
                     f'<span>Nifty {arrow(mood["nifty_chg"])}</span>'
                     f'<span>{" · ".join(html.escape(x) for x in mood["reasons"][:3])}</span></div>',
                     unsafe_allow_html=True)
@@ -885,7 +916,8 @@ with tab_i:
                                if not a["is_open"] else "") + '</div>', unsafe_allow_html=True)
                 st.markdown(f'<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Risk — {a["risk_verdict"]}</b><br>'
                             + "<br>".join(html.escape(x) for x in a["risk_why"]) +
-                            f'<br>Quantity {int(r.qty_base) if not pd.isna(r.qty_base) else 0:,} × Pulse {size_mult:g} × '
+                            f'<br>Quantity {int(r.qty_base) if not pd.isna(r.qty_base) else 0:,} × Pulse {a["size_mult"]:g} '
+                            f'({html.escape(a["m_at"]["regime"])} at {r.signal_time:%H:%M}) × '
                             f'Risk {a["risk_mult"]:.2f} = <b>{a["qty_final"]:,}</b></div>', unsafe_allow_html=True)
                 sv = a.get("sent")
                 if sv:
@@ -972,6 +1004,7 @@ def paper_frame(raw):
                          mkt_move=d.get("mkt_move"), vol_ratio=d.get("vol_ratio"), hold_r=d.get("hold_r"),
                          later_target=d.get("later_target"), minutes=d.get("minutes"), live=d.get("live"),
                          skip_reason=d.get("skip_reason"), snapshot=d.get("snapshot") or {}, factors=d.get("factors") or [],
+                         cfg_version=d.get("cfg_version"),
                          last_price=d.get("last_price"), human=h, verdict=h.get("verdict", "")))
     L = pd.DataFrame(rows)
     for c in ("r", "pnl", "mfe", "mae", "hold_r", "mkt_move", "vol_ratio"):
@@ -1064,7 +1097,8 @@ with tab_t:
         rec_html = (f'<b class="h">Recommendation · {T_.rec_time:%d %b %H:%M}</b>'
                     f'{side_w} {int(T_.qty or 0):,} at <b class="num">{inr(T_.entry)}</b> · stop {inr(T_.stop)} · target {inr(T_.target)}<br>'
                     f'Execution window: {ag.WINDOW_TEXT.get(int(T_.window_min or 0), str(T_.window_min) + " min")}'
-                    + (f' (close by {_hm(T_.deadline)})' if T_.deadline else "") + f' · exit policy {T_.policy}<br>'
+                    + (f' (close by {_hm(T_.deadline)})' if T_.deadline else "") + f' · exit policy {T_.policy}'
+                    + (f' · settings v{int(T_.cfg_version)}' if pd.notna(T_.cfg_version) else "") + '<br>'
                     f'<span class="note">Agents at the time — Pulse: {html.escape(str(sn.get("mood", "—")))} · '
                     f'Sentinel: {html.escape(str(sn.get("sentinel") or "not checked"))} · Coach: '
                     + (f'{sn["exp_r"]:+.2f}R expected ({html.escape(str(sn.get("coach_verdict")))})' if sn.get("exp_r") is not None else "learning")
@@ -1355,8 +1389,7 @@ with tab_g:
                 'Agents can only <b>propose</b> changes — you approve, reject or fine-tune them here, and every '
                 'decision is versioned and logged.</div>', unsafe_allow_html=True)
     with st.spinner("Scoring the agents on recent sessions…"):
-        SC = scorecard_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY, json.dumps(CFG, sort_keys=True),
-                              RISK_RS, ss.get("tok", 0) // 10, A)
+        SC = score_for(CFG, demo, ss.get("tok", 0) // 10)
     if SC is None:
         st.markdown('<div class="sl empty">Not enough history yet to score the agents (needs about 12 sessions with '
                     'signals). Try more symbols or a lower relative-volume filter in Settings.</div>',
@@ -1425,8 +1458,7 @@ with tab_g:
                         'setting right now. Rejected proposals stay hidden for 7 days.</div>', unsafe_allow_html=True)
         for k_, p in enumerate(props):
             cand = ag.merged({**CFG, **p["change"]})
-            wi = scorecard_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY, json.dumps(cand, sort_keys=True),
-                                  RISK_RS, ss.get("tok", 0) // 10, A)
+            wi = score_for(cand, demo, ss.get("tok", 0) // 10)
             wis = wi["system"] if wi else None
             st.markdown(f'<div class="sl prop"><div class="t">{AG_ICON.get(p["agent"], "")} {html.escape(p["title"])}</div>'
                         f'<div class="w">{html.escape(p["why"])}</div>'
@@ -1482,21 +1514,41 @@ with tab_g:
                 f_es = r7.toggle("Edge-based sizing", CFG["edge_sizing"], help="Size up/down (0.5–1.5×) by Coach's expected R")
                 f_ek = r8.slider("Edge sizing strength", 0.5, 3.0, float(CFG["edge_k"]), 0.25)
                 f_sb = r9.toggle("Block Sentinel HIGH", CFG["sentinel_block"])
+                r10, r11 = st.columns(2)
+                f_mx = r10.slider("Total exposure cap (× capital)", 1.0, 15.0, float(CFG["max_exposure_x"]), 0.5,
+                                  help="All open positions together may not exceed this multiple of capital.")
+                f_lev = r11.slider("Max single position (× capital)", 1.0, 5.0, float(CFG["leverage"]), 0.5)
+                st.markdown("**⚙️ Signal engine and paper account** — shared by everyone")
+                e1, e2, e3 = st.columns(3)
+                f_cap = e1.number_input("Paper capital (₹)", 10000, 100_000_000, int(CFG["capital"]), step=10000)
+                f_rp = e2.slider("Risk per trade (%)", 0.1, 2.0, float(CFG["risk_pct"]), 0.1)
+                f_cost = e3.number_input("Round-trip costs (%)", 0.0, 1.0, float(CFG["cost_pct"]), 0.01)
+                e4, e5, e6 = st.columns(3)
+                f_setup = e4.selectbox("Setups", ["both", "orb", "vwap"], ["both", "orb", "vwap"].index(CFG["setup"]),
+                                       format_func={"both": "ORB + VWAP pullback", "orb": "Opening range breakout",
+                                                    "vwap": "VWAP pullback"}.get)
+                f_rr = e5.slider("Target (× risk)", 1.0, 4.0, float(CFG["rr"]), 0.5)
+                f_rv = e6.slider("Min relative volume", 1.0, 3.0, float(CFG["min_relvol"]), 0.1)
+                f_sh = st.toggle("Include short trades", bool(CFG["shorts"]))
+                f_wl = st.text_area("Watchlist (NSE symbols, comma-separated)", ", ".join(CFG["watchlist"]), height=110)
                 sim = st.form_submit_button("Simulate on recent sessions")
             if sim:
                 ss.tune_cand = ag.merged(dict(coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, pulse_sizing=f_ps,
                                               mults=f_m, exit_policy=f_ex, risk_enabled=f_re, daily_loss_R=f_dl,
                                               max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, paused_setups=f_ps2,
                                               edge_sizing=f_es, edge_k=f_ek, sentinel_block=f_sb,
-                                              paper_window_min=int(f_win)))
+                                              paper_window_min=int(f_win), max_exposure_x=f_mx, leverage=f_lev,
+                                              capital=float(f_cap), risk_pct=f_rp, cost_pct=f_cost, setup=f_setup,
+                                              rr=f_rr, min_relvol=f_rv, shorts=f_sh,
+                                              watchlist=sorted({x.strip().upper() for x in
+                                                                f_wl.replace("\n", ",").split(",") if x.strip()})))
             cand = ss.get("tune_cand")
             if cand:
                 diff = cfg_diff(CFG, cand)
                 if not diff:
                     st.info("These are the current settings.")
                 else:
-                    wi = scorecard_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY,
-                                          json.dumps(cand, sort_keys=True), RISK_RS, ss.get("tok", 0) // 10, A)
+                    wi = score_for(cand, demo, ss.get("tok", 0) // 10)
                     st.markdown(f'<div class="sl prop"><div class="t">What-if: {html.escape(", ".join(diff))}</div>'
                                 f'<div class="wi">Current v{CFG_STATE["version"]}: {sys_line(s_)}<br>'
                                 f'Your settings: {sys_line(wi["system"]) if wi else "—"}</div></div>',
