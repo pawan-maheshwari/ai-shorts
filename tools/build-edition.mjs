@@ -18,8 +18,10 @@
    Each dispatch also gets an AIShorts brief — a short summary in our own
    words plus "why it matters" and "what to watch" — written by a model on
    GitHub Models using the workflow's own GITHUB_TOKEN (no API key, free
-   within rate limits). Briefs are optional: with no token, a rate limit or
-   a bad answer, the dispatch simply keeps the publisher's own line.
+   within rate limits). Any OpenAI-compatible service works instead: set
+   BRIEF_ENDPOINT, BRIEF_MODEL and BRIEF_API_KEY. Briefs are optional: with
+   no token, a rate limit or a bad answer, the dispatch keeps the
+   publisher's own description of the story.
 
    No dependencies — plain Node 22, so CI needs no install step.
    ===================================================================== */
@@ -270,7 +272,7 @@ async function pool(list, size, fn){
 /* Resolve each dispatch to its publisher and gather the brief's material.
    Material lives in a side map so it can never leak into the edition. */
 async function gather(items){
-  const material = new Map();
+  const material = new Map(), descs = new Map();
   await pool(items, 3, async it => {
     if(/news\.google\.com/.test(it.url)){
       const u = await decodeGoogleNews(it.url);
@@ -282,10 +284,11 @@ async function gather(items){
     if(!page.ok) return;
     const a = extractArticle(page.text);
     if(a.image && !it.image) it.image = a.image;
+    if(a.desc) descs.set(it.id, a.desc);
     const text = [a.desc, a.text].filter(Boolean).join(" ").trim();
     if(text.length >= 120) material.set(it.id, text);
   });
-  return material;
+  return {material, descs};
 }
 
 /* ---------------------------------------------------------- AI briefs */
@@ -496,14 +499,24 @@ async function main(){
   let briefs = {model: BRIEF_MODEL, attempted: 0, written: 0, fromSource: 0, reused: 0};
   try{
     reuseBriefs(items, day);
-    const token = process.env.GITHUB_TOKEN || "";
+    const token = process.env.BRIEF_API_KEY || process.env.GITHUB_TOKEN || "";
     const fresh = items.filter(it => !it.briefBy);
-    const material = (fixture || !fresh.length) ? new Map() : await gather(fresh);
+    const {material, descs} = (fixture || !fresh.length)
+      ? {material: new Map(), descs: new Map()} : await gather(fresh);
     if(fixture && fs.existsSync("tools/fixture-material.json")){
       const fm = JSON.parse(fs.readFileSync("tools/fixture-material.json", "utf8"));
       for(const it of fresh) if(fm[it.headline]) material.set(it.id, fm[it.headline]);
     }
     briefs = await writeBriefs(items, material, token);
+
+    /* No brief? The publisher's own description of the story is still a
+       better line than the "open the full report" stand-in. */
+    briefs.publisherLines = 0;
+    for(const it of items){
+      if(it.briefBy || !/^Open the full report at /.test(it.summary)) continue;
+      const line = clipWords(dedupeSummary(it.headline, descs.get(it.id) || ""), 42);
+      if(line.length >= 60){ it.summary = line; briefs.publisherLines++; }
+    }
     briefs.publisherLinks = items.filter(it => !/news\.google\.com/.test(it.url)).length;
   }catch(e){
     console.warn(`Briefs: skipped (${e.message}).`);
@@ -542,7 +555,7 @@ async function main(){
   console.log(`Edition ${day}: ${items.length} dispatches, ${all.length} on file.`);
   console.log(`Sections: ${tally}`);
   console.log(`Briefs: ${briefs.written} written (${briefs.fromSource} from source text), ${briefs.reused} reused, `
-            + `${briefs.publisherLinks ?? 0} publisher links, model ${briefs.model}.`);
+            + `${briefs.publisherLines ?? 0} publisher lines, ${briefs.publisherLinks ?? 0} publisher links, model ${briefs.model}.`);
 }
 
 if(process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href){
