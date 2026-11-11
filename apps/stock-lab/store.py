@@ -46,7 +46,13 @@ create table if not exists stocklab_paper (
 );
 create index if not exists stocklab_paper_day on stocklab_paper (day desc);
 
+create table if not exists stocklab_sentinel (
+  key text primary key, day date, symbol text, level text, data jsonb, updated timestamptz default now()
+);
+create index if not exists stocklab_sentinel_day on stocklab_sentinel (day desc);
+
 alter table stocklab_events enable row level security;
+alter table stocklab_sentinel enable row level security;
 alter table stocklab_paper enable row level security;
 alter table stocklab_kv enable row level security;
 alter table stocklab_trades enable row level security;
@@ -98,6 +104,8 @@ class Store:
               symbol text, setup text, side integer, entry real, stop real, target real, exit real, r real,
               status text, features text, reason text, updated text);
             create table if not exists stocklab_kv (key text primary key, value text, updated text);
+            create table if not exists stocklab_sentinel (key text primary key, day text, symbol text, level text,
+              data text, updated text);
             create table if not exists stocklab_paper (key text primary key, day text, symbol text, status text,
               rec_time text, logged_at text, data text, human text, updated text);
             """)
@@ -310,3 +318,47 @@ class Store:
                     self.db.commit()
         except Exception as e:
             self.last_error = str(e)
+
+    # ------------------------------------------------------------------ sentinel archive (daily flags per stock)
+    def sentinel_upsert(self, rows, overwrite=False):
+        """rows: dicts with day, symbol, level, data. By default the first record for a stock-day is kept
+        (the pre-open view), so later scans cannot rewrite what the Sentinel knew before the session."""
+        if not rows:
+            return
+        clean = [dict(key=f"{r['day']}|{r['symbol']}", day=str(r["day"]), symbol=r["symbol"], level=r["level"],
+                      data=json.loads(json.dumps(r.get("data") or {}, default=str)), updated=_now().isoformat()) for r in rows]
+        try:
+            if self.remote:
+                pref = "resolution=merge-duplicates" if overwrite else "resolution=ignore-duplicates"
+                for i in range(0, len(clean), 500):
+                    self._post("stocklab_sentinel", clean[i:i + 500], pref + ",return=minimal", "key")
+            else:
+                verb = "insert or replace" if overwrite else "insert or ignore"
+                with self._lock:
+                    self.db.executemany(f"{verb} into stocklab_sentinel (key,day,symbol,level,data,updated) values (?,?,?,?,?,?)",
+                                        [(r["key"], r["day"], r["symbol"], r["level"], json.dumps(r["data"]), r["updated"])
+                                         for r in clean])
+                    self.db.commit()
+        except Exception as e:
+            self.last_error = str(e)
+
+    def sentinel_list(self, days=120):
+        since = (_now() - timedelta(days=days)).date().isoformat()
+        try:
+            if self.remote:
+                df = pd.DataFrame(self._get("stocklab_sentinel", {"select": "day,symbol,level,data", "day": f"gte.{since}",
+                                                                  "order": "day.desc", "limit": "20000"}))
+            else:
+                with self._lock:
+                    df = pd.read_sql_query("select day,symbol,level,data from stocklab_sentinel where day >= ? order by day desc",
+                                           self.db, params=(since,))
+                df["data"] = df.data.map(lambda s: json.loads(s) if s else {})
+        except Exception as e:
+            self.last_error = str(e)
+            df = pd.DataFrame()
+        if df.empty:
+            return pd.DataFrame(columns=["day", "symbol", "level", "data", "types", "scanned"])
+        df["day"] = df.day.astype(str).str[:10]
+        df["types"] = df.data.map(lambda d: (d or {}).get("types") or [])
+        df["scanned"] = df.data.map(lambda d: bool((d or {}).get("scanned", True)))
+        return df

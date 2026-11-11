@@ -156,25 +156,177 @@ def pulse(idx, day=None, asof=None, mults=None):
 
 
 # ============================================================================ SENTINEL — news & events
-RED_FLAGS = r"fraud|raid|probe|sebi (order|bans|notice)|penalt|default|downgrad|resign|insolven|pledge|block deal|" \
-            r"stake sale|ofs\b|offer for sale|lawsuit|recall|shutdown|strike|fire at|accident|tax demand"
-EVENT_WORDS = r"results|earnings|q[1-4] ?fy|quarter|board meeting|dividend|bonus|split|buyback|merger|acquisi|" \
-              r"demerger|rights issue|record date|agm"
-POS_WORDS = r"upgrade|beats|record (profit|revenue)|order win|wins order|bags|surge|jumps|approval|launch"
+# Workflow: gather from several sources (each reports whether it could be checked) → read every item
+# (is it about this company, is it fresh, what kind of event, how material) → combine with hard facts
+# (results calendar, F&O ban) into a level: HIGH / WATCH / CLEAR, or UNCHECKED when nothing could be checked.
+
+NAMES = {  # company names for the default watchlist (used for news search and to confirm a headline is about the stock)
+    "RELIANCE": "Reliance Industries", "HDFCBANK": "HDFC Bank", "ICICIBANK": "ICICI Bank", "INFY": "Infosys",
+    "TCS": "Tata Consultancy Services", "SBIN": "State Bank of India", "AXISBANK": "Axis Bank",
+    "KOTAKBANK": "Kotak Mahindra Bank", "LT": "Larsen & Toubro", "ITC": "ITC", "BHARTIARTL": "Bharti Airtel",
+    "HINDUNILVR": "Hindustan Unilever", "BAJFINANCE": "Bajaj Finance", "MARUTI": "Maruti Suzuki",
+    "M&M": "Mahindra & Mahindra", "TATASTEEL": "Tata Steel", "SUNPHARMA": "Sun Pharma", "ADANIENT": "Adani Enterprises",
+    "ADANIPORTS": "Adani Ports", "NTPC": "NTPC", "POWERGRID": "Power Grid", "ONGC": "ONGC", "COALINDIA": "Coal India",
+    "HCLTECH": "HCL Technologies", "WIPRO": "Wipro", "TECHM": "Tech Mahindra", "ULTRACEMCO": "UltraTech Cement",
+    "TITAN": "Titan", "ASIANPAINT": "Asian Paints", "JSWSTEEL": "JSW Steel", "HINDALCO": "Hindalco",
+    "BAJAJ-AUTO": "Bajaj Auto", "DLF": "DLF", "BEL": "Bharat Electronics", "TRENT": "Trent",
+}
+EXTRA_ALIASES = {"TCS": ["tcs"], "SBIN": ["sbi"], "LT": ["l&t"], "M&M": ["m&m", "mahindra"], "HINDUNILVR": ["hul"],
+                 "RELIANCE": ["ril"], "BEL": ["bel"], "INFY": ["infosys"], "HCLTECH": ["hcl tech", "hcltech"]}
+_SUFFIX = r"\b(limited|ltd\.?|industries|corporation|corp\.?|company|co\.?|india)\b"
+
+
+def company_name(symbol, hint=None):
+    return hint or NAMES.get(symbol.upper()) or symbol.upper()
+
+
+def aliases(symbol, name):
+    core = re.sub(r"\s+", " ", re.sub(_SUFFIX, "", name.lower())).strip(" .,&")
+    out = {symbol.lower(), name.lower(), core}
+    out.update(EXTRA_ALIASES.get(symbol.upper(), []))
+    return {a for a in out if len(a) >= 3}
+
+
+# ---------------- sources: every fetcher returns (status, items); status is "ok" or "unavailable"
+_UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
+                     "Chrome/126.0 Safari/537.36", "Accept-Language": "en-US,en;q=0.9"}
+
+
+class NSE:
+    """Small client for nseindia.com's public JSON endpoints. NSE often refuses cloud servers; every call
+    reports whether it worked so the Sentinel never claims a check it could not make."""
+    BASE = "https://www.nseindia.com"
+
+    def __init__(self, timeout=7):
+        self.s = requests.Session()
+        self.s.headers.update(dict(_UA, Accept="application/json, text/plain, */*", Referer=self.BASE + "/"))
+        self.timeout, self.warm, self.dead, self.fails = timeout, False, False, 0
+
+    def get(self, path, params=None):
+        if self.dead:
+            return None
+        try:
+            if not self.warm:
+                self.s.get(self.BASE + "/", timeout=self.timeout)
+                self.warm = True
+            r = self.s.get(self.BASE + path, params=params, timeout=self.timeout)
+            if r.status_code == 200:
+                self.fails = 0
+                return r.json()
+            self.fails += 3 if r.status_code in (401, 403) else 1
+        except Exception:
+            self.fails += 1
+        if self.fails >= 3:               # blocked or timing out from this server — stop trying for this scan
+            self.dead = True
+        return None
+
+    @staticmethod
+    def _ts(txt, fmt="%d-%b-%Y %H:%M:%S"):
+        try:
+            return pd.Timestamp(pd.to_datetime(txt, format=fmt)).tz_localize(ce.IST).tz_convert("UTC")
+        except Exception:
+            return None
+
+    def announcements(self, symbol, days=3):
+        to, frm = pd.Timestamp.now(tz=ce.IST), pd.Timestamp.now(tz=ce.IST) - pd.Timedelta(days=days)
+        j = self.get("/api/corporate-announcements", {"index": "equities", "symbol": symbol,
+                                                     "from_date": frm.strftime("%d-%m-%Y"), "to_date": to.strftime("%d-%m-%Y")})
+        if j is None:
+            return "unavailable", [], None
+        rows = j if isinstance(j, list) else j.get("data", []) if isinstance(j, dict) else []
+        cut = pd.Timestamp.now(tz="UTC") - pd.Timedelta(days=days)
+        items, name = [], None
+        for x in rows[:200]:
+            when = self._ts(x.get("an_dt") or x.get("exchdisstime"))
+            name = name or x.get("sm_name")
+            if when is None or when < cut:
+                continue
+            items.append(dict(title=((x.get("desc") or "") + ": " + (x.get("attchmntText") or "")).strip(": ")[:300],
+                              when=when, publisher="NSE filing", link=x.get("attchmntFile") or "", kind="filing",
+                              category=x.get("desc") or ""))
+        return "ok", items, name
+
+    def board_meetings(self, symbol, back=95, fwd=12):
+        now = pd.Timestamp.now(tz=ce.IST)
+        j = self.get("/api/corporate-board-meetings", {"index": "equities", "symbol": symbol,
+                                                      "from_date": (now - pd.Timedelta(days=back)).strftime("%d-%m-%Y"),
+                                                      "to_date": (now + pd.Timedelta(days=fwd)).strftime("%d-%m-%Y")})
+        if j is None:
+            return "unavailable", []
+        rows = j if isinstance(j, list) else j.get("data", []) if isinstance(j, dict) else []
+        out = []
+        for x in rows[:60]:
+            try:
+                d = pd.to_datetime(x.get("bm_date") or x.get("meetingdate"), dayfirst=True).date()
+            except Exception:
+                continue
+            purpose = " ".join(str(x.get(k) or "") for k in ("bm_purpose", "bm_desc", "purpose"))
+            out.append(dict(date=d, purpose=purpose[:200], results=bool(re.search(r"financial result|quarterly result|results", purpose, re.I))))
+        return "ok", out
+
+    def actions(self, symbol):
+        j = self.get("/api/corporates-corporateActions", {"index": "equities", "symbol": symbol})
+        if j is None:
+            return "unavailable", []
+        rows = j if isinstance(j, list) else j.get("data", []) if isinstance(j, dict) else []
+        out = []
+        for x in rows[:40]:
+            try:
+                d = pd.to_datetime(x.get("exDate") or x.get("ex_date"), dayfirst=True).date()
+            except Exception:
+                continue
+            out.append(dict(date=d, subject=str(x.get("subject") or x.get("purpose") or "")[:120]))
+        return "ok", out
 
 
 def fo_ban_list():
+    """(status, set of symbols in the F&O ban today)."""
     try:
-        r = requests.get("https://nsearchives.nseindia.com/content/fo/fo_secban.csv", timeout=8,
-                         headers={"User-Agent": "Mozilla/5.0 StockLab"})
-        if r.status_code == 200:
-            return {ln.split(",")[-1].strip().upper() for ln in r.text.splitlines()[1:] if ln.strip()}
+        r = requests.get("https://nsearchives.nseindia.com/content/fo/fo_secban.csv", timeout=8, headers=_UA)
+        if r.status_code == 200 and "<html" not in r.text[:200].lower():
+            return "ok", {ln.split(",")[-1].strip().upper() for ln in r.text.splitlines()[1:] if ln.strip()}
     except Exception:
         pass
-    return None
+    return "unavailable", set()
 
 
-def _news_items(raw):
+def google_news(name, days=2, limit=25):
+    """Google News RSS search for the company name. (status, items)."""
+    import urllib.parse
+    import xml.etree.ElementTree as ET
+    url = ("https://news.google.com/rss/search?q=" + urllib.parse.quote(f'"{name}" when:{days}d')
+           + "&hl=en-IN&gl=IN&ceid=IN:en")
+    try:
+        r = requests.get(url, timeout=8, headers=_UA)
+        if r.status_code != 200:
+            return "unavailable", []
+        root = ET.fromstring(r.content)
+    except Exception:
+        return "unavailable", []
+    items = []
+    for it in root.iter("item"):
+        title = (it.findtext("title") or "").strip()
+        src = (it.findtext("source") or "").strip()
+        if src and title.endswith(" - " + src):
+            title = title[: -len(src) - 3]
+        try:
+            when = pd.to_datetime(it.findtext("pubDate"), utc=True)
+        except Exception:
+            when = None
+        if title:
+            items.append(dict(title=title, when=when, publisher=src or "Google News", link=it.findtext("link") or "",
+                              kind="news", category=""))
+        if len(items) >= limit:
+            break
+    return "ok", items
+
+
+def yahoo_news(symbol):
+    try:
+        import yfinance as yf
+        raw = yf.Ticker(symbol + ".NS").news
+    except Exception:
+        return "unavailable", []
     out = []
     for n in raw or []:
         c = n.get("content", n)
@@ -187,79 +339,325 @@ def _news_items(raw):
         pub = (c.get("provider") or {}).get("displayName") if isinstance(c.get("provider"), dict) else n.get("publisher")
         link = ((c.get("canonicalUrl") or {}).get("url") if isinstance(c.get("canonicalUrl"), dict) else None) or n.get("link")
         if title:
-            out.append(dict(title=title, when=when, publisher=pub or "", link=link or ""))
+            out.append(dict(title=title, when=when, publisher=pub or "Yahoo", link=link or "", kind="news", category=""))
+    return "ok", out[:10]
+
+
+# ---------------- reading an item: noise → about this company → fresh → event type → materiality, direction
+NOISE = re.compile(r"share price|stock price|live nse|nse/bse live|quote of the day|\bbuy, sell or hold\b|stocks? to (buy|watch)|"
+                   r"\btop \d+ (stocks|picks)|picks \d+ stocks|\bstocks in (focus|news)\b|market (live|highlights|updates)|"
+                   r"nifty[, ] sensex|sensex[, ] nifty|\bhoroscope\b|\bipo gmp\b", re.I)
+
+EVENT_TYPES = [   # (type, pattern, materiality 0-3, direction −1/0/+1) — first match wins, most serious first
+    ("regulatory", r"\bsebi\b.{0,40}\b(order|bans?|barred|notice|penalt|probe)|show[- ]cause|\b(cbi|ed|sfio|income[- ]tax|i-t)\b.{0,25}\b(raid|search|probe|summon|notice)|"
+                   r"\braids?\b|\bfraud\b|\bscam\b|\bpenalt(y|ies)\b.{0,30}\b(crore|lakh|imposed|slapped)|tax demand|\bnclt\b|\binsolvency\b|money[- ]laundering", 3, -1),
+    ("credit", r"\bdefault(s|ed)? on\b|\b(loan|payment|bond|debt) default|\bpledg(e|ed|es)\b.{0,30}\bshares|\brating\b.{0,25}\bdowngrad|downgrad.{0,25}\b(rating|outlook|debt)", 3, -1),
+    ("results_bad", r"\b(profit|revenue|earnings|margins?)\b.{0,30}\b(falls?|drops?|declines?|slumps?|plunges?|misses|miss)\b|\bmisses estimates|\bnet loss\b|posts? (a )?loss", 2, -1),
+    ("results_good", r"\b(profit|revenue|earnings)\b.{0,30}\b(rises?|jumps?|surges?|grows?|beats?|up \d)|\bbeats? (street|estimates)|record (profit|revenue)", 2, 1),
+    ("results", r"\b(q[1-4]|quarterly|financial|annual)\s?(fy\s?\d\d(\d\d)?\s)?(results?|earnings|numbers)\b|\bq[1-4]\s?fy\s?\d\d|results (today|tomorrow|on|date)|"
+                r"financial result updates|outcome of board meeting", 2, 0),
+    ("management", r"\b(ceo|cfo|coo|md|chairman|chairperson|managing director|auditors?|company secretary|kmp)\b.{0,40}\b(resign|quits?|steps? down|exits?|sacked|removed)|"
+                   r"\bresign(s|ed|ation)\b.{0,30}\b(ceo|cfo|md|chairman|director|auditor)|change in (director|auditor|management)|cessation", 2, -1),
+    ("operations", r"\bfire (at|in|breaks)\b|\b(plant|factory|unit|mine|refinery)\b.{0,25}\b(shut|shutdown|halt|closure|blast|accident|fire)|"
+                   r"\b(workers?|union|employees?|staff)\b.{0,15}\bstrike\b|\bon strike\b|\brecalls?\b.{0,20}\b(vehicles|units|cars|batch|product)|\bdata breach\b|\bcyber ?attack", 2, -1),
+    ("downgrade", r"\bdowngrad(e|es|ed)\b|\bcuts? (the )?(target|rating)|target (price )?cut|\bsell rating\b", 2, -1),
+    ("stake_sale", r"\bblock deals?\b|\bbulk deals?\b|\bstake sale\b|\bofs\b|offer for sale|promoters? (sell|sells|sold|offload|pare)|sells? .{0,20}stake", 2, -1),
+    ("upgrade", r"\bupgrad(e|es|ed)\b|\braises? (the )?target|target (price )?(raised|hike)|\bbuy rating\b|initiates? coverage", 1, 1),
+    ("orders", r"\b(wins?|bags?|secures?|receives?)\b.{0,40}\b(order|contract|deal|loi)\b|\border (win|inflow|worth)|\bapproval\b.{0,20}\b(usfda|fda|regulator|cabinet|board)", 1, 1),
+    ("corporate_action", r"\b(bonus (issue|shares)|stock split|sub-division|buyback|rights issue|record date|demerger|merger|amalgamation|acquisition|acquires?|to acquire)\b", 1, 0),
+    ("dividend", r"\bdividend\b", 1, 0),
+    ("board_meeting", r"\bboard meeting\b|\bboard to (meet|consider)", 1, 0),
+    ("investor_meet", r"analysts?/institutional investor|investor meet|con\. ?call|earnings call|investor presentation", 0, 0),
+]
+_EVENT_RX = [(t, re.compile(p, re.I), m, d) for t, p, m, d in EVENT_TYPES]
+
+# Exchange filings are classified by their official category first — most are routine paperwork, and their free
+# text often mentions words like "financial results" without being a results event (e.g. a call transcript).
+FILING_ROUTINE = re.compile(
+    r"loss of share certificate|duplicate share|newspaper publication|trading window|esop|esos|esps|allotment of|"
+    r"shareholders? meeting|annual general meeting|book closure|investor presentation|analysts?/institutional|"
+    r"monitoring agency|related party|insider trading|takeover|substantial acq|appointment|postal ballot|"
+    r"certificate under|compliance|record of proceedings|change in registered office|statement of (deviation|investor)", re.I)
+FILING_CATS = [   # (category pattern, type, materiality, direction)
+    (r"action\(?s?\)? taken or orders passed|order passed|penalt", "regulatory", 3, -1),
+    (r"financial result|outcome of board meeting", "results", 2, 0),
+    (r"news (verification|clarification)|clarification of news|spurt in (price|volume)|price movement", "clarification", 2, 0),
+    (r"upsi|material event", "material_event", 1, 0),
+    (r"cessation|resignation", "management", 2, -1),
+    (r"change in director|change in management|change in auditor", "management", 1, 0),
+    (r"acquisition|scheme of arrangement|restructuring|sale or disposal|amalgamation|demerger", "corporate_action", 1, 0),
+    (r"buyback|record date|bonus|split|rights issue", "corporate_action", 1, 0),
+    (r"dividend", "dividend", 1, 0),
+    (r"board meeting", "board_meeting", 1, 0),
+]
+_FILING_RX = [(re.compile(p, re.I), t, m, d) for p, t, m, d in FILING_CATS]
+SEVERE_IN_TEXT = {"regulatory", "credit", "operations", "management", "stake_sale", "orders", "downgrade"}
+
+
+def read_filing(category, text):
+    """(type, materiality, direction) for an exchange filing."""
+    cat = category or ""
+    if re.search(r"credit rating", cat, re.I):
+        return ("credit", 3, -1) if re.search(r"downgrad|default|negative outlook|rating watch with negative", text, re.I) else ("routine", 0, 0)
+    hit = None
+    for rx, t, m, d in _FILING_RX:
+        if rx.search(cat):
+            hit = (t, m, d)
+            break
+    if hit and hit[0] != "material_event":
+        return hit
+    if hit is None and FILING_ROUTINE.search(cat):
+        return "routine", 0, 0
+    # generic categories (Updates, Press Release, material event…): trust the text only for serious event types,
+    # and at most WATCH level — the company's own wording is too ambiguous for rules to call it HIGH
+    for t, rx, m, d in _EVENT_RX:
+        if t in SEVERE_IN_TEXT and rx.search(text):
+            return t, min(m, 2), d
+    return hit or ("other", 0, 0)
+TYPE_TEXT = {"regulatory": "Regulatory or legal action", "credit": "Credit or pledge trouble", "results_bad": "Weak results",
+             "results_good": "Strong results", "results": "Results event", "management": "Management change",
+             "operations": "Operational disruption", "downgrade": "Broker downgrade", "stake_sale": "Stake sale or large deal",
+             "upgrade": "Broker upgrade", "orders": "Order win or approval", "corporate_action": "Corporate action",
+             "dividend": "Dividend", "board_meeting": "Board meeting", "investor_meet": "Investor meeting",
+             "results_day": "Results day (exchange calendar)", "fo_ban": "F&O ban", "other": "Other news",
+             "clarification": "News clarification with the exchange", "material_event": "Material event disclosed",
+             "routine": "Routine filing"}
+
+
+def read_item(item, alias_set, now=None, fresh_hours=48):
+    """Rule-based reading of one headline or filing."""
+    now = now or pd.Timestamp.now(tz="UTC")
+    title = item["title"]
+    low = title.lower()
+    filing = item.get("kind") == "filing"
+    noise = (not filing) and bool(NOISE.search(low))
+    about = filing or any(a in low for a in alias_set)
+    age_h = (now - item["when"]).total_seconds() / 3600 if item.get("when") is not None else None
+    old_year = re.search(r"\b(19|20)\d\d\b", title)
+    stale = (age_h is not None and age_h > (72 if filing else fresh_hours)) or \
+            bool(old_year and not filing and int(old_year.group(0)) <= now.year - 2)   # an old story resurfacing
+    etype, mat, direction = "other", 0, 0
+    if filing:
+        etype, mat, direction = read_filing(item.get("category"), low.split(": ", 1)[-1])
+        if etype == "results" and age_h is not None and age_h > 30:
+            mat = 1                                   # results already out for more than a session
+    else:
+        for t, rx, m, d in _EVENT_RX:
+            if rx.search(low):
+                etype, mat, direction = t, m, d
+                break
+    if noise or not about or stale:
+        mat = 0
+    return dict(item, about=about, noise=noise, stale=stale, age_h=age_h, type=etype, materiality=mat, direction=direction,
+                by="rules")
+
+
+def read_with_claude(items, symbol, name, api_key):
+    """Ask Claude to read the candidate headlines. Returns {index: fields} or {} if it could not be parsed."""
+    lines = "\n".join(f'{i}. [{it["publisher"]}{", " + str(int(it["age_h"])) + "h ago" if it.get("age_h") is not None else ""}] {it["title"][:220]}'
+                      for i, it in enumerate(items))
+    prompt = (f"Stock: {name} (NSE: {symbol}). For an INTRADAY trader today, read each item below.\n{lines}\n\n"
+              "Items marked 'NSE filing' are official exchange filings, shown as 'category: text'; most are routine.\n"
+              "Reply with JSON only, a list with one object per item in the same order:\n"
+              '[{"i":0,"about":true|false (is this specifically about this company, not a passing mention or a list),'
+              '"stale":true|false (old story or already-known information resurfacing),'
+              '"type":"regulatory|credit|results_bad|results_good|results|management|operations|downgrade|stake_sale|upgrade|orders|corporate_action|dividend|board_meeting|investor_meet|clarification|material_event|routine|other",'
+              '"materiality":0-3 (0 none, 1 minor, 2 could move the stock today, 3 serious risk of a sharp move),'
+              '"direction":-1|0|1}]')
+    txt = ask_claude(prompt, api_key, 900, system="You are a careful equity news analyst for Indian stocks. Output valid JSON only.")
+    try:
+        arr = json.loads(re.search(r"\[.*\]", txt, re.S).group(0))
+        out = {}
+        for o in arr:
+            i = int(o["i"])
+            if 0 <= i < len(items) and o.get("type") in TYPE_TEXT:
+                out[i] = dict(about=bool(o.get("about")), stale=bool(o.get("stale")), type=o["type"],
+                              materiality=int(max(0, min(3, o.get("materiality", 0)))),
+                              direction=int(max(-1, min(1, o.get("direction", 0)))))
+        return out
+    except Exception:
+        return {}
+
+
+def gather(symbol, nse=None, use_yahoo=True):
+    """Collect everything known about one stock. Returns dict(items, meetings, actions, name, sources)."""
+    sources, items, meetings, acts, name = {}, [], [], [], None
+    if nse is not None:
+        st_, it_, nm = nse.announcements(symbol)
+        sources["NSE filings"] = st_; items += it_; name = nm
+        st_, meetings = nse.board_meetings(symbol)
+        sources["Results calendar"] = st_
+        st_, acts = nse.actions(symbol)
+        sources["Corporate actions"] = st_
+    name = company_name(symbol, re.sub(r"\s+(Limited|Ltd\.?)$", "", name) if name else None)
+    st_, it_ = google_news(name)
+    sources["Google News"] = st_; items += it_
+    if use_yahoo and st_ != "ok":
+        st_, it_ = yahoo_news(symbol)
+        sources["Yahoo News"] = st_; items += it_
+    return dict(items=items, meetings=meetings, actions=acts, name=name, sources=sources)
+
+
+def assess(symbol, g, ban=("unavailable", set()), api_key=None, today=None):
+    """Turn gathered material into a Sentinel verdict."""
+    today = today or pd.Timestamp.now(tz=ce.IST).date()
+    name = g["name"]
+    al = aliases(symbol, name)
+    sources = dict(g["sources"])
+    sources["F&O ban list"] = ban[0]
+    read = [read_item(it, al) for it in g["items"]]
+    cand = [r for r in read if not r["noise"] and (r["about"] or r["kind"] == "filing")][:14]
+    llm_used = False
+    if api_key and cand:
+        got = read_with_claude(cand, symbol, name, api_key)
+        if got:
+            llm_used = True
+            for i, f in got.items():
+                cand[i].update(f, by="claude")
+                if not f["about"] or f["stale"]:
+                    cand[i]["materiality"] = 0
+    events = sorted([r for r in cand if r["materiality"] >= 1 and not r["stale"]],
+                    key=lambda r: (-r["materiality"], r.get("age_h") or 0))
+    # de-duplicate near-identical headlines from different outlets
+    seen, uniq = set(), []
+    for e in events:
+        k = (e["type"], re.sub(r"[^a-z0-9 ]", "", e["title"].lower())[:40])
+        if k not in seen:
+            seen.add(k); uniq.append(e)
+    events = uniq
+    reasons, level, types = [], "CLEAR", []
+
+    def bump(lv):
+        nonlocal level
+        level = max(level, lv, key=["CLEAR", "WATCH", "HIGH"].index)
+    # hard facts first — these are never downgraded by headline reading
+    res_days = [m for m in g["meetings"] if m["results"]]
+    for m in res_days:
+        dd = (m["date"] - today).days
+        if 0 <= dd <= 1:
+            bump("HIGH"); types.append("results_day")
+            reasons.append(f"Results board meeting {'today' if dd == 0 else 'tomorrow'} ({m['date']:%d %b}) — gap risk; avoid holding into the announcement")
+        elif 2 <= dd <= 5:
+            bump("WATCH"); types.append("results_day")
+            reasons.append(f"Results on {m['date']:%d %b} — volatility may rise")
+    if ban[0] == "ok" and symbol.upper() in ban[1]:
+        bump("HIGH"); types.append("fo_ban")
+        reasons.append("In the NSE F&O ban today — open interest at the limit, moves can be erratic")
+    for a_ in g["actions"]:
+        if 0 <= (a_["date"] - today).days <= 1:
+            bump("WATCH"); types.append("corporate_action")
+            reasons.append(f"Ex-date {a_['date']:%d %b}: {a_['subject']} — price adjusts")
+    for e in events[:6]:
+        if e["materiality"] >= 3 and e["direction"] <= 0:
+            bump("HIGH")
+        elif e["materiality"] >= 2:
+            bump("WATCH")
+        types.append(e["type"])
+        reasons.append(f"{TYPE_TEXT.get(e['type'], e['type'])}: “{e['title'][:110]}” ({e['publisher']})")
+    tone_score = sum(e["direction"] * e["materiality"] for e in events)
+    tone = "positive" if tone_score >= 2 else "negative" if tone_score <= -2 else "neutral"
+    ok = [k for k, v in sources.items() if v == "ok"]
+    bad = [k for k, v in sources.items() if v != "ok"]
+    news_ok = any(sources.get(k) == "ok" for k in ("NSE filings", "Google News", "Yahoo News"))
+    if not ok:
+        level, checked = "UNCHECKED", False
+        reasons = ["Could not reach any news or exchange source — treat as not checked"]
+    else:
+        checked = True
+        if level == "CLEAR":
+            reasons.append(("Nothing that should move the stock sharply today" if reasons else "Nothing material found")
+                           + ("" if news_ok else " in the exchange data (news search was unavailable)"))
+    coverage = "Checked: " + ", ".join(ok) if ok else "Checked: nothing"
+    if bad:
+        coverage += " · Unavailable: " + ", ".join(bad)
+    return dict(symbol=symbol, name=name, level=level, tone=tone, reasons=reasons, types=sorted(set(types)),
+                llm=("Headlines read by Claude" if llm_used else None), checked=checked, sources=sources, coverage=coverage,
+                past_results=sorted({str(m["date"]) for m in res_days if m["date"] < today}),
+                events=[dict(title=e["title"][:160], publisher=e["publisher"], link=e.get("link", ""), type=e["type"],
+                             materiality=e["materiality"], direction=e["direction"], by=e["by"],
+                             when=e["when"].isoformat() if e.get("when") is not None else None) for e in events[:8]],
+                headlines=[dict(title=r["title"][:160], publisher=r["publisher"], link=r.get("link", ""),
+                                when=r["when"].isoformat() if r.get("when") is not None else None)
+                           for r in read if not r["noise"] and r["about"] and not r["stale"]
+                           and (r["kind"] == "news" or r["materiality"] >= 1)][:5])
+
+
+def _demo_sentinel(symbol, day):
+    h = sum(map(ord, symbol + str(day))) % 9     # stable, varies by day
+    g = dict(items=[], meetings=[], actions=[], name=symbol, sources={"Demo wire": "ok"})
+    now = pd.Timestamp.now(tz="UTC")
+    if h == 0:
+        g["items"] = [dict(title=f"{symbol} Q2 profit falls 18%, misses estimates", when=now, publisher="Demo Wire", link="",
+                           kind="news", category="")]
+    elif h == 1:
+        g["items"] = [dict(title=f"SEBI issues show-cause notice to {symbol} over disclosure lapses", when=now,
+                           publisher="Demo Wire", link="", kind="news", category="")]
+    elif h == 2:
+        g["items"] = [dict(title=f"{symbol} share price live: stock in focus today", when=now, publisher="Demo Wire",
+                           link="", kind="news", category="")]
+    return assess(symbol, g, ban=("ok", set()), today=pd.Timestamp(day).date() if day else None)
+
+
+def sentinel(symbol, demo, api_key=None, ban=None, today=None, nse=None):
+    """One stock's verdict. `ban` is the (status, set) from fo_ban_list(); `nse` a shared NSE client."""
+    if demo:
+        return _demo_sentinel(symbol, today or pd.Timestamp.now(tz=ce.IST).date())
+    return assess(symbol, gather(symbol, nse if nse is not None else NSE()), ban or ("unavailable", set()), api_key, today)
+
+
+def sentinel_many(symbols, demo, api_key=None, day=None, workers=4):
+    """Scan many stocks (shared NSE session, small thread pool). Returns {symbol: verdict}."""
+    from concurrent.futures import ThreadPoolExecutor
+    if demo:
+        return {s: _demo_sentinel(s, day) for s in symbols}
+    nse, ban = NSE(), fo_ban_list()
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        res = list(ex.map(lambda s: (s, sentinel(s, False, api_key, ban, day, nse)), symbols))
+    return dict(res)
+
+
+# ---------------- archive + evidence: do flagged days really move more?
+def day_stats(data):
+    """Per stock-day movement from 5-minute bars: range, gap and close-to-close move, plus the day's range
+    relative to that stock's own typical (median) range — 1.0 = a normal day for that stock."""
+    rows = []
+    for s, df in data.items():
+        df = df[(df.index.time >= dtime(9, 15)) & (df.index.time < dtime(15, 30))]
+        prev = None
+        for d, g in df.groupby(df.index.date):
+            if len(g) < 30:
+                prev = g.Close.iloc[-1]; continue
+            o, h, l, c = g.Open.iloc[0], g.High.max(), g.Low.min(), g.Close.iloc[-1]
+            rows.append(dict(day=str(d), symbol=s, range_pct=(h - l) / o * 100,
+                             gap_pct=abs(o / prev - 1) * 100 if prev else np.nan,
+                             move_pct=abs(c / prev - 1) * 100 if prev else np.nan))
+            prev = c
+    out = pd.DataFrame(rows)
+    if out.empty:
+        return out
+    out["range_ratio"] = out.range_pct / out.groupby("symbol").range_pct.transform("median")
     return out
 
 
-def sentinel(symbol, demo, api_key=None, ban=None, today=None):
-    today = today or pd.Timestamp.now(tz=ce.IST).date()
-    reasons, level, heads, earn = [], "CLEAR", [], None
-    if demo:
-        h = sum(map(ord, symbol)) % 7   # stable across restarts
-        if h == 0:
-            heads = [dict(title=f"{symbol} board meeting to consider quarterly results tomorrow", when=pd.Timestamp.now(tz="UTC"),
-                          publisher="Demo Wire", link="")]
-        elif h == 1:
-            heads = [dict(title=f"{symbol} shares slide after brokerage downgrade", when=pd.Timestamp.now(tz="UTC"),
-                          publisher="Demo Wire", link="")]
-    else:
-        try:
-            import yfinance as yf
-            t = yf.Ticker(symbol + ".NS")
-            heads = _news_items(t.news)[:8]
-            cal = t.calendar or {}
-            ed = cal.get("Earnings Date") if isinstance(cal, dict) else None
-            if ed:
-                earn = pd.to_datetime(ed[0] if isinstance(ed, (list, tuple)) else ed).date()
-            xd = cal.get("Ex-Dividend Date") if isinstance(cal, dict) else None
-            if xd and pd.to_datetime(xd).date() in (today, today + pd.Timedelta(days=1)):
-                level = "WATCH"; reasons.append(f"Ex-dividend date {pd.to_datetime(xd):%d %b} — price adjusts by the dividend")
-        except Exception:
-            reasons.append("News feed unavailable — check manually")
-            level = "WATCH"
-    if earn is not None:
-        days = (earn - today).days
-        if 0 <= days <= 1:
-            level = "HIGH"; reasons.append(f"Results due {earn:%d %b} — gap risk, avoid intraday positions into results")
-        elif 2 <= days <= 5:
-            level = max(level, "WATCH", key=["CLEAR", "WATCH", "HIGH"].index)
-            reasons.append(f"Results on {earn:%d %b} — volatility may rise")
-    if ban is not None and symbol.upper() in ban:
-        level = "HIGH"; reasons.append("In NSE F&O ban today — open interest at limit, moves can be erratic")
-    recent = [h for h in heads if h["when"] is None or (pd.Timestamp.now(tz="UTC") - h["when"]).total_seconds() < 2 * 86400]
-    for h in recent:
-        t = h["title"].lower()
-        if re.search(RED_FLAGS, t):
-            level = "HIGH"; reasons.append(f"Red-flag headline: “{h['title'][:90]}”")
-        elif re.search(EVENT_WORDS, t):
-            level = max(level, "WATCH", key=["CLEAR", "WATCH", "HIGH"].index)
-            reasons.append(f"Corporate event in the news: “{h['title'][:90]}”")
-    tone = "neutral"
-    joined = " ".join(h["title"].lower() for h in recent)
-    if re.search(POS_WORDS, joined):
-        tone = "positive"
-    if re.search(RED_FLAGS, joined):
-        tone = "negative"
-    llm = None
-    if api_key and recent:
-        prompt = ("Headlines for NSE stock " + symbol + " from the last 48 hours:\n" +
-                  "\n".join(f"- {h['title']}" for h in recent[:8]) +
-                  "\n\nReply as JSON only: {\"risk\": \"HIGH|WATCH|CLEAR\", \"tone\": \"positive|negative|neutral\", "
-                  "\"why\": \"one sentence on what matters for an intraday trader today\"}")
-        txt = ask_claude(prompt, api_key, 160)
-        try:
-            j = json.loads(re.search(r"\{.*\}", txt, re.S).group(0))
-            llm = j.get("why")
-            if j.get("risk") in ("HIGH", "WATCH", "CLEAR"):
-                level = max(level, j["risk"], key=["CLEAR", "WATCH", "HIGH"].index)
-            tone = j.get("tone", tone)
-        except Exception:
-            pass
-    if not reasons:
-        reasons.append("No results date, ban or red-flag news found in the last 48 hours")
-    return dict(symbol=symbol, level=level, tone=tone, reasons=reasons, llm=llm,
-                headlines=[dict(title=h["title"], publisher=h["publisher"], link=h["link"],
-                                when=h["when"].isoformat() if h["when"] is not None else None) for h in heads[:5]])
+def sentinel_evidence(archive, stats):
+    """Compare how much stocks moved on days the Sentinel flagged vs other days."""
+    empty = dict(n_flag=0, n_base=0, z=0.0, ratio_flag=np.nan, ratio_base=np.nan, by_type=pd.DataFrame(), days=0, scanned=0)
+    if archive is None or len(archive) == 0 or stats is None or len(stats) == 0:
+        return empty
+    a = archive.copy()
+    a["day"] = a.day.astype(str)
+    m = stats.merge(a[["day", "symbol", "level", "types", "scanned"]], on=["day", "symbol"], how="left")
+    m["flag"] = m.level.isin(["WATCH", "HIGH"])
+    f, b = m[m.flag].range_ratio.dropna(), m[~m.flag].range_ratio.dropna()
+    rows = []
+    for t in sorted({t for ts in m[m.flag].types.dropna() for t in ts}):
+        x = m[m.flag & m.types.map(lambda ts: isinstance(ts, list) and t in ts)].range_ratio.dropna()
+        if len(x):
+            rows.append(dict(type=t, label=TYPE_TEXT.get(t, t), n=len(x), ratio=x.mean(), z=_welch(x, b)))
+    return dict(n_flag=len(f), n_base=len(b), z=_welch(f, b), ratio_flag=f.mean() if len(f) else np.nan,
+                ratio_base=b.mean() if len(b) else np.nan,
+                by_type=pd.DataFrame(rows).sort_values("ratio", ascending=False) if rows else pd.DataFrame(),
+                days=int(a[a.scanned == True].day.nunique()), scanned=int((a.scanned == True).sum()))  # noqa: E712
 
 
 # ============================================================================ COACH — features, learning, post-mortems
@@ -735,7 +1133,7 @@ def _apply(T, cfg, corr_by_day, use_coach, use_pulse, policy, use_risk):
     return r, w, reasons
 
 
-def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10):
+def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10, sentinel_ev=None):
     cfg = merged(cfg)
     df = pd.DataFrame(rows)
     if df.empty or df.day.nunique() <= warmup + 2:
@@ -869,7 +1267,29 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10)
     agents["Narrator"] = dict(score=None, grade="Informational — doesn't change trades", tone="mid", n=None, z=None,
                               on=True, setting="Explains each signal", effect=np.nan, effect_label="", detail=
                               "Measured by whether you find it useful, not by profit.")
+    ev = sentinel_ev
+    if ev and (ev.get("n_flag", 0) or ev.get("scanned", 0)):
+        # Judged on market behaviour, not trades: do stocks really move more on days the Sentinel flags?
+        by = ev["by_type"]
+        top = (" Strongest: " + "; ".join(f"{r_.label} {r_.ratio:.2f}× (n={int(r_.n)})" for r_ in by.head(3).itertuples())
+               + ".") if len(by) else ""
+        ev_s = evidence(ev["z"], ev["n_flag"], min_n=15)
+        if ev_s["score"] is None:
+            ev_s["grade"] = f"Too few flagged days to judge ({ev['n_flag']} so far, needs 15)"
+        agents["Sentinel"] = dict(ev_s, on=True, n_label="flagged stock-days",
+                                  setting="Block HIGH-risk: " + ("ON" if cfg["sentinel_block"] else "OFF (warn only)"),
+                                  effect=(ev["ratio_flag"] - ev["ratio_base"]) if ev["n_flag"] else np.nan,
+                                  effect_unit="×", effect_label="normal daily range on flagged days vs other days",
+                                  detail=(f"{ev['n_flag']} flagged stock-days moved {ev['ratio_flag']:.2f}× their normal range vs "
+                                          f"{ev['ratio_base']:.2f}× on {ev['n_base']} other stock-days.{top} "
+                                          if ev["n_flag"] else "No flagged days in the window yet. ")
+                                         + f"Archive: {ev['scanned']} stock-days scanned over {ev['days']} day(s); "
+                                           f"past results days are back-filled from the exchange calendar when it is reachable.",
+                                  no_rs=True)
     for a_ in agents.values():
+        if a_.get("no_rs"):
+            a_["rs_month"] = np.nan
+            continue
         a_["rs_month"] = (a_["effect"] * (n_days if a_ is agents["Risk"] else len(T)) / n_days * 21 * risk_rs
                           if pd.notna(a_.get("effect")) else np.nan)
 

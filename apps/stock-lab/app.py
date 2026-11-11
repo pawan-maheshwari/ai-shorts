@@ -232,14 +232,81 @@ def fetch_index_cached(demo, token):
     return ag.fetch_index(demo, ce.demo_intraday(days=15) if demo else None)
 
 
-@st.cache_data(ttl=3600, show_spinner=False)
-def ban_cached(day):
-    return ag.fo_ban_list()
+@st.cache_data(ttl=1800, show_spinner=False, max_entries=40)
+def sentinel_batch(syms, demo, day, use_llm):
+    """Sentinel verdicts for the stocks that matter right now (signals + in play), refreshed every 30 minutes."""
+    return ag.sentinel_many(list(syms), demo, API_KEY if use_llm else None, pd.Timestamp(day).date())
 
 
-@st.cache_data(ttl=1800, show_spinner=False, max_entries=300)
-def sentinel_cached(sym, demo, day, use_llm):
-    return ag.sentinel(sym, demo, API_KEY if use_llm else None, None if demo else ban_cached(day))
+def sentinel_rows(verdicts, day, scanned=True):
+    """Archive rows: today's verdict per stock, plus past results days learnt from the exchange calendar."""
+    rows, back = [], []
+    for sym, v in verdicts.items():
+        if v["level"] != "UNCHECKED":
+            rows.append(dict(day=str(day), symbol=sym, level=v["level"],
+                             data=dict(types=v["types"], tone=v["tone"], reasons=v["reasons"][:3], sources=v["sources"],
+                                       scanned=scanned, by_claude=bool(v.get("llm")))))
+        for d in v.get("past_results", []):
+            back.append(dict(day=d, symbol=sym, level="HIGH", data=dict(types=["results_day"], scanned=False,
+                                                                        reasons=["Results day (back-filled from the exchange calendar)"])))
+    return rows, back
+
+
+@st.cache_resource
+def scan_jobs():
+    return {}
+
+
+def ensure_daily_scan(demo, symbols, store):
+    """Once per trading day: scan the whole watchlist in the background (so nobody waits for it) and archive
+    what the Sentinel knew before or early in the session. The archive is what lets the Sentinel be scored."""
+    now = pd.Timestamp.now(tz=ce.IST)
+    day_s = f"{now:%Y-%m-%d}"
+    jobs = scan_jobs()
+    k = (demo, day_s, symbols)
+    if k in jobs:
+        return jobs[k]
+    job = dict(status="running", results={}, started=time.time(), day=day_s)
+    jobs[k] = job
+    for old in [x for x in jobs if x[1] != day_s]:
+        jobs.pop(old, None)
+    if demo:                                             # demo: quick and local, build two weeks of history
+        dd = ce.demo_intraday(days=45)                    # demo prices use their own symbols
+        dsyms = list(dd)
+        days = sorted({str(d) for df in dd.values() for d in set(df.index.date)})[-15:]
+        rows = []
+        for d in days:
+            rws, _ = sentinel_rows(ag.sentinel_many(dsyms, True, None, d), d)
+            rows += rws
+        store.sentinel_upsert(rows)
+        job.update(status="done", results=ag.sentinel_many(dsyms, True, None, days[-1]))
+        return job
+    if now.weekday() >= 5:
+        job.update(status="skipped", note="Weekend — no pre-open scan")
+        return job
+    key = API_KEY
+
+    def run():
+        try:
+            res = ag.sentinel_many(list(symbols), False, key, now.date())
+            rows, back = sentinel_rows(res, day_s)
+            store.sentinel_upsert(rows)
+            store.sentinel_upsert(back)
+            lv = [v["level"] for v in res.values()]
+            src = {}
+            for v in res.values():
+                for name, stt in v["sources"].items():
+                    src.setdefault(name, [0, 0])[0 if stt == "ok" else 1] += 1
+            store.log("Sentinel", "daily-scan", f"Watchlist scan of {len(res)} stocks: {lv.count('HIGH')} high-risk, "
+                      f"{lv.count('WATCH')} to watch, {lv.count('CLEAR')} clear, {lv.count('UNCHECKED')} not checked. Sources — "
+                      + "; ".join(f"{n} {ok_}/{ok_ + bad_}" for n, (ok_, bad_) in src.items()),
+                      detail=dict(sources=src), dkey=f"sentinel-daily|{day_s}")
+            job.update(status="done", results=res, sources=src, finished=time.time())
+        except Exception as e:                           # never let the scan take the app down
+            job.update(status="failed", note=str(e)[:200])
+    import threading
+    threading.Thread(target=run, daemon=True).start()
+    return job
 
 
 @st.cache_data(ttl=3600, show_spinner=False, max_entries=300)
@@ -253,15 +320,16 @@ def history_cached(demo, symbols, day, args_key, _a):
     """Point-in-time replay of recent sessions: every signal, its features at signal time, every exit policy."""
     data = ce.demo_intraday(days=45) if demo else ce.yahoo_intraday(list(symbols), 59)
     if not data:
-        return [], {}
+        return [], {}, []
     idx = ag.fetch_index(demo, data) if demo else fetch_index_cached(False, f"train-{day}")
-    return ag.replay(data, idx, _a)
+    rows, corr = ag.replay(data, idx, _a)
+    return rows, corr, ag.day_stats(data).to_dict("records")
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
 def train_coach(demo, symbols, day, args_key, _a):
     """Once a day: replay recent sessions so the Coach learns from every signal, not just the ones you saw."""
-    rows, _ = history_cached(demo, symbols, day, args_key, _a)
+    rows, _, _ = history_cached(demo, symbols, day, args_key, _a)
     if not rows:
         return 0
     store = get_store(demo)
@@ -290,10 +358,12 @@ def coach_trades(demo, token):
 
 @st.cache_data(ttl=3600, show_spinner=False, max_entries=24)
 def scorecard_cached(demo, symbols, day, args_key, cfg_json, risk_rs, live_token, _a):
-    rows, corr = history_cached(demo, symbols, day, args_key, _a)
-    tr = get_store(demo).trades()
+    rows, corr, stats = history_cached(demo, symbols, day, args_key, _a)
+    store = get_store(demo)
+    tr = store.trades()
     live = tr[tr.source == "live"] if not tr.empty else tr
-    return ag.scorecard(rows, json.loads(cfg_json), live, corr, risk_rs)
+    ev = ag.sentinel_evidence(store.sentinel_list(), pd.DataFrame(stats))
+    return ag.scorecard(rows, json.loads(cfg_json), live, corr, risk_rs, sentinel_ev=ev)
 
 
 def now_ist():
@@ -486,7 +556,8 @@ def agent_strip(a):
                  f'{"▲ with market" if al == "with" else "▼ against market" if al == "against" else "• market neutral"}</span>')
     lv = a["sentinel"]
     chips.append(f'<span class="ag {"bad" if lv == "HIGH" else "warn" if lv == "WATCH" else "good" if lv == "CLEAR" else ""}">'
-                 f'<i>Sentinel</i>{"⚠ " if lv == "HIGH" else ""}{lv.title() if lv else "not checked"}</span>')
+                 f'<i>Sentinel</i>{"⚠ " if lv == "HIGH" else ""}'
+                 f'{lv.title() if lv in ("HIGH", "WATCH", "CLEAR") else "not checked"}</span>')
     sc = a["coach"]
     if sc.get("conf") is not None:
         v = sc["verdict"]
@@ -664,16 +735,18 @@ with tab_i:
                   detail=mood, dkey=f"pulse|{day_s}|{mood['regime']}")
         coach = ag.Coach(coach_trades(demo, ss.tok), CFG["half_life"], day, plan=PLAN)
         targets = list(dict.fromkeys(sig.symbol.tolist() + S[S.in_play].symbol.tolist()))[:12]
-        sents = {sym: sentinel_cached(sym, demo, day_s, bool(API_KEY)) for sym in targets}
+        ensure_daily_scan(demo, symbols, store)             # whole watchlist, in the background, once a day
+        sents = sentinel_batch(tuple(targets), demo, day_s, bool(API_KEY)) if targets else {}
         for sym, v in sents.items():
             if v["level"] != "CLEAR":
                 store.log("Sentinel", v["level"].lower(), f"{v['level']}: " + "; ".join(v["reasons"][:2]) +
                           (f" — {v['llm']}" if v.get("llm") else ""), symbol=sym, detail=v,
                           dkey=f"sentinel|{day_s}|{sym}|{v['level']}")
         if targets:
-            store.log("Sentinel", "scan", f"Checked news, results dates and F&O ban for {len(targets)} stocks: "
+            store.log("Sentinel", "scan", f"Checked {len(targets)} stocks in play: "
                       f"{sum(v['level'] == 'HIGH' for v in sents.values())} high-risk, "
-                      f"{sum(v['level'] == 'WATCH' for v in sents.values())} to watch",
+                      f"{sum(v['level'] == 'WATCH' for v in sents.values())} to watch, "
+                      f"{sum(v['level'] == 'UNCHECKED' for v in sents.values())} could not be checked",
                       dkey=f"sentinel-scan|{day_s}|{','.join(sorted(targets))}")
         for l in coach.lessons():
             store.log("Coach", "lesson", f"{l['direction'].title()}: {l['text']} — averages {l['avg_r']:+.2f}R, won "
@@ -700,7 +773,8 @@ with tab_i:
             sig.at[ix, "status"] = status
             sig.at[ix, "exit_price"] = act["exit"] if closed else np.nan
             sv = sents.get(r.symbol)
-            news = "unknown" if sv is None else ("event" if sv["level"] != "CLEAR" else "clear")
+            news = ("unknown" if sv is None or sv["level"] == "UNCHECKED" else
+                    "event" if sv["level"] in ("WATCH", "HIGH") else "clear")
             info = dict(relvol=r.relvol, gap_pct=r.gap_pct, or_pct=(r.or_high - r.or_low) / g.Open.iloc[0] * 100)
             m_at = ag.pulse(idx, day, asof=r.signal_time, mults=CFG["mults"])
             feats = ag.signal_features(g, sd, info, idd, news, mood=m_at["regime"])
@@ -924,10 +998,12 @@ with tab_i:
                     hl = "".join(f'<br>· <a href="{html.escape(h["link"])}" target="_blank">{html.escape(h["title"])}</a>'
                                  f' <span class="note">{html.escape(h["publisher"] or "")}</span>' if h["link"] else
                                  f'<br>· {html.escape(h["title"])}' for h in sv["headlines"][:4])
-                    st.markdown(f'<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Sentinel — {sv["level"].title()}</b><br>'
+                    st.markdown(f'<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Sentinel — '
+                                f'{sv["level"].title() if sv["level"] != "UNCHECKED" else "Not checked"}</b><br>'
                                 + "<br>".join(html.escape(x) for x in sv["reasons"]) +
-                                (f'<br><i>{html.escape(sv["llm"])}</i>' if sv.get("llm") else "") +
-                                (f'<br><span class="note">Recent headlines</span>{hl}' if hl else "") + '</div>',
+                                f'<br><span class="note">{html.escape(sv.get("coverage", ""))}'
+                                + (f' · {html.escape(sv["llm"])}' if sv.get("llm") else " · read by rules") + '</span>' +
+                                (f'<br><span class="note">Recent headlines about the company</span>{hl}' if hl else "") + '</div>',
                                 unsafe_allow_html=True)
             with st.expander(f"Chart · {r.symbol}"):
                 st.plotly_chart(intraday_chart(bars[r.symbol], r), width="stretch",
@@ -1331,7 +1407,7 @@ AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak 
            "Exit": "Chooses and runs the exit policy",
            "Risk": "Daily loss cap, trade and position caps, correlation check",
            "Trader": "Paper-trades each recommendation inside its execution window",
-           "Sentinel": "Flags results dates, F&O ban and red-flag news",
+           "Sentinel": "Reads exchange filings and news; flags results days, bans and material events",
            "Narrator": "Explains each signal in plain English"}
 
 
@@ -1341,7 +1417,7 @@ def score_card_html(name, a):
     col = {"good": UP, "bad": DOWN}.get(tone, "#9a9a94")
     eff = a.get("effect")
     eff_txt = ("" if eff is None or pd.isna(eff) else
-               f'<div class="se"><b class="{"up" if eff > 0 else "down" if eff < 0 else ""}">{eff:+.3f}R</b> '
+               f'<div class="se"><b class="{"up" if eff > 0 else "down" if eff < 0 else ""}">{eff:+.3f}{a.get("effect_unit", "R")}</b> '
                f'{html.escape(a.get("effect_label", ""))}'
                + (f' · ≈ {"₹" if a["rs_month"] >= 0 else "−₹"}{abs(a["rs_month"]):,.0f}/month'
                   if pd.notna(a.get("rs_month")) else "") + '</div>')
@@ -1351,7 +1427,7 @@ def score_card_html(name, a):
             f'<span class="sscore" style="color:{col}">{sc_ if sc_ is not None else "—"}<small>/100</small></span></div>'
             f'<div class="role">{html.escape(AG_ROLE.get(name, ""))}</div>{bar}'
             f'<div class="grade" style="color:{col}">{html.escape(a["grade"])}'
-            + (f' <small>· {a["n"]} trades, z={a["z"]:+.1f}</small>' if a.get("n") and a.get("z") is not None else "")
+            + (f' <small>· {a["n"]} {a.get("n_label", "trades")}, z={a["z"]:+.1f}</small>' if a.get("n") and a.get("z") is not None else "")
             + f'</div>{eff_txt}<div class="det">{html.escape(a.get("detail", ""))}</div>'
             f'<div class="set">Setting: {html.escape(a.get("setting", ""))}</div></div>')
 
@@ -1429,6 +1505,54 @@ with tab_g:
             st.dataframe(pd.DataFrame({"Policy": et.policy, "How it exits": et.desc, "R per trade": et.exp.round(3),
                                        "vs fixed": et.vs_fixed.round(3), "Evidence z": et.z.round(1),
                                        "Win %": (et.win * 100).round(0)}), hide_index=True, width="stretch")
+
+        with st.expander("🛡️ Sentinel — sources, today's flags and evidence"):
+            job = ensure_daily_scan(demo, symbols, STORE)
+            stat = {"running": "⏳ Today's watchlist scan is running in the background — refresh in a minute.",
+                    "done": "✓ Today's watchlist scan is complete.", "skipped": "Weekend — no scan today.",
+                    "failed": "✕ Today's scan failed: " + str(job.get("note", ""))}[job["status"]]
+            st.markdown(f'<div class="sl note">{html.escape(stat)}</div>', unsafe_allow_html=True)
+            res = job.get("results") or {}
+            if res:
+                src = {}
+                for v in res.values():
+                    for nm, stt in v["sources"].items():
+                        src.setdefault(nm, [0, 0])[0 if stt == "ok" else 1] += 1
+                st.markdown('<div class="sl" style="font-weight:700;margin-top:6px">Sources checked today</div>',
+                            unsafe_allow_html=True)
+                st.dataframe(pd.DataFrame([{"Source": n, "Reached": f"{ok_} of {ok_ + bad_} stocks",
+                                            "Status": "✓ working" if bad_ == 0 else "✕ unavailable" if ok_ == 0 else "⚠ partial"}
+                                           for n, (ok_, bad_) in src.items()]), hide_index=True, width="stretch")
+                fl = [v for v in res.values() if v["level"] in ("HIGH", "WATCH", "UNCHECKED")]
+                st.markdown(f'<div class="sl" style="font-weight:700;margin-top:6px">Flagged today · {len(fl)} of {len(res)}</div>',
+                            unsafe_allow_html=True)
+                if fl:
+                    order = {"HIGH": 0, "WATCH": 1, "UNCHECKED": 2}
+                    st.dataframe(pd.DataFrame([{"Symbol": v["symbol"], "Level": v["level"].title().replace("Unchecked", "Not checked"),
+                                                "Why": v["reasons"][0], "Read by": "Claude" if v.get("llm") else "rules"}
+                                               for v in sorted(fl, key=lambda v: order[v["level"]])]),
+                                 hide_index=True, width="stretch")
+                else:
+                    st.caption("Nothing flagged across the watchlist.")
+            _, _, stats_ = history_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY, A)
+            ev = ag.sentinel_evidence(STORE.sentinel_list(), pd.DataFrame(stats_))
+            st.markdown('<div class="sl" style="font-weight:700;margin-top:6px">Do flagged days really move more?</div>',
+                        unsafe_allow_html=True)
+            if ev["n_flag"]:
+                st.markdown(f'<div class="sl note">{ev["n_flag"]} flagged stock-days moved <b>{ev["ratio_flag"]:.2f}×</b> their normal '
+                            f'daily range; {ev["n_base"]} other stock-days moved <b>{ev["ratio_base"]:.2f}×</b>. '
+                            f'1.00× is a normal day for that stock.</div>', unsafe_allow_html=True)
+                if len(ev["by_type"]):
+                    bt = ev["by_type"]
+                    st.dataframe(pd.DataFrame({"Event type": bt.label, "Stock-days": bt.n, "Range vs normal": bt.ratio.round(2),
+                                               "Evidence z": bt.z.round(1)}), hide_index=True, width="stretch")
+            else:
+                st.caption("No flagged stock-days in the price window yet. Each trading day adds the whole watchlist to the "
+                           "archive; past results days are added when the exchange calendar is reachable.")
+            st.caption(f"Archive: {ev['scanned']} stock-days scanned over {ev['days']} day(s). Sentinel is scored on market "
+                       "behaviour — whether stocks really move more on the days it flags — so it can be judged in weeks, "
+                       "without waiting for enough trades. Headlines are read by "
+                       + ("Claude, with rules as a fallback." if API_KEY else "rules; add ANTHROPIC_API_KEY in Secrets for Claude to read them."))
 
         # ---------------- admin gate
         section("Review & approve", "human-in-the-loop")
