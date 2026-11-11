@@ -8,6 +8,8 @@ Stock Lab agents
               signal, and diagnoses WHY losing trades lost
   Exit      — tests alternative exit policies (breakeven, trail, partial, time-stop) and runs the approved one
   Risk      — daily loss cap, trade and open-position caps, correlation check, optional edge-based sizing
+  Trader    — paper-trades every recommendation inside its execution window and records the result
+  Analyst   — reads the trade log, reviews each recommendation and finds what drove wins and losses
 
 Every agent is measured walk-forward (trained only on earlier days) in scorecard(); agents only PROPOSE
 changes (proposals()) and a human approves them — the approved settings live in a versioned config.
@@ -315,6 +317,9 @@ def trade_key(day, symbol, setup, side):
 
 
 # ============================================================================ EXIT AGENT
+WINDOWS = [0, 15, 30, 60, 120]      # execution window in minutes; 0 = hold to stop / target / 15:15
+WINDOW_TEXT = {0: "Hold to stop, target or 15:15", 15: "15 minutes", 30: "30 minutes", 60: "1 hour", 120: "2 hours"}
+
 EXIT_POLICIES = {
     "fixed": "Fixed — stop, target or 15:15, whichever first",
     "breakeven": "Breakeven — move the stop to entry once the trade is +1R",
@@ -324,9 +329,10 @@ EXIT_POLICIES = {
 }
 
 
-def simulate_exit(g, sig, policy, a):
+def simulate_exit(g, sig, policy, a, deadline=None):
     """Walk the bars after entry under one exit policy. Stops are checked before targets inside a bar
-    (conservative), and stop moves only take effect from the next bar."""
+    (conservative), and stop moves only take effect from the next bar. With `deadline` (a timestamp) the trade
+    is closed at the open of the first bar at or after it — the end of the recommendation's execution window."""
     o, h, l, c = (g[k].values for k in ["Open", "High", "Low", "Close"])
     t = g.index
     i0, side, entry = sig["i"], sig["side"], sig["entry"]
@@ -335,9 +341,12 @@ def simulate_exit(g, sig, policy, a):
     if risk <= 0:
         return dict(exit=entry, t=t[i0], reason="close", r=0.0, stop_now=stop, note="")
     exit_t = dtime(*map(int, a.exit_time.split(":")))
-    best, half, note = 0.0, False, ""
+    best, worst, half, note = 0.0, 0.0, False, ""
     px, tx, reason = c[-1], t[-1], "close"
     for j in range(i0, len(g)):
+        if deadline is not None and t[j] >= deadline and j > i0:
+            px, tx, reason = o[j], t[j], "window"; break
+        worst = max(worst, ((entry - l[j]) if side == 1 else (h[j] - entry)) / risk)
         if t[j].time() >= exit_t:
             px, tx, reason = o[j], t[j], "time"; break
         if (l[j] <= stop) if side == 1 else (h[j] >= stop):
@@ -364,11 +373,14 @@ def simulate_exit(g, sig, policy, a):
     move = (px - entry) * side / risk
     r = 0.5 * 1.0 + 0.5 * move if half else move
     r -= entry * a.cost_pct / 100 / risk
-    return dict(exit=px, t=tx, reason=reason, r=float(r), stop_now=stop, note=note)
+    best = max(best, ((h[j] - entry) if side == 1 else (entry - l[j])) / risk) if len(g) > i0 else best
+    return dict(exit=px, t=tx, reason=reason, r=float(r), stop_now=stop, note=note, mfe=float(best),
+                mae=float(min(worst, max(0.0, -move) if reason == "stop" else worst)))
 
 
 def exit_status(sim):
-    lab = {"stop": "STOPPED", "target": "TARGET HIT", "time": "CLOSED (time)", "time-stop": "TIME-STOP"}
+    lab = {"stop": "STOPPED", "target": "TARGET HIT", "time": "CLOSED (time)", "time-stop": "TIME-STOP",
+           "window": "WINDOW CLOSE"}
     return "OPEN" if sim["reason"] == "close" else f"{lab[sim['reason']]} {sim['t']:%H:%M}"
 
 
@@ -436,11 +448,17 @@ def replay(data, idx, a, mults=None):
             idd = index_day(idx, d)
             for sg in sigs:
                 ex = {p: simulate_exit(g, sg, p, a) for p in EXIT_POLICIES}
+                pw = {}
+                for p in EXIT_POLICIES:
+                    for w in WINDOWS:
+                        v = ex[p] if w == 0 else simulate_exit(g, sg, p, a, sg["time"] + pd.Timedelta(minutes=w))
+                        pw[f"{p}|{w}"] = [round(v["r"], 4), v["t"].isoformat()]
                 if ex["fixed"]["reason"] == "close" and d == last_day:
                     continue  # still running today
                 mood = pulse(idx, d, asof=sg["time"], mults=mults)
                 feats = signal_features(g, sg, info, idd, mood=mood["regime"])
                 feats["_exits"] = {p: [round(v["r"], 4), v["t"].isoformat()] for p, v in ex.items()}
+                feats["_pw"] = pw
                 feats["_bias"] = mood["bias"]
                 rows.append(dict(key=trade_key(d, s, sg["setup"], sg["side"]), ts=sg["time"], day=d, source="backtest",
                                  symbol=s, setup=sg["setup"], side=sg["side"], entry=sg["entry"], stop=sg["stop"],
@@ -571,6 +589,7 @@ DEFAULT_CONFIG = dict(
     exit_policy="fixed",
     risk_enabled=True, daily_loss_R=2.0, max_open=3, max_trades=3, corr_limit=0.7,
     edge_sizing=False, edge_k=1.0, sentinel_block=False, paused_setups=[],
+    paper_window_min=15,
 )
 
 
@@ -663,7 +682,7 @@ def _apply(T, cfg, corr_by_day, use_coach, use_pulse, policy, use_risk):
                 w[k] *= m
                 if v != "BLOCK":
                     book.append(dict(symbol=row.symbol, side=row.side, t=row.ts,
-                                     t_exit=pd.Timestamp(row.features["_exits"][policy][1]), r=r[k] * w[k]))
+                                     t_exit=pd.Timestamp(getattr(row, "t_" + policy)), r=r[k] * w[k]))
     return r, w, reasons
 
 
@@ -675,8 +694,16 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10)
     df["features"] = df.features.map(_feats)
     df = df[df.features.map(lambda f: "_exits" in f)].reset_index(drop=True)
     df["ts"] = pd.to_datetime(df.ts)
+    W = int(cfg.get("paper_window_min", 0) or 0)
+    has_pw = df.features.map(lambda f: "_pw" in f).all()
+    if not has_pw:
+        W = 0
     for p in EXIT_POLICIES:
-        df["r_" + p] = df.features.map(lambda f: f["_exits"][p][0])
+        df["r_" + p] = df.features.map(lambda f: f["_pw"][f"{p}|{W}"][0] if has_pw else f["_exits"][p][0])
+        df["t_" + p] = df.features.map(lambda f: f["_pw"][f"{p}|{W}"][1] if has_pw else f["_exits"][p][1])
+    if has_pw:
+        for w in WINDOWS:
+            df[f"w_{w}"] = df.features.map(lambda f: f["_pw"][f"{cfg['exit_policy']}|{w}"][0])
     T = walk_forward(df, cfg["half_life"], cfg["coach_threshold"], warmup)
     if T.empty:
         return None
@@ -761,6 +788,25 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10)
                               effect_label="per trade: clear-news minus flagged trades",
                               detail=f"Measured on live signals only (past headlines aren't available): {len(ev_r)} flagged, "
                                      f"{len(cl_r)} clear so far. Needs about 10 of each before it can be judged.")
+    # Paper Trader — is the execution window helping or cutting winners short?
+    win_tab = None
+    if has_pw:
+        cur_w = T[f"w_{W}"]
+        rows_w = []
+        for w in WINDOWS:
+            d = T[f"w_{w}"] - cur_w
+            rows_w.append(dict(window=w, label=WINDOW_TEXT[w], exp=T[f"w_{w}"].mean(), vs_current=d.mean(),
+                               z=_paired(d), win=(T[f"w_{w}"] > 0).mean(), n=len(T)))
+        win_tab = pd.DataFrame(rows_w)
+        hold = T["w_0"]
+        dz = _paired(cur_w - hold) if W else 0.0
+        agents["Trader"] = dict(evidence(dz, len(T)) if W else dict(evidence(0.0, len(T)), grade="Holding to the plan"),
+                                on=True, setting=f"Execution window: {WINDOW_TEXT[W]} · exit policy {cfg['exit_policy']}",
+                                effect=(cur_w - hold).mean() if W else 0.0, effect_label="per trade vs holding to the plan",
+                                detail=f"Closing at the window averaged {cur_w.mean():+.2f}R per trade vs {hold.mean():+.2f}R "
+                                       f"if held to stop/target/15:15. Best window tested: "
+                                       f"{win_tab.sort_values('exp', ascending=False).iloc[0].label} "
+                                       f"({win_tab.exp.max():+.2f}R).")
     agents["Narrator"] = dict(score=None, grade="Informational — doesn't change trades", tone="mid", n=None, z=None,
                               on=True, setting="Explains each signal", effect=np.nan, effect_label="", detail=
                               "Measured by whether you find it useful, not by profit.")
@@ -780,7 +826,7 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10)
         rest = T[T.setup != s_].r_fixed
         last = g.tail(20).r_fixed
         by_setup[s_] = dict(n=len(g), exp=g.r_fixed.mean(), last20=last.mean(), z_last=_welch(last, T.r_fixed))
-    return dict(cfg=cfg, base=base, system=system, agents=agents, exits=ex_tab, curves=curves, days=n_days,
+    return dict(cfg=cfg, base=base, system=system, agents=agents, exits=ex_tab, windows=win_tab, curves=curves, days=n_days,
                 trades=len(T), per_month=per_month, risk_rs=risk_rs, by_setup=by_setup,
                 period=(str(T.day.min()), str(T.day.max())), warmup=warmup)
 
@@ -834,7 +880,162 @@ def proposals(sc, cfg):
         if s_ in cfg["paused_setups"] and v["last20"] > 0.1:
             add("Risk", f"Resume the {s_} setup", f"While paused, its simulated last 20 trades averaged {v['last20']:+.2f}R.",
                 {"paused_setups": sorted(set(cfg["paused_setups"]) - {s_})})
+    wt = sc.get("windows")
+    if wt is not None and len(wt):
+        cw = int(cfg.get("paper_window_min", 0) or 0)
+        good = wt[(wt.z >= 1.5) & (wt.window != cw) & (wt.vs_current >= 0.03)]
+        if len(good):
+            b = good.sort_values("exp", ascending=False).iloc[0]
+            add("Trader", f"Change execution window: {WINDOW_TEXT[cw]} → {b.label}",
+                f"On {int(b.n)} replayed recommendations, closing after {b.label.lower()} averaged {b.exp:+.2f}R vs "
+                f"{wt[wt.window == cw].exp.iloc[0]:+.2f}R now (z={b.z:.1f}).", {"paper_window_min": int(b.window)})
     return P
+
+
+# ============================================================================ PAPER TRADER
+def paper_trade(g, sd, a, policy, window_min, qty, idx_day=None, risk_rs=None):
+    """Execute one recommendation on paper: fill at the entry bar's open, manage it with the approved exit policy,
+    close at stop / target / end of execution window / 15:15. Also measures what happened during and after."""
+    t = g.index
+    i0, side, entry, stop, target = sd["i"], sd["side"], sd["entry"], sd["stop"], sd["target"]
+    risk = abs(entry - stop)
+    t0 = t[i0]
+    deadline = t0 + pd.Timedelta(minutes=window_min) if window_min else None
+    sim = simulate_exit(g, sd, policy, a, deadline)
+    hold = simulate_exit(g, sd, policy, a)                     # same plan without the window
+    closed = sim["reason"] != "close"
+    if closed:
+        r, px, tx = sim["r"], sim["exit"], sim["t"]
+    else:                                                      # still running: mark to market
+        px, tx = float(g.Close.iloc[-1]), t[-1]
+        r = (px - entry) * side / risk - entry * a.cost_pct / 100 / risk if risk else 0.0
+    # market move while the trade was on (Nifty, % in the trade's direction)
+    mkt = np.nan
+    if idx_day is not None and not idx_day.empty:
+        a_ = idx_day[idx_day.index <= t0]
+        b_ = idx_day[idx_day.index <= tx]
+        if len(a_) and len(b_):
+            mkt = (b_.Close.iloc[-1] / a_.Close.iloc[-1] - 1) * 100 * side
+    # volume during the trade vs the session before entry
+    during = g.Volume.iloc[i0:max(g.index.get_loc(tx), i0 + 1)]
+    before = g.Volume.iloc[:i0]
+    vol_ratio = float(during.mean() / before.mean()) if len(before) and before.mean() > 0 and len(during) else np.nan
+    # after a stop or window close: did price go on to reach the target before 15:15?
+    later_target = False
+    if closed and sim["reason"] in ("stop", "window"):
+        after = g[(g.index > tx) & (g.index.time < dtime(15, 15))]
+        if len(after):
+            later_target = bool((after.High >= target).any() if side == 1 else (after.Low <= target).any())
+    return dict(status="CLOSED" if closed else "OPEN", entry_time=t0, deadline=deadline, exit_time=tx if closed else None,
+                exit_price=float(px) if closed else None, last_price=float(g.Close.iloc[-1]), reason=sim["reason"] if closed else None,
+                r=float(r), pnl=float(r * risk * qty), mfe=sim["mfe"], mae=sim["mae"], mkt_move=float(mkt) if pd.notna(mkt) else None,
+                vol_ratio=vol_ratio if pd.notna(vol_ratio) else None, hold_r=float(hold["r"]) if hold["reason"] != "close" else None,
+                later_target=later_target, note=sim["note"], stop_now=sim["stop_now"], minutes=int((tx - t0).total_seconds() // 60))
+
+
+def review_factors(rec):
+    """What drove this paper trade's result — the Analyst's review. Each factor: kind (pos/neg), code, text."""
+    F = []
+    d = rec
+    snap = d.get("snapshot") or {}
+    feats = snap.get("features") or {}
+
+    def add(kind, code, text):
+        F.append(dict(kind=kind, code=code, text=text))
+    mm = d.get("mkt_move")
+    if mm is not None:
+        if mm > 0.1:
+            add("pos", "mkt_with", f"Market moved with the trade (Nifty {mm:+.2f}% in its direction)")
+        elif mm < -0.1:
+            add("neg", "mkt_against", f"Market moved against the trade (Nifty {mm:+.2f}% in its direction)")
+    mfe, mae = d.get("mfe") or 0, d.get("mae") or 0
+    if mfe >= 1:
+        add("pos", "follow_through", f"Strong follow-through — reached +{mfe:.1f}R at best")
+    elif d.get("status") == "CLOSED" and mfe < 0.3:
+        add("neg", "no_follow", f"No follow-through — never got beyond +{mfe:.1f}R")
+    if mae <= 0.2 and d.get("status") == "CLOSED":
+        add("pos", "clean_entry", f"Clean entry — went only −{mae:.1f}R against at worst")
+    elif mae >= 0.7 and (d.get("r") or 0) > 0:
+        add("neg", "deep_pullback", f"Entry timing — went −{mae:.1f}R against before working")
+    vr = d.get("vol_ratio")
+    if vr is not None:
+        if vr >= 1.3:
+            add("pos", "vol_strong", f"Volume stayed strong during the trade ({vr:.1f}× the session so far)")
+        elif vr <= 0.7:
+            add("neg", "vol_faded", f"Volume faded after entry ({vr:.1f}× the session so far)")
+    hr, r = d.get("hold_r"), d.get("r") or 0
+    if d.get("reason") == "window" and hr is not None:
+        if hr - r >= 0.3:
+            add("neg", "window_short", f"Window too short — closed at {r:+.2f}R; holding to the plan gave {hr:+.2f}R")
+        elif hr - r <= -0.3:
+            add("pos", "window_saved", f"Window protected the result — holding to the plan gave {hr:+.2f}R")
+    if d.get("reason") == "stop" and d.get("later_target"):
+        add("neg", "stop_tight", "Stop too tight — price hit the stop, then reached the target later")
+    if d.get("reason") == "target":
+        add("pos", "target_hit", f"Target reached in {d.get('minutes', 0)} minutes")
+    cond = {("market", "with market"): ("pos", "c_with_mkt"), ("market", "against market"): ("neg", "c_against_mkt"),
+            ("chase", "extended"): ("neg", "c_chased"), ("chase", "near"): ("pos", "c_near_vwap"),
+            ("timing", "late"): ("neg", "c_late"), ("news", "event"): ("neg", "c_news"),
+            ("volume", "strong"): ("pos", "c_vol_strong"), ("volume", "weak"): ("neg", "c_vol_weak"),
+            ("range", "wide"): ("neg", "c_wide_range"), ("mood", "Volatile"): ("neg", "c_volatile")}
+    for (f, b), (kind, code) in cond.items():
+        if feats.get(f) == b:
+            add(kind, code, "At entry: " + FEATURE_TEXT.get(f, {}).get(b, b).lower())
+    if snap.get("risk_verdict") == "REDUCE":
+        add("neg" if r < 0 else "pos", "risk_reduced", "Risk agent had reduced the size: " + (snap.get("risk_why") or [""])[0])
+    return F
+
+
+def driver_table(log):
+    """Across closed paper trades: for every factor, how often it appeared and the average result when it did."""
+    c = log[(log.status == "CLOSED") & log.r.notna()] if not log.empty else log
+    rows = []
+    for rec in c.itertuples():
+        for f in (rec.factors or []):
+            rows.append(dict(code=f["code"], kind=f["kind"], text=f["text"].split(" — ")[0].split(" (")[0], r=rec.r,
+                             win=rec.r > 0))
+    if not rows:
+        return pd.DataFrame(columns=["code", "kind", "factor", "n", "wins", "losses", "avg_r", "total_r"])
+    x = pd.DataFrame(rows)
+    out = x.groupby(["code", "kind"]).agg(factor=("text", "first"), n=("r", "size"), wins=("win", "sum"),
+                                          avg_r=("r", "mean"), total_r=("r", "sum")).reset_index()
+    out["losses"] = out.n - out.wins
+    return out.sort_values("total_r")
+
+
+def analyst_summary(log, cfg, api_key=None):
+    c = log[(log.status == "CLOSED") & log.r.notna()] if not log.empty else log
+    if c.empty:
+        return "No closed paper trades yet. The Analyst reviews each one as soon as it closes."
+    n, wr, tot, avg = len(c), (c.r > 0).mean() * 100, c.r.sum(), c.r.mean()
+    pnl = c.pnl.sum()
+    parts = [f"{n} paper trades closed: {wr:.0f}% won, {tot:+.1f}R in total ({avg:+.2f}R per trade, "
+             f"{'₹' if pnl >= 0 else '−₹'}{abs(pnl):,.0f})."]
+    dt = driver_table(log)
+    dt = dt[dt.n >= 3]
+    if len(dt):
+        worst, best = dt.iloc[0], dt.iloc[-1]
+        if worst.total_r < 0:
+            parts.append(f"Biggest drag: {worst.factor.lower()} — {int(worst.n)} trades averaging {worst.avg_r:+.2f}R.")
+        if best.total_r > 0:
+            parts.append(f"Biggest help: {best.factor.lower()} — {int(best.n)} trades averaging {best.avg_r:+.2f}R.")
+    w = c[(c.reason == "window") & c.hold_r.notna()]
+    if len(w) >= 3:
+        diff = (w.hold_r - w.r).mean()
+        parts.append(f"Window closes: holding to the plan would have changed the result by {diff:+.2f}R per trade "
+                     f"over {len(w)} trades ({'consider a longer window' if diff > 0.15 else 'consider a shorter window' if diff < -0.15 else 'window looks about right'}).")
+    sk = log[(log.status == "SKIPPED") & log.r.notna()] if "status" in log else pd.DataFrame()
+    if len(sk) >= 3:
+        parts.append(f"Signals the agents skipped would have averaged {sk.r.mean():+.2f}R ({len(sk)} trades) — "
+                     + ("the skips are saving money." if sk.r.mean() < avg else "the skips are costing money."))
+    text = " ".join(parts)
+    if api_key:
+        better = ask_claude("You are the Analyst agent reviewing a paper-trading log for intraday NSE recommendations. "
+                            "Rewrite these findings as 3-4 short plain-English sentences for the human reviewer, keep every "
+                            "number, end with one concrete thing to watch. No buy/sell advice.\n\n" + text, api_key, 220)
+        if better:
+            return better
+    return text
 
 
 # ============================================================================ NARRATOR

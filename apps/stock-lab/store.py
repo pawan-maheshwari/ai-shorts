@@ -40,7 +40,14 @@ create table if not exists stocklab_kv (
   key text primary key, value jsonb, updated timestamptz default now()
 );
 
+create table if not exists stocklab_paper (
+  key text primary key, day date, symbol text, status text,
+  rec_time timestamptz, logged_at timestamptz, data jsonb, human jsonb, updated timestamptz default now()
+);
+create index if not exists stocklab_paper_day on stocklab_paper (day desc);
+
 alter table stocklab_events enable row level security;
+alter table stocklab_paper enable row level security;
 alter table stocklab_kv enable row level security;
 alter table stocklab_trades enable row level security;
 -- The app uses the service-role key from Streamlit secrets (server side only), which bypasses RLS.
@@ -91,6 +98,8 @@ class Store:
               symbol text, setup text, side integer, entry real, stop real, target real, exit real, r real,
               status text, features text, reason text, updated text);
             create table if not exists stocklab_kv (key text primary key, value text, updated text);
+            create table if not exists stocklab_paper (key text primary key, day text, symbol text, status text,
+              rec_time text, logged_at text, data text, human text, updated text);
             """)
         self.last_error = None
 
@@ -205,10 +214,12 @@ class Store:
             if self.remote:
                 requests.delete(f"{self.url}/rest/v1/stocklab_events", headers=self._h(), params={"ts": f"lt.{ev}"}, timeout=15)
                 requests.delete(f"{self.url}/rest/v1/stocklab_trades", headers=self._h(), params={"day": f"lt.{tr}"}, timeout=15)
+                requests.delete(f"{self.url}/rest/v1/stocklab_paper", headers=self._h(), params={"day": f"lt.{tr}"}, timeout=15)
             else:
                 with self._lock:
                     self.db.execute("delete from stocklab_events where ts < ?", (ev,))
                     self.db.execute("delete from stocklab_trades where day < ?", (tr,))
+                    self.db.execute("delete from stocklab_paper where day < ?", (tr,))
                     self.db.commit()
         except Exception as e:
             self.last_error = str(e)
@@ -235,6 +246,67 @@ class Store:
                 with self._lock:
                     self.db.execute("insert or replace into stocklab_kv (key, value, updated) values (?,?,?)",
                                     (key, json.dumps(value, default=str), _now().isoformat()))
+                    self.db.commit()
+        except Exception as e:
+            self.last_error = str(e)
+
+    # ------------------------------------------------------------------ paper-trade log
+    PAPER_COLS = ["key", "day", "symbol", "status", "rec_time", "logged_at", "data", "human", "updated"]
+
+    def paper_upsert(self, rows):
+        """rows: dicts with key, day, symbol, status, rec_time, logged_at, data (dict). Human reviews are untouched."""
+        if not rows:
+            return
+        clean = [dict(key=r["key"], day=str(r["day"]), symbol=r["symbol"], status=r["status"], rec_time=_iso(r["rec_time"]),
+                      logged_at=_iso(r["logged_at"]), data=json.loads(json.dumps(r["data"], default=str)),
+                      updated=_now().isoformat()) for r in rows]
+        try:
+            if self.remote:
+                self._post("stocklab_paper", clean, "resolution=merge-duplicates,return=minimal", "key")
+            else:
+                with self._lock:
+                    for r in clean:
+                        self.db.execute(
+                            "insert into stocklab_paper (key,day,symbol,status,rec_time,logged_at,data,updated) "
+                            "values (?,?,?,?,?,?,?,?) on conflict(key) do update set status=excluded.status, "
+                            "data=excluded.data, updated=excluded.updated",
+                            (r["key"], r["day"], r["symbol"], r["status"], r["rec_time"], r["logged_at"],
+                             json.dumps(r["data"]), r["updated"]))
+                    self.db.commit()
+        except Exception as e:
+            self.last_error = str(e)
+
+    def paper_list(self, days=TRADE_DAYS):
+        since = (_now() - timedelta(days=days)).date().isoformat()
+        try:
+            if self.remote:
+                df = pd.DataFrame(self._get("stocklab_paper", {"select": "*", "day": f"gte.{since}",
+                                                               "order": "rec_time.desc", "limit": "5000"}))
+            else:
+                with self._lock:
+                    df = pd.read_sql_query("select * from stocklab_paper where day >= ? order by rec_time desc",
+                                           self.db, params=(since,))
+                for c in ("data", "human"):
+                    df[c] = df[c].map(lambda s: json.loads(s) if s else None)
+        except Exception as e:
+            self.last_error = str(e)
+            df = pd.DataFrame()
+        if df.empty:
+            return pd.DataFrame(columns=self.PAPER_COLS)
+        for c in ("rec_time", "logged_at"):
+            df[c] = pd.to_datetime(df[c], utc=True, format="ISO8601").dt.tz_convert("Asia/Kolkata")
+        return df
+
+    def paper_review(self, key, human):
+        try:
+            if self.remote:
+                r = requests.patch(f"{self.url}/rest/v1/stocklab_paper", headers=self._h({"Prefer": "return=minimal"}),
+                                   params={"key": f"eq.{key}"}, data=json.dumps({"human": human}, default=str), timeout=15)
+                if r.status_code >= 300:
+                    self.last_error = f"stocklab_paper: {r.status_code} {r.text[:160]}"
+            else:
+                with self._lock:
+                    self.db.execute("update stocklab_paper set human = ? where key = ?", (json.dumps(human, default=str), key))
                     self.db.commit()
         except Exception as e:
             self.last_error = str(e)

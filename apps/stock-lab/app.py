@@ -436,7 +436,10 @@ def signal_card(r, exit_time, agt=None):
          f'<span class="chip {side_cls}">{side_txt}</span><span class="chip setup">{html.escape(r.setup)}</span></div>'
          f'<span class="chip {st_cls}">{st_icon} {html.escape(st_txt)}</span></div>'
          f'<div class="px">Last <span class="num">{inr(r.last)}</span> {arrow(r.chg_pct)} on the day · '
-         f'signal {r.signal_time:%H:%M}</div>'
+         + (f'<b>{"BUY" if r.side == 1 else "SELL"}</b> at {r.signal_time:%H:%M} · '
+            + (f'close by <b>{agt["deadline"]:%H:%M}</b> unless stop/target hits first' if agt and agt.get("deadline") is not None
+               else 'hold to stop, target or 15:15') if agt else f'signal {r.signal_time:%H:%M}')
+         + '</div>'
          f'<div class="lv">'
          f'<div><label>Entry</label><b class="num">{inr(r.entry)}</b></div>'
          f'<div><label>Stop-loss</label><b class="num down">{inr(r.stop)}</b><small>{arrow(stop_pct)}</small></div>'
@@ -477,6 +480,13 @@ def agent_strip(a):
     ex = a["exit"]
     chips.append(f'<span class="ag"><i>Exit · {html.escape(a["policy"])}</i>'
                  + (f'stop now {inr(ex["stop_now"])}' if a["is_open"] else html.escape(a["status"])) + '</span>')
+    p_ = a.get("paper")
+    if p_:
+        if p_["status"] == "SKIPPED":
+            chips.append(f'<span class="ag"><i>📝 Paper</i>skipped · would be {p_["r"]:+.2f}R</span>')
+        else:
+            chips.append(f'<span class="ag {"good" if p_["r"] > 0.05 else "bad" if p_["r"] < -0.05 else ""}"><i>📝 Paper</i>'
+                         f'{p_["status"].lower()} {p_["r"]:+.2f}R · {"₹" if p_["pnl"] >= 0 else "−₹"}{abs(p_["pnl"]):,.0f}</span>')
     v = a["risk_verdict"]
     chips.append(f'<span class="ag {"bad" if v == "BLOCK" else "warn" if v == "REDUCE" else "good"}"><i>Risk</i>'
                  f'{v} · qty {a["qty_final"]:,}</span>')
@@ -516,6 +526,20 @@ CFG = CFG_STATE["active"]
 RISK_RS = A.capital * A.risk_pct / 100
 ARGS_KEY = f"{A.setup}|{A.shorts}|{A.rr}|{A.min_relvol}|{A.cost_pct}"
 ADMIN_PIN = _secret("ADMIN_PIN")
+
+
+def admin_gate(where):
+    """Reviewer PIN gate shared by tabs. Returns True when changes are allowed."""
+    if not ADMIN_PIN:
+        return True
+    if st.session_state.get("admin_ok"):
+        return True
+    c1, c2 = st.columns([2, 1], vertical_alignment="bottom")
+    pin = c1.text_input("Reviewer PIN", type="password", key=f"pin_{where}")
+    if c2.button("Unlock", key=f"unlock_{where}", width="stretch"):
+        st.session_state.admin_ok = pin == str(ADMIN_PIN)
+        st.rerun()
+    return False
 cfg_slot.caption(f"Agent settings v{CFG_STATE['version']} · exit: {CFG['exit_policy']} · Coach filter "
                  f"{'on' if CFG['coach_filter'] else 'off'} · review in 🎯 Agent scores")
 
@@ -548,7 +572,8 @@ st.markdown(
 if demo:
     st.info("Demo mode: synthetic prices. Switch it off in Settings for the live market feed.")
 
-tab_i, tab_s, tab_b, tab_g, tab_a = st.tabs(["⚡ Intraday", "📈 Swing picks", "🧪 Backtest", "🎯 Agent scores",
+tab_i, tab_t, tab_s, tab_b, tab_g, tab_a = st.tabs(["⚡ Intraday", "📒 Trade log", "📈 Swing picks", "🧪 Backtest",
+                                                    "🎯 Agent scores",
                                              "🗂 Audit log"])
 
 # ============================================================================ intraday
@@ -635,6 +660,7 @@ with tab_i:
                       dkey=f"lesson|{day_s}|{l['feature']}={l['bucket']}|{l['direction']}")
 
         agt, journal = {}, []
+        WIN = int(CFG.get("paper_window_min", 0) or 0)
         idd = ag.index_day(idx, day)
         policy = CFG["exit_policy"]
         sig["key"] = [ag.trade_key(day, a_, b_, c_) for a_, b_, c_ in zip(sig.symbol, sig.setup, sig.side)]
@@ -644,7 +670,9 @@ with tab_i:
             g = bars[r.symbol]
             sd = dict(i=g.index.get_loc(r.signal_time), side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
                       setup=r.setup)
-            sims = {p: ag.simulate_exit(g, sd, p, A) for p in ag.EXIT_POLICIES}
+            dl = r.signal_time + pd.Timedelta(minutes=WIN) if WIN else None
+            sims = {p: ag.simulate_exit(g, sd, p, A, dl) for p in ag.EXIT_POLICIES}
+            plain = ag.simulate_exit(g, sd, "fixed", A)      # Coach learns from the plain plan, as in the replay
             act = sims[policy]
             status = ag.exit_status(act)
             closed = status != "OPEN"
@@ -657,12 +685,11 @@ with tab_i:
             feats = ag.signal_features(g, sd, info, idd, news, mood=m_at["regime"])
             sc = coach.score(feats, CFG["coach_threshold"])
             pm = coach.postmortem(feats, act["r"]) if closed else None
-            if closed:
-                feats_j = dict(feats, _exits={p: [round(v["r"], 4), v["t"].isoformat()] for p, v in sims.items()},
-                               _bias=m_at["bias"])
+            if plain["reason"] != "close":
+                feats_j = dict(feats, _bias=m_at["bias"])
                 journal.append(dict(key=key, ts=r.signal_time, day=day, source="live", symbol=r.symbol, setup=r.setup,
                                     side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
-                                    exit=sims["fixed"]["exit"], r=sims["fixed"]["r"], status=sims["fixed"]["reason"],
+                                    exit=plain["exit"], r=plain["r"], status=plain["reason"],
                                     features=feats_j, reason=pm["primary"] if pm else None))
             if pm:
                 store.log("Coach", "post-mortem", f"{r.symbol} {r.setup} lost {act['r']:+.2f}R. Main reason: {pm['primary']}",
@@ -678,7 +705,8 @@ with tab_i:
             store.log("Narrator", "explain", narr, symbol=r.symbol, dkey=f"narr|{key}")
             agt[key] = dict(align=align, sentinel=sv["level"] if sv else None, sent=sv, coach=sc, pm=pm, narr=narr,
                             feats=feats, exp_r=sc.get("exp_r"), risk_rs=RISK_RS, exit=act, sims=sims, policy=policy,
-                            status=status, is_open=not closed, exit_r=act["r"] if closed else None)
+                            status=status, is_open=not closed, exit_r=act["r"] if closed else None,
+                            m_at=m_at, deadline=dl, sd=sd)
         store.upsert_trades(journal)
 
         # Risk agent — chronological, so each decision only knows what had happened by then
@@ -706,6 +734,60 @@ with tab_i:
                           dkey=f"risk|{r.key}|{verdict}")
         sig["blocked"] = [agt[k]["risk_verdict"] == "BLOCK" for k in sig.key]
         sig["is_open"] = sig.status == "OPEN"
+
+        # ------------------------------------------------ Paper Trader + Analyst
+        prev = STORE.paper_list(days=3)
+        prev = {k: row for k, row in zip(prev.key, prev.itertuples())} if not prev.empty else {}
+        now_seen = pd.Timestamp.now(tz=ce.IST)
+        prow = []
+        for _, r in sig.iterrows():
+            a = agt[r.key]
+            skipped = a["risk_verdict"] == "BLOCK"
+            base_q = 0 if pd.isna(r.qty_base) else int(r.qty_base)
+            qty = int(base_q * size_mult) if skipped else a["qty_final"]
+            pt = ag.paper_trade(bars[r.symbol], a["sd"], A, policy, WIN, qty, idd)
+            status = "SKIPPED" if skipped else pt["status"]
+            if skipped and pt["status"] == "OPEN":
+                status = "SKIPPED"
+            sc = a["coach"]
+            snap = dict(mood=a["m_at"]["regime"], mood_now=mood["regime"], sentinel=a["sentinel"],
+                        sentinel_why=(a["sent"] or {}).get("reasons", [])[:2], exp_r=sc.get("exp_r"), conf=sc.get("conf"),
+                        coach_verdict=sc.get("verdict"),
+                        drivers=[dict(edge=d[0], text=d[1], n=d[2]) for d in (sc.get("drivers") or [])][:6],
+                        risk_verdict=a["risk_verdict"], risk_why=a["risk_why"], features=a["feats"], narr=a["narr"],
+                        size_mult=size_mult, risk_mult=a["risk_mult"])
+            rec = dict(pt, symbol=r.symbol, setup=r.setup, side=int(r.side), entry=float(r.entry), stop=float(r.stop),
+                       target=float(r.target), qty=qty, window_min=WIN, policy=policy, snapshot=snap, status=status,
+                       skip_reason=a["risk_why"][0] if skipped else None)
+            done = status == "CLOSED" or (status == "SKIPPED" and pt["status"] == "CLOSED")
+            rec["factors"] = ag.review_factors(rec) if done else []
+            old = prev.get(r.key)
+            logged_at = old.logged_at if old is not None and pd.notna(old.logged_at) else now_seen
+            rec["live"] = bool(logged_at <= pt["entry_time"].tz_localize(ce.IST) + pd.Timedelta(minutes=10))
+            a["paper"] = rec
+            od = (old.data or {}) if old is not None else {}
+            changed = (old is None or old.status != status or od.get("reason") != rec.get("reason")
+                       or abs((od.get("r") or 0) - rec["r"]) >= 0.05)
+            if changed:
+                prow.append(dict(key=r.key, day=day, symbol=r.symbol, status=status, rec_time=pt["entry_time"],
+                                 logged_at=logged_at, data=rec))
+            side_w = "BUY" if r.side == 1 else "SELL"
+            if old is None and not skipped:
+                store.log("Trader", "open", f"Paper {side_w} {qty:,} {r.symbol} @ {inr(r.entry)} at {pt['entry_time']:%H:%M} — "
+                          f"stop {inr(r.stop)}, target {inr(r.target)}, "
+                          + (f"close by {pt['deadline']:%H:%M}" if pt["deadline"] is not None else "hold to plan"),
+                          symbol=r.symbol, dkey=f"paper-open|{r.key}")
+            if done and (old is None or old.status in ("OPEN",) or (od.get("reason") is None)):
+                verb = "Shadow-tested skipped" if skipped else "Paper closed"
+                store.log("Trader", "close", f"{verb} {side_w} {r.symbol}: {pt['reason']} at {pt['exit_time']:%H:%M} "
+                          f"@ {inr(pt['exit_price'])} → {rec['r']:+.2f}R ({'₹' if rec['pnl'] >= 0 else '−₹'}{abs(rec['pnl']):,.0f})",
+                          symbol=r.symbol, dkey=f"paper-close|{r.key}")
+                pos = [f["text"] for f in rec["factors"] if f["kind"] == "pos"][:2]
+                neg = [f["text"] for f in rec["factors"] if f["kind"] == "neg"][:2]
+                store.log("Analyst", "review", f"{r.symbol} {rec['r']:+.2f}R — helped: " + ("; ".join(pos) or "nothing notable")
+                          + " | hurt: " + ("; ".join(neg) or "nothing notable"), symbol=r.symbol,
+                          detail=dict(factors=rec["factors"]), dkey=f"analyst|{r.key}")
+        STORE.paper_upsert(prow)
         sig = sig.sort_values(["blocked", "is_open", "signal_time"], ascending=[True, False, False])
 
         # ------------------------------------------------ alerts
@@ -732,8 +814,10 @@ with tab_i:
                     _alert(f"exit|{r.key}", a["exit"]["note"], f"Exit agent · {r.symbol}: {a['exit']['note']} — "
                            f"stop now {inr(a['exit']['stop_now'])}", r.symbol, "🚪")
             else:
-                _alert(r.key, r.status, f"{r.symbol} {side_t} {r.setup}: {r.status} ({a['exit_r']:+.2f}R)", r.symbol,
-                       "✅" if a["exit_r"] > 0 else "⛔" if a["exit_r"] < 0 else "⏹️")
+                p_ = a.get("paper") or {}
+                _alert(r.key, r.status, f"{r.symbol} {side_t} {r.setup}: {r.status} ({a['exit_r']:+.2f}R"
+                       + (f", paper {'₹' if p_.get('pnl', 0) >= 0 else '−₹'}{abs(p_.get('pnl', 0)):,.0f}" if p_ else "") + ")",
+                       r.symbol, "✅" if a["exit_r"] > 0 else "⛔" if a["exit_r"] < 0 else "⏹️")
             if a["sentinel"] == "HIGH":
                 _alert(f"sent|{r.symbol}", "HIGH", f"Sentinel: {r.symbol} is high-risk today — {a['sent']['reasons'][0]}",
                        r.symbol, "⚠️")
@@ -856,6 +940,249 @@ with tab_i:
     else:
         intraday_view()
 
+# ============================================================================ trade log (paper trades)
+st.markdown("""<style>
+.tl-card{border:1px solid var(--rule);background:#fff;padding:12px 14px;font-family:"Libre Franklin",sans-serif;font-size:13.5px;line-height:1.5}
+.tl-card h4{margin:0 0 6px;font-size:16px}
+.tl-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+@media (max-width:700px){.tl-grid{grid-template-columns:1fr}}
+.tl-box{background:var(--paper2);padding:9px 11px}
+.tl-box b.h{display:block;font-size:10.5px;letter-spacing:1.1px;text-transform:uppercase;color:var(--meta);margin-bottom:3px}
+.fx{padding:3px 0;font-size:13px}.fx.pos::before{content:"▲ ";color:var(--up)}.fx.neg::before{content:"▼ ";color:var(--down)}
+.drv{display:grid;grid-template-columns:1fr 70px;gap:2px 10px;align-items:center;font-size:12.5px;margin:4px 0}
+.drv .bw{height:8px;background:var(--paper2);border-radius:4px;position:relative;overflow:hidden}
+.drv .bw i{position:absolute;top:0;height:8px;border-radius:4px}
+.analyst{border-left:4px solid var(--blue);background:#fff;border-top:1px solid var(--rule);border-right:1px solid var(--rule);
+ border-bottom:1px solid var(--rule);padding:10px 13px;font-size:14px;line-height:1.55;margin-bottom:10px}
+</style>""", unsafe_allow_html=True)
+
+
+def paper_frame(raw):
+    if raw.empty:
+        return raw
+    rows = []
+    for x in raw.itertuples():
+        d = dict(x.data or {})
+        h = x.human or {}
+        rows.append(dict(key=x.key, day=x.day, symbol=x.symbol, status=x.status, rec_time=x.rec_time, logged_at=x.logged_at,
+                         side=d.get("side"), setup=d.get("setup"), entry=d.get("entry"), stop=d.get("stop"),
+                         target=d.get("target"), qty=d.get("qty"), window_min=d.get("window_min"), policy=d.get("policy"),
+                         deadline=d.get("deadline"), exit_time=d.get("exit_time"), exit_price=d.get("exit_price"),
+                         reason=d.get("reason"), r=d.get("r"), pnl=d.get("pnl"), mfe=d.get("mfe"), mae=d.get("mae"),
+                         mkt_move=d.get("mkt_move"), vol_ratio=d.get("vol_ratio"), hold_r=d.get("hold_r"),
+                         later_target=d.get("later_target"), minutes=d.get("minutes"), live=d.get("live"),
+                         skip_reason=d.get("skip_reason"), snapshot=d.get("snapshot") or {}, factors=d.get("factors") or [],
+                         last_price=d.get("last_price"), human=h, verdict=h.get("verdict", "")))
+    L = pd.DataFrame(rows)
+    for c in ("r", "pnl", "mfe", "mae", "hold_r", "mkt_move", "vol_ratio"):
+        L[c] = pd.to_numeric(L[c], errors="coerce")
+    return L
+
+
+def _hm(x):
+    try:
+        return pd.Timestamp(x).strftime("%H:%M")
+    except Exception:
+        return "—"
+
+
+with tab_t:
+    ss = st.session_state
+    st.markdown('<div class="sl note">The 📝 <b>Trader</b> agent paper-trades every recommendation at its stated time and price, '
+                'closes it at the stop, the target or the end of its <b>execution window</b>, and records the result here. '
+                'The 🔎 <b>Analyst</b> agent reviews each closed trade and lists what helped and what hurt. '
+                'Signals the agents blocked are shadow-tested as <i>skipped</i> so you can check whether blocking them was right.</div>',
+                unsafe_allow_html=True)
+    L = paper_frame(STORE.paper_list())
+    if L.empty:
+        st.markdown('<div class="sl empty">No paper trades yet. They appear as soon as the Intraday tab produces a '
+                    'recommendation — the Trader records it and closes it at the end of the execution window.</div>',
+                    unsafe_allow_html=True)
+    else:
+        f1, f2, f3 = st.columns([1.3, 1.3, 1.4])
+        period = f1.selectbox("Period", ["Today", "Last 7 days", "Last 30 days", "All (90 days)"], index=1, key="tl_period")
+        show = f2.selectbox("Show", ["Executed", "Executed + skipped", "Open only", "Skipped only"], key="tl_show")
+        q = f3.text_input("Symbol", placeholder="e.g. RELIANCE", key="tl_q")
+        last_day = pd.to_datetime(L.day).max()
+        cut = {"Today": last_day, "Last 7 days": last_day - pd.Timedelta(days=6),
+               "Last 30 days": last_day - pd.Timedelta(days=29), "All (90 days)": pd.Timestamp("2000-01-01")}[period]
+        V = L[pd.to_datetime(L.day) >= cut]
+        V = {"Executed": V[V.status.isin(["OPEN", "CLOSED"])], "Executed + skipped": V,
+             "Open only": V[V.status == "OPEN"], "Skipped only": V[V.status == "SKIPPED"]}[show]
+        if q:
+            V = V[V.symbol.str.contains(q.strip().upper(), regex=False)]
+        ex = V[V.status == "CLOSED"]
+        net = ex.pnl.sum() if len(ex) else 0.0
+        kpis([("Paper trades", len(V[V.status != "SKIPPED"]), f"{int((V.status == 'OPEN').sum())} open now"),
+              ("Win rate", f"{(ex.r > 0).mean() * 100:.0f}%" if len(ex) else "—", f"{len(ex)} closed"),
+              ("Net P&L", f'<span class="{"up" if net >= 0 else "down"}">{"▲" if net >= 0 else "▼"} {inr(abs(net), 0)}</span>',
+               "after costs"),
+              ("Per trade", f"{ex.r.mean():+.2f}R" if len(ex) else "—", "average result"),
+              ("Logged live", f"{V.live.mean() * 100:.0f}%" if len(V) else "—", "recorded at recommendation time")])
+        st.markdown(f'<div class="sl analyst"><b>🔎 Analyst</b><br>{html.escape(ag.analyst_summary(V, CFG, API_KEY if API_KEY else None))}</div>',
+                    unsafe_allow_html=True)
+        if len(ex) >= 2:
+            eq = ex.assign(t=pd.to_datetime(ex.exit_time)).sort_values("t")
+            fig = go.Figure(go.Scatter(x=eq.t, y=eq.pnl.cumsum(), mode="lines+markers", line=dict(color="#121212", width=2),
+                                       marker=dict(size=6, color=[UP if v > 0 else DOWN for v in eq.pnl])))
+            fig.update_layout(height=230, margin=dict(l=8, r=8, t=8, b=8), template="plotly_white",
+                              yaxis_title="Paper P&L (₹)", font=dict(family="Libre Franklin, sans-serif", size=11))
+            st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
+
+        section("Trade log book", f"{len(V)} records · newest first")
+        R = V.sort_values("rec_time", ascending=False)
+        reason_txt = {"target": "Target", "stop": "Stop", "window": "Window end", "time": "15:15 close", "time-stop": "Time-stop"}
+        tab = pd.DataFrame({
+            "Rec. time": R.rec_time.dt.strftime("%d %b %H:%M"), "Symbol": R.symbol,
+            "Side": R.side.map({1: "▲ BUY", -1: "▼ SELL"}), "Setup": R.setup,
+            "Entry ₹": R.entry, "Stop ₹": R.stop, "Target ₹": R.target, "Qty": R.qty,
+            "Close by": R.deadline.map(lambda x: _hm(x) if x else "plan"),
+            "Exit": R.exit_time.map(lambda x: _hm(x) if x else "—"), "Exit ₹": R.exit_price,
+            "How": R.reason.map(lambda x: reason_txt.get(x, "—") if x else "—"),
+            "R": R.r.map(lambda v: f"{'▲' if v > 0 else '▼' if v < 0 else '•'} {v:+.2f}" if pd.notna(v) else "—"),
+            "P&L ₹": R.pnl, "Status": R.status, "Your review": R.verdict.map(
+                {"agree": "👍 agree", "disagree": "👎 disagree", "unsure": "🤔 unsure"}).fillna("")})
+        sty = tab.style.map(lambda v: f"color:{UP};font-weight:600" if str(v).startswith("▲") else
+                            f"color:{DOWN};font-weight:600" if str(v).startswith("▼") else "", subset=["Side", "R"]) \
+                       .map(lambda v: f"color:{UP}" if isinstance(v, (int, float)) and v > 0 else
+                            f"color:{DOWN}" if isinstance(v, (int, float)) and v < 0 else "", subset=["P&L ₹"]) \
+                       .format({"Entry ₹": "{:,.2f}", "Stop ₹": "{:,.2f}", "Target ₹": "{:,.2f}", "Exit ₹": "{:,.2f}",
+                                "P&L ₹": "{:+,.0f}", "Qty": "{:,.0f}"}, na_rep="—")
+        st.dataframe(sty, hide_index=True, width="stretch", height=min(35 * (len(tab) + 1) + 3, 460))
+        st.download_button("Download trade log (CSV)", R.drop(columns=["snapshot", "factors", "human"]).to_csv(index=False),
+                           "stocklab_paper_trades.csv", "text/csv")
+
+        # ---------------- review one trade
+        section("Review a trade", "recommendation → result → why")
+        labels = [f'{t:%d %b %H:%M} · {s_} {"▲BUY" if sd_ == 1 else "▼SELL"} {st_} · '
+                  + (f"{r_:+.2f}R" if pd.notna(r_) else "open")
+                  for t, s_, sd_, st_, r_ in zip(R.rec_time, R.symbol, R.side, R.setup, R.r)]
+        pick = st.selectbox("Trade", range(len(R)), format_func=lambda i: labels[i], key="tl_pick")
+        T_ = R.iloc[pick]
+        sn = T_.snapshot or {}
+        side_w = "BUY" if T_.side == 1 else "SELL"
+        rec_html = (f'<b class="h">Recommendation · {T_.rec_time:%d %b %H:%M}</b>'
+                    f'{side_w} {int(T_.qty or 0):,} at <b class="num">{inr(T_.entry)}</b> · stop {inr(T_.stop)} · target {inr(T_.target)}<br>'
+                    f'Execution window: {ag.WINDOW_TEXT.get(int(T_.window_min or 0), str(T_.window_min) + " min")}'
+                    + (f' (close by {_hm(T_.deadline)})' if T_.deadline else "") + f' · exit policy {T_.policy}<br>'
+                    f'<span class="note">Agents at the time — Pulse: {html.escape(str(sn.get("mood", "—")))} · '
+                    f'Sentinel: {html.escape(str(sn.get("sentinel") or "not checked"))} · Coach: '
+                    + (f'{sn["exp_r"]:+.2f}R expected ({html.escape(str(sn.get("coach_verdict")))})' if sn.get("exp_r") is not None else "learning")
+                    + f' · Risk: {html.escape(str(sn.get("risk_verdict", "—")))}</span>'
+                    + (f'<br><span class="note">Skipped: {html.escape(str(T_.skip_reason))}</span>' if T_.status == "SKIPPED" else ""))
+        if T_.status == "OPEN":
+            out_html = (f'<b class="h">Result so far</b>Open · last {inr(T_.last_price)} → <b>{T_.r:+.2f}R</b> '
+                        f'({inr(T_.pnl, 0)}) · best +{(T_.mfe or 0):.1f}R, worst −{(T_.mae or 0):.1f}R')
+        else:
+            out_html = (f'<b class="h">Result{" (shadow — not executed)" if T_.status == "SKIPPED" else ""}</b>'
+                        f'Closed {_hm(T_.exit_time)} by {reason_txt.get(T_.reason, T_.reason)} at <b class="num">{inr(T_.exit_price)}</b> → '
+                        f'<b class="{"up" if (T_.r or 0) > 0 else "down"}">{T_.r:+.2f}R · {"₹" if (T_.pnl or 0) >= 0 else "−₹"}{abs(T_.pnl or 0):,.0f}</b><br>'
+                        f'Held {int(T_.minutes or 0)} min · best +{(T_.mfe or 0):.1f}R · worst −{(T_.mae or 0):.1f}R'
+                        + (f' · Nifty {T_.mkt_move:+.2f}% in its direction' if pd.notna(T_.mkt_move) else "")
+                        + (f'<br>Holding to the plan instead: {T_.hold_r:+.2f}R' if pd.notna(T_.hold_r) else ""))
+        pos = [f for f in T_.factors if f["kind"] == "pos"]
+        neg = [f for f in T_.factors if f["kind"] == "neg"]
+        fx = ('<div class="tl-grid"><div class="tl-box"><b class="h">What helped</b>'
+              + ("".join(f'<div class="fx pos">{html.escape(f["text"])}</div>' for f in pos) or '<div class="note">—</div>')
+              + '</div><div class="tl-box"><b class="h">What hurt</b>'
+              + ("".join(f'<div class="fx neg">{html.escape(f["text"])}</div>' for f in neg) or '<div class="note">—</div>')
+              + '</div></div>') if T_.factors else '<div class="note" style="margin-top:8px">The Analyst reviews the trade once it closes.</div>'
+        drv = sn.get("drivers") or []
+        coach_html = ('<div class="note" style="margin-top:8px"><b>Coach evidence at recommendation time:</b> '
+                      + "; ".join(f'{"▲" if d["edge"] > 0 else "▼"} {html.escape(d["text"])} (n={d["n"]})' for d in drv)
+                      + '</div>') if drv else ""
+        st.markdown(f'<div class="sl tl-card"><h4>{html.escape(T_.symbol)} · {side_w} · {html.escape(str(T_.setup))}'
+                    f'{" · <span class=note>recorded later, not live</span>" if pd.notna(T_.live) and not bool(T_.live) else ""}</h4>'
+                    f'<div class="tl-grid"><div class="tl-box">{rec_html}</div><div class="tl-box">{out_html}</div></div>'
+                    f'{fx}{coach_html}'
+                    + (f'<div class="note" style="margin-top:8px"><b>Narrator:</b> {html.escape(sn.get("narr", ""))}</div>' if sn.get("narr") else "")
+                    + '</div>', unsafe_allow_html=True)
+        try:
+            dd, _f = fetch_intraday(symbols, demo, 15, f"{ss.get('tok', 0)}-{int(ss.get('tok_t', time.time()) // 60)}")
+            gsym = dd.get(T_.symbol)
+            if gsym is not None:
+                gday = gsym[gsym.index.date == pd.Timestamp(T_.day).date()]
+                gday = gday[(gday.index.time >= dtime(9, 15)) & (gday.index.time < dtime(15, 30))]
+                if len(gday):
+                    figt = go.Figure(go.Candlestick(x=gday.index, open=gday.Open, high=gday.High, low=gday.Low, close=gday.Close,
+                                                    increasing=dict(line=dict(color=UP), fillcolor=UP),
+                                                    decreasing=dict(line=dict(color=DOWN), fillcolor=DOWN), name="Price"))
+                    for nm, y, col in [("Entry", T_.entry, "#1f5f99"), ("Stop", T_.stop, DOWN), ("Target", T_.target, UP)]:
+                        figt.add_hline(y=y, line=dict(color=col, dash="dash", width=1), annotation_text=f"{nm} {y:,.2f}",
+                                       annotation_position="right", annotation_font=dict(size=10, color=col))
+                    t_in = pd.Timestamp(T_.rec_time).tz_localize(None)
+                    figt.add_trace(go.Scatter(x=[t_in], y=[T_.entry], mode="markers", name="Paper entry",
+                                              marker=dict(symbol="triangle-up" if T_.side == 1 else "triangle-down", size=14,
+                                                          color="#1f5f99", line=dict(color="#fff", width=1.5))))
+                    if T_.exit_time:
+                        figt.add_trace(go.Scatter(x=[pd.Timestamp(T_.exit_time)], y=[T_.exit_price], mode="markers",
+                                                  name="Paper exit", marker=dict(symbol="x", size=12, color="#121212")))
+                    if T_.deadline:
+                        figt.add_vrect(x0=t_in, x1=pd.Timestamp(T_.deadline), fillcolor="#1f5f99", opacity=0.07, line_width=0,
+                                       annotation_text="execution window", annotation_position="top left",
+                                       annotation_font=dict(size=10))
+                    figt.update_layout(height=330, margin=dict(l=8, r=78, t=8, b=8), xaxis_rangeslider_visible=False,
+                                       template="plotly_white", legend=dict(orientation="h", y=1.1, font=dict(size=11)),
+                                       font=dict(family="Libre Franklin, sans-serif"))
+                    st.plotly_chart(figt, width="stretch", config={"displayModeBar": False}, key=f"tl_chart_{T_.key}")
+        except Exception:
+            pass
+
+        st.markdown('<div class="sl" style="font-weight:700;margin:10px 0 2px">Your review of this recommendation</div>',
+                    unsafe_allow_html=True)
+        ok_edit = admin_gate("tradelog")
+        hv = T_.human or {}
+        c1, c2 = st.columns([1.4, 2.6])
+        verdict = c1.radio("Was the recommendation sound?", ["agree", "disagree", "unsure"], horizontal=True,
+                           index=["agree", "disagree", "unsure"].index(hv.get("verdict", "unsure")),
+                           format_func={"agree": "👍 Agree", "disagree": "👎 Disagree", "unsure": "🤔 Unsure"}.get,
+                           key=f"hv_{T_.key}", disabled=not ok_edit)
+        tags = c2.multiselect("What drove it, in your view?", ["Market direction", "Entry timing", "Stop placement",
+                              "Target too far", "Window too short", "Window too long", "News / event", "Volume",
+                              "Position size", "Good setup", "Bad setup", "Luck / noise"],
+                              default=hv.get("tags", []), key=f"ht_{T_.key}", disabled=not ok_edit)
+        note = st.text_input("Note", value=hv.get("note", ""), key=f"hn_{T_.key}", disabled=not ok_edit,
+                             placeholder="What should the agents learn from this one?")
+        if st.button("Save review", disabled=not ok_edit, key=f"hs_{T_.key}"):
+            who = ss.get("reviewer", "Reviewer")
+            STORE.paper_review(T_.key, dict(verdict=verdict, tags=tags, note=note, by=who, ts=now_ist().isoformat()))
+            STORE.log("Reviewer", "trade-review", f"{who} reviewed {T_.symbol} {side_w} {T_.rec_time:%d %b %H:%M}: "
+                      f"{verdict}" + (f" · {', '.join(tags)}" if tags else "") + (f" — {note}" if note else ""),
+                      symbol=T_.symbol, dkey=f"hrev|{T_.key}|{now_ist():%Y%m%d%H%M%S}")
+            st.toast("Review saved", icon="✅")
+            st.rerun()
+
+        # ---------------- drivers across the log
+        section("What drives the results", "every closed trade's factors, averaged")
+        DT = ag.driver_table(V)
+        if DT.empty:
+            st.markdown('<div class="sl empty">Factors appear once trades have closed.</div>', unsafe_allow_html=True)
+        else:
+            mx = max(DT.avg_r.abs().max(), 0.01)
+            rows_h = "".join(
+                f'<div class="drv"><div><span class="{"up" if r_.kind == "pos" else "down"}">'
+                f'{"▲ helped" if r_.kind == "pos" else "▼ hurt"}</span> · {html.escape(r_.factor)} '
+                f'<span class="note">· {int(r_.n)} trade{"s" if r_.n != 1 else ""}, {int(r_.wins)}W/{int(r_.losses)}L</span>'
+                f'<div class="bw"><i style="left:{50 if r_.avg_r >= 0 else 50 - abs(r_.avg_r) / mx * 50}%;'
+                f'width:{abs(r_.avg_r) / mx * 50}%;background:{UP if r_.avg_r >= 0 else DOWN}"></i></div></div>'
+                f'<b class="num {"up" if r_.avg_r >= 0 else "down"}">{r_.avg_r:+.2f}R</b></div>'
+                for r_ in DT.sort_values("avg_r", ascending=False).itertuples())
+            st.markdown(f'<div class="sl">{rows_h}</div>', unsafe_allow_html=True)
+            st.caption("▲ helped / ▼ hurt is the Analyst's reading of each factor; the bar is the average result of "
+                       "closed trades where it appeared. If a 'hurt' factor keeps showing good averages, the Analyst's rule "
+                       "is wrong for this market. Small counts are noisy — treat under ~10 trades as anecdotes.")
+        hr_ = V[V.verdict.isin(["agree", "disagree"]) & (V.status == "CLOSED")]
+        if len(hr_):
+            g_ = hr_.groupby("verdict").r.agg(["size", "mean"])
+            st.caption("Your reviews vs results: " + " · ".join(f"{k} — {int(v['size'])} trades, {v['mean']:+.2f}R avg"
+                                                                  for k, v in g_.iterrows()))
+        if not ss.get("tok"):
+            pass
+        st.caption("Paper trades are filled at the recommendation bar's open price and closed at the first stop, target, "
+                   "window end or 15:15 — with costs. Prices come from Yahoo 5-minute bars, so real fills will differ. "
+                   "'Recorded later' means the app wasn't open when the recommendation happened; the rules are the same, "
+                   "but the result wasn't watched live.")
+
 # ============================================================================ swing
 with tab_s:
     st.markdown('<div class="sl note">Upload a fundamentals export (e.g. Screener.in) with at least: symbol, pe, roe, '
@@ -963,11 +1290,13 @@ with tab_b:
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
 
 # ============================================================================ agent scores + human-in-the-loop
-AG_ICON = {"Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️"}
+AG_ICON = {"Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
+           "Trader": "📝", "Analyst": "🔎"}
 AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak ones",
            "Pulse": "Reads market mood and shrinks positions on weak days",
            "Exit": "Chooses and runs the exit policy",
            "Risk": "Daily loss cap, trade and position caps, correlation check",
+           "Trader": "Paper-trades each recommendation inside its execution window",
            "Sentinel": "Flags results dates, F&O ban and red-flag news",
            "Narrator": "Explains each signal in plain English"}
 
@@ -1054,7 +1383,14 @@ with tab_g:
 
         section("Agent scores", "0–100 · 50 = no measurable effect · based on strength of evidence")
         st.markdown('<div class="sgrid">' + "".join(score_card_html(n_, SC["agents"][n_]) for n_ in
-                    ["Coach", "Exit", "Risk", "Pulse", "Sentinel", "Narrator"]) + '</div>', unsafe_allow_html=True)
+                    [n_ for n_ in ["Coach", "Exit", "Trader", "Risk", "Pulse", "Sentinel", "Narrator"]
+                     if n_ in SC["agents"]]) + '</div>', unsafe_allow_html=True)
+        if SC.get("windows") is not None:
+            with st.expander("Execution windows compared on the same recommendations"):
+                wt = SC["windows"]
+                st.dataframe(pd.DataFrame({"Close after": wt.label, "R per trade": wt.exp.round(3),
+                                           "vs current": wt.vs_current.round(3), "Evidence z": wt.z.round(1),
+                                           "Win %": (wt.win * 100).round(0)}), hide_index=True, width="stretch")
         with st.expander("Exit policies compared on the same trades"):
             et = SC["exits"].copy()
             st.dataframe(pd.DataFrame({"Policy": et.policy, "How it exits": et.desc, "R per trade": et.exp.round(3),
@@ -1129,6 +1465,8 @@ with tab_g:
                 f_m = {m: mc[i % 3].number_input(f"{m} ×", 0.0, 1.5, float(CFG["mults"][m]), 0.05, key=f"m_{m}")
                        for i, m in enumerate(ag.DEFAULT_MULTS)}
                 st.markdown("**🚪 Exit**")
+                f_win = st.select_slider("Execution window (paper trader closes the trade at the end)", ag.WINDOWS,
+                                         int(CFG.get("paper_window_min", 0) or 0), format_func=ag.WINDOW_TEXT.get)
                 f_ex = st.selectbox("Exit policy", list(ag.EXIT_POLICIES), list(ag.EXIT_POLICIES).index(CFG["exit_policy"]),
                                     format_func=lambda p: ag.EXIT_POLICIES[p])
                 st.markdown("**⚖️ Risk**")
@@ -1149,7 +1487,8 @@ with tab_g:
                 ss.tune_cand = ag.merged(dict(coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, pulse_sizing=f_ps,
                                               mults=f_m, exit_policy=f_ex, risk_enabled=f_re, daily_loss_R=f_dl,
                                               max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, paused_setups=f_ps2,
-                                              edge_sizing=f_es, edge_k=f_ek, sentinel_block=f_sb))
+                                              edge_sizing=f_es, edge_k=f_ek, sentinel_block=f_sb,
+                                              paper_window_min=int(f_win)))
             cand = ss.get("tune_cand")
             if cand:
                 diff = cfg_diff(CFG, cand)
@@ -1240,7 +1579,8 @@ with tab_a:
             ql = q.lower()
             view = view[view.message.str.lower().str.contains(ql, regex=False) |
                         view.symbol.fillna("").str.lower().str.contains(ql, regex=False)]
-        icons = {"Pulse": "🧭", "Sentinel": "🛡️", "Narrator": "🗣️", "Coach": "🎓", "Alerts": "🔔", "Exit": "🚪", "Risk": "⚖️", "Reviewer": "👤"}
+        icons = {"Pulse": "🧭", "Sentinel": "🛡️", "Narrator": "🗣️", "Coach": "🎓", "Alerts": "🔔", "Exit": "🚪", "Risk": "⚖️", "Reviewer": "👤",
+                 "Trader": "📝", "Analyst": "🔎"}
         out = pd.DataFrame({"Time": view.ts.map(lambda t: f"{t:%d %b %H:%M}"), "Agent": view.agent,
                             "Type": view.kind, "Symbol": view.symbol.fillna(""), "What happened": view.message})
         show_n = st.select_slider("Show", [25, 50, 100, 250, 500], 50, key="audit_n") if len(out) > 25 else 25
