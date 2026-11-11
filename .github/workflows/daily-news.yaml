@@ -16,9 +16,12 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
+      # If the edition build fails, the bulletin below still goes out and the
+      # front page keeps yesterday's edition; the failure shows on the run.
       - name: Build today's edition and Atom feed
+        continue-on-error: true
         run: node tools/build-edition.mjs
 
       - name: Fetch headlines and write anchor script
@@ -88,7 +91,9 @@ jobs:
         run: |
           git config user.name "aishorts-bot"
           git config user.email "actions@github.com"
-          git add headlines.json bulletin.json bulletin.mp3 feed.xml editions
+          git add headlines.json bulletin.json bulletin.mp3
+          if [ -f feed.xml ]; then git add feed.xml; fi
+          if [ -d editions ]; then git add editions; fi
           git diff --cached --quiet || git commit -m "Daily edition: dispatches, Atom feed, headlines and neural voice"
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}"
           git push
