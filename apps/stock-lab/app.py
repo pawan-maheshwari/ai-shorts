@@ -219,8 +219,10 @@ def _make_store(demo, schema):
 
 
 def _store_schema():
+    """Changes when store.py or the Supabase secrets change, so a new key is picked up without a reboot."""
     import hashlib, inspect, store as _sm
-    return hashlib.md5(inspect.getsource(_sm).encode()).hexdigest()[:10]
+    creds = f"{_secret('SUPABASE_URL') or ''}|{_secret('SUPABASE_KEY') or ''}"
+    return hashlib.md5((inspect.getsource(_sm) + creds).encode()).hexdigest()[:10]
 
 
 def get_store(demo):
