@@ -29,6 +29,7 @@ import pandas as pd
 import requests
 
 import cheetah_engine as ce
+import models as ml
 
 MODEL = "claude-haiku-5-5"
 
@@ -710,6 +711,61 @@ def signal_features(g, sig, info, idx_day=None, news="unknown", mood="unknown"):
     }
 
 
+def _slope(v):
+    """Least-squares slope per bar of a short series (NaN if fewer than 3 points)."""
+    v = np.asarray(v, float)
+    v = v[~np.isnan(v)]
+    if len(v) < 3:
+        return np.nan
+    x = np.arange(len(v)) - (len(v) - 1) / 2
+    return float((x * (v - v.mean())).sum() / (x ** 2).sum())
+
+
+def model_features(g, sig, info, idx_day=None, mood=None):
+    """Continuous inputs for the win-probability models, using only bars completed before the entry bar.
+    Direction-dependent inputs are signed so that positive always means 'in the trade's direction'."""
+    i, side, entry = sig["i"], sig["side"], float(sig["entry"])
+    h = g.iloc[:max(i, 1)]
+    t = g.index[i]
+    c = h.Close.values.astype(float)
+    tp = (h.High + h.Low + h.Close) / 3
+    vw = ((tp * h.Volume).cumsum() / h.Volume.cumsum().replace(0, np.nan)).values
+    atr = float(((h.High - h.Low) / h.Close).tail(12).mean() * 100) or np.nan      # normal 5-min bar size, %
+    pct = lambda a, b: (a / b - 1) * 100 if b and not np.isnan(b) else np.nan
+    sl = lambda v, n: _slope(np.log(np.clip(np.asarray(v[-n:], float), 1e-9, None))) * 100       # % per bar
+    s6, s12 = sl(c, 6), sl(c, 12)
+    s3a, s3b = sl(c, 3), sl(c[:-3], 3) if len(c) >= 6 else np.nan
+    hi, lo = float(h.High.max()), float(h.Low.min())
+    pos = (entry - lo) / (hi - lo) if hi > lo else 0.5
+    lb = h.iloc[-1]
+    body = (lb.Close - lb.Low) / (lb.High - lb.Low) if lb.High > lb.Low else 0.5
+    stop_pct = abs(entry - sig["stop"]) / entry * 100
+    day_move = pct(entry, float(g.Open.iloc[0])) * side
+    n_move = n_slope = np.nan
+    if idx_day is not None and not idx_day.empty:
+        u = idx_day[idx_day.index < t]
+        if len(u):
+            n_move = pct(float(u.Close.iloc[-1]), float(idx_day.Open.iloc[0])) * side
+            n_slope = sl(u.Close.values, 6) * side
+    rv = info.get("relvol", np.nan)
+    m = mood or {}
+    x = dict(
+        mins=(t.hour * 60 + t.minute) - 555, gap=info.get("gap_pct", np.nan) * side,
+        relvol=np.log(rv) if rv and not pd.isna(rv) and rv > 0 else np.nan, or_pct=info.get("or_pct", np.nan),
+        stop_pct=stop_pct, stop_atr=stop_pct / atr if atr and not np.isnan(atr) else np.nan,
+        vwap_dist=pct(entry, vw[-1]) * side / atr if atr and not np.isnan(atr) else np.nan,
+        slope_px=s6 * side / atr if atr else np.nan, slope_px_long=s12 * side / atr if atr else np.nan,
+        slope_accel=(s3a - s3b) * side / atr if atr else np.nan,
+        slope_vwap=sl(vw, 6) * side / atr if atr else np.nan,
+        slope_vol=_slope(np.log(np.clip(h.Volume.values[-6:].astype(float), 1, None))),
+        day_pos=pos if side == 1 else 1 - pos, day_move=day_move, last_bar=body if side == 1 else 1 - body,
+        nifty_move=n_move, nifty_slope=n_slope,
+        rel_strength=day_move - n_move if not pd.isna(n_move) else np.nan,
+        mood_bias=m.get("bias", 0) * side, vix=m.get("vix", np.nan), vix_chg=m.get("vix_chg", np.nan),
+        is_orb=1.0 if sig["setup"] == "ORB" else 0.0, is_long=1.0 if side == 1 else 0.0)
+    return {k: (None if v is None or pd.isna(v) or not np.isfinite(v) else round(float(v), 5)) for k, v in x.items()}
+
+
 def trade_key(day, symbol, setup, side):
     return f"{day}|{symbol}|{setup}|{'L' if side == 1 else 'S'}"
 
@@ -874,6 +930,7 @@ def replay(data, idx, a, mults=None):
                 feats["_exits"] = {p: [round(v["r"], 4), v["t"].isoformat()] for p, v in ex.items()}
                 feats["_pw"] = pw
                 feats["_bias"] = mood["bias"]
+                feats["_x"] = model_features(g, sg, info, idd, mood)
                 rows.append(dict(key=trade_key(d, s, sg["setup"], sg["side"]), ts=sg["time"], day=d, source="backtest",
                                  symbol=s, setup=sg["setup"], side=sg["side"], entry=sg["entry"], stop=sg["stop"],
                                  target=sg["target"], exit=ex["fixed"]["exit"], r=ex["fixed"]["r"],
@@ -1005,6 +1062,7 @@ class Coach:
 # ============================================================================ CONFIG (human-approved settings)
 DEFAULT_CONFIG = dict(
     coach_filter=False, coach_threshold=0.0, half_life=10,
+    coach_model="bucket", coach_min_win=0.0,     # which brain predicts win odds; skip signals below these odds (0 = off)
     pulse_sizing=True, mults=dict(DEFAULT_MULTS),
     exit_policy="fixed",
     risk_enabled=True, daily_loss_R=2.0, max_open=3, max_trades=3, corr_limit=0.7,
@@ -1089,6 +1147,148 @@ def _metrics(r, w, ts):
                 win=float((r[m] > 0).mean()), maxdd=min(dd, 0.0))
 
 
+BRAINS = dict({"bucket": "Rule table (current Coach)"}, **ml.KINDS)
+
+
+def _prep(rows, cfg):
+    """Replay rows → frame with the result of every exit policy at the active execution window."""
+    df = pd.DataFrame(rows)
+    df["features"] = df.features.map(_feats)
+    df = df[df.features.map(lambda f: "_exits" in f)].reset_index(drop=True)
+    df["ts"] = pd.to_datetime(df.ts)
+    W = int(cfg.get("paper_window_min", 0) or 0)
+    has_pw = bool(len(df)) and df.features.map(lambda f: "_pw" in f).all()
+    if not has_pw:
+        W = 0
+    for p in EXIT_POLICIES:
+        df["r_" + p] = df.features.map(lambda f: f["_pw"][f"{p}|{W}"][0] if has_pw else f["_exits"][p][0])
+        df["t_" + p] = df.features.map(lambda f: f["_pw"][f"{p}|{W}"][1] if has_pw else f["_exits"][p][1])
+    if has_pw:
+        for w in WINDOWS:
+            df[f"w_{w}"] = df.features.map(lambda f: f["_pw"][f"{cfg['exit_policy']}|{w}"][0])
+    df["r_plain"] = df.r
+    df["r"] = df["r_" + cfg["exit_policy"]]          # the Coach is trained and judged on the executed plan
+    return df, W, has_pw
+
+
+def study_args(cfg):
+    """A wider version of the signal engine used only to give the models more examples to learn from:
+    both setups, both directions and a lower volume bar. Trades are still only taken on the real settings."""
+    a = engine_args(cfg)
+    a.setup, a.shorts, a.min_relvol = "both", True, min(float(a.min_relvol), 0.8)
+    return a
+
+
+def _xyr(df):
+    return ml.matrix([f.get("_x") for f in df.features]), (df.r > 0).astype(int).values, df.r.values, df.day.values
+
+
+def model_predictions(rows, cfg, study=None, warmup=10):
+    """Walk-forward win probability and expected R from every model for the executed plan.
+    The models learn from `study` (a wider set of signals from the same sessions; defaults to `rows`) and are
+    scored on `rows` — the signals the engine really gives — and on the study set itself.
+    Depends only on the data and the plan (exit policy + window), so it can be cached across other settings."""
+    cfg = merged(cfg)
+    if not rows:
+        return None
+    df, _, _ = _prep(rows, cfg)
+    sd = _prep(study, cfg)[0] if study else df
+    has_x = lambda d: len(d) and d.features.map(lambda f: isinstance(f.get("_x"), dict)).all()
+    if df.day.nunique() <= warmup + 2 or not has_x(df) or not has_x(sd):
+        return None
+    Xs, ys, rs, ds = _xyr(sd)
+    Xa, _, _, da = _xyr(df)
+    wf = ml.walk_forward((Xs, ys, rs, ds), {"actual": (Xa, da), "study": (Xs, ds)}, sorted(df.day.unique()), warmup)
+    out = pd.DataFrame({"key": df.key.values})
+    st = pd.DataFrame({"y": ys, "r": rs, "day": ds})
+    for k in ml.KINDS:
+        out["p_" + k], out["er_" + k] = wf["actual"][k]
+        st["p_" + k] = wf["study"][k][0]
+    out = out.drop_duplicates("key", keep="last").set_index("key")
+    out.attrs["study"] = st[st["p_ensemble"].notna()].reset_index(drop=True)
+    out.attrs["n_study"] = len(sd)
+    return out
+
+
+def fit_brain(trades, plan, kind):
+    """Fit the chosen model on every finished trade so far (for scoring today's live signals)."""
+    if kind not in ml.KINDS or trades is None or len(trades) == 0:
+        return None
+    t = trades[trades.r.notna()].copy()
+    t["features"] = t.features.map(_feats)
+    t = t[t.features.map(lambda f: isinstance(f.get("_x"), dict))]
+    if t.empty:
+        return None
+    r = np.array([f["_pw"][plan][0] if isinstance(f.get("_pw"), dict) and plan in f["_pw"] else r_
+                  for f, r_ in zip(t.features, t.r)], float)
+    return ml.Brain(kind).fit(ml.matrix([f["_x"] for f in t.features]), (r > 0).astype(int), r)
+
+
+def score_signal(coach, brain, feats, cfg):
+    """One verdict per signal. The rule table always supplies the reasons; when a model has been approved as
+    the Coach's brain it supplies the win odds and expected R."""
+    sc = coach.score(feats, cfg["coach_threshold"])
+    sc["model"] = "bucket"
+    if brain is not None and getattr(brain, "ok", False):
+        p, er = brain.predict(feats.get("_x"))
+        if p is not None:
+            sc.update(conf_rules=sc.get("conf"), exp_r_rules=sc.get("exp_r"), conf=p, exp_r=er, base=brain.p0,
+                      r0=brain.r0, model=brain.kind)
+    if sc.get("exp_r") is None:
+        return sc
+    mw = float(cfg.get("coach_min_win", 0) or 0)
+    why = (f"expected {sc['exp_r']:+.2f}R is below {cfg['coach_threshold']:+.2f}R" if sc["exp_r"] < cfg["coach_threshold"]
+           else f"win odds {sc['conf'] * 100:.0f}% are below the {mw * 100:.0f}% bar" if mw > 0 and sc["conf"] < mw else None)
+    sc["caution_why"] = why
+    sc["verdict"] = "Caution" if why else "Favourable" if sc["exp_r"] >= max(sc["r0"] + 0.1, 0.1) else "Neutral"
+    return sc
+
+
+def model_lab(T, active):
+    """How well each brain's walk-forward win odds separated winners from losers on the same trades."""
+    y = (T.r > 0).astype(int).values
+    r = T.r.values
+    days = sorted(T.day.unique())
+    recent = (T.day >= days[len(days) // 2]).values
+    rows = []
+    st = T.attrs.get("study")
+    for k, label in BRAINS.items():
+        if "p_" + k not in T or T["p_" + k].notna().sum() < 40:
+            continue
+        wide = dict(n_wide=0, auc_wide=np.nan, win_wide=np.nan, win_wide_top30=np.nan, r_wide_top30=np.nan, z_wide=0.0)
+        if st is not None and "p_" + k in st and len(st) >= 60:
+            ps, ysd, rsd = st["p_" + k].values, st.y.values, st.r.values
+            o = np.argsort(-ps, kind="mergesort")[:max(int(round(len(ps) * .3)), 1)]
+            h_ = ps >= np.median(ps)
+            wide = dict(n_wide=len(st), auc_wide=ml.auc(ps, ysd), win_wide=float(ysd.mean()),
+                        win_wide_top30=float(ysd[o].mean()), r_wide_top30=float(rsd[o].mean()),
+                        z_wide=_welch(rsd[h_], rsd[~h_]))
+        m = T["p_" + k].notna().values
+        p, yy, rr = T["p_" + k].values[m], y[m], r[m]
+        order = np.argsort(-p, kind="mergesort")
+        top = lambda q: order[:max(int(round(len(p) * q)), 1)]
+        hi = p >= np.median(p)
+        rows.append(dict(kind=k, label=label, active=k == active, n=int(m.sum()), auc=ml.auc(p, yy),
+                         auc_recent=ml.auc(p[recent[m]], yy[recent[m]]),
+                         brier=float(((p - yy) ** 2).mean()), brier_base=float(yy.mean() * (1 - yy.mean())),
+                         win_all=float(yy.mean()), r_all=float(rr.mean()),
+                         win_top50=float(yy[top(.5)].mean()), r_top50=float(rr[top(.5)].mean()),
+                         win_top30=float(yy[top(.3)].mean()), r_top30=float(rr[top(.3)].mean()),
+                         z=_welch(rr[hi], rr[~hi]) if hi.any() and (~hi).any() else 0.0, **wide))
+    tab = pd.DataFrame(rows)
+    sel = {}
+    for k in (tab.kind if len(tab) else []):
+        m = T["p_" + k].notna().values
+        p, yy, rr = T["p_" + k].values[m], y[m], r[m]
+        n_days = T.day[m].nunique()
+        order = np.argsort(-p, kind="mergesort")
+        sel[k] = pd.DataFrame([dict(share=q, trades=len(ix), per_month=len(ix) / n_days * 21, min_p=float(p[ix].min()),
+                                    said=float(p[ix].mean()), win=float(yy[ix].mean()), exp=float(rr[ix].mean()),
+                                    total=float(rr[ix].sum()))
+                               for q in (1.0, .7, .5, .3, .2) for ix in [order[:max(int(round(len(p) * q)), 1)]]])
+    return dict(table=tab, selectivity=sel, active=active, n_study=T.attrs.get("n_study"))
+
+
 def walk_forward(df, half_life, threshold, warmup=10):
     """Score each day's signals with a Coach trained only on earlier days."""
     days = sorted(df.day.unique())
@@ -1108,7 +1308,7 @@ def _apply(T, cfg, corr_by_day, use_coach, use_pulse, policy, use_risk):
     r = T["r_" + policy].values
     w = np.ones(len(T))
     if use_coach:
-        w[(T.exp_r < cfg["coach_threshold"]).values] = 0
+        w[T.caution.values] = 0
     if use_pulse:
         w *= T.features.map(lambda f: cfg["mults"].get(f.get("mood"), 1.0)).values
     reasons = [""] * len(T)
@@ -1133,32 +1333,36 @@ def _apply(T, cfg, corr_by_day, use_coach, use_pulse, policy, use_risk):
     return r, w, reasons
 
 
-def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10, sentinel_ev=None):
+def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10, sentinel_ev=None, mp=None):
+    """mp = model_predictions(...) for the same rows and plan. Needed for the model lab and whenever a model
+    (not the rule table) is the Coach's brain; computed here if it is required and missing."""
     cfg = merged(cfg)
-    df = pd.DataFrame(rows)
+    if not rows or pd.DataFrame(rows).day.nunique() <= warmup + 2:
+        return None
+    df, W, has_pw = _prep(rows, cfg)
     if df.empty or df.day.nunique() <= warmup + 2:
         return None
-    df["features"] = df.features.map(_feats)
-    df = df[df.features.map(lambda f: "_exits" in f)].reset_index(drop=True)
-    df["ts"] = pd.to_datetime(df.ts)
-    W = int(cfg.get("paper_window_min", 0) or 0)
-    has_pw = df.features.map(lambda f: "_pw" in f).all()
-    if not has_pw:
-        W = 0
-    for p in EXIT_POLICIES:
-        df["r_" + p] = df.features.map(lambda f: f["_pw"][f"{p}|{W}"][0] if has_pw else f["_exits"][p][0])
-        df["t_" + p] = df.features.map(lambda f: f["_pw"][f"{p}|{W}"][1] if has_pw else f["_exits"][p][1])
-    if has_pw:
-        for w in WINDOWS:
-            df[f"w_{w}"] = df.features.map(lambda f: f["_pw"][f"{cfg['exit_policy']}|{w}"][0])
-    df["r_plain"] = df.r
-    df["r"] = df["r_" + cfg["exit_policy"]]          # the Coach is trained and judged on the executed plan
     risk_frac = float(cfg["risk_pct"]) / 100.0
     df["value_x"] = [min(risk_frac * e / abs(e - s_), float(cfg["leverage"])) if abs(e - s_) > 0 else 0.0
                      for e, s_ in zip(df.entry, df.stop)]
     T = walk_forward(df, cfg["half_life"], cfg["coach_threshold"], warmup)
     if T.empty:
         return None
+    T["p_bucket"], T["er_bucket"] = T.conf, T.exp_r
+    brain = cfg["coach_model"] if cfg["coach_model"] in BRAINS else "bucket"
+    if mp is None and brain != "bucket":
+        mp = model_predictions(rows, cfg, warmup)
+    if mp is not None:
+        T = T.join(mp, on="key")
+        T.attrs["study"], T.attrs["n_study"] = mp.attrs.get("study"), mp.attrs.get("n_study")
+    if brain != "bucket" and ("p_" + brain not in T or T["p_" + brain].notna().sum() < 40):
+        brain = "bucket"                                   # model not trainable on this data → rule table
+    if brain != "bucket":
+        ok = T["p_" + brain].notna()
+        T.loc[ok, "conf"], T.loc[ok, "exp_r"] = T.loc[ok, "p_" + brain], T.loc[ok, "er_" + brain]
+    min_win = float(cfg.get("coach_min_win", 0) or 0)
+    T["caution"] = (T.exp_r < cfg["coach_threshold"]) | ((T.conf < min_win) if min_win > 0 else False)
+    lab = model_lab(T, brain) if mp is not None else None
     corr_by_day = corr_by_day or {}
     n_days = T.day.nunique()
     per_month = len(T) / n_days * 21
@@ -1170,16 +1374,20 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
     r_act = T["r_" + cfg["exit_policy"]]
     hi = T.exp_r >= T.exp_r.median()
     z_rank = _welch(r_act[hi], r_act[~hi])
-    kept = T.exp_r >= cfg["coach_threshold"]
+    kept = ~T.caution
     m_c = _metrics(r_act, kept.astype(float).values, ts)
     m_all = _metrics(r_act, np.ones(len(T)), ts)
     agents["Coach"] = dict(evidence(z_rank, len(T)), on=cfg["coach_filter"],
-                           setting=f"Filter {'ON' if cfg['coach_filter'] else 'OFF'} · skip below {cfg['coach_threshold']:+.2f}R · "
-                                   f"memory half-life {cfg['half_life']} days",
+                           setting=f"Brain: {BRAINS[brain]} · filter {'ON' if cfg['coach_filter'] else 'OFF'} · skip below "
+                                   f"{cfg['coach_threshold']:+.2f}R" + (f" or under {min_win * 100:.0f}% win odds" if min_win > 0 else "")
+                                   + f" · memory half-life {cfg['half_life']} days",
+                           brain=brain, win_hi=float((r_act[hi] > 0).mean()), win_lo=float((r_act[~hi] > 0).mean()),
+                           win_kept=float((r_act[kept] > 0).mean()) if kept.any() else np.nan, n_kept=int(kept.sum()),
                            effect=m_c["exp"] - m_all["exp"], effect_label="per trade if the filter is on",
                            detail=f"Judged on the plan that is executed ({cfg['exit_policy']} exit, "
-                                  f"{WINDOW_TEXT.get(W, str(W) + ' min').lower()}). Top half of its picks averaged "
-                                  f"{r_act[hi].mean():+.2f}R vs bottom half {r_act[~hi].mean():+.2f}R. Filter would skip "
+                                  f"{WINDOW_TEXT.get(W, str(W) + ' min').lower()}). Top half of its picks won "
+                                  f"{(r_act[hi] > 0).mean() * 100:.0f}% and averaged {r_act[hi].mean():+.2f}R vs bottom half "
+                                  f"{(r_act[~hi] > 0).mean() * 100:.0f}% and {r_act[~hi].mean():+.2f}R. Filter would skip "
                                   f"{int((~kept).sum())} of {len(T)} trades (they averaged "
                                   f"{r_act[~kept].mean() if (~kept).any() else float('nan'):+.2f}R).")
     # Pulse — are reduced-size trades really worse?
@@ -1306,7 +1514,7 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
         last = g.tail(20).r_fixed
         by_setup[s_] = dict(n=len(g), exp=g.r_fixed.mean(), last20=last.mean(), z_last=_welch(last, T.r_fixed))
     return dict(cfg=cfg, base=base, system=system, agents=agents, exits=ex_tab, windows=win_tab, curves=curves, days=n_days,
-                trades=len(T), per_month=per_month, risk_rs=risk_rs, by_setup=by_setup,
+                trades=len(T), per_month=per_month, risk_rs=risk_rs, by_setup=by_setup, lab=lab,
                 period=(str(T.day.min()), str(T.day.max())), warmup=warmup)
 
 
@@ -1338,6 +1546,30 @@ def proposals(sc, cfg):
     if cfg["coach_filter"] and ((co.get("z") or 0) < 0.5 or co["effect"] < 0):
         add("Coach", "Turn off the Coach filter", f"Its predictions no longer separate winners from losers "
             f"(z={co.get('z') or 0:.1f}, filter effect {co['effect']:+.2f}R per trade).", {"coach_filter": False})
+    lab = sc.get("lab")
+    if lab is not None and len(lab["table"]):
+        lt = lab["table"].set_index("kind")
+        act = lab["active"]
+        a_ = lt.loc[act] if act in lt.index else None
+        if a_ is not None:
+            # a challenger must show skill on the wide study set (many trades) AND beat the active brain on real signals
+            ch = lt[(lt.index != act) & (lt.index != "bucket") & (lt.auc_wide >= 0.54) & (lt.z_wide >= 2.0)
+                    & (lt.auc >= 0.53) & (lt.auc >= a_.auc + 0.02) & (lt.win_top50 > a_.win_top50)
+                    & (lt.r_top50 > a_.r_top50)]
+            if act != "bucket":                            # between models, switch only on a clear gap (no flip-flopping)
+                ch = ch[ch.auc_wide >= a_.auc_wide + 0.03]
+            if len(ch):
+                b = ch.sort_values("auc_wide", ascending=False).iloc[0]
+                add("Coach", f"Switch the Coach's brain: {BRAINS[act]} → {b.label}",
+                    f"On {int(b.n)} walk-forward trades its top-half picks won {b.win_top50 * 100:.0f}% and averaged "
+                    f"{b.r_top50:+.2f}R, vs {a_.win_top50 * 100:.0f}% and {a_.r_top50:+.2f}R now. Ranking skill (AUC) "
+                    f"{b.auc:.2f} vs {a_.auc:.2f} (0.50 = guessing), and {b.auc_wide:.2f} across {int(b.n_wide)} wider "
+                    f"practice signals where its top 30% won {b.win_wide_top30 * 100:.0f}% vs {b.win_wide * 100:.0f}% overall.",
+                    {"coach_model": b.name})
+            if act != "bucket" and (a_.auc_wide < 0.51 or (a_.auc < 0.49 and a_.z < 0)):
+                add("Coach", f"Return the Coach's brain to the rule table",
+                    f"{BRAINS[act]} no longer separates winners from losers (AUC {a_.auc:.2f} on real signals, "
+                    f"{a_.auc_wide:.2f} on practice signals; 0.50 = guessing).", {"coach_model": "bucket", "coach_min_win": 0.0})
     pu = sc["agents"]["Pulse"]
     if cfg["pulse_sizing"] and pu.get("score") is not None and pu["z"] <= -1.0:
         add("Pulse", "Turn off mood-based sizing", f"Trades it shrinks have actually done better than full-size ones "

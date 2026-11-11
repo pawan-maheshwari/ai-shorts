@@ -24,7 +24,7 @@ def _fresh_local_modules():
     """Streamlit Cloud keeps imported helper modules in memory across redeploys, so an update can run new
     app.py against old store/agents code. Reload any local module whose file changed since it was loaded."""
     here = os.path.dirname(os.path.abspath(__file__))
-    for name in ("cheetah_engine", "store", "agents"):          # dependency order
+    for name in ("cheetah_engine", "store", "models", "agents"):          # dependency order
         mod = sys.modules.get(name)
         path = os.path.join(here, name + ".py")
         if mod is None or not os.path.exists(path):
@@ -356,26 +356,64 @@ def coach_trades(demo, token):
     return get_store(demo).trades()
 
 
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=3)
+def study_cached(demo, symbols, day, study_key, _a):
+    """A wider set of signals from the same sessions (both directions, lower volume bar) for the models to learn from."""
+    data = ce.demo_intraday(days=45) if demo else ce.yahoo_intraday(list(symbols), 59)
+    if not data:
+        return []
+    idx = ag.fetch_index(demo, data) if demo else fetch_index_cached(False, f"train-{day}")
+    return ag.replay(data, idx, _a)[0]
+
+
+def _study(demo, symbols, day, cfg):
+    sa = ag.study_args(cfg)
+    return study_cached(demo, symbols, day, f"{sa.min_relvol}|{sa.rr}|{sa.cost_pct}", sa)
+
+
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=12)
+def model_preds_cached(demo, symbols, day, args_key, plan, cfg_json, _a):
+    """Walk-forward win odds from logistic regression, boosted trees, the neural network and their ensemble."""
+    rows, _, _ = history_cached(demo, symbols, day, args_key, _a)
+    cfg = json.loads(cfg_json)
+    return ag.model_predictions(rows, cfg, _study(demo, symbols, day, cfg))
+
+
+@st.cache_resource(ttl=86400, show_spinner=False, max_entries=6)
+def brain_cached(demo, symbols, day, study_key, plan, kind, _cfg):
+    """The approved model, refitted once a day on every finished practice signal so far."""
+    rows = _study(demo, symbols, day, _cfg)
+    b = ag.fit_brain(pd.DataFrame(rows), plan, kind) if rows else None
+    if b is not None and b.ok:
+        get_store(demo).log("Coach", "training", f"{ag.BRAINS[kind]} refitted on {b.n} practice signals "
+                            f"(base win rate {b.p0 * 100:.0f}%)", dkey=f"brain|{day}|{kind}|{plan}|{study_key}")
+    return b
+
+
 @st.cache_data(ttl=3600, show_spinner=False, max_entries=24)
-def scorecard_cached(demo, symbols, day, args_key, cfg_json, risk_rs, live_token, _a):
+def scorecard_cached(demo, symbols, day, args_key, cfg_json, risk_rs, live_token, _a, lab=False):
     rows, corr, stats = history_cached(demo, symbols, day, args_key, _a)
+    cfg = json.loads(cfg_json)
+    mcfg = json.dumps({k: cfg[k] for k in ag.ENGINE_KEYS + ["exit_policy", "paper_window_min"] if k in cfg}, sort_keys=True)
+    mp = (model_preds_cached(demo, symbols, day, args_key, ag.plan_key(cfg), mcfg, _a)
+          if rows and (lab or cfg.get("coach_model", "bucket") != "bucket") else None)
     store = get_store(demo)
     tr = store.trades()
     live = tr[tr.source == "live"] if not tr.empty else tr
     ev = ag.sentinel_evidence(store.sentinel_list(), pd.DataFrame(stats))
-    return ag.scorecard(rows, json.loads(cfg_json), live, corr, risk_rs, sentinel_ev=ev)
+    return ag.scorecard(rows, cfg, live, corr, risk_rs, sentinel_ev=ev, mp=mp)
 
 
 def now_ist():
     return pd.Timestamp.now(tz=ce.IST)
 
 
-def score_for(cfg, demo, token):
+def score_for(cfg, demo, token, lab=False):
     """Scorecard for any settings — the engine, paper account and watchlist come from the settings themselves."""
     a_ = ag.engine_args(cfg)
     sy = tuple(sorted({str(x).strip().upper() for x in cfg["watchlist"] if str(x).strip()}))
     return scorecard_cached(demo, sy, f"{now_ist():%Y-%m-%d}", ag.engine_key(cfg), json.dumps(cfg, sort_keys=True),
-                            a_.capital * a_.risk_pct / 100, token, a_)
+                            a_.capital * a_.risk_pct / 100, token, a_, lab=lab)
 
 
 def load_cfg(store):
@@ -397,8 +435,7 @@ def save_cfg(store, state, params, note, by, change):
     store.kv_set("agent_config", dict(version=v, active=params, history=hist[-60:]))
     store.log("Reviewer", "config", f"Settings v{v} by {by}: {note}", detail=dict(change=change, version=v),
               dkey=f"cfg|{v}|{now_ist():%Y%m%d%H%M%S}")
-    for c_ in [scorecard_cached]:
-        c_.clear()
+    scorecard_cached.clear()
     return v
 
 
@@ -546,6 +583,9 @@ def signal_card(r, exit_time, agt=None):
     st.markdown(h, unsafe_allow_html=True)
 
 
+BRAIN_SHORT = {"logit": "logistic", "gbm": "boosted trees", "dnn": "neural net", "ensemble": "ensemble"}
+
+
 def agent_strip(a):
     if not a:
         return ""
@@ -561,7 +601,8 @@ def agent_strip(a):
     sc = a["coach"]
     if sc.get("conf") is not None:
         v = sc["verdict"]
-        chips.append(f'<span class="ag {"good" if v == "Favourable" else "bad" if v == "Caution" else ""}"><i>Coach</i>'
+        chips.append(f'<span class="ag {"good" if v == "Favourable" else "bad" if v == "Caution" else ""}"><i>Coach'
+                     f'{" · " + BRAIN_SHORT.get(sc.get("model"), "") if sc.get("model") not in (None, "bucket") else ""}</i>'
                      f'{sc["conf"] * 100:.0f}% win odds · {v}</span>')
     else:
         chips.append('<span class="ag"><i>Coach</i>learning</span>')
@@ -734,6 +775,12 @@ with tab_i:
         store.log("Pulse", "regime", f"{mood['regime']} — position size ×{size_mult:g}. " + "; ".join(mood["reasons"]),
                   detail=mood, dkey=f"pulse|{day_s}|{mood['regime']}")
         coach = ag.Coach(coach_trades(demo, ss.tok), CFG["half_life"], day, plan=PLAN)
+        brain = None
+        if CFG["coach_model"] in ag.ml.KINDS:
+            with st.spinner(f"Coach is training its {ag.BRAINS[CFG['coach_model']].lower()} (once a day)…"):
+                sa_ = ag.study_args(CFG)
+                brain = brain_cached(demo, symbols, day_s, f"{sa_.min_relvol}|{sa_.rr}|{sa_.cost_pct}", PLAN,
+                                     CFG["coach_model"], CFG)
         targets = list(dict.fromkeys(sig.symbol.tolist() + S[S.in_play].symbol.tolist()))[:12]
         ensure_daily_scan(demo, symbols, store)             # whole watchlist, in the background, once a day
         sents = sentinel_batch(tuple(targets), demo, day_s, bool(API_KEY)) if targets else {}
@@ -778,7 +825,8 @@ with tab_i:
             info = dict(relvol=r.relvol, gap_pct=r.gap_pct, or_pct=(r.or_high - r.or_low) / g.Open.iloc[0] * 100)
             m_at = ag.pulse(idx, day, asof=r.signal_time, mults=CFG["mults"])
             feats = ag.signal_features(g, sd, info, idd, news, mood=m_at["regime"])
-            sc = coach.score(feats, CFG["coach_threshold"])
+            feats["_x"] = ag.model_features(g, sd, info, idd, m_at)
+            sc = ag.score_signal(coach, brain, feats, CFG)
             pm = coach.postmortem(feats, act["r"]) if closed else None
             if plain["reason"] != "close":
                 pw = {}
@@ -820,8 +868,7 @@ with tab_i:
             value_x = base_q * sm * float(r.entry) / A.capital          # position value in multiples of capital
             caution = CFG["coach_filter"] and a["coach"].get("verdict") == "Caution"
             if caution:
-                verdict, rmul, why = "BLOCK", 0.0, [f"Coach filter: expected {a['exp_r']:+.2f}R is below "
-                                                   f"{CFG['coach_threshold']:+.2f}R"]
+                verdict, rmul, why = "BLOCK", 0.0, ["Coach filter: " + (a["coach"].get("caution_why") or "weak signal")]
             else:
                 verdict, rmul, why = ag.risk_check(dict(symbol=r.symbol, side=int(r.side), setup=r.setup,
                                                         t=r.signal_time, exp_r=a["exp_r"], sentinel=a["sentinel"],
@@ -857,7 +904,7 @@ with tab_i:
             sc = a["coach"]
             snap = dict(mood=a["m_at"]["regime"], mood_now=mood["regime"], sentinel=a["sentinel"],
                         sentinel_why=(a["sent"] or {}).get("reasons", [])[:2], exp_r=sc.get("exp_r"), conf=sc.get("conf"),
-                        coach_verdict=sc.get("verdict"),
+                        coach_verdict=sc.get("verdict"), coach_model=sc.get("model"),
                         drivers=[dict(edge=d[0], text=d[1], n=d[2]) for d in (sc.get("drivers") or [])][:6],
                         risk_verdict=a["risk_verdict"], risk_why=a["risk_why"], features=a["feats"], narr=a["narr"],
                         size_mult=a["size_mult"], risk_mult=a["risk_mult"])
@@ -973,7 +1020,10 @@ with tab_i:
                 sc = a["coach"]
                 if sc.get("drivers"):
                     st.markdown('<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Coach — what past trades say</b><br>' +
-                                f'Expected <b>{sc["exp_r"]:+.2f}R</b> after costs · win odds {sc["conf"] * 100:.0f}%<br>' +
+                                f'Expected <b>{sc["exp_r"]:+.2f}R</b> after costs · win odds {sc["conf"] * 100:.0f}%'
+                                + (f' <span class="note">from the {html.escape(ag.BRAINS[sc["model"]].lower())}; the rule table '
+                                   f'says {sc["conf_rules"] * 100:.0f}%</span>' if sc.get("model") not in (None, "bucket")
+                                   and sc.get("conf_rules") is not None else "") + '<br>' +
                                 "<br>".join(f'{"▼" if d[0] < 0 else "▲"} {html.escape(d[1])} — averages {d[4]:+.2f}R, '
                                             f'won {d[3] * 100:.0f}% of {d[2]}' for d in sc["drivers"]) +
                                 f'<br><span class="note">All signals: {sc["r0"]:+.2f}R per trade, '
@@ -1138,160 +1188,166 @@ with tab_t:
                               yaxis_title="Paper P&L (₹)", font=dict(family="Libre Franklin, sans-serif", size=11))
             st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
 
-        section("Trade log book", f"{len(V)} records · newest first")
-        R = V.sort_values("rec_time", ascending=False)
-        reason_txt = {"target": "Target", "stop": "Stop", "window": "Window end", "time": "15:15 close", "time-stop": "Time-stop"}
-        tab = pd.DataFrame({
-            "Rec. time": R.rec_time.dt.strftime("%d %b %H:%M"), "Symbol": R.symbol,
-            "Side": R.side.map({1: "▲ BUY", -1: "▼ SELL"}), "Setup": R.setup,
-            "Entry ₹": R.entry, "Stop ₹": R.stop, "Target ₹": R.target, "Qty": R.qty,
-            "Close by": R.deadline.map(lambda x: _hm(x) if x else "plan"),
-            "Exit": R.exit_time.map(lambda x: _hm(x) if x else "—"), "Exit ₹": R.exit_price,
-            "How": R.reason.map(lambda x: reason_txt.get(x, "—") if x else "—"),
-            "R": R.r.map(lambda v: f"{'▲' if v > 0 else '▼' if v < 0 else '•'} {v:+.2f}" if pd.notna(v) else "—"),
-            "P&L ₹": R.pnl, "Status": R.status, "Your review": R.verdict.map(
-                {"agree": "👍 agree", "disagree": "👎 disagree", "unsure": "🤔 unsure"}).fillna("")})
-        sty = tab.style.map(lambda v: f"color:{UP};font-weight:600" if str(v).startswith("▲") else
-                            f"color:{DOWN};font-weight:600" if str(v).startswith("▼") else "", subset=["Side", "R"]) \
-                       .map(lambda v: f"color:{UP}" if isinstance(v, (int, float)) and v > 0 else
-                            f"color:{DOWN}" if isinstance(v, (int, float)) and v < 0 else "", subset=["P&L ₹"]) \
-                       .format({"Entry ₹": "{:,.2f}", "Stop ₹": "{:,.2f}", "Target ₹": "{:,.2f}", "Exit ₹": "{:,.2f}",
-                                "P&L ₹": "{:+,.0f}", "Qty": "{:,.0f}"}, na_rep="—")
-        st.dataframe(sty, hide_index=True, width="stretch", height=min(35 * (len(tab) + 1) + 3, 460))
-        st.download_button("Download trade log (CSV)", R.drop(columns=["snapshot", "factors", "human"]).to_csv(index=False),
-                           "stocklab_paper_trades.csv", "text/csv")
-
-        # ---------------- review one trade
-        section("Review a trade", "recommendation → result → why")
-        labels = [f'{t:%d %b %H:%M} · {s_} {"▲BUY" if sd_ == 1 else "▼SELL"} {st_} · '
-                  + (f"{r_:+.2f}R" if pd.notna(r_) else "open")
-                  for t, s_, sd_, st_, r_ in zip(R.rec_time, R.symbol, R.side, R.setup, R.r)]
-        pick = st.selectbox("Trade", range(len(R)), format_func=lambda i: labels[i], key="tl_pick")
-        T_ = R.iloc[pick]
-        sn = T_.snapshot or {}
-        side_w = "BUY" if T_.side == 1 else "SELL"
-        rec_html = (f'<b class="h">Recommendation · {T_.rec_time:%d %b %H:%M}</b>'
-                    f'{side_w} {int(T_.qty or 0):,} at <b class="num">{inr(T_.entry)}</b> · stop {inr(T_.stop)} · target {inr(T_.target)}<br>'
-                    f'Execution window: {ag.WINDOW_TEXT.get(int(T_.window_min or 0), str(T_.window_min) + " min")}'
-                    + (f' (close by {_hm(T_.deadline)})' if T_.deadline else "") + f' · exit policy {T_.policy}'
-                    + (f' · settings v{int(T_.cfg_version)}' if pd.notna(T_.cfg_version) else "") + '<br>'
-                    f'<span class="note">Agents at the time — Pulse: {html.escape(str(sn.get("mood", "—")))} · '
-                    f'Sentinel: {html.escape(str(sn.get("sentinel") or "not checked"))} · Coach: '
-                    + (f'{sn["exp_r"]:+.2f}R expected ({html.escape(str(sn.get("coach_verdict")))})' if sn.get("exp_r") is not None else "learning")
-                    + f' · Risk: {html.escape(str(sn.get("risk_verdict", "—")))}</span>'
-                    + (f'<br><span class="note">Skipped: {html.escape(str(T_.skip_reason))}</span>' if T_.status == "SKIPPED" else ""))
-        if T_.status == "OPEN":
-            out_html = (f'<b class="h">Result so far</b>Open · last {inr(T_.last_price)} → <b>{T_.r:+.2f}R</b> '
-                        f'({inr(T_.pnl, 0)}) · best +{(T_.mfe or 0):.1f}R, worst −{(T_.mae or 0):.1f}R')
+        if V.empty:
+            st.markdown('<div class="sl empty">No trades match this view. Try “Executed + skipped” or a longer period.</div>',
+                        unsafe_allow_html=True)
         else:
-            out_html = (f'<b class="h">Result{" (shadow — not executed)" if T_.status == "SKIPPED" else ""}</b>'
-                        f'Closed {_hm(T_.exit_time)} by {reason_txt.get(T_.reason, T_.reason)} at <b class="num">{inr(T_.exit_price)}</b> → '
-                        f'<b class="{"up" if (T_.r or 0) > 0 else "down"}">{T_.r:+.2f}R · {"₹" if (T_.pnl or 0) >= 0 else "−₹"}{abs(T_.pnl or 0):,.0f}</b><br>'
-                        f'Held {int(T_.minutes or 0)} min · best +{(T_.mfe or 0):.1f}R · worst −{(T_.mae or 0):.1f}R'
-                        + (f' · Nifty {T_.mkt_move:+.2f}% in its direction' if pd.notna(T_.mkt_move) else "")
-                        + (f'<br>Holding to the plan instead: {T_.hold_r:+.2f}R' if pd.notna(T_.hold_r) else ""))
-        pos = [f for f in T_.factors if f["kind"] == "pos"]
-        neg = [f for f in T_.factors if f["kind"] == "neg"]
-        fx = ('<div class="tl-grid"><div class="tl-box"><b class="h">What helped</b>'
-              + ("".join(f'<div class="fx pos">{html.escape(f["text"])}</div>' for f in pos) or '<div class="note">—</div>')
-              + '</div><div class="tl-box"><b class="h">What hurt</b>'
-              + ("".join(f'<div class="fx neg">{html.escape(f["text"])}</div>' for f in neg) or '<div class="note">—</div>')
-              + '</div></div>') if T_.factors else '<div class="note" style="margin-top:8px">The Analyst reviews the trade once it closes.</div>'
-        drv = sn.get("drivers") or []
-        coach_html = ('<div class="note" style="margin-top:8px"><b>Coach evidence at recommendation time:</b> '
-                      + "; ".join(f'{"▲" if d["edge"] > 0 else "▼"} {html.escape(d["text"])} (n={d["n"]})' for d in drv)
-                      + '</div>') if drv else ""
-        st.markdown(f'<div class="sl tl-card"><h4>{html.escape(T_.symbol)} · {side_w} · {html.escape(str(T_.setup))}'
-                    f'{" · <span class=note>recorded later, not live</span>" if pd.notna(T_.live) and not bool(T_.live) else ""}</h4>'
-                    f'<div class="tl-grid"><div class="tl-box">{rec_html}</div><div class="tl-box">{out_html}</div></div>'
-                    f'{fx}{coach_html}'
-                    + (f'<div class="note" style="margin-top:8px"><b>Narrator:</b> {html.escape(sn.get("narr", ""))}</div>' if sn.get("narr") else "")
-                    + '</div>', unsafe_allow_html=True)
-        try:
-            dd, _f = fetch_intraday(symbols, demo, 15, f"{ss.get('tok', 0)}-{int(ss.get('tok_t', time.time()) // 60)}")
-            gsym = dd.get(T_.symbol)
-            if gsym is not None:
-                gday = gsym[gsym.index.date == pd.Timestamp(T_.day).date()]
-                gday = gday[(gday.index.time >= dtime(9, 15)) & (gday.index.time < dtime(15, 30))]
-                if len(gday):
-                    figt = go.Figure(go.Candlestick(x=gday.index, open=gday.Open, high=gday.High, low=gday.Low, close=gday.Close,
-                                                    increasing=dict(line=dict(color=UP), fillcolor=UP),
-                                                    decreasing=dict(line=dict(color=DOWN), fillcolor=DOWN), name="Price"))
-                    for nm, y, col in [("Entry", T_.entry, "#1f5f99"), ("Stop", T_.stop, DOWN), ("Target", T_.target, UP)]:
-                        figt.add_hline(y=y, line=dict(color=col, dash="dash", width=1), annotation_text=f"{nm} {y:,.2f}",
-                                       annotation_position="right", annotation_font=dict(size=10, color=col))
-                    t_in = pd.Timestamp(T_.rec_time).tz_localize(None)
-                    figt.add_trace(go.Scatter(x=[t_in], y=[T_.entry], mode="markers", name="Paper entry",
-                                              marker=dict(symbol="triangle-up" if T_.side == 1 else "triangle-down", size=14,
-                                                          color="#1f5f99", line=dict(color="#fff", width=1.5))))
-                    if T_.exit_time:
-                        figt.add_trace(go.Scatter(x=[pd.Timestamp(T_.exit_time)], y=[T_.exit_price], mode="markers",
-                                                  name="Paper exit", marker=dict(symbol="x", size=12, color="#121212")))
-                    if T_.deadline:
-                        figt.add_vrect(x0=t_in, x1=pd.Timestamp(T_.deadline), fillcolor="#1f5f99", opacity=0.07, line_width=0,
-                                       annotation_text="execution window", annotation_position="top left",
-                                       annotation_font=dict(size=10))
-                    figt.update_layout(height=330, margin=dict(l=8, r=78, t=8, b=8), xaxis_rangeslider_visible=False,
-                                       template="plotly_white", legend=dict(orientation="h", y=1.1, font=dict(size=11)),
-                                       font=dict(family="Libre Franklin, sans-serif"))
-                    st.plotly_chart(figt, width="stretch", config={"displayModeBar": False}, key=f"tl_chart_{T_.key}")
-        except Exception:
-            pass
+            section("Trade log book", f"{len(V)} records · newest first")
+            R = V.sort_values("rec_time", ascending=False)
+            reason_txt = {"target": "Target", "stop": "Stop", "window": "Window end", "time": "15:15 close", "time-stop": "Time-stop"}
+            tab = pd.DataFrame({
+                "Rec. time": R.rec_time.dt.strftime("%d %b %H:%M"), "Symbol": R.symbol,
+                "Side": R.side.map({1: "▲ BUY", -1: "▼ SELL"}), "Setup": R.setup,
+                "Entry ₹": R.entry, "Stop ₹": R.stop, "Target ₹": R.target, "Qty": R.qty,
+                "Close by": R.deadline.map(lambda x: _hm(x) if x else "plan"),
+                "Exit": R.exit_time.map(lambda x: _hm(x) if x else "—"), "Exit ₹": R.exit_price,
+                "How": R.reason.map(lambda x: reason_txt.get(x, "—") if x else "—"),
+                "R": R.r.map(lambda v: f"{'▲' if v > 0 else '▼' if v < 0 else '•'} {v:+.2f}" if pd.notna(v) else "—"),
+                "P&L ₹": R.pnl, "Status": R.status, "Your review": R.verdict.map(
+                    {"agree": "👍 agree", "disagree": "👎 disagree", "unsure": "🤔 unsure"}).fillna("")})
+            sty = tab.style.map(lambda v: f"color:{UP};font-weight:600" if str(v).startswith("▲") else
+                                f"color:{DOWN};font-weight:600" if str(v).startswith("▼") else "", subset=["Side", "R"]) \
+                           .map(lambda v: f"color:{UP}" if isinstance(v, (int, float)) and v > 0 else
+                                f"color:{DOWN}" if isinstance(v, (int, float)) and v < 0 else "", subset=["P&L ₹"]) \
+                           .format({"Entry ₹": "{:,.2f}", "Stop ₹": "{:,.2f}", "Target ₹": "{:,.2f}", "Exit ₹": "{:,.2f}",
+                                    "P&L ₹": "{:+,.0f}", "Qty": "{:,.0f}"}, na_rep="—")
+            st.dataframe(sty, hide_index=True, width="stretch", height=min(35 * (len(tab) + 1) + 3, 460))
+            st.download_button("Download trade log (CSV)", R.drop(columns=["snapshot", "factors", "human"]).to_csv(index=False),
+                               "stocklab_paper_trades.csv", "text/csv")
 
-        st.markdown('<div class="sl" style="font-weight:700;margin:10px 0 2px">Your review of this recommendation</div>',
-                    unsafe_allow_html=True)
-        ok_edit = admin_gate("tradelog")
-        hv = T_.human or {}
-        c1, c2 = st.columns([1.4, 2.6])
-        verdict = c1.radio("Was the recommendation sound?", ["agree", "disagree", "unsure"], horizontal=True,
-                           index=["agree", "disagree", "unsure"].index(hv.get("verdict", "unsure")),
-                           format_func={"agree": "👍 Agree", "disagree": "👎 Disagree", "unsure": "🤔 Unsure"}.get,
-                           key=f"hv_{T_.key}", disabled=not ok_edit)
-        tags = c2.multiselect("What drove it, in your view?", ["Market direction", "Entry timing", "Stop placement",
-                              "Target too far", "Window too short", "Window too long", "News / event", "Volume",
-                              "Position size", "Good setup", "Bad setup", "Luck / noise"],
-                              default=hv.get("tags", []), key=f"ht_{T_.key}", disabled=not ok_edit)
-        note = st.text_input("Note", value=hv.get("note", ""), key=f"hn_{T_.key}", disabled=not ok_edit,
-                             placeholder="What should the agents learn from this one?")
-        if st.button("Save review", disabled=not ok_edit, key=f"hs_{T_.key}"):
-            who = ss.get("reviewer", "Reviewer")
-            STORE.paper_review(T_.key, dict(verdict=verdict, tags=tags, note=note, by=who, ts=now_ist().isoformat()))
-            STORE.log("Reviewer", "trade-review", f"{who} reviewed {T_.symbol} {side_w} {T_.rec_time:%d %b %H:%M}: "
-                      f"{verdict}" + (f" · {', '.join(tags)}" if tags else "") + (f" — {note}" if note else ""),
-                      symbol=T_.symbol, dkey=f"hrev|{T_.key}|{now_ist():%Y%m%d%H%M%S}")
-            st.toast("Review saved", icon="✅")
-            st.rerun()
+            # ---------------- review one trade
+            section("Review a trade", "recommendation → result → why")
+            labels = [f'{t:%d %b %H:%M} · {s_} {"▲BUY" if sd_ == 1 else "▼SELL"} {st_} · '
+                      + (f"{r_:+.2f}R" if pd.notna(r_) else "open")
+                      for t, s_, sd_, st_, r_ in zip(R.rec_time, R.symbol, R.side, R.setup, R.r)]
+            pick = st.selectbox("Trade", range(len(R)), format_func=lambda i: labels[i], key="tl_pick")
+            if not isinstance(pick, (int, np.integer)) or pick >= len(R):
+                pick = 0
+            T_ = R.iloc[pick]
+            sn = T_.snapshot or {}
+            side_w = "BUY" if T_.side == 1 else "SELL"
+            rec_html = (f'<b class="h">Recommendation · {T_.rec_time:%d %b %H:%M}</b>'
+                        f'{side_w} {int(T_.qty or 0):,} at <b class="num">{inr(T_.entry)}</b> · stop {inr(T_.stop)} · target {inr(T_.target)}<br>'
+                        f'Execution window: {ag.WINDOW_TEXT.get(int(T_.window_min or 0), str(T_.window_min) + " min")}'
+                        + (f' (close by {_hm(T_.deadline)})' if T_.deadline else "") + f' · exit policy {T_.policy}'
+                        + (f' · settings v{int(T_.cfg_version)}' if pd.notna(T_.cfg_version) else "") + '<br>'
+                        f'<span class="note">Agents at the time — Pulse: {html.escape(str(sn.get("mood", "—")))} · '
+                        f'Sentinel: {html.escape(str(sn.get("sentinel") or "not checked"))} · Coach: '
+                        + (f'{sn["exp_r"]:+.2f}R expected ({html.escape(str(sn.get("coach_verdict")))})' if sn.get("exp_r") is not None else "learning")
+                        + f' · Risk: {html.escape(str(sn.get("risk_verdict", "—")))}</span>'
+                        + (f'<br><span class="note">Skipped: {html.escape(str(T_.skip_reason))}</span>' if T_.status == "SKIPPED" else ""))
+            if T_.status == "OPEN":
+                out_html = (f'<b class="h">Result so far</b>Open · last {inr(T_.last_price)} → <b>{T_.r:+.2f}R</b> '
+                            f'({inr(T_.pnl, 0)}) · best +{(T_.mfe or 0):.1f}R, worst −{(T_.mae or 0):.1f}R')
+            else:
+                out_html = (f'<b class="h">Result{" (shadow — not executed)" if T_.status == "SKIPPED" else ""}</b>'
+                            f'Closed {_hm(T_.exit_time)} by {reason_txt.get(T_.reason, T_.reason)} at <b class="num">{inr(T_.exit_price)}</b> → '
+                            f'<b class="{"up" if (T_.r or 0) > 0 else "down"}">{T_.r:+.2f}R · {"₹" if (T_.pnl or 0) >= 0 else "−₹"}{abs(T_.pnl or 0):,.0f}</b><br>'
+                            f'Held {int(T_.minutes or 0)} min · best +{(T_.mfe or 0):.1f}R · worst −{(T_.mae or 0):.1f}R'
+                            + (f' · Nifty {T_.mkt_move:+.2f}% in its direction' if pd.notna(T_.mkt_move) else "")
+                            + (f'<br>Holding to the plan instead: {T_.hold_r:+.2f}R' if pd.notna(T_.hold_r) else ""))
+            pos = [f for f in T_.factors if f["kind"] == "pos"]
+            neg = [f for f in T_.factors if f["kind"] == "neg"]
+            fx = ('<div class="tl-grid"><div class="tl-box"><b class="h">What helped</b>'
+                  + ("".join(f'<div class="fx pos">{html.escape(f["text"])}</div>' for f in pos) or '<div class="note">—</div>')
+                  + '</div><div class="tl-box"><b class="h">What hurt</b>'
+                  + ("".join(f'<div class="fx neg">{html.escape(f["text"])}</div>' for f in neg) or '<div class="note">—</div>')
+                  + '</div></div>') if T_.factors else '<div class="note" style="margin-top:8px">The Analyst reviews the trade once it closes.</div>'
+            drv = sn.get("drivers") or []
+            coach_html = ('<div class="note" style="margin-top:8px"><b>Coach evidence at recommendation time:</b> '
+                          + "; ".join(f'{"▲" if d["edge"] > 0 else "▼"} {html.escape(d["text"])} (n={d["n"]})' for d in drv)
+                          + '</div>') if drv else ""
+            st.markdown(f'<div class="sl tl-card"><h4>{html.escape(T_.symbol)} · {side_w} · {html.escape(str(T_.setup))}'
+                        f'{" · <span class=note>recorded later, not live</span>" if pd.notna(T_.live) and not bool(T_.live) else ""}</h4>'
+                        f'<div class="tl-grid"><div class="tl-box">{rec_html}</div><div class="tl-box">{out_html}</div></div>'
+                        f'{fx}{coach_html}'
+                        + (f'<div class="note" style="margin-top:8px"><b>Narrator:</b> {html.escape(sn.get("narr", ""))}</div>' if sn.get("narr") else "")
+                        + '</div>', unsafe_allow_html=True)
+            try:
+                dd, _f = fetch_intraday(symbols, demo, 15, f"{ss.get('tok', 0)}-{int(ss.get('tok_t', time.time()) // 60)}")
+                gsym = dd.get(T_.symbol)
+                if gsym is not None:
+                    gday = gsym[gsym.index.date == pd.Timestamp(T_.day).date()]
+                    gday = gday[(gday.index.time >= dtime(9, 15)) & (gday.index.time < dtime(15, 30))]
+                    if len(gday):
+                        figt = go.Figure(go.Candlestick(x=gday.index, open=gday.Open, high=gday.High, low=gday.Low, close=gday.Close,
+                                                        increasing=dict(line=dict(color=UP), fillcolor=UP),
+                                                        decreasing=dict(line=dict(color=DOWN), fillcolor=DOWN), name="Price"))
+                        for nm, y, col in [("Entry", T_.entry, "#1f5f99"), ("Stop", T_.stop, DOWN), ("Target", T_.target, UP)]:
+                            figt.add_hline(y=y, line=dict(color=col, dash="dash", width=1), annotation_text=f"{nm} {y:,.2f}",
+                                           annotation_position="right", annotation_font=dict(size=10, color=col))
+                        t_in = pd.Timestamp(T_.rec_time).tz_localize(None)
+                        figt.add_trace(go.Scatter(x=[t_in], y=[T_.entry], mode="markers", name="Paper entry",
+                                                  marker=dict(symbol="triangle-up" if T_.side == 1 else "triangle-down", size=14,
+                                                              color="#1f5f99", line=dict(color="#fff", width=1.5))))
+                        if T_.exit_time:
+                            figt.add_trace(go.Scatter(x=[pd.Timestamp(T_.exit_time)], y=[T_.exit_price], mode="markers",
+                                                      name="Paper exit", marker=dict(symbol="x", size=12, color="#121212")))
+                        if T_.deadline:
+                            figt.add_vrect(x0=t_in, x1=pd.Timestamp(T_.deadline), fillcolor="#1f5f99", opacity=0.07, line_width=0,
+                                           annotation_text="execution window", annotation_position="top left",
+                                           annotation_font=dict(size=10))
+                        figt.update_layout(height=330, margin=dict(l=8, r=78, t=8, b=8), xaxis_rangeslider_visible=False,
+                                           template="plotly_white", legend=dict(orientation="h", y=1.1, font=dict(size=11)),
+                                           font=dict(family="Libre Franklin, sans-serif"))
+                        st.plotly_chart(figt, width="stretch", config={"displayModeBar": False}, key=f"tl_chart_{T_.key}")
+            except Exception:
+                pass
 
-        # ---------------- drivers across the log
-        section("What drives the results", "every closed trade's factors, averaged")
-        DT = ag.driver_table(V)
-        if DT.empty:
-            st.markdown('<div class="sl empty">Factors appear once trades have closed.</div>', unsafe_allow_html=True)
-        else:
-            mx = max(DT.avg_r.abs().max(), 0.01)
-            rows_h = "".join(
-                f'<div class="drv"><div><span class="{"up" if r_.kind == "pos" else "down"}">'
-                f'{"▲ helped" if r_.kind == "pos" else "▼ hurt"}</span> · {html.escape(r_.factor)} '
-                f'<span class="note">· {int(r_.n)} trade{"s" if r_.n != 1 else ""}, {int(r_.wins)}W/{int(r_.losses)}L</span>'
-                f'<div class="bw"><i style="left:{50 if r_.avg_r >= 0 else 50 - abs(r_.avg_r) / mx * 50}%;'
-                f'width:{abs(r_.avg_r) / mx * 50}%;background:{UP if r_.avg_r >= 0 else DOWN}"></i></div></div>'
-                f'<b class="num {"up" if r_.avg_r >= 0 else "down"}">{r_.avg_r:+.2f}R</b></div>'
-                for r_ in DT.sort_values("avg_r", ascending=False).itertuples())
-            st.markdown(f'<div class="sl">{rows_h}</div>', unsafe_allow_html=True)
-            st.caption("▲ helped / ▼ hurt is the Analyst's reading of each factor; the bar is the average result of "
-                       "closed trades where it appeared. If a 'hurt' factor keeps showing good averages, the Analyst's rule "
-                       "is wrong for this market. Small counts are noisy — treat under ~10 trades as anecdotes.")
-        hr_ = V[V.verdict.isin(["agree", "disagree"]) & (V.status == "CLOSED")]
-        if len(hr_):
-            g_ = hr_.groupby("verdict").r.agg(["size", "mean"])
-            st.caption("Your reviews vs results: " + " · ".join(f"{k} — {int(v['size'])} trades, {v['mean']:+.2f}R avg"
-                                                                  for k, v in g_.iterrows()))
-        if not ss.get("tok"):
-            pass
-        st.caption("Paper trades are filled at the recommendation bar's open price and closed at the first stop, target, "
-                   "window end or 15:15 — with costs. Prices come from Yahoo 5-minute bars, so real fills will differ. "
-                   "'Recorded later' means the app wasn't open when the recommendation happened; the rules are the same, "
-                   "but the result wasn't watched live.")
+            st.markdown('<div class="sl" style="font-weight:700;margin:10px 0 2px">Your review of this recommendation</div>',
+                        unsafe_allow_html=True)
+            ok_edit = admin_gate("tradelog")
+            hv = T_.human or {}
+            c1, c2 = st.columns([1.4, 2.6])
+            verdict = c1.radio("Was the recommendation sound?", ["agree", "disagree", "unsure"], horizontal=True,
+                               index=["agree", "disagree", "unsure"].index(hv.get("verdict", "unsure")),
+                               format_func={"agree": "👍 Agree", "disagree": "👎 Disagree", "unsure": "🤔 Unsure"}.get,
+                               key=f"hv_{T_.key}", disabled=not ok_edit)
+            tags = c2.multiselect("What drove it, in your view?", ["Market direction", "Entry timing", "Stop placement",
+                                  "Target too far", "Window too short", "Window too long", "News / event", "Volume",
+                                  "Position size", "Good setup", "Bad setup", "Luck / noise"],
+                                  default=hv.get("tags", []), key=f"ht_{T_.key}", disabled=not ok_edit)
+            note = st.text_input("Note", value=hv.get("note", ""), key=f"hn_{T_.key}", disabled=not ok_edit,
+                                 placeholder="What should the agents learn from this one?")
+            if st.button("Save review", disabled=not ok_edit, key=f"hs_{T_.key}"):
+                who = ss.get("reviewer", "Reviewer")
+                STORE.paper_review(T_.key, dict(verdict=verdict, tags=tags, note=note, by=who, ts=now_ist().isoformat()))
+                STORE.log("Reviewer", "trade-review", f"{who} reviewed {T_.symbol} {side_w} {T_.rec_time:%d %b %H:%M}: "
+                          f"{verdict}" + (f" · {', '.join(tags)}" if tags else "") + (f" — {note}" if note else ""),
+                          symbol=T_.symbol, dkey=f"hrev|{T_.key}|{now_ist():%Y%m%d%H%M%S}")
+                st.toast("Review saved", icon="✅")
+                st.rerun()
+
+            # ---------------- drivers across the log
+            section("What drives the results", "every closed trade's factors, averaged")
+            DT = ag.driver_table(V)
+            if DT.empty:
+                st.markdown('<div class="sl empty">Factors appear once trades have closed.</div>', unsafe_allow_html=True)
+            else:
+                mx = max(DT.avg_r.abs().max(), 0.01)
+                rows_h = "".join(
+                    f'<div class="drv"><div><span class="{"up" if r_.kind == "pos" else "down"}">'
+                    f'{"▲ helped" if r_.kind == "pos" else "▼ hurt"}</span> · {html.escape(r_.factor)} '
+                    f'<span class="note">· {int(r_.n)} trade{"s" if r_.n != 1 else ""}, {int(r_.wins)}W/{int(r_.losses)}L</span>'
+                    f'<div class="bw"><i style="left:{50 if r_.avg_r >= 0 else 50 - abs(r_.avg_r) / mx * 50}%;'
+                    f'width:{abs(r_.avg_r) / mx * 50}%;background:{UP if r_.avg_r >= 0 else DOWN}"></i></div></div>'
+                    f'<b class="num {"up" if r_.avg_r >= 0 else "down"}">{r_.avg_r:+.2f}R</b></div>'
+                    for r_ in DT.sort_values("avg_r", ascending=False).itertuples())
+                st.markdown(f'<div class="sl">{rows_h}</div>', unsafe_allow_html=True)
+                st.caption("▲ helped / ▼ hurt is the Analyst's reading of each factor; the bar is the average result of "
+                           "closed trades where it appeared. If a 'hurt' factor keeps showing good averages, the Analyst's rule "
+                           "is wrong for this market. Small counts are noisy — treat under ~10 trades as anecdotes.")
+            hr_ = V[V.verdict.isin(["agree", "disagree"]) & (V.status == "CLOSED")]
+            if len(hr_):
+                g_ = hr_.groupby("verdict").r.agg(["size", "mean"])
+                st.caption("Your reviews vs results: " + " · ".join(f"{k} — {int(v['size'])} trades, {v['mean']:+.2f}R avg"
+                                                                      for k, v in g_.iterrows()))
+            if not ss.get("tok"):
+                pass
+            st.caption("Paper trades are filled at the recommendation bar's open price and closed at the first stop, target, "
+                       "window end or 15:15 — with costs. Prices come from Yahoo 5-minute bars, so real fills will differ. "
+                       "'Recorded later' means the app wasn't open when the recommendation happened; the rules are the same, "
+                       "but the result wasn't watched live.")
 
 # ============================================================================ swing
 with tab_s:
@@ -1465,7 +1521,7 @@ with tab_g:
                 'Agents can only <b>propose</b> changes — you approve, reject or fine-tune them here, and every '
                 'decision is versioned and logged.</div>', unsafe_allow_html=True)
     with st.spinner("Scoring the agents on recent sessions…"):
-        SC = score_for(CFG, demo, ss.get("tok", 0) // 10)
+        SC = score_for(CFG, demo, ss.get("tok", 0) // 10, lab=True)
     if SC is None:
         st.markdown('<div class="sl empty">Not enough history yet to score the agents (needs about 12 sessions with '
                     'signals). Try more symbols or a lower relative-volume filter in Settings.</div>',
@@ -1505,6 +1561,57 @@ with tab_g:
             st.dataframe(pd.DataFrame({"Policy": et.policy, "How it exits": et.desc, "R per trade": et.exp.round(3),
                                        "vs fixed": et.vs_fixed.round(3), "Evidence z": et.z.round(1),
                                        "Win %": (et.win * 100).round(0)}), hide_index=True, width="stretch")
+
+        # ---------------- model lab: which brain predicts winners best
+        LAB = SC.get("lab")
+        section("🧠 Model lab", "which brain gives the Coach the best win odds")
+        if not LAB or not len(LAB["table"]):
+            st.markdown('<div class="sl empty">Not enough finished signals yet to train the models '
+                        '(needs about 60 practice signals over 12+ sessions).</div>', unsafe_allow_html=True)
+        else:
+            lt = LAB["table"]
+            act = LAB["active"]
+            best = lt.sort_values("win_top30", ascending=False).iloc[0]
+            cur = lt[lt.kind == act].iloc[0]
+            st.markdown(
+                f'<div class="sl note">Every brain scores each signal with a win probability before the result is known; '
+                f'models are retrained as sessions are added and only ever tested on days they had not seen. '
+                f'All signals won <b>{cur.win_all * 100:.0f}%</b>. Taking only the top 30% by '
+                f'{html.escape(best.label.lower())} would have won <b>{best.win_top30 * 100:.0f}%</b> '
+                f'({best.r_top30:+.2f}R per trade vs {best.r_all:+.2f}R for all). '
+                f'Models learn from {LAB.get("n_study") or 0:,} practice signals (both directions, lower volume bar) '
+                f'so they have enough examples; they are judged on the signals the engine really gives.</div>',
+                unsafe_allow_html=True)
+            st.dataframe(pd.DataFrame({
+                "Brain": [("● " if k == act else "") + l for k, l in zip(lt.kind, lt.label)],
+                "Win % top 30%": (lt.win_top30 * 100).round(0),
+                "Win % top half": (lt.win_top50 * 100).round(0),
+                "Win % all": (lt.win_all * 100).round(0),
+                "R/trade top 30%": lt.r_top30.round(2),
+                "Skill (AUC)": lt.auc.round(2),
+                "Evidence z": lt.z.round(1),
+                "Skill on practice set": [("—" if pd.isna(v) else f"{v:.2f} (n={int(n_)})") for v, n_ in zip(lt.auc_wide, lt.n_wide)],
+                "Recent-half skill": lt.auc_recent.round(2)}), hide_index=True, width="stretch")
+            st.caption(f"● = brain in use · {int(cur.n)} real signals tested. Skill (AUC) is the chance a winner was scored "
+                       "above a loser: 0.50 is guessing, 0.55–0.60 is useful, above 0.65 is rare on real markets. "
+                       "A higher win rate only matters if R per trade rises with it.")
+            c1, c2 = st.columns([1, 2], vertical_alignment="bottom")
+            pick = c1.selectbox("How selective?", list(lt.kind), list(lt.kind).index(act),
+                                format_func=ag.BRAINS.get, key="lab_pick")
+            sel = LAB["selectivity"][pick]
+            st.dataframe(pd.DataFrame({
+                "Take": [f"Top {q * 100:.0f}%" if q < 1 else "All signals" for q in sel.share],
+                "Win-odds bar": [("—" if q == 1 else f"≥ {v * 100:.0f}%") for q, v in zip(sel.share, sel.min_p)],
+                "Model said": (sel.said * 100).round(0).map("{:.0f}%".format),
+                "Actually won": (sel.win * 100).round(0).map("{:.0f}%".format),
+                "R per trade": sel.exp.round(2), "Total R": sel.total.round(1),
+                "Trades / month": sel.per_month.round(0)}), hide_index=True, width="stretch")
+            c2.caption("Each row keeps only the signals this brain liked most. “Win-odds bar” is the value to put in "
+                       "“Skip if win odds below” (Fine-tune → Coach) to get that row. If “Model said” and “Actually won” "
+                       "are far apart, trust the ranking but not the percentage.")
+            if demo:
+                st.caption("Demo data is synthetic with trends planted in it, so models look better here than they will "
+                           "on the real market.")
 
         with st.expander("🛡️ Sentinel — sources, today's flags and evidence"):
             job = ensure_daily_scan(demo, symbols, STORE)
@@ -1615,6 +1722,12 @@ with tab_g:
                 f_th = t2.slider("Skip if expected R below", -0.5, 0.5, float(CFG["coach_threshold"]), 0.05)
                 f_hl = t3.slider("Memory half-life (days)", 3, 40, int(CFG["half_life"]),
                                  help="Lower = adapts faster to recent sessions, but noisier.")
+                t4, t5 = st.columns(2)
+                f_cm = t4.selectbox("Coach's brain (win-odds model)", list(ag.BRAINS),
+                                    list(ag.BRAINS).index(CFG["coach_model"] if CFG["coach_model"] in ag.BRAINS else "bucket"),
+                                    format_func=ag.BRAINS.get, help="Compare them in the Model lab above before switching.")
+                f_mw = t5.slider("Skip if win odds below (%)", 0, 90, int(round(float(CFG["coach_min_win"]) * 100)), 1,
+                                 help="0 = off. Only applies when 'Filter weak signals' is on.")
                 st.markdown("**🧭 Pulse**")
                 f_ps = st.toggle("Mood-based sizing", CFG["pulse_sizing"])
                 mc = st.columns(3)
@@ -1657,7 +1770,8 @@ with tab_g:
                 f_wl = st.text_area("Watchlist (NSE symbols, comma-separated)", ", ".join(CFG["watchlist"]), height=110)
                 sim = st.form_submit_button("Simulate on recent sessions")
             if sim:
-                ss.tune_cand = ag.merged(dict(coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, pulse_sizing=f_ps,
+                ss.tune_cand = ag.merged(dict(coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, coach_model=f_cm,
+                                              coach_min_win=f_mw / 100, pulse_sizing=f_ps,
                                               mults=f_m, exit_policy=f_ex, risk_enabled=f_re, daily_loss_R=f_dl,
                                               max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, paused_setups=f_ps2,
                                               edge_sizing=f_es, edge_k=f_ek, sentinel_block=f_sb,
@@ -1666,6 +1780,8 @@ with tab_g:
                                               rr=f_rr, min_relvol=f_rv, shorts=f_sh,
                                               watchlist=sorted({x.strip().upper() for x in
                                                                 f_wl.replace("\n", ",").split(",") if x.strip()})))
+                if set(ss.tune_cand["watchlist"]) == set(CFG["watchlist"]):
+                    ss.tune_cand["watchlist"] = list(CFG["watchlist"])      # same stocks → not a change
             cand = ss.get("tune_cand")
             if cand:
                 diff = cfg_diff(CFG, cand)
