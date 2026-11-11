@@ -30,6 +30,7 @@ import requests
 
 import cheetah_engine as ce
 import models as ml
+import research as rs
 
 MODEL = "claude-haiku-5-5"
 
@@ -909,6 +910,10 @@ def risk_check(c, book, cfg, corr):
 def replay(data, idx, a, mults=None):
     """Every recent signal with features known at signal time and the result under every exit policy."""
     rows, corr_by_day = [], {}
+    if getattr(a, "strategy", None):
+        import copy
+        a = copy.copy(a)
+        a.idx_bars = idx.get("intraday")          # strategies with a Nifty filter need the index bars
     for s, days in ce.prep_days(data).items():
         last_day = days[-1][0] if days else None
         for d, g, pc, avg in days[1:]:
@@ -1068,12 +1073,14 @@ DEFAULT_CONFIG = dict(
     risk_enabled=True, daily_loss_R=2.0, max_open=3, max_trades=3, corr_limit=0.7,
     edge_sizing=False, edge_k=1.0, sentinel_block=False, paused_setups=[],
     paper_window_min=15,
+    scout_objective="win",  # what Scout optimises: win (highest win rate that is still profitable), exp, month
+    strategy=None,          # None = classic ORB + VWAP engine; otherwise a Scout strategy approved by a reviewer
     # signal engine and paper account — shared by everyone, so the trade log and the learning use one system
     setup="both", shorts=False, rr=2.0, min_relvol=1.5, cost_pct=0.10,
     capital=200000.0, risk_pct=0.5, leverage=5.0, max_exposure_x=5.0,
     watchlist=list(ce.WATCHLIST),
 )
-ENGINE_KEYS = ["setup", "shorts", "rr", "min_relvol", "cost_pct", "capital", "risk_pct", "leverage"]
+ENGINE_KEYS = ["setup", "shorts", "rr", "min_relvol", "cost_pct", "capital", "risk_pct", "leverage", "strategy"]
 
 
 def engine_args(cfg):
@@ -1083,12 +1090,13 @@ def engine_args(cfg):
     return argparse.Namespace(setup=c["setup"], shorts=bool(c["shorts"]), or_bars=3, min_relvol=float(c["min_relvol"]),
                               max_gap=4.0, min_or_pct=0.3, max_or_pct=2.0, rr=float(c["rr"]), last_entry="14:30",
                               exit_time="15:15", capital=float(c["capital"]), risk_pct=float(c["risk_pct"]),
-                              leverage=float(c["leverage"]), cost_pct=float(c["cost_pct"]), max_trades=3, max_losses=2)
+                              leverage=float(c["leverage"]), cost_pct=float(c["cost_pct"]), max_trades=3, max_losses=2,
+                              strategy=c.get("strategy") or None, idx_bars=None)
 
 
 def engine_key(cfg):
     c = merged(cfg)
-    return "|".join(f"{k}={c[k]}" for k in ENGINE_KEYS)
+    return "|".join(f"{k}={json.dumps(c[k], sort_keys=True)}" for k in ENGINE_KEYS)
 
 
 def plan_key(cfg):
@@ -1175,7 +1183,10 @@ def study_args(cfg):
     """A wider version of the signal engine used only to give the models more examples to learn from:
     both setups, both directions and a lower volume bar. Trades are still only taken on the real settings."""
     a = engine_args(cfg)
-    a.setup, a.shorts, a.min_relvol = "both", True, min(float(a.min_relvol), 0.8)
+    if a.strategy:
+        a.strategy = rs.study_spec(a.strategy)
+    else:
+        a.setup, a.shorts, a.min_relvol = "both", True, min(float(a.min_relvol), 0.8)
     return a
 
 
@@ -1390,6 +1401,10 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
                                   f"{(r_act[~hi] > 0).mean() * 100:.0f}% and {r_act[~hi].mean():+.2f}R. Filter would skip "
                                   f"{int((~kept).sum())} of {len(T)} trades (they averaged "
                                   f"{r_act[~kept].mean() if (~kept).any() else float('nan'):+.2f}R).")
+    if r_act[hi].mean() < 0:
+        c_ = agents["Coach"]
+        c_.update(score=min(c_["score"], 50) if c_.get("score") is not None else None, tone="mid",
+                  grade="Separates bad from worse — even its best picks lose money")
     # Pulse — are reduced-size trades really worse?
     w_p = T.features.map(lambda f: cfg["mults"].get(f.get("mood"), 1.0)).values
     full = w_p >= w_p.max() - 1e-9
@@ -1515,6 +1530,7 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
         by_setup[s_] = dict(n=len(g), exp=g.r_fixed.mean(), last20=last.mean(), z_last=_welch(last, T.r_fixed))
     return dict(cfg=cfg, base=base, system=system, agents=agents, exits=ex_tab, windows=win_tab, curves=curves, days=n_days,
                 trades=len(T), per_month=per_month, risk_rs=risk_rs, by_setup=by_setup, lab=lab,
+                losing=bool(base["exp"] < 0 and system["exp"] < 0),
                 period=(str(T.day.min()), str(T.day.max())), warmup=warmup)
 
 

@@ -24,7 +24,7 @@ def _fresh_local_modules():
     """Streamlit Cloud keeps imported helper modules in memory across redeploys, so an update can run new
     app.py against old store/agents code. Reload any local module whose file changed since it was loaded."""
     here = os.path.dirname(os.path.abspath(__file__))
-    for name in ("cheetah_engine", "store", "models", "agents"):          # dependency order
+    for name in ("cheetah_engine", "store", "models", "research", "agents"):          # dependency order
         mod = sys.modules.get(name)
         path = os.path.join(here, name + ".py")
         if mod is None or not os.path.exists(path):
@@ -36,7 +36,8 @@ def _fresh_local_modules():
 
 
 _fresh_local_modules()
-import agents as ag  # noqa: E402
+import agents as ag
+import research as rs  # noqa: E402
 import cheetah_engine as ce  # noqa: E402
 from store import SUPABASE_SQL, Store  # noqa: E402
 
@@ -315,13 +316,21 @@ def narrate_cached(key, status, row_json, mood_json, sent_json, score_json, use_
                       json.loads(score_json), API_KEY if use_llm else None)
 
 
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=3)
+def intraday_history(demo, symbols, day):
+    """~59 sessions of 5-minute bars plus the index, downloaded once a day and shared by every study."""
+    data = ce.demo_intraday(days=45) if demo else ce.yahoo_intraday(list(symbols), 59)
+    if not data:
+        return {}, {}
+    return data, (ag.fetch_index(demo, data) if demo else fetch_index_cached(False, f"train-{day}"))
+
+
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
 def history_cached(demo, symbols, day, args_key, _a):
     """Point-in-time replay of recent sessions: every signal, its features at signal time, every exit policy."""
-    data = ce.demo_intraday(days=45) if demo else ce.yahoo_intraday(list(symbols), 59)
+    data, idx = intraday_history(demo, symbols, day)
     if not data:
         return [], {}, []
-    idx = ag.fetch_index(demo, data) if demo else fetch_index_cached(False, f"train-{day}")
     rows, corr = ag.replay(data, idx, _a)
     return rows, corr, ag.day_stats(data).to_dict("records")
 
@@ -359,16 +368,44 @@ def coach_trades(demo, token):
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=3)
 def study_cached(demo, symbols, day, study_key, _a):
     """A wider set of signals from the same sessions (both directions, lower volume bar) for the models to learn from."""
-    data = ce.demo_intraday(days=45) if demo else ce.yahoo_intraday(list(symbols), 59)
+    data, idx = intraday_history(demo, symbols, day)
     if not data:
         return []
-    idx = ag.fetch_index(demo, data) if demo else fetch_index_cached(False, f"train-{day}")
     return ag.replay(data, idx, _a)[0]
+
+
+def _study_key(sa):
+    return f"{sa.min_relvol}|{sa.rr}|{sa.cost_pct}|{json.dumps(sa.strategy, sort_keys=True)}"
 
 
 def _study(demo, symbols, day, cfg):
     sa = ag.study_args(cfg)
-    return study_cached(demo, symbols, day, f"{sa.min_relvol}|{sa.rr}|{sa.cost_pct}", sa)
+    return study_cached(demo, symbols, day, _study_key(sa), sa)
+
+
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
+def scout_cached(demo, symbols, day, cost_pct, objective, current_json):
+    """Scout: test thousands of strategies on older sessions, confirm on the newest ones."""
+    data, idx = intraday_history(demo, symbols, day)
+    if not data:
+        return None
+    res = rs.run(data, idx, cost_pct, objective, current=json.loads(current_json))
+    if res:
+        b = res["confirmed"].iloc[0] if len(res["confirmed"]) else None
+        get_store(demo).log("Scout", "research",
+                            f"Tested {res['tested']:,} strategies on {res['days']} sessions; "
+                            f"{int(res['shortlist'].held.sum())} of {len(res['shortlist'])} shortlisted held up on the newest "
+                            f"{res['n_conf_days']} sessions." + (f" Best: {b.label} — won {b.c_win * 100:.0f}%, "
+                                                                f"{b.c_exp:+.2f}R per trade on unseen days." if b is not None else
+                                                                " None held up."),
+                            dkey=f"scout|{day}|{objective}|{cost_pct}|{current_json}")
+    return res
+
+
+def scout_for(cfg, demo, objective=None):
+    sy = tuple(sorted({str(x).strip().upper() for x in cfg["watchlist"] if str(x).strip()}))
+    return scout_cached(demo, sy, f"{now_ist():%Y-%m-%d}", float(cfg["cost_pct"]), objective or cfg["scout_objective"],
+                        json.dumps(cfg.get("strategy"), sort_keys=True))
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=12)
@@ -648,13 +685,16 @@ symbols = tuple(sorted({str(x).strip().upper() for x in CFG["watchlist"] if str(
 RISK_RS = A.capital * A.risk_pct / 100
 ARGS_KEY = ag.engine_key(CFG)
 PLAN = ag.plan_key(CFG)
+ENGINE_SETUPS = [rs.FAMILIES[CFG["strategy"]["fam"]][0]] if CFG.get("strategy") else ["ORB", "VWAP"]
 with eng_slot:
     st.caption("SHARED SETTINGS · v%s" % CFG_STATE["version"])
     st.markdown(
         f'<div class="sl" style="font-size:12.5px;line-height:1.6;color:#333">'
         f'Paper capital <b>₹{A.capital:,.0f}</b> · risk <b>{A.risk_pct:g}%</b> per trade<br>'
-        f'Setups <b>{ {"both": "ORB + VWAP", "orb": "ORB", "vwap": "VWAP"}[A.setup] }</b> · shorts <b>{"on" if A.shorts else "off"}</b><br>'
-        f'Target <b>{A.rr:g}× risk</b> · min rel. volume <b>{A.min_relvol:g}×</b> · costs <b>{A.cost_pct:g}%</b><br>'
+        + (f'Signal engine <b>🔭 {html.escape(rs.label(CFG["strategy"]))}</b> (Scout strategy)<br>'
+           f'Costs <b>{A.cost_pct:g}%</b><br>' if CFG.get("strategy") else
+           f'Setups <b>{ {"both": "ORB + VWAP", "orb": "ORB", "vwap": "VWAP"}[A.setup] }</b> · shorts <b>{"on" if A.shorts else "off"}</b><br>'
+           f'Target <b>{A.rr:g}× risk</b> · min rel. volume <b>{A.min_relvol:g}×</b> · costs <b>{A.cost_pct:g}%</b><br>') +
         f'Watchlist <b>{len(symbols)}</b> stocks · exposure cap <b>{CFG["max_exposure_x"]:g}×</b></div>',
         unsafe_allow_html=True)
     st.caption("These are the same for everyone. A reviewer changes them in 🎯 Agent scores → Fine-tune.")
@@ -705,9 +745,9 @@ st.markdown(
 if demo:
     st.info("Demo mode: synthetic prices. Switch it off in Settings for the live market feed.")
 
-tab_i, tab_t, tab_s, tab_b, tab_g, tab_a = st.tabs(["⚡ Intraday", "📒 Trade log", "📈 Swing picks", "🧪 Backtest",
-                                                    "🎯 Agent scores",
-                                             "🗂 Audit log"])
+tab_i, tab_t, tab_r, tab_g, tab_b, tab_s, tab_a = st.tabs(["⚡ Intraday", "📒 Trade log", "🔭 Strategy lab",
+                                                           "🎯 Agent scores", "🧪 Backtest", "📈 Swing picks",
+                                                           "🗂 Audit log"])
 
 # ============================================================================ intraday
 REFRESH = {"Off": 0, "30 seconds": 30, "1 minute": 60, "2 minutes": 120, "5 minutes": 300,
@@ -745,6 +785,8 @@ with tab_i:
         if not data:
             st.error("No data returned. Check the symbols or tap Refresh in a minute.")
             return
+        if A.strategy:              # a Scout strategy with a Nifty filter needs today's index bars
+            A.idx_bars = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}").get("intraday")
         S, bars = ce.run_scan(data, A)
         if S.empty:
             st.error("Not enough history to scan.")
@@ -774,12 +816,15 @@ with tab_i:
         size_mult = mood["mult"] if CFG["pulse_sizing"] else 1.0
         store.log("Pulse", "regime", f"{mood['regime']} — position size ×{size_mult:g}. " + "; ".join(mood["reasons"]),
                   detail=mood, dkey=f"pulse|{day_s}|{mood['regime']}")
-        coach = ag.Coach(coach_trades(demo, ss.tok), CFG["half_life"], day, plan=PLAN)
+        ct_ = coach_trades(demo, ss.tok)
+        if not ct_.empty:            # learn only from the signal engine that is live now
+            ct_ = ct_[ct_.setup.isin(ENGINE_SETUPS)]
+        coach = ag.Coach(ct_, CFG["half_life"], day, plan=PLAN)
         brain = None
         if CFG["coach_model"] in ag.ml.KINDS:
             with st.spinner(f"Coach is training its {ag.BRAINS[CFG['coach_model']].lower()} (once a day)…"):
                 sa_ = ag.study_args(CFG)
-                brain = brain_cached(demo, symbols, day_s, f"{sa_.min_relvol}|{sa_.rr}|{sa_.cost_pct}", PLAN,
+                brain = brain_cached(demo, symbols, day_s, _study_key(sa_), PLAN,
                                      CFG["coach_model"], CFG)
         targets = list(dict.fromkeys(sig.symbol.tolist() + S[S.in_play].symbol.tolist()))[:12]
         ensure_daily_scan(demo, symbols, store)             # whole watchlist, in the background, once a day
@@ -1423,6 +1468,8 @@ with tab_b:
     if st.button("Run intraday backtest", type="primary"):
         with st.spinner("Simulating trades…"):
             data, fetched = fetch_intraday(symbols, demo, days, f"bt-{pd.Timestamp.now(tz=ce.IST):%Y%m%d%H}")
+            if A.strategy:
+                A.idx_bars = fetch_index_cached(demo, f"bt-{pd.Timestamp.now(tz=ce.IST):%Y%m%d%H}").get("intraday")
             T, tab = ce.run_intraday_backtest(data, A)
         if T.empty:
             st.warning("No trades triggered. Lower the relative-volume filter or add symbols.")
@@ -1456,7 +1503,7 @@ with tab_b:
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
 
 # ============================================================================ agent scores + human-in-the-loop
-AG_ICON = {"Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
+AG_ICON = {"Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
            "Trader": "📝", "Analyst": "🔎"}
 AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak ones",
            "Pulse": "Reads market mood and shrinks positions on weak days",
@@ -1505,12 +1552,148 @@ st.markdown("""<style>
  font-family:"Libre Franklin",sans-serif}
 .prop .t{font-weight:800;font-size:15px}.prop .w{font-size:13px;color:#333;margin-top:4px;line-height:1.45}
 .prop .wi{font-size:12.5px;margin-top:6px;color:var(--meta)}
+.warnbox{border:1px solid #e3b4b4;border-left:5px solid var(--red, #c2181f);background:#fff7f6;padding:11px 13px;margin:4px 0 12px;
+ font-family:"Libre Franklin",sans-serif;font-size:13.5px;line-height:1.5}
+.rules{border:1px solid var(--rule);background:#fff;padding:11px 13px;font-family:"Libre Franklin",sans-serif;font-size:13.5px;
+ line-height:1.55;margin:6px 0}
 </style>""", unsafe_allow_html=True)
 
 
 def sys_line(m):
     return (f'{m["trades"]} trades · <b>{m["exp"]:+.3f}R</b> per trade · total {m["total"]:+.1f}R · '
             f'max drawdown {m["maxdd"]:+.1f}R · win {m["win"] * 100:.0f}%' if m["trades"] else "no trades")
+
+
+# ============================================================================ strategy lab (Scout)
+with tab_r:
+    ss = st.session_state
+    can_edit_r = (not ADMIN_PIN) or ss.get("admin_ok", False)
+    st.markdown('<div class="sl note">🔭 <b>Scout</b> is the strategy-research agent. The other agents can only filter, '
+                'size or exit the signals they are given; Scout looks for <b>better signals</b>. Every day it tests '
+                'thousands of intraday strategies — 8 setup families with different timings, sides, market and volume '
+                'filters, stop sizes and targets — using the same fills and costs as the live engine. It picks candidates on '
+                'the <b>older</b> sessions and keeps only those that stayed profitable on the <b>newest sessions, which '
+                'played no part in choosing them</b>. A strategy only goes live after a reviewer approves it.</div>',
+                unsafe_allow_html=True)
+    obj = st.radio("Scout is looking for", list(rs.OBJECTIVES), list(rs.OBJECTIVES).index(CFG["scout_objective"]),
+                   format_func=rs.OBJECTIVES.get, horizontal=True, key="scout_obj")
+    with st.spinner("Scout is testing strategies on recent sessions (once a day)…"):
+        RES = scout_for(CFG, demo, obj)
+    if RES is None:
+        st.markdown('<div class="sl empty">Not enough history yet (needs about 15 sessions of 5-minute data).</div>',
+                    unsafe_allow_html=True)
+    else:
+        sl, conf = RES["shortlist"], RES["confirmed"]
+        cur = RES["current"] if CFG.get("strategy") and RES["current"] else None
+        base = (cur or RES["classic"])
+        base_lbl = ("Approved strategy: " + cur["label"]) if cur else RES["classic"]["label"]
+        best = conf.iloc[0] if len(conf) else None
+        bc = base["c"]
+        kpis([("Strategies tested", f'{RES["tested"]:,}', f'{RES["days"]} sessions · {RES["n_raw"]:,} signals'),
+              ("Current engine", f'{bc["win"] * 100:.0f}% won' if bc["n"] else "—",
+               f'{bc["exp"]:+.2f}R per trade on unseen days' if bc["n"] else "no trades"),
+              ("Best that held up", f'<span class="up">{best.c_win * 100:.0f}% won</span>' if best is not None else "none",
+               f'{best.c_exp:+.2f}R per trade · ~{best.c_pm:.0f} signals/month' if best is not None else "nothing passed"),
+              ("Held up", f'{int(sl.held.sum())} of {len(sl)}', "shortlisted strategies, on unseen days")])
+        st.caption(f'Chosen on {RES["n_disc_days"]} older sessions ({RES["period"][0]} → before {RES["cut"]}); checked on '
+                   f'the newest {RES["n_conf_days"]} sessions ({RES["cut"]} → {RES["period"][1]}). Results are after '
+                   f'{CFG["cost_pct"]:g}% round-trip costs, one trade per stock per strategy per day.'
+                   + ("" if RES["has_idx"] else " Nifty bars were unavailable, so Nifty-based filters were skipped."))
+        if best is None:
+            st.markdown('<div class="sl warnbox"><b>No strategy held up on the unseen sessions.</b> Everything that looked '
+                        'good on the older days stopped working on the newest ones — which is what happens when there is no '
+                        'real edge. Scout will keep testing every day as new sessions arrive. Until something holds up, the '
+                        'safest choice is to paper trade only.</div>', unsafe_allow_html=True)
+
+        section("Shortlist", "picked on older days → tested on unseen days")
+        tab_rows = [dict(Strategy="● " + base_lbl,
+                         **{"Won · older": base["d"]["win"] * 100 if base["d"]["n"] else np.nan,
+                            "Won · unseen": bc["win"] * 100 if bc["n"] else np.nan,
+                            "R/trade · older": base["d"]["exp"], "R/trade · unseen": bc["exp"],
+                            "Trades · unseen": bc["n"], "Signals / month": np.nan, "Held up": "current"})]
+        for r in sl.itertuples():
+            tab_rows.append({"Strategy": r.label, "Won · older": r.d_win * 100, "Won · unseen": r.c_win * 100,
+                             "R/trade · older": r.d_exp, "R/trade · unseen": r.c_exp, "Trades · unseen": r.c_n,
+                             "Signals / month": r.c_pm, "Held up": "✓ yes" if r.held else "✕ no"})
+        st.dataframe(pd.DataFrame(tab_rows).round({"Won · older": 0, "Won · unseen": 0, "R/trade · older": 2,
+                                                    "R/trade · unseen": 2, "Signals / month": 0}),
+                     hide_index=True, width="stretch")
+        st.caption("Win rate alone can mislead: a strategy with a small target wins often but may still lose money. "
+                   "Scout only shortlists strategies whose profit per trade was positive, and 'Held up' means it stayed "
+                   "profitable on the unseen days. Signals per month are before the Risk agent's daily caps.")
+
+        section("Inspect a strategy", "rules, results by day, what-if with all agents")
+        ids = list(sl.id)
+        if ids:
+            labels_ = dict(zip(sl.id, sl.label))
+            default = ids.index(best.id) if best is not None and best.id in ids else 0
+            pick = st.selectbox("Strategy", ids, default, format_func=lambda i: labels_[i], key="scout_pick")
+            row = sl[sl.id == pick].iloc[0]
+            spec = row.spec
+            st.markdown(f'<div class="rules"><b>{html.escape(row.label)}</b><br>{html.escape(rs.describe(spec))}<br>'
+                        f'<span class="note">Older sessions: {int(row.d_n)} trades, won {row.d_win * 100:.0f}%, '
+                        f'{row.d_exp:+.2f}R each · Unseen sessions: {int(row.c_n)} trades, won {row.c_win * 100:.0f}%, '
+                        f'{row.c_exp:+.2f}R each</span></div>', unsafe_allow_html=True)
+            fig = go.Figure()
+            for key_, name_, col_ in [("classic", "Classic engine", "#9a9a94"), (pick, "This strategy", "#121212")]:
+                cvr = RES["curves"].get(key_)
+                if cvr is not None and len(cvr):
+                    fig.add_trace(go.Scatter(x=pd.to_datetime(cvr.index), y=cvr.cumsum().values, name=name_,
+                                             mode="lines", line=dict(color=col_, width=2)))
+            fig.add_vline(x=pd.Timestamp(RES["cut"]).timestamp() * 1000, line_dash="dash", line_color="#2b5797")
+            fig.add_annotation(x=pd.Timestamp(RES["cut"]), y=1, yref="paper", text="unseen →", showarrow=False,
+                               xanchor="left", font=dict(size=11, color="#2b5797"))
+            fig.update_layout(height=250, margin=dict(l=8, r=8, t=8, b=8), template="plotly_white",
+                              yaxis_title="Cumulative R (every signal)", legend=dict(orientation="h", y=1.14),
+                              font=dict(family="Libre Franklin, sans-serif", size=11))
+            st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
+            cand = ag.merged({**CFG, "strategy": spec})
+            if CFG.get("strategy") and rs.spec_id(CFG["strategy"]) == pick:
+                st.success("This is the signal engine in use now.")
+            elif st.toggle("What-if: run this strategy through all the agents (Coach, Risk, Exit, Trader)",
+                           key="scout_whatif"):
+                with st.spinner("Replaying recent sessions with this strategy and every agent…"):
+                    wi = score_for(cand, demo, ss.get("tok", 0) // 10)
+                now_sc = score_for(CFG, demo, ss.get("tok", 0) // 10)
+                st.markdown(f'<div class="sl prop"><div class="t">What-if on the same sessions</div>'
+                            f'<div class="wi">Now: {sys_line(now_sc["system"]) if now_sc else "—"}<br>'
+                            f'With this strategy: {sys_line(wi["system"]) if wi else "not enough trades to score"}</div></div>',
+                            unsafe_allow_html=True)
+                st.caption("The what-if includes your current execution window, exit policy and risk caps, so it can "
+                           "differ from the raw strategy numbers above.")
+                if ADMIN_PIN and not can_edit_r:
+                    st.caption("Unlock with the reviewer PIN in 🎯 Agent scores to adopt a strategy.")
+                note_r = st.text_input("Reason for adopting it (required)", key="scout_note", disabled=not can_edit_r)
+                if st.button("Adopt as the signal engine (new settings version)", type="primary",
+                             disabled=not (can_edit_r and note_r.strip()), key="scout_apply"):
+                    v = save_cfg(STORE, CFG_STATE, cand, f"Scout strategy adopted: {row.label} — {note_r}",
+                                 ss.get("reviewer", "Reviewer"), {"strategy": spec})
+                    st.toast(f"Settings v{v} are live — new signals use this strategy", icon="✅")
+                    st.rerun()
+        if CFG.get("strategy"):
+            if st.button("Return to the classic ORB + VWAP engine", disabled=not can_edit_r, key="scout_classic"):
+                v = save_cfg(STORE, CFG_STATE, ag.merged({**CFG, "strategy": None}), "Returned to the classic engine",
+                             ss.get("reviewer", "Reviewer"), {"strategy": None})
+                st.toast(f"Settings v{v} — classic engine restored", icon="↩️")
+                st.rerun()
+        if obj != CFG["scout_objective"] and st.button(f"Make “{rs.OBJECTIVES[obj]}” Scout's goal for proposals",
+                                                       disabled=not can_edit_r, key="scout_goal"):
+            v = save_cfg(STORE, CFG_STATE, ag.merged({**CFG, "scout_objective": obj}), f"Scout goal: {rs.OBJECTIVES[obj]}",
+                         ss.get("reviewer", "Reviewer"), {"scout_objective": obj})
+            st.toast(f"Settings v{v}", icon="✅")
+            st.rerun()
+        with st.expander("What Scout explores"):
+            st.markdown("".join(f'<div class="sl" style="font-size:13px;margin:4px 0"><b>{code}</b> — '
+                                f'{html.escape(desc.split(":")[0])}</div>'
+                                for code, desc, _ in rs.FAMILIES.values()), unsafe_allow_html=True)
+            st.caption("Each family is crossed with: longs / shorts / both · with Nifty or not · opening volume ≥ 0, 1.2 "
+                       "or 1.5× · minimum stop 0, 0.4 or 0.8% (a wider stop keeps costs small relative to risk) · target "
+                       "1, 1.5, 2 or 3× risk.")
+        st.caption("Why the unseen-days check matters: with thousands of strategies, some always look great on past data "
+                   "by luck. The share that held up tells you how much luck was involved — if few hold up, treat the "
+                   "winners with suspicion. 59 sessions is still a short history; paper trade an adopted strategy for a "
+                   "few weeks before trusting it."
+                   + (" Demo data is synthetic, so these numbers only prove the machinery works." if demo else ""))
 
 
 with tab_g:
@@ -1528,6 +1711,11 @@ with tab_g:
                     unsafe_allow_html=True)
     else:
         b_, s_ = SC["base"], SC["system"]
+        if SC.get("losing"):
+            st.markdown('<div class="sl warnbox"><b>The signal engine itself is losing money on recent sessions</b> '
+                        f'({b_["exp"]:+.2f}R per trade, {b_["win"] * 100:.0f}% won). The agents below can only cut losses — '
+                        'they cannot create an edge that the signals don\'t have. See <b>🔭 Strategy lab</b> for strategies '
+                        'that held up on unseen days.</div>', unsafe_allow_html=True)
         per_day = lambda m: m["total"] / SC["days"]
         kpis([("Test period", f'{SC["days"]} days', f'{SC["period"][0]} → {SC["period"][1]}'),
               ("Baseline", f'{b_["exp"]:+.2f}R', f'per trade · {b_["trades"]} trades, no agents'),
@@ -1679,7 +1867,8 @@ with tab_g:
         # ---------------- proposals
         decisions = STORE.kv_get("proposal_decisions", {}) or {}
         fresh_cut = (now_ist() - pd.Timedelta(days=7)).isoformat()
-        props = [p for p in ag.proposals(SC, CFG)
+        _sp = rs.proposal(scout_for(CFG, demo), CFG)
+        props = [p for p in ([_sp] if _sp else []) + ag.proposals(SC, CFG)
                  if not (decisions.get(p["id"], {}).get("status") == "rejected"
                          and decisions[p["id"]].get("ts", "") >= fresh_cut)]
         st.markdown(f'<div class="sl" style="font-weight:700;margin:4px 0">Proposals from agents · {len(props)}</div>',
@@ -1746,7 +1935,8 @@ with tab_g:
                 r4, r5, r6 = st.columns(3)
                 f_mo = r4.slider("Max open at once", 1, 8, int(CFG["max_open"]))
                 f_cl = r5.slider("Correlation limit", 0.4, 0.95, float(CFG["corr_limit"]), 0.05)
-                f_ps2 = r6.multiselect("Paused setups", ["ORB", "VWAP"], CFG["paused_setups"])
+                f_ps2 = r6.multiselect("Paused setups", sorted(set(ENGINE_SETUPS + ["ORB", "VWAP"] + list(CFG["paused_setups"]))),
+                                       CFG["paused_setups"])
                 r7, r8, r9 = st.columns(3)
                 f_es = r7.toggle("Edge-based sizing", CFG["edge_sizing"], help="Size up/down (0.5–1.5×) by Coach's expected R")
                 f_ek = r8.slider("Edge sizing strength", 0.5, 3.0, float(CFG["edge_k"]), 0.25)

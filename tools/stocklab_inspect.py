@@ -40,7 +40,7 @@ with sync_playwright() as p:
     tabs = [fr.get_by_role("tab").nth(i).inner_text() for i in range(fr.get_by_role("tab").count())]
     open(f"{OUT}/tabs.txt", "w").write("\n".join(tabs))
     for i, name in enumerate(tabs):
-        if "Agent scores" not in name and "Intraday" not in name:
+        if not any(k in name for k in ("Agent scores", "Strategy", "Intraday")):
             continue
         fr.get_by_role("tab").nth(i).click()
         deadline = time.time() + 600
@@ -57,7 +57,7 @@ with sync_playwright() as p:
         txt = fr.locator("[data-testid=stMain]").inner_text() if fr.locator("[data-testid=stMain]").count() else fr.locator("body").inner_text()
         open(f"{OUT}/tab{i}.txt", "w").write(txt)
         page.screenshot(path=f"{OUT}/tab{i}.png", full_page=True)
-        for k, label in enumerate(["Model lab", "How selective?", "Agent scores", "Execution windows compared"]):
+        for k, label in enumerate(["Model lab", "How selective?", "Agent scores", "Shortlist", "Inspect a strategy", "Scout is looking for"]):
             loc = fr.get_by_text(label).first
             try:
                 if loc.count():

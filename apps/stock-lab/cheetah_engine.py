@@ -509,7 +509,11 @@ def session_days(df):
 
 
 def day_signals(g, prev_close, avg_or_vol, p):
-    """Return list of candidate trades for one stock-day (first ORB and first VWAP pullback per side)."""
+    """Return list of candidate trades for one stock-day (first ORB and first VWAP pullback per side).
+    When a Scout strategy has been approved (p.strategy), that strategy generates the signals instead."""
+    if getattr(p, "strategy", None):
+        import research
+        return research.day_signals(g, prev_close, avg_or_vol, p)
     if len(g) < p.or_bars + 6 or prev_close is None:
         return [], {}
     o, h, l, c, v = (g[k].values for k in ["Open", "High", "Low", "Close", "Volume"])
