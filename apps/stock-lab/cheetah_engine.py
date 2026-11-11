@@ -591,6 +591,9 @@ def day_signals(g, prev_close, avg_or_vol, p):
                     if (entry - stop) * side > 0 and abs(entry - stop) / entry * 100 <= p.max_or_pct:
                         sigs.append(dict(setup="VWAP", side=side, i=i + 1, entry=entry, stop=stop))
                     break
+    ms = float(getattr(p, "min_stop_pct", 0) or 0)   # stops closer than this make costs a big share of the risk
+    if ms:
+        sigs = [x for x in sigs if abs(x["entry"] - x["stop"]) / x["entry"] * 100 >= ms]
     for s in sigs:
         risk = abs(s["entry"] - s["stop"])
         s["target"] = s["entry"] + s["side"] * p.rr * risk

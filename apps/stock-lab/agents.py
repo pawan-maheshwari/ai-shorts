@@ -1075,12 +1075,16 @@ DEFAULT_CONFIG = dict(
     paper_window_min=15,
     scout_objective="win",  # what Scout optimises: win (highest win rate that is still profitable), exp, month
     strategy=None,          # None = classic ORB + VWAP engine; otherwise a Scout strategy approved by a reviewer
+    min_stop_pct=0.0,       # skip signals whose stop is closer than this (% of price) — costs dominate tight stops
+    panel=False,            # True = the recommendation panel picks the strategy each day (overrides `strategy`)
     # signal engine and paper account — shared by everyone, so the trade log and the learning use one system
     setup="both", shorts=False, rr=2.0, min_relvol=1.5, cost_pct=0.10,
     capital=200000.0, risk_pct=0.5, leverage=5.0, max_exposure_x=5.0,
     watchlist=list(ce.WATCHLIST),
 )
-ENGINE_KEYS = ["setup", "shorts", "rr", "min_relvol", "cost_pct", "capital", "risk_pct", "leverage", "strategy"]
+ENGINE_KEYS = ["setup", "shorts", "rr", "min_relvol", "cost_pct", "capital", "risk_pct", "leverage", "strategy",
+               "min_stop_pct"]
+OPTIONAL_ENGINE_KEYS = {"min_stop_pct"}   # left out of the engine key while off, so existing history keeps its id
 
 
 def engine_args(cfg):
@@ -1091,12 +1095,14 @@ def engine_args(cfg):
                               max_gap=4.0, min_or_pct=0.3, max_or_pct=2.0, rr=float(c["rr"]), last_entry="14:30",
                               exit_time="15:15", capital=float(c["capital"]), risk_pct=float(c["risk_pct"]),
                               leverage=float(c["leverage"]), cost_pct=float(c["cost_pct"]), max_trades=3, max_losses=2,
-                              strategy=c.get("strategy") or None, idx_bars=None)
+                              strategy=c.get("strategy") or None, idx_bars=None,
+                              min_stop_pct=float(c.get("min_stop_pct", 0) or 0))
 
 
 def engine_key(cfg):
     c = merged(cfg)
-    return "|".join(f"{k}={json.dumps(c[k], sort_keys=True)}" for k in ENGINE_KEYS)
+    return "|".join(f"{k}={json.dumps(c[k], sort_keys=True)}" for k in ENGINE_KEYS
+                    if not (k in OPTIONAL_ENGINE_KEYS and not c.get(k)))
 
 
 def plan_key(cfg):
@@ -1183,6 +1189,7 @@ def study_args(cfg):
     """A wider version of the signal engine used only to give the models more examples to learn from:
     both setups, both directions and a lower volume bar. Trades are still only taken on the real settings."""
     a = engine_args(cfg)
+    a.min_stop_pct = 0.0                      # the practice set stays wide; the stop rule only filters real trades
     if a.strategy:
         a.strategy = rs.study_spec(a.strategy)
     else:
@@ -1798,3 +1805,41 @@ def narrate(row, mood, sent, coach_score, api_key=None):
         if better:
             return better
     return text
+
+
+def cost_burden(rows, cfg):
+    """How much of each trade's risk goes to costs: cost% ÷ stop distance%. Returns a dict or None."""
+    if not rows:
+        return None
+    t = pd.DataFrame([dict(entry=r["entry"], stop=r["stop"], r=r["r"]) for r in rows])
+    t["stop_pct"] = (t.entry - t.stop).abs() / t.entry * 100
+    t = t[t.stop_pct > 0]
+    if t.empty:
+        return None
+    t["cost_r"] = float(cfg["cost_pct"]) / t.stop_pct
+    tight, wide = t[t.stop_pct < 0.8], t[t.stop_pct >= 0.8]
+    return dict(n=len(t), median_cost_r=float(t.cost_r.median()), mean_cost_r=float(t.cost_r.mean()),
+                share_tight=float(len(tight) / len(t)), tight_n=len(tight), wide_n=len(wide),
+                tight_r=float(tight.r.mean()) if len(tight) else np.nan, wide_r=float(wide.r.mean()) if len(wide) else np.nan,
+                median_stop=float(t.stop_pct.median()))
+
+
+def cost_proposal(rows, cfg, level=0.8):
+    """Propose a minimum stop distance when costs eat a large share of the risk on tight-stop signals."""
+    c = merged(cfg)
+    if float(c.get("min_stop_pct", 0) or 0) >= level or c.get("panel"):
+        return None
+    b = cost_burden(rows, c)
+    if not b or b["median_cost_r"] < 0.15 or b["tight_n"] < 15:
+        return None
+    worse = pd.notna(b["wide_r"]) and b["wide_n"] >= 10 and b["tight_r"] < b["wide_r"]
+    if not (worse or b["median_cost_r"] >= 0.25):
+        return None
+    why = (f"Costs are {c['cost_pct']:g}% of the trade value, so a tight stop makes them a big share of the risk: on "
+           f"{b['n']} recent signals the median stop was {b['median_stop']:.2f}% away and costs took a median "
+           f"{b['median_cost_r']:.2f}R per trade before the market moved at all. {b['share_tight'] * 100:.0f}% of signals had "
+           f"stops under {level:g}% and averaged {b['tight_r']:+.2f}R"
+           + (f", vs {b['wide_r']:+.2f}R for the {b['wide_n']} with wider stops" if b["wide_n"] else "")
+           + f". Skipping stops under {level:g}% keeps costs at about {c['cost_pct'] / level:.2f}R per trade or less.")
+    return dict(id=f"Costs:min_stop:{level}", agent="Risk", title=f"Skip signals with stops closer than {level:g}%",
+                why=why, change={"min_stop_pct": level})

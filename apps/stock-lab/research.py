@@ -325,10 +325,10 @@ def _score(m, objective, per_month):
 
 
 def run(data, idx, cost_pct, objective="win", split=0.6, min_disc=30, min_conf=15, top_k=25, per_family=3,
-        current=None):
+        current=None, raw=None):
     """Discover on the older days, confirm on the newest days. Returns a dict for the UI and the proposals.
-    current = the active spec (dict) or None for the classic ORB + VWAP engine."""
-    raw = raw_signals(data, idx, cost_pct)
+    current = the active spec (dict) or None for the classic ORB + VWAP engine. raw = raw_signals(...) if cached."""
+    raw = raw_signals(data, idx, cost_pct) if raw is None else raw
     if raw.empty:
         return None
     days = sorted(raw.day.unique())
@@ -419,7 +419,7 @@ def run(data, idx, cost_pct, objective="win", split=0.6, min_disc=30, min_conf=1
 
 def adopt_change(spec):
     """Settings change for adopting a strategy: Scout's results assume holding to stop / target / 15:15."""
-    return {"strategy": spec, "paper_window_min": 0, "exit_policy": "fixed"}
+    return {"strategy": spec, "paper_window_min": 0, "exit_policy": "fixed", "panel": False}
 
 
 def proposal(res, cfg):
@@ -472,7 +472,7 @@ def day_signals(g, prev_close, avg_or_vol, p):
         if sg is None:
             continue
         i0, entry, stop = sg
-        if abs(entry - stop) / entry * 100 < spec["minstop"]:
+        if abs(entry - stop) / entry * 100 < max(spec["minstop"], float(getattr(p, "min_stop_pct", 0) or 0)):
             continue
         if spec["nifty"] == "with":
             nmv = A["nm"][i0 - 1]
@@ -487,3 +487,178 @@ def day_signals(g, prev_close, avg_or_vol, p):
 def study_spec(spec):
     """A looser version of a strategy for the models' practice set: both sides, no volume / stop / market filter."""
     return dict(spec, side="both", nifty="any", relvol=0.0, minstop=0.0)
+
+
+# ====================================================================== recommendation panel
+# Eight specialist sub-agents (one per setup family) each nominate their best variant every day; a Selector
+# picks one specialist — or stands aside. The whole procedure only ever looks at days before the one it acts on,
+# so its record is out-of-sample end to end (both the specialists' tuning and the Selector's choice).
+PANEL_MINSTOP = 0.8      # stops at least 0.8% away: round-trip costs stay ≈ 0.12R instead of 0.3R+
+SPEC_WIN = 15            # sessions a specialist looks back over to tune itself
+CHIEF_WIN = 20           # sessions of specialist track record the Selector compares
+MIN_N_SPEC = 8           # trades a variant needs in the window to be eligible
+MIN_N_CHIEF = 8          # trades of track record a specialist needs to be picked
+Z_LCB = 1.0              # confidence haircut: mean − 1 standard error
+
+
+def _lcb(n, s, q, z=Z_LCB):
+    """Lower confidence bound of the mean R (vectorised); -inf where n < 2."""
+    n = np.asarray(n, float)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        mean = s / n
+        var = np.maximum(q / n - mean ** 2, 0) * n / np.maximum(n - 1, 1)
+        out = mean - z * np.sqrt(var / n)
+    return np.where(n >= 2, out, -np.inf)
+
+
+def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None):
+    """Run the panel over every session. Returns today's decision, each specialist's state and the walk-forward
+    record of the panel vs the classic engine, or None if there are too few sessions."""
+    if raw is None or raw.empty:
+        return None
+    raw = raw.reset_index(drop=True)
+    days_all = sorted(raw.day.unique())
+    today = today or days_all[-1]
+    days = [d for d in days_all if str(d) < str(today)]       # decisions never use the day being decided
+    D = len(days)
+    if D < SPEC_WIN + 5:
+        return None
+    di = {d: i for i, d in enumerate(days)}
+    keep = raw.day.map(di).notna().values
+    raw = raw[keep].reset_index(drop=True)
+    dix = raw.day.map(di).astype(int).values
+    has_idx = raw.nwith.notna().any() if has_idx is None else has_idx
+
+    def daily(ix, rr):
+        r = raw[f"r{rr:g}"].values[ix]
+        d = dix[ix]
+        return (np.bincount(d, minlength=D).astype(float), np.bincount(d, r, D), np.bincount(d, r * r, D),
+                np.bincount(d, (r > 0).astype(float), D))
+
+    def cum(a):
+        return np.concatenate([np.zeros(a.shape[:-1] + (1,)), np.cumsum(a, axis=-1)], axis=-1)
+
+    specs = {}
+    for fam, sub in raw.groupby("fam", sort=False):
+        cand, N, S, Q, W = [], [], [], [], []
+        for vi, s2 in sub.groupby("vi"):
+            prm = FAMILIES[fam][2][vi]
+            side, rv, nw, sp = s2.side.values, np.nan_to_num(s2.relvol.values, nan=0), s2.nwith.values, s2.stop_pct.values
+            for sd, nf, rl in product(SIDES, NIFTY if has_idx else ["any"], RELVOL):
+                m = sp >= minstop
+                if sd != "both":
+                    m &= side == (1 if sd == "long" else -1)
+                if nf == "with":
+                    m &= nw == True                                              # noqa: E712
+                if rl:
+                    m &= rv >= rl
+                ix = s2.index.values[m]
+                if len(ix) < MIN_N_SPEC:
+                    continue
+                for rr in RRS:
+                    n, s_, q, w = daily(ix, rr)
+                    cand.append(dict(fam=fam, prm=prm, side=sd, nifty=nf, relvol=rl, minstop=minstop, rr=rr))
+                    N.append(n), S.append(s_), Q.append(q), W.append(w)
+        if cand:
+            specs[fam] = dict(cand=cand, N=np.array(N), S=np.array(S), Q=np.array(Q), W=np.array(W))
+    if not specs:
+        return None
+
+    # specialists: tune on the trailing SPEC_WIN sessions, act on the next one
+    fams = list(specs)
+    F = len(fams)
+    rec = {k: np.zeros((F, D)) for k in "nsqw"}
+    pick_ix = np.full((F, D + 1), -1)
+    for f, fam in enumerate(fams):
+        sp_ = specs[fam]
+        cN, cS, cQ = cum(sp_["N"]), cum(sp_["S"]), cum(sp_["Q"])
+        for d in range(SPEC_WIN, D + 1):
+            a = d - SPEC_WIN
+            n, s_, q = cN[:, d] - cN[:, a], cS[:, d] - cS[:, a], cQ[:, d] - cQ[:, a]
+            sc = np.where(n >= MIN_N_SPEC, _lcb(n, s_, q), -np.inf)
+            if not np.isfinite(sc).any():
+                continue
+            k = int(np.argmax(sc))
+            pick_ix[f, d] = k
+            if d < D:
+                rec["n"][f, d], rec["s"][f, d] = sp_["N"][k, d], sp_["S"][k, d]
+                rec["q"][f, d], rec["w"][f, d] = sp_["Q"][k, d], sp_["W"][k, d]
+
+    # Selector: compare specialists on their own out-of-sample records, pick one or stand aside
+    cn, cs, cq = cum(rec["n"]), cum(rec["s"]), cum(rec["q"])
+    start = SPEC_WIN + 5
+    choice = np.full(D + 1, -1)
+    trail = np.full((F, D + 1), -np.inf)
+    for d in range(start, D + 1):
+        a = max(SPEC_WIN, d - CHIEF_WIN)
+        n, s_, q = cn[:, d] - cn[:, a], cs[:, d] - cs[:, a], cq[:, d] - cq[:, a]
+        sc = np.where((n >= MIN_N_CHIEF) & (pick_ix[:, d] >= 0), _lcb(n, s_, q), -np.inf)
+        trail[:, d] = sc
+        k = int(np.argmax(sc))
+        if np.isfinite(sc[k]) and sc[k] > 0:
+            choice[d] = k
+
+    test = list(range(start, D))
+    pn = np.array([rec["n"][choice[d], d] if choice[d] >= 0 else 0 for d in test])
+    ps = np.array([rec["s"][choice[d], d] if choice[d] >= 0 else 0 for d in test])
+    pw = np.array([rec["w"][choice[d], d] if choice[d] >= 0 else 0 for d in test])
+
+    def summ(n, s_, w):
+        N_ = float(np.sum(n))
+        return dict(n=int(N_), exp=float(np.sum(s_) / N_) if N_ else np.nan, win=float(np.sum(w) / N_) if N_ else np.nan,
+                    total=float(np.sum(s_)))
+    record = summ(pn, ps, pw)
+    record.update(days=len(test), aside_days=int(sum(choice[d] < 0 for d in test)),
+                  first=str(days[start]) if test else None, last=str(days[D - 1]))
+    # the classic engine on the same days, for comparison
+    cm = ((raw.fam == "orb") & (raw.vi == 0)) | ((raw.fam == "vwap") & (raw.vi == 0))
+    cm &= (raw.side == 1) & (np.nan_to_num(raw.relvol.values, nan=0) >= 1.5)
+    cix = np.where(cm.values)[0]
+    bn, bs, _, bw = daily(cix, 2.0)
+    base = summ(bn[start:D], bs[start:D], bw[start:D])
+    curve = pd.DataFrame({"day": [str(days[d]) for d in test], "Panel": np.cumsum(ps), "Classic engine": np.cumsum(bs[start:D]),
+                          "picked": [FAMILIES[fams[choice[d]]][0] if choice[d] >= 0 else "stand aside" for d in test]})
+
+    rows = []
+    for f, fam in enumerate(fams):
+        k = pick_ix[f, D]
+        sp_ = specs[fam]
+        mine = [d for d in test if choice[d] == f]
+        own = summ(rec["n"][f, start:D], rec["s"][f, start:D], rec["w"][f, start:D])
+        a = max(SPEC_WIN, D - CHIEF_WIN)
+        tn, ts_ = cn[f, D] - cn[f, a], cs[f, D] - cs[f, a]
+        rows.append(dict(fam=fam, name=FAMILIES[fam][0], spec=sp_["cand"][k] if k >= 0 else None,
+                         label=label(sp_["cand"][k]) if k >= 0 else "— no eligible variant",
+                         trail_n=int(tn), trail_exp=float(ts_ / tn) if tn else np.nan,
+                         trail_lcb=float(trail[f, D]) if np.isfinite(trail[f, D]) else np.nan,
+                         rec_n=own["n"], rec_exp=own["exp"], rec_win=own["win"], chosen_days=len(mine),
+                         selected=bool(choice[D] == f)))
+    spec_tab = pd.DataFrame(rows).sort_values(["selected", "trail_lcb"], ascending=False, na_position="last")
+    pick = None
+    if choice[D] >= 0:
+        r0 = spec_tab.iloc[0]
+        pick = dict(fam=r0.fam, name=r0["name"], spec=r0.spec, label=r0.label, lcb=r0.trail_lcb, trail_exp=r0.trail_exp,
+                    trail_n=int(r0.trail_n), rules=describe(r0.spec))
+    return dict(pick=pick, specialists=spec_tab, record=record, base=base, curve=curve, sessions=D,
+                today=str(today), minstop=minstop, n_candidates=int(sum(len(v["cand"]) for v in specs.values())))
+
+
+def panel_trusted(res, min_trades=20):
+    """The panel's picks are only treated as real recommendations when its own walk-forward record is positive."""
+    return bool(res and res["pick"] and res["record"]["n"] >= min_trades and res["record"]["exp"] > 0)
+
+
+def panel_proposal(res, cfg):
+    if not res or cfg.get("panel"):
+        return None
+    r, b = res["record"], res["base"]
+    if r["n"] < 20 or not (r["exp"] > 0) or not (r["exp"] >= (b["exp"] if b["n"] else -9) + 0.05):
+        return None
+    why = (f"Eight specialist sub-agents (one per setup family) tune themselves daily on the last {SPEC_WIN} sessions, and "
+           f"the Selector picks the specialist with the best confidence-adjusted record — or stands aside. Run "
+           f"walk-forward over {r['days']} sessions it never peeked at: {r['n']} trades, won {r['win'] * 100:.0f}%, "
+           f"{r['exp']:+.2f}R per trade ({r['total']:+.1f}R total), standing aside on {r['aside_days']} days — vs "
+           f"{b['exp']:+.2f}R for the classic engine on the same days. All stops ≥ {res['minstop']:g}% so costs stay small. "
+           f"Approving lets the panel choose the strategy each morning; trades are held to stop, target or 15:15, as tested.")
+    return dict(id="Panel:on", agent="Selector", title="Let the recommendation panel pick the strategy each day",
+                why=why, change={"panel": True, "paper_window_min": 0, "exit_policy": "fixed"}, whatif=False)

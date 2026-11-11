@@ -96,6 +96,7 @@ header[data-testid="stHeader"]{background:transparent}
  text-transform:uppercase;margin-right:4px;vertical-align:middle}
 .chip.long{background:var(--upbg);color:var(--up)} .chip.short{background:var(--downbg);color:var(--down)}
 .chip.setup{background:var(--paper2);color:var(--ink);border:1px solid var(--rule)}
+.chip.practice{background:#fff4d6;color:#7a5200;border:1px solid #e8c56a;font-weight:700}
 .chip.open{background:var(--amberbg);color:var(--amber)} .chip.win{background:var(--upbg);color:var(--up)}
 .chip.loss{background:var(--downbg);color:var(--down)} .chip.time{background:var(--paper2);color:var(--meta)}
 .px{font-size:13px;color:var(--meta);margin:6px 0 10px}
@@ -430,13 +431,42 @@ def _study(demo, symbols, day, cfg):
     return study_cached(demo, symbols, day, _study_key(sa), sa)
 
 
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
+def raw_cached(demo, symbols, day, cost_pct):
+    """Every candidate strategy's signals on every recent session — shared by Scout and the recommendation panel."""
+    data, idx = intraday_history(demo, symbols, day)
+    return rs.raw_signals(data, idx, cost_pct) if data else None
+
+
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
+def panel_cached(demo, symbols, day, cost_pct):
+    """Recommendation panel: 8 specialist sub-agents nominate, the Selector picks one (or none) for today."""
+    raw = raw_cached(demo, symbols, day, cost_pct)
+    res = rs.panel(raw, today=day) if raw is not None else None
+    if res:
+        r, p_ = res["record"], res["pick"]
+        get_store(demo).log("Selector", "pick" if p_ else "stand-aside",
+                            (f"Today: {p_['name']} specialist — {p_['label']} (last {p_['trail_n']} trades "
+                             f"{p_['trail_exp']:+.2f}R each)" if p_ else "Today: standing aside — no specialist has a "
+                             "reliably positive recent record")
+                            + f". Panel walk-forward: {r['n']} trades, {r['exp']:+.2f}R per trade over {r['days']} sessions.",
+                            detail=dict(pick=p_ and p_["label"], record=r), dkey=f"panel|{day}|{cost_pct}")
+    return res
+
+
+def panel_for(cfg, demo):
+    sy = tuple(sorted({str(x).strip().upper() for x in cfg["watchlist"] if str(x).strip()}))
+    return panel_cached(demo, sy, f"{now_ist():%Y-%m-%d}", float(cfg["cost_pct"]))
+
+
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
 def scout_cached(demo, symbols, day, cost_pct, objective, current_json):
     """Scout: test thousands of strategies on older sessions, confirm on the newest ones."""
     data, idx = intraday_history(demo, symbols, day)
     if not data:
         return None
-    res = rs.run(data, idx, cost_pct, objective, current=json.loads(current_json))
+    res = rs.run(data, idx, cost_pct, objective, current=json.loads(current_json),
+                 raw=raw_cached(demo, symbols, day, cost_pct))
     if res:
         b = res["confirmed"].iloc[0] if len(res["confirmed"]) else None
         get_store(demo).log("Scout", "research",
@@ -542,6 +572,12 @@ def save_cfg(store, state, params, note, by, change):
         st.stop()
     v = int(state["version"]) + 1
     params = ag.merged(params)
+    change = change or {}
+    if "strategy" in change:                  # choosing a strategy by hand takes the decision back from the panel
+        if "panel" not in change:
+            params["panel"] = False
+    else:                                     # the panel's daily pick is never saved as the approved strategy
+        params["strategy"] = state["active"].get("strategy")
     hist = (state.get("history") or []) + [dict(version=v, ts=now_ist().isoformat(), by=by, note=note,
                                                 change=change, params=params)]
     if not store.kv_set("agent_config", dict(version=v, active=params, history=hist[-60:])):
@@ -674,10 +710,11 @@ def signal_card(r, exit_time, agt=None):
                 f"<b class='{'up' if rmult >= 0 else 'down'}'>{rmult:+.2f}R · ₹{(ref - r.entry) * r.side * qty:+,.0f}</b> before costs.")
     h = (f'<div class="sl card {side_cls}">'
          f'<div class="card-h"><div><span class="sym">{html.escape(r.symbol)}</span>'
-         f'<span class="chip {side_cls}">{side_txt}</span><span class="chip setup">{html.escape(r.setup)}</span></div>'
+         f'<span class="chip {side_cls}">{side_txt}</span><span class="chip setup">{html.escape(r.setup)}</span>'
+         + ('<span class="chip practice">PRACTICE ONLY</span>' if PRACTICE else '') + '</div>'
          f'<span class="chip {st_cls}">{st_icon} {html.escape(st_txt)}</span></div>'
          f'<div class="px">Last <span class="num">{inr(r.last)}</span> {arrow(r.chg_pct)} on the day · '
-         + (f'<b>{"BUY" if r.side == 1 else "SELL"}</b> at {r.signal_time:%H:%M} · '
+         + (f'<b>{"Practice " if PRACTICE else ""}{"BUY" if r.side == 1 else "SELL"}</b> at {r.signal_time:%H:%M} · '
             + (f'close by <b>{agt["deadline"]:%H:%M}</b> unless stop/target hits first' if agt and agt.get("deadline") is not None
                else 'hold to stop, target or 15:15') if agt else f'signal {r.signal_time:%H:%M}')
          + '</div>'
@@ -757,7 +794,15 @@ CFG_STATE = load_cfg(STORE)
 if CFG_STATE.get("offline"):
     st.warning("⚠️ The database did not answer, so this visit runs on default settings and nothing will be saved. "
                f"Details in 🗂 Audit log → Storage. ({STORE.last_error})")
-CFG = CFG_STATE["active"]
+CFG_BASE = CFG_STATE["active"]          # the approved settings, exactly as saved
+CFG = CFG_BASE
+PANEL = None
+try:
+    PANEL = panel_for(CFG_BASE, demo)
+except Exception as e:                  # the panel must never take the app down
+    STORE.log("Selector", "error", f"Panel could not run: {e}", dkey=f"panel-err|{now_ist():%Y%m%d%H}")
+if CFG_BASE.get("panel") and PANEL and PANEL["pick"]:
+    CFG = ag.merged({**CFG_BASE, "strategy": PANEL["pick"]["spec"]})   # today's pick drives the engine (not saved)
 # The signal engine, paper account and watchlist are shared settings (versioned, reviewer-approved), so the
 # trade log, the Coach's training and every visitor's screen describe the same system.
 A = ag.engine_args(CFG)
@@ -772,10 +817,13 @@ with eng_slot:
     st.markdown(
         f'<div class="sl" style="font-size:12.5px;line-height:1.6;color:#333">'
         f'Paper capital <b>₹{A.capital:,.0f}</b> · risk <b>{A.risk_pct:g}%</b> per trade<br>'
-        + (f'Signal engine <b>🔭 {html.escape(rs.label(CFG["strategy"]))}</b> (Scout strategy)<br>'
-           f'Costs <b>{A.cost_pct:g}%</b><br>' if CFG.get("strategy") else
+        + (f'Signal engine <b>🏛️ Recommendation panel</b> → today <b>{html.escape(PANEL["pick"]["label"]) if PANEL and PANEL["pick"] else "standing aside (classic engine, practice only)"}</b><br>'
+           f'Costs <b>{A.cost_pct:g}%</b><br>' if CFG_BASE.get("panel") else
+           f'Signal engine <b>🔭 {html.escape(rs.label(CFG["strategy"]))}</b> (Scout strategy)<br>'
+           f'Costs <b>{A.cost_pct:g}%</b>' + (f' · min stop <b>{A.min_stop_pct:g}%</b>' if A.min_stop_pct else '') + '<br>' if CFG.get("strategy") else
            f'Setups <b>{ {"both": "ORB + VWAP", "orb": "ORB", "vwap": "VWAP"}[A.setup] }</b> · shorts <b>{"on" if A.shorts else "off"}</b><br>'
-           f'Target <b>{A.rr:g}× risk</b> · min rel. volume <b>{A.min_relvol:g}×</b> · costs <b>{A.cost_pct:g}%</b><br>') +
+           f'Target <b>{A.rr:g}× risk</b> · min rel. volume <b>{A.min_relvol:g}×</b> · costs <b>{A.cost_pct:g}%</b>'
+           + (f' · min stop <b>{A.min_stop_pct:g}%</b>' if A.min_stop_pct else '') + '<br>') +
         f'Watchlist <b>{len(symbols)}</b> stocks · exposure cap <b>{CFG["max_exposure_x"]:g}×</b></div>',
         unsafe_allow_html=True)
     st.caption("These are the same for everyone. A reviewer changes them in 🎯 Agent scores → Fine-tune.")
@@ -825,6 +873,39 @@ st.markdown(
     unsafe_allow_html=True)
 if demo:
     st.info("Demo mode: synthetic prices. Switch it off in Settings for the live market feed.")
+
+
+
+def practice_status():
+    """(practice_only, reason). Signals are labelled practice-only unless what is live has a positive tested record."""
+    try:
+        if CFG_BASE.get("panel"):
+            if not PANEL:
+                return True, "the recommendation panel needs more sessions before it can pick"
+            if not PANEL["pick"]:
+                return True, "the Selector is standing aside today — no specialist has a reliably positive recent record"
+            r_ = PANEL["record"]
+            if not rs.panel_trusted(PANEL):
+                if not r_["n"]:
+                    return True, "the panel has no walk-forward trades yet"
+                if r_["n"] < 20:
+                    return True, (f"the panel has only {r_['n']} trades on days it was not tuned on "
+                                  f"({r_['exp']:+.2f}R each) — it needs 20 before its picks count as recommendations")
+                return True, f"the panel's walk-forward record is negative ({r_['n']} trades, {r_['exp']:+.2f}R each)"
+            return False, ""
+        sc_ = score_for(CFG, demo, st.session_state.get("tok", 0) // 10, lab=True)
+        if not sc_:
+            return True, "there is not enough history to test the signal engine yet"
+        m_ = sc_["system"]
+        if m_["trades"] < 30 or not (m_["exp"] > 0):
+            return True, (f"on recent sessions the signals, with every agent applied, averaged {m_['exp']:+.2f}R per trade "
+                          f"over {m_['trades']} trades" if m_["trades"] else "no trades passed the agents on recent sessions")
+        return False, ""
+    except Exception as e:
+        return True, f"the engine could not be tested ({type(e).__name__})"
+
+
+PRACTICE, PRACTICE_WHY = practice_status()
 
 tab_i, tab_t, tab_r, tab_g, tab_b, tab_s, tab_a = st.tabs(["⚡ Intraday", "📒 Trade log", "🔭 Strategy lab",
                                                            "🎯 Agent scores", "🧪 Backtest", "📈 Swing picks",
@@ -1140,6 +1221,16 @@ with tab_i:
 
         section("Signals", f"Risk agent: max {CFG['max_trades']} trades, {CFG['max_open']} open, "
                            f"stop at −{CFG['daily_loss_R']:g}R a day")
+        if CFG_BASE.get("panel") and PANEL:
+            st.markdown('<div class="sl note">🏛️ <b>Recommendation panel</b>: ' + (
+                f'today\'s signals come from the <b>{html.escape(PANEL["pick"]["name"])}</b> specialist, picked by the Selector '
+                f'from 8 — {html.escape(PANEL["pick"]["label"])}.' if PANEL["pick"] else
+                'the Selector is standing aside today; the classic engine still runs for practice.')
+                + ' Details in 🔭 Strategy lab.</div>', unsafe_allow_html=True)
+        if PRACTICE:
+            st.markdown('<div class="sl warnbox"><b>Practice only — not trade recommendations.</b> These signals are shown '
+                        f'for paper trading because {html.escape(PRACTICE_WHY)}. They switch back to normal recommendations '
+                        'once what is live has a positive record on sessions it was not tuned on.</div>', unsafe_allow_html=True)
         if sig.empty:
             st.markdown('<div class="sl empty">No setups have triggered yet. Watch the trigger levels below — '
                         'a 5-minute close beyond the opening range with rising volume starts a breakout.</div>',
@@ -1591,7 +1682,7 @@ with tab_b:
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
 
 # ============================================================================ agent scores + human-in-the-loop
-AG_ICON = {"Reviewer": "👤", "Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
+AG_ICON = {"Selector": "🏛️", "Reviewer": "👤", "Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
            "Trader": "📝", "Analyst": "🔎"}
 AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak ones",
            "Pulse": "Reads market mood and shrinks positions on weak days",
@@ -1656,6 +1747,44 @@ def sys_line(m):
 with tab_r:
     ss = st.session_state
     can_edit_r = (not ADMIN_PIN) or ss.get("admin_ok", False)
+    # ---------------- recommendation panel: specialist sub-agents + Selector
+    section("🏛️ Recommendation panel", "8 specialist sub-agents · the Selector picks one each day")
+    st.markdown('<div class="sl note">Each <b>specialist</b> owns one setup family and every morning tunes itself on the '
+                f'last {rs.SPEC_WIN} sessions (side, market filter, volume bar, target), always with stops at least '
+                f'{rs.PANEL_MINSTOP:g}% away so costs stay small. The <b>Selector</b> compares the specialists on what their '
+                'picks actually earned on the following days and chooses the one with the best record after a confidence '
+                'haircut — or <b>stands aside</b> when none is reliably positive. Every decision only uses days before the '
+                'one it is made for, so the record below is out-of-sample end to end.</div>', unsafe_allow_html=True)
+    if not PANEL:
+        st.markdown('<div class="sl empty">Not enough sessions yet for the panel to tune and be tested.</div>',
+                    unsafe_allow_html=True)
+    else:
+        pr, pb, pk = PANEL["record"], PANEL["base"], PANEL["pick"]
+        kpis([("Today's pick", html.escape(pk["name"]) if pk else "Stand aside",
+               (f"{pk['trail_n']} recent trades · {pk['trail_exp']:+.2f}R each" if pk else "no reliable edge right now")),
+              ("Panel, unseen days", f"{pr['exp']:+.2f}R" if pr["n"] else "—",
+               f"per trade · {pr['n']} trades · won {pr['win'] * 100:.0f}%" if pr["n"] else "no trades yet"),
+              ("Classic, same days", f"{pb['exp']:+.2f}R" if pb["n"] else "—", f"per trade · {pb['n']} trades"),
+              ("Stood aside", f"{pr['aside_days']} of {pr['days']}", "sessions"),
+              ("Status", "ON" if CFG_BASE.get("panel") else "OFF",
+               "picks today's strategy" if CFG_BASE.get("panel") else "approve in 🎯 Agent scores")])
+        if pk:
+            st.markdown(f'<div class="sl prop"><div class="t">Today: {html.escape(pk["label"])}</div>'
+                        f'<div class="w">{html.escape(pk["rules"])}</div></div>', unsafe_allow_html=True)
+        stab = PANEL["specialists"]
+        st.dataframe(pd.DataFrame({
+            "": stab.selected.map(lambda x: "✓" if x else ""), "Specialist": stab["name"],
+            "Nominates today": stab.label,
+            f"Last {rs.CHIEF_WIN} sessions": [f"{e:+.2f}R × {n}" if n else "—" for e, n in zip(stab.trail_exp, stab.trail_n)],
+            "After haircut": stab.trail_lcb.round(2),
+            "Record on unseen days": [f"{e:+.2f}R × {n}" if n else "—" for e, n in zip(stab.rec_exp, stab.rec_n)],
+            "Days picked": stab.chosen_days}), hide_index=True, width="stretch")
+        if len(PANEL["curve"]):
+            st.line_chart(PANEL["curve"].set_index("day")[["Panel", "Classic engine"]], height=220)
+        st.caption(f"Cumulative R per session, after {CFG['cost_pct']:g}% costs, every signal taken (before the Risk agent's "
+                   f"caps). {PANEL['n_candidates']:,} variants across the specialists, {PANEL['sessions']} sessions. "
+                   "A short record is weak evidence — the Selector can only pick the best of what is available, and "
+                   "if none of it has an edge the honest answer is to stand aside.")
     st.markdown('<div class="sl note">🔭 <b>Scout</b> is the strategy-research agent. The other agents can only filter, '
                 'size or exit the signals they are given; Scout looks for <b>better signals</b>. Every day it tests '
                 'thousands of intraday strategies — 8 setup families with different timings, sides, market and volume '
@@ -1996,9 +2125,12 @@ with tab_g:
             d_ = decisions.get(p["id"], {})
             return d_.get("status") == "rejected" and d_.get("ts", "") >= (
                 now_ist() - pd.Timedelta(days=ln.rejection_window_days(d_))).isoformat()
-        _sp = rs.proposal(scout_for(CFG, demo), CFG)
-        props = [p for p in ([_sp] if _sp else []) + ag.proposals(SC, CFG) + ln.reviewer_proposals(PL, CFG, SC, ag.WINDOWS)
-                 if not _hidden(p)]
+        _sp = rs.proposal(scout_for(CFG, demo), CFG) if not CFG_BASE.get("panel") else None
+        _pp = rs.panel_proposal(PANEL, CFG_BASE)
+        _hist_rows = history_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY, A)[0]
+        _cp = ag.cost_proposal(_hist_rows, CFG_BASE)
+        props = [p for p in [x for x in (_pp, _cp, _sp) if x] + ag.proposals(SC, CFG)
+                 + ln.reviewer_proposals(PL, CFG, SC, ag.WINDOWS) if not _hidden(p)]
         st.markdown(f'<div class="sl" style="font-weight:700;margin:4px 0">Proposals from agents · {len(props)}</div>',
                     unsafe_allow_html=True)
         if not props:
@@ -2006,8 +2138,11 @@ with tab_g:
                         'setting right now. Rejected proposals stay hidden for 7 days (30 if rejected twice).</div>', unsafe_allow_html=True)
         for k_, p in enumerate(props):
             cand = ag.merged({**CFG, **p["change"]})
-            wi = score_for(cand, demo, ss.get("tok", 0) // 10)
-            wis = wi["system"] if wi else None
+            if p.get("whatif") is False:      # the panel's own walk-forward record is its what-if (see why)
+                wis = None
+            else:
+                wi = score_for(cand, demo, ss.get("tok", 0) // 10)
+                wis = wi["system"] if wi else None
             st.markdown(f'<div class="sl prop"><div class="t">{AG_ICON.get(p["agent"], "")} {html.escape(p["title"])}</div>'
                         f'<div class="w">{html.escape(p["why"])}</div>'
                         + (f'<div class="wi">What-if on the same days — now: {sys_line(s_)}<br>'
@@ -2085,10 +2220,15 @@ with tab_g:
                 f_rr = e5.slider("Target (× risk)", 1.0, 4.0, float(CFG["rr"]), 0.5)
                 f_rv = e6.slider("Min relative volume", 1.0, 3.0, float(CFG["min_relvol"]), 0.1)
                 f_sh = st.toggle("Include short trades", bool(CFG["shorts"]))
+                e7, e8 = st.columns(2)
+                f_ms = e7.slider("Minimum stop distance (%)", 0.0, 1.5, float(CFG.get("min_stop_pct", 0) or 0), 0.1,
+                                 help="Skip signals whose stop is closer than this. Costs ÷ stop distance = the share of "
+                                      "each trade's risk that goes to costs (0.1% costs on a 0.4% stop = 0.25R).")
+                f_pn = e8.toggle("🏛️ Recommendation panel picks the strategy each day", bool(CFG_BASE.get("panel")))
                 f_wl = st.text_area("Watchlist (NSE symbols, comma-separated)", ", ".join(CFG["watchlist"]), height=110)
                 sim = st.form_submit_button("Simulate on recent sessions")
             if sim:
-                ss.tune_cand = ag.merged(dict(coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, coach_model=f_cm,
+                ss.tune_cand = ag.merged(dict(CFG, min_stop_pct=f_ms, panel=f_pn, coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, coach_model=f_cm,
                                               coach_min_win=f_mw / 100, pulse_sizing=f_ps,
                                               mults=f_m, exit_policy=f_ex, risk_enabled=f_re, daily_loss_R=f_dl,
                                               max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, paused_setups=f_ps2,
