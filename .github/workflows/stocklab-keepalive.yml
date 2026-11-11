@@ -1,0 +1,46 @@
+name: Stock Lab keep-alive
+
+# Streamlit Community Cloud sleeps free apps after 12 hours without visitors.
+# This opens Stock Lab in a real (headless) browser so it never reaches 12 idle hours,
+# and once more before the NSE opens so the morning's first visit loads fast.
+#   02:47 UTC = 08:17 IST, Mon–Fri (before the 09:15 open)
+#   every 6 hours at :23 past the hour, all week
+on:
+  schedule:
+    - cron: "47 2 * * 1-5"
+    - cron: "23 */6 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stocklab-keepalive
+  cancel-in-progress: true
+
+jobs:
+  wake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install headless browser
+        run: |
+          pip install playwright==1.48.0
+          python -m playwright install --with-deps chromium
+
+      - name: Open Stock Lab (wake it if asleep)
+        run: python tools/stocklab_keepalive.py
+
+      - name: Keep the screenshot if it failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stocklab-keepalive-screenshot
+          path: stocklab-keepalive.png
+          if-no-files-found: ignore
