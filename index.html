@@ -1564,6 +1564,28 @@
   html[data-theme="night"] .dw-frame{background:#fff;}
   @media print{ .dw-tab,.dw-sheet,.dw-scrim{display:none!important;} }
   @media (prefers-reduced-motion:reduce){ .dw-sheet,.dw-scrim{transition:none;} }
+
+  /* ---- Reading mode (swipe layout only) ------------------------------
+     On a phone the masthead, market strips and footer leave the story
+     about a third of the screen. Once the reader swipes past the lead
+     story, .wire gets .reading: everything but the slim top bar, the
+     section tabs and the pager steps aside, and the story takes the
+     room. Back on the first card (or a tap on the AIShorts mark) the
+     full front page returns. Toggled by syncReading() in the script. */
+  .tb-brand{
+    display:none;appearance:none;-webkit-appearance:none;background:none;border:0;margin:0;padding:0 2px;cursor:pointer;
+    font-family:"UnifrakturCook","Libre Franklin",serif;font-weight:700;
+    font-size:22px;line-height:1;color:var(--ink);letter-spacing:.4px;
+  }
+  .wire.reading .breaking,
+  .wire.reading .masthead,
+  .wire.reading .utility-row,
+  .wire.reading .predict,
+  .wire.reading .colophon{display:none !important;}
+  .wire.reading .tb-est{display:none;}
+  .wire.reading .tb-brand{display:inline-block;}
+  .wire.reading .topbar{border-bottom:2px solid var(--ink);}
+  @media print{ .tb-brand{display:none !important;} }
 </style>
 </head>
 <body>
@@ -1673,6 +1695,7 @@
     <div class="tb-left">
       <svg class="logo" viewBox="0 0 100 100" role="img" aria-label="AIShorts — The AI Wire"><defs><radialGradient id="aisFace" cx="50%" cy="36%" r="72%"><stop offset="0%" stop-color="#2b303b"/><stop offset="55%" stop-color="#15171c"/><stop offset="100%" stop-color="#090a0d"/></radialGradient><linearGradient id="aisRim" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#eef1f5"/><stop offset="34%" stop-color="#9aa3ad"/><stop offset="56%" stop-color="#5b626b"/><stop offset="100%" stop-color="#cfd4da"/></linearGradient><linearGradient id="aisGold" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#c79a33"/><stop offset="50%" stop-color="#f6d877"/><stop offset="100%" stop-color="#b3801f"/></linearGradient><path id="ais-ring" d="M50,13.5 a36.5,36.5 0 1,1 -0.01,0"/></defs><circle cx="50" cy="50" r="49" fill="url(#aisRim)"/><circle cx="50" cy="50" r="44.5" fill="url(#aisFace)" stroke="#070809" stroke-width="0.6"/><circle cx="50" cy="50" r="40.5" fill="none" stroke="#ffffff" stroke-width="0.5" opacity=".22"/><text fill="#f3f4f6" font-family="'Libre Franklin',sans-serif" font-size="5.0" font-weight="700" letter-spacing="1.1"><textPath href="#ais-ring" startOffset="0">THE AI WIRE · AISHORTS · THE AI WIRE · AISHORTS · </textPath></text><text x="50" y="58.5" text-anchor="middle" font-family="Georgia,'Times New Roman',serif" font-weight="700" font-size="29.5" letter-spacing="-1" fill="#ffffff">AI</text><path d="M26 70 H42 l3 -8 4.5 16 3 -8 H74" fill="none" stroke="url(#aisGold)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span class="tb-est">Est. MMXXVI</span>
+      <button class="tb-brand" id="tbHome" type="button" aria-label="Back to the front page" title="Back to the front page">AIShorts</button>
     </div>
     <div class="tb-mid">
       <span class="live"><span class="dot"></span>Live</span>
@@ -2095,6 +2118,7 @@ function render(){
   }
   deck.innerHTML=list.map(card).join("");
   idx=0;deck.scrollTop=0;updateRail();updateBreaking();
+  if(typeof syncReading==="function") syncReading();
   loadCardImages(list);
 }
 
@@ -2317,8 +2341,42 @@ deck.addEventListener("scroll",()=>{
     cards.forEach((c,i)=>{const d=Math.abs(c.getBoundingClientRect().top-deck.getBoundingClientRect().top);
       if(d<bestD){bestD=d;best=i;}});
     if(best!==idx){idx=best;updateRail();}
+    queueReading();
   },60);
 },{passive:true});
+
+/* ---- Reading mode: give the story the screen once the reader is past
+   the lead. Only in the swipe layout (the desktop grid has room). The
+   switch waits until the finger is up and the scroll has settled, because
+   it changes the deck's height: every card resizes with it, so the current
+   card is put straight back on the deck's top edge in the same frame. ---- */
+/* var, not const: render() can run before this line and must find them undefined, not in the dead zone */
+var wireEl=document.querySelector(".wire");
+var swipeMQ=window.matchMedia("(max-width:1023px)");
+var touching=false, readT;
+function syncReading(){
+  if(!wireEl) return;
+  const want=!!swipeMQ && swipeMQ.matches && idx>0;
+  if(want===wireEl.classList.contains("reading")) return;
+  wireEl.classList.toggle("reading",want);
+  const cards=deck.querySelectorAll(".card");
+  if(cards[idx]){
+    const sb=deck.style.scrollBehavior;
+    deck.style.scrollBehavior="auto";
+    deck.scrollTop=cards[idx].offsetTop;      /* reading offsetTop reflows first */
+    deck.style.scrollBehavior=sb;
+  }
+}
+function queueReading(){
+  clearTimeout(readT);
+  readT=setTimeout(function(){ if(touching){ queueReading(); return; } syncReading(); },120);
+}
+deck.addEventListener("touchstart",function(){touching=true;},{passive:true});
+["touchend","touchcancel"].forEach(function(ev){
+  deck.addEventListener(ev,function(){touching=false;queueReading();},{passive:true});
+});
+if(swipeMQ.addEventListener) swipeMQ.addEventListener("change",syncReading);
+(function(){ var hb=document.getElementById("tbHome"); if(hb) hb.onclick=function(){ goTo(0); }; })();
 
 prevB.onclick=prev;nextB.onclick=next;
 window.addEventListener("keydown",e=>{
