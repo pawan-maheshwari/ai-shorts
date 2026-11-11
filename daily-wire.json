@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-11",
+      "title": "The Bug Slayer",
+      "headline": "Israeli AI security startup Bay raises $50 million",
+      "source": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQR1FUM21STWZfakdFdy1yUEE3dHhGTUtoazJLcHAtZ3hlVXRvbEV5LVA0YXAwRlVGQ05qQ0Z1azV5Wk5wTWFVVXdKZ0FjSy04bkxlcDc5N2xsMFp2eUs5RzF6endfbXA0Ymt3WGo2UllEYzB1aWZmT0I2Smd1MVFBaHBtZzFWZC1pci1icms2cFJFZWxOTVg0aWpyaDU?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "security",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI agent found 948 bugs and fixed them all."
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "And then it wrote the entire Linux kernel from scratch."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that claim."
+        }
+      ]
+    },
+    {
       "date": "2026-11-10",
       "title": "100x Before Breakfast",
       "headline": "U.S. Commerce Dept. Inquiry Into Megaspeed Was Halted After Nvidia Intervention",
