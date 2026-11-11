@@ -5,7 +5,7 @@
   <id>tag:aishorts.biz,2026:feed</id>
   <link rel="self" type="application/atom+xml" href="https://aishorts.biz/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://aishorts.biz/"/>
-  <updated>2026-11-11T22:16:57.270Z</updated>
+  <updated>2026-11-11T22:18:34.739Z</updated>
   <icon>https://aishorts.biz/assets/icon-192.png</icon>
   <logo>https://aishorts.biz/assets/icon-512.png</logo>
   <author><name>AIShorts</name><uri>https://aishorts.biz/</uri></author>
@@ -21,6 +21,17 @@
     <category term="Business"/>
     <summary type="text">Open the full report at Saint Vincent College for the complete story.</summary>
     <rights type="text">Headline and summary belong to Saint Vincent College. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">What May Artificial Intelligence Do for Writers? (updated)</title>
+    <id>tag:aishorts.biz,2026-11-11:story/715f00fed0116d70</id>
+    <link rel="alternate" type="text/html" href="https://dailynous.com/2026/11/11/what-may-artificial-intelligence-do-for-writers/"/>
+    <updated>2026-11-11T14:21:54.000Z</updated>
+    <published>2026-11-11T14:21:54.000Z</published>
+    <author><name>Daily Nous</name></author>
+    <category term="Business"/>
+    <summary type="text">Open the full report at Daily Nous for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Daily Nous. Linked, not republished.</rights>
   </entry>
   <entry>
     <title type="text">Exploring How Autistic Individuals Interact With Artificial Intelligence</title>
@@ -133,17 +144,6 @@
     <rights type="text">Headline and summary belong to University of Miami News. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Greg Morrisett to co-lead new NYS AI safety research center</title>
-    <id>tag:aishorts.biz,2026-11-11:story/3b3bb7a958201990</id>
-    <link rel="alternate" type="text/html" href="https://news.cornell.edu/stories/2026/11/greg-morrisett-co-lead-new-nys-ai-safety-research-center"/>
-    <updated>2026-11-11T14:58:21.000Z</updated>
-    <published>2026-11-11T14:58:21.000Z</published>
-    <author><name>Cornell Chronicle</name></author>
-    <category term="Safety"/>
-    <summary type="text">Open the full report at Cornell Chronicle for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Cornell Chronicle. Linked, not republished.</rights>
-  </entry>
-  <entry>
     <title type="text">Google is letting staff test a &apos;fast&apos; new Gemini AI model named Hydrogen</title>
     <id>tag:aishorts.biz,2026-11-11:story/3598d711d9cdfc2d</id>
     <link rel="alternate" type="text/html" href="https://www.businessinsider.com/google-hydrogen-test-new-gemini-4-flash-model-ai-2026-11"/>
@@ -219,6 +219,17 @@
     <category term="Research"/>
     <summary type="text">Open the full report at Medical Xpress for the complete story.</summary>
     <rights type="text">Headline and summary belong to Medical Xpress. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Greg Morrisett to co-lead new NYS AI safety research center</title>
+    <id>tag:aishorts.biz,2026-11-11:story/3b3bb7a958201990</id>
+    <link rel="alternate" type="text/html" href="https://news.cornell.edu/stories/2026/11/greg-morrisett-co-lead-new-nys-ai-safety-research-center"/>
+    <updated>2026-11-11T14:58:21.000Z</updated>
+    <published>2026-11-11T14:58:21.000Z</published>
+    <author><name>Cornell Chronicle</name></author>
+    <category term="Safety"/>
+    <summary type="text">Open the full report at Cornell Chronicle for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Cornell Chronicle. Linked, not republished.</rights>
   </entry>
   <entry>
     <title type="text">Anthropic says a key AI safety alarm has been triggered, days before its IPO</title>

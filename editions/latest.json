@@ -1,15 +1,16 @@
 {
   "edition": "2026-11-11",
-  "updated": "2026-11-11T22:16:57.270Z",
+  "updated": "2026-11-11T22:18:34.739Z",
   "source": "Google News · artificial intelligence",
-  "count": 27,
+  "count": 28,
   "briefs": {
     "model": "openai/gpt-4o-mini",
-    "attempted": 27,
+    "attempted": 6,
     "written": 0,
     "fromSource": 0,
     "reused": 0,
-    "publisherLinks": 27
+    "stopped": "unreadable",
+    "publisherLinks": 28
   },
   "items": [
     {
@@ -23,6 +24,18 @@
       "date": "2026-11-11T17:24:05.000Z",
       "note": "via Google News",
       "image": "https://www.stvincent.edu/news/2026/11/files/news-thumbnail-svc-approves-new-ai-minor.webp"
+    },
+    {
+      "id": "tag:aishorts.biz,2026-11-11:story/715f00fed0116d70",
+      "headline": "What May Artificial Intelligence Do for Writers? (updated)",
+      "summary": "Open the full report at Daily Nous for the complete story.",
+      "source": "Daily Nous",
+      "url": "https://dailynous.com/2026/11/11/what-may-artificial-intelligence-do-for-writers/",
+      "category": "Business",
+      "region": "Global",
+      "date": "2026-11-11T14:21:54.000Z",
+      "note": "via Google News",
+      "image": "https://dailynous.com/wp-content/uploads/2026/11/ai-writing-assistant.png"
     },
     {
       "id": "tag:aishorts.biz,2026-11-11:story/fc622b83d2a030de",
@@ -142,18 +155,6 @@
       "image": "https://news.miami.edu/law/_assets/images/images-stories/2026/11/or-cohen-sasson-rvs-news-940x529.jpg"
     },
     {
-      "id": "tag:aishorts.biz,2026-11-11:story/3b3bb7a958201990",
-      "headline": "Greg Morrisett to co-lead new NYS AI safety research center",
-      "summary": "Open the full report at Cornell Chronicle for the complete story.",
-      "source": "Cornell Chronicle",
-      "url": "https://news.cornell.edu/stories/2026/11/greg-morrisett-co-lead-new-nys-ai-safety-research-center",
-      "category": "Safety",
-      "region": "Global",
-      "date": "2026-11-11T14:58:21.000Z",
-      "note": "via Google News",
-      "image": "https://news.cornell.edu/sites/default/files/styles/story_thumbnail_lg/public/2026-11/1110_tech.jpg?itok=7AVLYuoR"
-    },
-    {
       "id": "tag:aishorts.biz,2026-11-11:story/3598d711d9cdfc2d",
       "headline": "Google is letting staff test a 'fast' new Gemini AI model named Hydrogen",
       "summary": "Open the full report at Business Insider for the complete story.",
@@ -233,6 +234,18 @@
       "date": "2026-11-11T17:00:11.000Z",
       "note": "via Google News",
       "image": "https://scx2.b-cdn.net/gfx/news/hires/2026/drug-ads-can-influence.jpg"
+    },
+    {
+      "id": "tag:aishorts.biz,2026-11-11:story/3b3bb7a958201990",
+      "headline": "Greg Morrisett to co-lead new NYS AI safety research center",
+      "summary": "Open the full report at Cornell Chronicle for the complete story.",
+      "source": "Cornell Chronicle",
+      "url": "https://news.cornell.edu/stories/2026/11/greg-morrisett-co-lead-new-nys-ai-safety-research-center",
+      "category": "Safety",
+      "region": "Global",
+      "date": "2026-11-11T14:58:21.000Z",
+      "note": "via Google News",
+      "image": "https://news.cornell.edu/sites/default/files/styles/story_thumbnail_lg/public/2026-11/1110_tech.jpg?itok=7AVLYuoR"
     },
     {
       "id": "tag:aishorts.biz,2026-11-11:story/9fdc0f0989cf769c",
