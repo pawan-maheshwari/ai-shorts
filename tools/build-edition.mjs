@@ -334,6 +334,7 @@ async function writeBriefs(items, material, token){
   stats.reused = items.length - todo.length;
   if(!token || !todo.length) return stats;
 
+  let misses = 0;
   for(let i = 0; i < todo.length; i += BRIEF_BATCH){
     const batch = todo.slice(i, i + BRIEF_BATCH);
     stats.attempted += batch.length;
@@ -363,8 +364,10 @@ async function writeBriefs(items, material, token){
     }
     if(!res.ok){ console.warn(`Briefs: HTTP ${res.status}, skipping this batch.`); continue; }
 
+    let raw = "";
     try{
-      const data = await res.json();
+      raw = await res.text();
+      const data = JSON.parse(raw);
       const txt = String(data.choices?.[0]?.message?.content || "").replace(/^```(?:json)?|```$/g, "").trim();
       const out = JSON.parse(txt).briefs || [];
       for(const it of batch){
@@ -379,7 +382,12 @@ async function writeBriefs(items, material, token){
         stats.written++;
         if(material.has(it.id)) stats.fromSource++;
       }
-    }catch(e){ console.warn(`Briefs: could not read the answer (${e.message}).`); }
+      misses = 0;
+    }catch(e){
+      console.warn(`Briefs: could not read the answer (${e.message}). HTTP ${res.status}, `
+                 + `${res.headers.get("content-type")}, final URL ${res.url}: ${raw.slice(0, 300).replace(/\s+/g, " ")}`);
+      if(++misses >= 2){ console.warn("Briefs: stopping after two unreadable answers."); stats.stopped = "unreadable"; break; }
+    }
 
     if(i + BRIEF_BATCH < todo.length) await sleep(BRIEF_GAP_MS);
   }
