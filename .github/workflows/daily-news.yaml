@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  models: read        # lets GITHUB_TOKEN call GitHub Models for the story briefs (free, rate-limited)
 
 jobs:
   fetch:
@@ -22,6 +23,9 @@ jobs:
       # front page keeps yesterday's edition; the failure shows on the run.
       - name: Build today's edition and Atom feed
         continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # BRIEF_MODEL: openai/gpt-4o-mini   # any model id from the GitHub Models catalog
         run: node tools/build-edition.mjs
 
       - name: Fetch headlines and write anchor script
