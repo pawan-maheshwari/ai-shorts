@@ -1,6 +1,8 @@
 name: Stock Lab inspect
 on:
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   inspect:
     runs-on: ubuntu-latest
@@ -11,6 +13,10 @@ jobs:
         with: {python-version: "3.12"}
       - run: pip install playwright && python -m playwright install --with-deps chromium
       - run: python tools/stocklab_inspect.py
-      - uses: actions/upload-artifact@v4
+      - name: Publish results to the stocklab-inspect branch
         if: always()
-        with: {name: stocklab-inspect, path: inspect/}
+        run: |
+          mkdir -p /tmp/out && cp -r inspect/. /tmp/out/ || true
+          git config user.name "stocklab-bot" && git config user.email "actions@github.com"
+          git checkout --orphan stocklab-inspect && git rm -rqf . && cp -r /tmp/out/. . && git add -A
+          git commit -qm "inspect $(date -u +%FT%TZ)" && git push -qf origin stocklab-inspect
