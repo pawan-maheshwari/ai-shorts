@@ -2020,13 +2020,15 @@ with tab_a:
     store = STORE
     if demo:
         st.info("Demo mode: this log holds demo activity only and is kept separate from the live log.")
+    elif store.remote:
+        st.success("Storage: Supabase (persistent) — the log, trade journal, settings and Sentinel archive survive restarts.")
     elif not store.remote:
         st.warning("The log is currently temporary: it is wiped whenever the hosted app restarts or redeploys. "
                    "Connect Supabase to keep a full week.")
         with st.expander("How to connect Supabase (5 minutes)"):
             st.markdown("1. In your Supabase project, open **SQL editor**, paste the SQL below and run it.\n"
                         "2. In Streamlit (Manage app → Settings → Secrets) add:\n"
-                        "```\nSUPABASE_URL = \"https://<your-project>.supabase.co\"\nSUPABASE_KEY = \"<service-role key>\"\n"
+                        "```\nSUPABASE_URL = \"https://<your-project>.supabase.co\"\nSUPABASE_KEY = \"<secret key (sb_secret_…) or legacy service_role key>\"\n"
                         "ANTHROPIC_API_KEY = \"<optional — richer agents>\"\n```\n"
                         "3. Save. The app restarts and the Audit log becomes permanent (events kept 7 days, "
                         "trade journal 90 days).")

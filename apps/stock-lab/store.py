@@ -91,6 +91,8 @@ class Store:
     def __init__(self, url=None, key=None, path=None):
         self.url = (url or "").rstrip("/")
         self.key = key
+        self.url = (self.url or "").strip().rstrip("/")
+        self.key = (self.key or "").strip()
         self.remote = bool(self.url and self.key)
         self._lock = threading.Lock()
         if not self.remote:
@@ -117,7 +119,9 @@ class Store:
 
     # ------------------------------------------------------------------ REST helpers
     def _h(self, extra=None):
-        h = {"apikey": self.key, "Authorization": f"Bearer {self.key}", "Content-Type": "application/json"}
+        h = {"apikey": self.key, "Content-Type": "application/json"}
+        if self.key.startswith("eyJ"):          # legacy service_role JWT; new sb_secret_ keys go in apikey only
+            h["Authorization"] = f"Bearer {self.key}"
         h.update(extra or {})
         return h
 
