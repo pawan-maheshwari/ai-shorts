@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  models: read        # lets GITHUB_TOKEN call GitHub Models for the story briefs (free, rate-limited)
 
 jobs:
   fetch:
@@ -22,6 +23,14 @@ jobs:
       # front page keeps yesterday's edition; the failure shows on the run.
       - name: Build today's edition and Atom feed
         continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Briefs default to GitHub Models with the token above. To use another
+          # OpenAI-compatible service, add a BRIEF_API_KEY secret and set repo
+          # variables BRIEF_ENDPOINT and BRIEF_MODEL (Settings > Secrets and variables > Actions).
+          BRIEF_API_KEY: ${{ secrets.BRIEF_API_KEY }}
+          BRIEF_ENDPOINT: ${{ vars.BRIEF_ENDPOINT }}
+          BRIEF_MODEL: ${{ vars.BRIEF_MODEL }}
         run: node tools/build-edition.mjs
 
       - name: Fetch headlines and write anchor script
