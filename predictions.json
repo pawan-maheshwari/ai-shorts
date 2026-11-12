@@ -1,267 +1,268 @@
 {
-  "generated": "2026-11-11T23:57:48.655Z",
-  "forDate": "2026-11-13",
+  "generated": "2026-11-12T23:07:26.630Z",
+  "forDate": "2026-11-14",
   "window": {
-    "from": "2026-11-10T23:57:48.655Z",
-    "to": "2026-11-11T23:57:48.655Z"
+    "from": "2026-11-11T23:07:26.630Z",
+    "to": "2026-11-12T23:07:26.630Z"
   },
   "scanned": {
-    "stories": 865,
-    "outlets": 384,
+    "stories": 813,
+    "outlets": 353,
     "regions": [
       "Global desks",
       "North America",
-      "Community",
       "Europe",
+      "Community",
       "Asia-Pacific",
       "Africa",
       "South Asia"
     ],
-    "storylines": 635
+    "storylines": 547
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.7598,
+      "score": 0.8967,
       "probability": 0.92,
       "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Anthropic’s Mega-IPO Is Said to Be Multiple Times Oversubscribed",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "entity": "Nvidia",
+      "theme": "Chips & compute",
+      "headline": "Nvidia CEO Jensen Huang Resigns, Creating Uncertainty for the AI Sector",
+      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 18,
+        "outlets": 72,
         "regions": [
           "North America",
+          "Europe",
+          "Global desks",
           "South Asia"
         ],
-        "stories": 28,
-        "momentum": 1.8,
-        "recent6h": 11,
-        "authority": 7.2,
-        "hnPoints": 2,
-        "nextStepCues": 3,
+        "stories": 102,
+        "momentum": 3.63,
+        "recent6h": 57,
+        "authority": 28,
+        "hnPoints": 2682,
+        "nextStepCues": 2,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.86,
-        "breadth": 0.33,
-        "momentum": 0.62,
+        "reach": 1,
+        "breadth": 0.67,
+        "momentum": 0.95,
         "authority": 1,
-        "community": 0.16,
-        "nextStep": 1,
+        "community": 1,
+        "nextStep": 0.67,
         "arc": 1
       },
       "sig": [
-        "ipo",
-        "anthropics",
-        "investor",
-        "anthropic",
-        "oversubscribed",
-        "time",
-        "buy",
-        "multiple"
+        "huang",
+        "jensen",
+        "nvidia",
+        "resign",
+        "ceo",
+        "affair",
+        "chip",
+        "china"
       ],
       "evidence": [
         {
-          "title": "Jim Cramer: This is the bet you're making if you buy the Anthropic IPO",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxPUUU1UTJ3dnVtQlBEN3FnbnhzUmVuUFd4UTdfOVQ4bW9lb1dXUVVqa3dPOXR4d0tWazhrdHBqajgwdnFEVk55UmIzZnF4MUR0ZnI0SVA0N2gxU0dObDBsSmNUY3N6NWlSYUd0VE1TY2NtT1Zta2hGbU9iSWtmaUxWdUN5ZS0xZw?oc=5",
+          "title": "How Jensen Huang’s downfall unfolded, month by month",
+          "source": "The Washington Post",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQNjhtMlo2a3NDLTZOcVc5Y2NaeHowRG9KMzVneE1ERzB1M0tjODNISFhSRTZITURCTjdOdVFURDhwWmMtWHpMZ2NtTl9uajlkOWJkaXhfWlBJd0psNkp5OU42cENrZHBLQThzSWdRSm1ZbVRuWW5EOElCNjQzLXp2MlVrSV83MWZRX04wVl9tNGRTa2Z3V09nMm05cTVjSHBkWUw0cld3?oc=5",
           "region": "North America"
         },
         {
-          "title": "What’s Next for Anthropic’s Mega-IPO: Five Things to Watch",
-          "source": "Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQVkJ1ay1pUnM2aFZnWTdJVUFKWmRRdlJPVjhFT2FMcGdEMGdsR1FueEdCQzNPZXhFcURnZzFYU3Y1ZzUtdWdzVUh5R1IxMkNyUTVBcjM1WHMtRkhMNXd6ZURKQWNCYUpoYnYweXY0VDhHTnY1cWg4cl92Q3dWajZmakUyRW5SY1JLSkViS3R1VEdPVzlic3FoaGpRelg2aEpFbnhuVUpMaUp1eXY5?oc=5",
+          "title": "Huang, Face of the AI Boom, Ousted by Nvidia Board as CEO",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNZEt6Rnp1a2x5UjJnTnQ0S0s1RDA5SkhBc0VWbHE5Y0YwU3dlbjN5MGxacXZHbnZVNjN3dG1uZWlhcVpXeFZSQy1LZWt2dlVmajBCdUR1YThadWplblgteE1jNVBFYWlKcVluSzFWS0Y0UzBiNGtNNFl2UUE5NGNCdnJ2QXZYVktYM3VyQ0lKQzFCaGtlcV9DRTA0c3JqbGFPeG9OSGxlTkh6QXZ2Z2pEZGpROA?oc=5",
           "region": "North America"
         },
         {
-          "title": "Anthropic’s IPO is too important to fail",
-          "source": "Financial Times",
-          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9haWxxajduNkpYU0FLdTRvWnVGc2ZrbWVJVlQ5THlEZnl4NVhfNW83aGJBR0k1eTVnTnFvZVlCLWRPSU83RTZOM1BfdzlNTGNzaWt2a3U2UUxULTNzQ2tjR3ljWEVxTnp2cm9Ec2prMVE?oc=5",
+          "title": "Jensen Huang built an AI kingdom. Now he’s gone, will Nvidia’s ramparts be breached?",
+          "source": "The Guardian",
+          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQZ2gyejdCeVJ5RnVyb3BuQU5lOVFjdE1tZWQzdHJ1MXIyaU9WUDdNbTZtYWdwLWlTMFA0MjVlRTI1ZGN5eDRwTjVLV0k5ZUllNm1UT1FSNE1xUFFIUnE3X0hPWVRIV1hibTJTQVFEWU1ORXc3X2tDRUZNMTlTMmNDbEtrZEZpNWs0M0hUOHNjUEpSVE1ZaGpRZUtXLXVRc0NfU2NCYkZxY2ttekVSYTBnUUppbEVMZnN2N2lINk0xbElaVEMyNmxuTGxR?oc=5",
           "region": "North America"
         },
         {
-          "title": "A major Anthropic investor shrugs off losses",
-          "source": "Business Insider",
-          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOM1p4REVtYjhOci1jTkF5bnFqaWZGNUpaNkoxbENzQkVEeEFsZzMySHdSVk1jbU9hNTBCMHphLVQ4ZzR0OFdmTE1GTHJQY0VDMXJNVVZmRjlfcTJ2SzRFUG9wa1BPZTU4QkI2OUd0VndjWmR4Vk1VOVQ3Z2NKSUNpWlRzN1JadEpTdmpoNU1sV3BxR1JTR3RjS0hKeU5kZw?oc=5",
+          "title": "Nvidia CEO Jensen Huang resigns in blow to AI boom he helped foster",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOMEFwN0FWdjB6blNtR0RZaTBWZXZDaWVwYkhXREttY2FaYVNNVC1qNEFHYm9Yd1pDODBDN2tvNzhnMTY4cmxWYTg1WVFidzFlNVFEdlZNb3IyZG1nS2FKcHAzUERhQW9EdG9oOER6YmwydXZOd0t1VHRub1BCdFdoR1V4dktlUVUydjZWeU53aVdKMGwtOGFtZmd2T3VhODF3eXhPazVtbV81b0hpUi1vcw?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.6271,
-      "probability": 0.83,
+      "score": 0.8809,
+      "probability": 0.92,
       "confidence": "High",
-      "entity": "Nvidia",
-      "theme": "Chips & compute",
-      "headline": "How Nvidia CEO Jensen Huang's extramarital affair could cause collateral damage in Washington",
-      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "Anthropic’s IPO Is About Six Times Oversubscribed",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 21,
+        "outlets": 34,
         "regions": [
-          "North America",
-          "Global desks"
+          "North America"
         ],
-        "stories": 21,
-        "momentum": 2.36,
-        "recent6h": 10,
-        "authority": 10.4,
-        "hnPoints": 0,
-        "nextStepCues": 0,
+        "stories": 54,
+        "momentum": 4.57,
+        "recent6h": 34,
+        "authority": 10,
+        "hnPoints": 784,
+        "nextStepCues": 3,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.9,
-        "breadth": 0.33,
-        "momentum": 0.75,
+        "reach": 1,
+        "breadth": 0.17,
+        "momentum": 1,
         "authority": 1,
-        "community": 0,
-        "nextStep": 0,
+        "community": 0.96,
+        "nextStep": 1,
         "arc": 1
       },
       "sig": [
+        "ipo",
+        "anthropic",
+        "anthropics",
+        "stock",
         "nvidia",
-        "huang",
-        "jensen",
-        "affair",
-        "china",
-        "ceo",
-        "chip",
-        "alice"
+        "claude",
+        "time",
+        "six"
       ],
       "evidence": [
         {
-          "title": "Jensen Huang Said to Have Had Relationship With Nvidia Executive Who Reports to Him",
-          "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPV0NCNjVPR0M2THpMdkhiTW5jZUlmVXJzNHk4YjZYeWtGZHc3Vk81V3czUXBBVjktcXlSLWs3MFdyWkRtcmRpV1BmY1hKckhyU3RYWEdsTWlGcnhFVFVNakRLLWZvREpURHJnRVVSdmZEcHJWU2p5YWJZX1pEWGRWRDB1aw?oc=5",
+          "title": "Anthropic’s IPO Is About Six Times Oversubscribed",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQeWxnOC1MRXVQbUJwaDdiSDE3TzdIbVRyYU5qWnF5YzkycUVPTXV0bUhOWEIzWU1xejMyQXJxaGtHT2dQbk1iTExkc29hYjBpQWRsY3RTaEtsTVhVaFJjOHl5aW5nb0dDYzRwcWxjVXpkbWw1bU5lSFhwVHo4aGw4bHJZYlNZTUVoN2VwYnhBWmNDNURMbXNmN2FvaEVONS1CVG1MY004MzdMbTRJd1E2eQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Jensen Huang affair in D.C.: Resignation calls and moves to tighten Nvidia China exports",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPWjJRY2daaGR0MlE5NzU0bndocWZPVF9qODRlRlBzUUVLN1dyNkE2VXlJeUdGanF2NkQ5OGVZMmJTYk9xY244NU9sUHppeFU2dVlHcVRwWFptNG9CSUN6ay1Ic3NVdFJRZTNkY05nQzJJUFJsSVp1N21LRElnSHotZmZyYVR2a25v?oc=5",
+          "title": "With IPO looming, Anthropic launches Claude product for manufacturers",
+          "source": "Business Insider",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQRVFzTkpNdV9uc2JnQUFWcTF0c0Y1UnRVcU1ETUZHRGZVUjlRNGpBWXI5UGF4TThRWEFEc1J2alNTbmFYSUEzXzNhb1p4RlRpRDdmd1BSdi1xeXB4aFgwQTlUalZYc19yM2U1S2JYWFVWQWRvSUM3RF9ETkN2bWY0T2g1ZEtWemNpYThCM3lBZFhMRlM5VHRuTG94WDA?oc=5",
           "region": "North America"
         },
         {
-          "title": "Could Huang, Nvidia and company's board be held liable over affair scandal?",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPMjZKSmVVbEFma0huZUVIajB2eVUzdUdEd2owTjNLbTZTbFQ5Z2F5OEs4WVp0QVdhZEpDU2xXQnhnTlJpQjlkMnREdGZEbkRyVW1hLXBsWklELTUxMU52bzVXMXJkeVRrVkx5aXV0YTMwcE1BVmJfTXJ2aTg3WGNkSnZRRTFLUllxTkVVVnZCc2JicjJmWGo0T08zRThvTmNQUHVfZkp2WUJwdXhIZGxNY2xFQ1ZZbVZsajJ0YWdB?oc=5",
+          "title": "The cracks in venture are beginning to show, just as Anthropic gets ready to IPO",
+          "source": "Fortune",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPckExSjB0WnQwTm1qenAxT0NuZENraVBtMHdiSjRldnhYbFR5SFZ1VFNqc3BNQXphWnZYMXViN0JqUmo3MU41NXQ5blhDemRvNjZxZi0xNVZkS01yVE0xbWNMR2hQWTVpbGQtZHZDUEp4N1B1eWhuU0NvSWhwWnVmeUwyOS1hYXhHWlZTcjZaQ0JmTEhIWURueFFzaWxNRkM5bUl3LUkyeTlLTEpBRUhha2l2NWh2QlM1dVJrNQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "How Nvidia CEO Jensen Huang's extramarital affair could cause collateral damage in Washington",
-          "source": "BNN Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxNZFpyQnZqU0NrSEZhU2hpV3p6NnVXREJ3Z2lON2N6Y0tIbmRfbDVseW9YaUJVakpYZWxPRkpkN0JpQm9yRWEwbkE0ZjJkY2JZV01WaUlGaE4zY0hqMEo1WWpJeU9hNWxzNkJRdFNQQThydEFIZzNlWXdBblI3YkxlZzJuc18zQmd6TWZRdnlVUWJtWTFjNFFaQXd6Y2NpcmtPYVhPMG8yRGdKMGt1Rl9BZUtIMHBQdkIxYjdQNmZXeXNpand2RkNtUmJxSjd0NmdqMmJsZWxjT3FmeUtWdEx4TGNWR3g?oc=5",
-          "region": "North America"
+          "title": "Anthropic IPO",
+          "source": "Hacker News",
+          "url": "https://ipo.anthropic.com/us/",
+          "region": "Community"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.413,
-      "probability": 0.5,
-      "confidence": "Medium",
-      "entity": "Google",
-      "theme": "Regulation & policy",
-      "headline": "Meta, TikTok join Google to push back on Indonesia's planned AI copyright law revisions",
-      "outlook": "Expect reactions from industry, lawmakers and civil society as the Google policy story moves to its next step.",
+      "score": 0.5338,
+      "probability": 0.71,
+      "confidence": "High",
+      "entity": "OpenAI",
+      "theme": "Courts & copyright",
+      "headline": "OpenAI, Google, Anthropic hit with lawsuit seeking halt to frontier AI development",
+      "outlook": "Filings, responses or a ruling involving OpenAI could land and drive fresh coverage.",
       "signals": {
-        "outlets": 9,
+        "outlets": 13,
         "regions": [
           "North America"
         ],
-        "stories": 9,
-        "momentum": 1.33,
-        "recent6h": 3,
-        "authority": 3,
-        "hnPoints": 0,
+        "stories": 14,
+        "momentum": 10.5,
+        "recent6h": 13,
+        "authority": 5.1,
+        "hnPoints": 12,
         "nextStepCues": 0,
-        "arcDays": 2,
+        "arcDays": 0,
         "calendar": null
       },
       "factors": {
-        "reach": 0.67,
+        "reach": 0.77,
         "breadth": 0.17,
-        "momentum": 0.47,
-        "authority": 0.6,
-        "community": 0,
+        "momentum": 1,
+        "authority": 1,
+        "community": 0.37,
         "nextStep": 0,
-        "arc": 0.67
+        "arc": 0
       },
       "sig": [
-        "meta",
+        "openai",
+        "anthropic",
         "google",
-        "indonesia",
-        "copyright",
-        "tiktok",
-        "join",
-        "law",
-        "push"
+        "lawsuit",
+        "development",
+        "halt",
+        "frontier",
+        "hit"
       ],
       "evidence": [
         {
-          "title": "Meta, TikTok join Google to push back on Indonesia's planned AI copyright law revisions",
+          "title": "OpenAI, Google, Anthropic hit with lawsuit seeking halt to frontier AI development",
           "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxOeDZLSGp0MHRPWUgzVTNmZEhMLWR6Z2lvdmZiQzRzblJobjdGdlRMUmhHV1dzM3lUUHdocXNoMnp4bFZHOEZtUU41T3BGT0d0blpyYnViSDZ3bklQNG50bnRyVmtYTE0xZTdWc0dDODhrd1hIRXVKTXVWMWVqWVY1aEFLN040QzJRMW40QzJzTHVYMjNEVTRuZ0NEdFI3eS1EV05WWDdjZ3g4TldaRnBrd01GY0lKckRvOTFCRUc5QVBXb0d2WHFaMXdPWno?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPWTR4ak5BdnRmV3hzYTZOcVhBYklWU01YRmtLak03b2hmeC1PMTd5blRQWUkxR2Q1ZXZWRC0xNkNxVDVoN2VOdTVlX1hFMXgwS1Y5TW1fUGt4NThQaEhRVFdna1YxUDhLTnBYUFJ6WTlFajlLM1BZTTRwNk5sWFMydkZtMlJNUnU4MWlDcUN6QmNtVHdUT1pLNXd6QXc4QVk0WmMtM1JxWU5XVC1PUGRIMVJNY2wzN1Z1d2N6WWJkbw?oc=5",
           "region": "North America"
         },
         {
-          "title": "Technology 24h: Meta, TikTok and Google protest AI copyright laws in Indonesia",
-          "source": "Laodong.vn",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPZGxQYURXWk0zcDV6WEVNOFNlbXpVTmh3R09YeGRZb21RU0tYSUg1VUJuN0dEZ1k3QTdwekNvQnd3dnpYVGNBT0tpamVUZktvUWZIZnlheFJ2SEZ0RDVBbWI5UFZTNnpwZVBUWjlVZTB0cVNXYnprODFObkVlQU9tYVp0eTlUMzJTeUhkRUM0eWpqeDhRcjl6bGdaSmNJT0JBRmVCZEU2b0xUSzRYUmF4SzNXd3BYNTVYVkNTQkJtSQ?oc=5",
+          "title": "Advocacy groups sue Anthropic, Google, Meta, OpenAI and SpaceX",
+          "source": "BNN Bloomberg",
+          "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxOX01vVWFGLXNRUXJHT2tXSW1hc1FiZlQza0Y3X0RXMjRuSXBHM0paRnNiSzFkTlFBS2p6alUtU1JKYVdFTncyVXBSbTEwNFJRTjd5WnhRd1hNRDlTNFhPaHVGa05QR2hBQldxUXRVUmJraTVWZjEwRmg4dGpXTHQteWVJM3kweGFxSnVTSk56aWFaT2FHRnpMa0J6U3FjZFVfendhOXdhVV9oQzdZdHpKbEFfS3BieDdaLV9yNTZVRDBwOVpyeW5QTVFPNXQzQldwb0Fzd193eTFwQ0dMa2FkUlhzajRmVnZP?oc=5",
           "region": "North America"
         },
         {
-          "title": "Meta, TikTok Join Google to Oppose Indonesia’s AI Copyright Law Plan",
-          "source": "Analytics Insight",
-          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQcjNrQ1ktWDJ5Vy1hakF2ZkZjUkpUZEM4b3ZheG93Z2ZLT1czdGUyR1VtM3d2YlA0Rks3NE9HRWxzdkV5RUxvbnpETTJEZWNNRzVEX3NjVFNBZzAxek00dXR2NlJSVGY1OHZmQVFkMnNNQkUyaWRCdmtQR3JJU3pZYmk2VTNzQm9IVXh3MGh6MkpZSEY1YWoxdlVjMVNsY1BpWXhUUmlkSdIBtAFBVV95cUxPZUF4eEhpcS1hZDRqWlRWblhPbV9maUZRbGxLZmxvVUgwdkI3aHMzOXRSdmN5WlVfMU9yYzdQUWYySUhXNW1PZWR6MTZ5OTRkRGcwVS1Jazh5WGdIZUNqd04wMFpnWEZwcmphbUZsOFI0eWR0R2gzVWNLWUpkMG05X1VtVmxRbVVvVng0NjU0cmxaYjliZHB5ekpVYUVYSGdwWXVBVHBxQ0RSX3UxaHNLWXZKcU0?oc=5",
+          "title": "Nonprofits sue Anthropic, Google, and other tech giants to freeze the AI arms race",
+          "source": "Politico",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOZTFGbzdtVzREUTBscG9FbC1HSHU2N3pRcDg2TFR3RzRORW9oRWQwTHZrSnBENGRmcno3Nkt4M2lYOElvT2pnNDV5UFRCU3QyMGpkVnRLVXhVRGFWV2cydEI2WlRLaWs5Nmg4eUZ3T2RHbXBFT3ViX3ZmaW9MZ3B6OFZ0QmlJS3g5cFF3Q3cxVERlRExkbDBxRVowdmR1V0pZ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Google, Meta And TikTok Oppose Indonesia’s Proposed AI Copyright Law Changes",
-          "source": "The 420.in",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxORTlOSF8wSXpfLXNzeExKbEc1dWhNQzYwQ0dLNHFuQTNMd1hQb0VmX052dUtDTlBXR2ptZFZ3TndLbmlJc2ZLOGFEWnJuNXk0V25sOVNGQmdpcXlyRjdDZTVpZGxGelBsYWV2R1BvbjlLbXJLWGZhSUloUnVvUE45V3NmOHotYTVGOGZ4RmVQeThrUTRpeE9DZQ?oc=5",
-          "region": "North America"
+          "title": "OpenAI, Google, Anthropic hit with lawsuit to stop AI development",
+          "source": "Hacker News",
+          "url": "https://www.reuters.com/business/openai-google-anthropic-hit-with-lawsuit-seeking-halt-frontier-ai-development-2026-11-12/",
+          "region": "Community"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-12",
+    "date": "2026-11-13",
     "calls": [
       {
         "rank": 1,
-        "headline": "Anthropic Targets $1.4 Trillion Valuation in Blockbuster IPO",
+        "headline": "Anthropic’s Mega-IPO Is Said to Be Multiple Times Oversubscribed",
         "probability": 0.92,
         "hit": true,
-        "matched": "Anthropic’s Mega-IPO Is Said to Be Multiple Times Oversubscribed"
+        "matched": "Anthropic’s IPO Is About Six Times Oversubscribed"
       },
       {
         "rank": 2,
-        "headline": "Jensen Huang's affair with alleged Chinese spy further complicates Nvidia’s China problem",
-        "probability": 0.9,
+        "headline": "How Nvidia CEO Jensen Huang's extramarital affair could cause collateral damage in Washington",
+        "probability": 0.83,
         "hit": true,
-        "matched": "How Nvidia CEO Jensen Huang got entangled in a China chip and spy scandal"
+        "matched": "Nvidia CEO Jensen Huang Resigns, Creating Uncertainty for the AI Sector"
       },
       {
         "rank": 3,
-        "headline": "How Jensen Huang’s Yearslong Ties to Alice Huang Enabled $7 Billion-Plus Nvidia Chip Sales to China",
-        "probability": 0.85,
-        "hit": true,
-        "matched": "EXCLUSIVE: Chinese university bought Nvidia H200 chips despite US blacklist"
+        "headline": "Meta, TikTok join Google to push back on Indonesia's planned AI copyright law revisions",
+        "probability": 0.5,
+        "hit": false,
+        "matched": null
       }
     ],
-    "hits": 3
+    "hits": 2
   },
   "track": {
-    "days": 12,
-    "calls": 36,
-    "hits": 30,
+    "days": 13,
+    "calls": 39,
+    "hits": 32,
     "log": [
       {
         "date": "2026-11-01",
@@ -322,9 +323,14 @@
         "date": "2026-11-12",
         "hits": 3,
         "calls": 3
+      },
+      {
+        "date": "2026-11-13",
+        "hits": 2,
+        "calls": 3
       }
     ],
-    "hitRate": 0.83
+    "hitRate": 0.82
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
