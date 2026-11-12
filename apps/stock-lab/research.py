@@ -1,7 +1,7 @@
 """Scout — the strategy-research agent.
 
 The other agents can only filter, size or exit the signals they are given. Scout looks for better signals:
-it generates thousands of candidate intraday strategies (8 setup families × their parameters × side, market,
+it generates thousands of candidate intraday strategies (9 setup families × their parameters × side, market,
 volume, stop-size and target filters), simulates every one with the same fills, stop-first rule and costs as
 the live engine, and keeps only those that
 
@@ -20,6 +20,11 @@ import numpy as np
 import pandas as pd
 
 LAST_ENTRY = 14 * 60 + 30          # no entries after 14:30
+FCB_LAST_ENTRY = 14 * 60 + 40      # the first-candle specialist's own cut-off
+FCB_BUF = 0.001                    # "a few points" beyond the stop level: 0.1% of price
+FCB_STOP_TXT = {"vwap": "beyond VWAP or the breakout candles, whichever is further, plus a small buffer",
+                "bars": "just beyond the breakout candles",
+                "range": "at the far side of the 9:15 candle"}
 EXIT_MIN = 15 * 60 + 15            # everything closed at 15:15
 RRS = [1.0, 1.5, 2.0, 3.0]
 
@@ -45,6 +50,10 @@ FAMILIES = {   # family: (short code shown on cards, plain description, list of 
     "revert": ("REVERT", "Stretch reversal: after 11:00 price is at least {k}× its normal bar size away from VWAP and "
                          "a bar closes back toward it. Trade back toward VWAP; stop beyond the last 3 bars.",
                [dict(k=k) for k in (3, 5)]),
+    "fcb": ("1ST-CANDLE", "First-candle breakout: mark the 9:15 candle's high and low and ignore everything inside. "
+                          "{nc} 5-min closes in a row beyond that range, on the right side of VWAP, the last one on "
+                          "above-average volume. Stop {stop_txt}. No new entries after 14:40.",
+            [dict(nc=nc, stop=st_) for nc in (2, 3) for st_ in ("vwap", "bars", "range")]),
     "rs": ("REL-STR", "Relative strength: by {T_txt} the stock has beaten (lagged) Nifty by at least {d}% and is on the "
                       "right side of VWAP. Trade in that direction; stop at the day's low (high) so far.",
            [dict(T=T, d=d) for T in (600, 630) for d in (0.7, 1.2)]),
@@ -66,7 +75,7 @@ def describe(spec):
     fam = spec["fam"]
     p = dict(spec["prm"])
     p.update(nb_min=p.get("nb", 0) * 5, k_min=p.get("k", 0) * 5, T_txt=_hm(p.get("T", 0)),
-             stop_txt={"far": "far side", "mid": "middle"}.get(p.get("stop"), ""))
+             stop_txt={"far": "far side", "mid": "middle", **(FCB_STOP_TXT if fam == "fcb" else {})}.get(p.get("stop"), ""))
     rules = FAMILIES[fam][1].format(**p)
     f = [{"long": "Longs only", "short": "Shorts only", "both": "Longs and shorts"}[spec["side"]]]
     if spec["nifty"] == "with":
@@ -84,7 +93,8 @@ def label(spec):
     bits = {"orb": lambda: f"{p['nb'] * 5}-min range, {p['stop']} stop", "vwap": lambda: f"{p['k'] * 5}-min trend",
             "gapgo": lambda: f"gap ≥{p['g']}%, {p['nb'] * 5}-min confirm", "gapfade": lambda: f"gap ≥{p['g']}%, {p['nb'] * 5}-min fail",
             "trend": lambda: f"by {_hm(p['T'])}, ≥{p['m']}%", "hod": lambda: f"{p['stop']} stop",
-            "revert": lambda: f"{p['k']}× stretch", "rs": lambda: f"by {_hm(p['T'])}, ≥{p['d']}% vs Nifty"}[spec["fam"]]()
+            "revert": lambda: f"{p['k']}× stretch",
+            "fcb": lambda: f"{p['nc']} closes, {p['stop']} stop", "rs": lambda: f"by {_hm(p['T'])}, ≥{p['d']}% vs Nifty"}[spec["fam"]]()
     f = [spec["side"]]
     if spec["nifty"] == "with":
         f.append("with Nifty")
@@ -134,10 +144,10 @@ def _first(mask):
     return k if len(mask) and mask[k] else None
 
 
-def _entry_ok(A):
-    """Signal bar i is allowed if bar i+1 exists and starts by 14:30."""
+def _entry_ok(A, last=LAST_ENTRY):
+    """Signal bar i is allowed if bar i+1 exists and starts by the cut-off (14:30 unless a family sets its own)."""
     ok = np.zeros(A["n"], bool)
-    ok[:-1] = A["tm"][1:] <= LAST_ENTRY
+    ok[:-1] = A["tm"][1:] <= last
     return ok
 
 
@@ -215,6 +225,35 @@ def generate(fam, prm, side, A):
             return None
         stop = l[i - 2:i + 1].min() * 0.999 if s == 1 else h[i - 2:i + 1].max() * 1.001
         return i + 1, o[i + 1], stop
+    if fam == "fcb":
+        nc = prm["nc"]
+        hi, lo = h[0], l[0]
+        pct = (hi - lo) / o[0] * 100
+        if prm.get("rng", True) and not (0.2 <= pct <= 2.5):   # a sliver of a candle breaks on noise; a huge one
+            return None                                        # leaves the trade already stretched
+        out = (c > hi) if s == 1 else (c < lo)
+        run = out.copy()
+        for j in range(1, nc):                                 # nc closes in a row beyond the range, ending at bar i
+            run[j:] &= out[:-j]
+            run[:j] = False
+        cond = run & ((c - vw) * s > 0) & _entry_ok(A, FCB_LAST_ENTRY) & (idx >= nc)
+        if prm.get("vol", True):
+            cond &= A["vol_ok"]
+        i = _first(cond)
+        if i is None:
+            return None
+        bars = l[i - nc + 1:i + 1].min() if s == 1 else h[i - nc + 1:i + 1].max()
+        if prm["stop"] == "vwap":
+            lvl = min(bars, vw[i]) if s == 1 else max(bars, vw[i])
+        elif prm["stop"] == "bars":
+            lvl = bars
+        else:
+            lvl = lo if s == 1 else hi
+        stop = lvl * (1 - s * FCB_BUF)
+        entry = o[i + 1]
+        if (entry - stop) * s <= 0 or abs(entry - stop) / entry * 100 > 2.5:
+            return None
+        return i + 1, entry, stop
     if fam == "rs":
         i = _first(tm >= prm["T"] - 5)
         if i is None or not ok[i] or not np.isfinite(A["nm"][i]):
@@ -490,7 +529,7 @@ def study_spec(spec):
 
 
 # ====================================================================== recommendation panel
-# Eight specialist sub-agents (one per setup family) each nominate their best variant every day; a Selector
+# The specialist sub-agents (one per setup family) each nominate their best variant every day; a Selector
 # picks one specialist — or stands aside. The whole procedure only ever looks at days before the one it acts on,
 # so its record is out-of-sample end to end (both the specialists' tuning and the Selector's choice).
 PANEL_MINSTOP = 0.8      # stops at least 0.8% away: round-trip costs stay ≈ 0.12R instead of 0.3R+
@@ -654,7 +693,7 @@ def panel_proposal(res, cfg):
     r, b = res["record"], res["base"]
     if r["n"] < 20 or not (r["exp"] > 0) or not (r["exp"] >= (b["exp"] if b["n"] else -9) + 0.05):
         return None
-    why = (f"Eight specialist sub-agents (one per setup family) tune themselves daily on the last {SPEC_WIN} sessions, and "
+    why = (f"{len(FAMILIES)} specialist sub-agents (one per setup family) tune themselves daily on the last {SPEC_WIN} sessions, and "
            f"the Selector picks the specialist with the best confidence-adjusted record — or stands aside. Run "
            f"walk-forward over {r['days']} sessions it never peeked at: {r['n']} trades, won {r['win'] * 100:.0f}%, "
            f"{r['exp']:+.2f}R per trade ({r['total']:+.1f}R total), standing aside on {r['aside_days']} days — vs "

@@ -38,6 +38,7 @@ def _fresh_local_modules():
 _fresh_local_modules()
 import agents as ag
 import research as rs  # noqa: E402
+import morning
 import cheetah_engine as ce  # noqa: E402
 import learning as ln  # noqa: E402
 from store import SUPABASE_SQL, MIGRATION_SQL, Store, StoreError, TABLE_ROLE, TRADE_DAYS, MEMORY_DAYS, EVENT_DAYS  # noqa: E402
@@ -440,7 +441,7 @@ def raw_cached(demo, symbols, day, cost_pct):
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
 def panel_cached(demo, symbols, day, cost_pct):
-    """Recommendation panel: 8 specialist sub-agents nominate, the Selector picks one (or none) for today."""
+    """Recommendation panel: the specialist sub-agents nominate, the Selector picks one (or none) for today."""
     raw = raw_cached(demo, symbols, day, cost_pct)
     res = rs.panel(raw, today=day) if raw is not None else None
     if res:
@@ -962,9 +963,13 @@ with tab_i:
                         f"{kind[0].upper() + kind[1:]} starts reading at about {ready:%H:%M} IST "
                         f"(Yahoo bars can lag a few minutes). "
                         + ("This panel refreshes on its own." if interval > 0 else "Tap Refresh now to check again."))
+                morning.render(st, data, now.date())
             else:
                 st.error("Not enough history to scan.")
             return
+        if not demo and now.weekday() < 5 and now.time() < dtime(10, 30):
+            with st.expander("🌅 Morning setup · watchlist and 9:15 candle levels", expanded=now.time() < dtime(9, 30)):
+                morning.render(st, data, now.date())
         last_bar = pd.to_datetime(S.last_bar).max()
         nxt = (f"Next <b>{(fetched + pd.Timedelta(seconds=interval)):%H:%M:%S}</b> (every {fmt_interval(interval)})"
                if interval > 0 else "Auto-refresh <b>off</b>")
@@ -1760,7 +1765,7 @@ with tab_r:
     ss = st.session_state
     can_edit_r = (not ADMIN_PIN) or ss.get("admin_ok", False)
     # ---------------- recommendation panel: specialist sub-agents + Selector
-    section("🏛️ Recommendation panel", "8 specialist sub-agents · the Selector picks one each day")
+    section("🏛️ Recommendation panel", f"{len(rs.FAMILIES)} specialist sub-agents · the Selector picks one each day")
     st.markdown('<div class="sl note">Each <b>specialist</b> owns one setup family and every morning tunes itself on the '
                 f'last {rs.SPEC_WIN} sessions (side, market filter, volume bar, target), always with stops at least '
                 f'{rs.PANEL_MINSTOP:g}% away so costs stay small. The <b>Selector</b> compares the specialists on what their '
@@ -1799,7 +1804,7 @@ with tab_r:
                    "if none of it has an edge the honest answer is to stand aside.")
     st.markdown('<div class="sl note">🔭 <b>Scout</b> is the strategy-research agent. The other agents can only filter, '
                 'size or exit the signals they are given; Scout looks for <b>better signals</b>. Every day it tests '
-                'thousands of intraday strategies — 8 setup families with different timings, sides, market and volume '
+                f'thousands of intraday strategies — {len(rs.FAMILIES)} setup families with different timings, sides, market and volume '
                 'filters, stop sizes and targets — using the same fills and costs as the live engine. It picks candidates on '
                 'the <b>older</b> sessions and keeps only those that stayed profitable on the <b>newest sessions, which '
                 'played no part in choosing them</b>. A strategy only goes live after a reviewer approves it.</div>',
