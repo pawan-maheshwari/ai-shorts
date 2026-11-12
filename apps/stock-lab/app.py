@@ -951,7 +951,19 @@ with tab_i:
             A.idx_bars = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}").get("intraday")
         S, bars = ce.run_scan(data, A)
         if S.empty:
-            st.error("Not enough history to scan.")
+            # Early in a session the scan has nothing to read yet: the engine wants the opening
+            # range plus a few bars (longer when a Scout strategy is approved). Say so, with the
+            # time it will start, instead of reporting missing history.
+            day, got, need = ce.session_progress(data, A)
+            if day is not None and got < need:
+                ready = (pd.Timestamp.combine(day, dtime(9, 15)) + pd.Timedelta(minutes=5 * need))
+                kind = "the approved Scout strategy" if getattr(A, "strategy", None) else "the scan"
+                st.info(f"Session of {day:%d %b} has just opened: {got} of {need} five-minute bars so far. "
+                        f"{kind[0].upper() + kind[1:]} starts reading at about {ready:%H:%M} IST "
+                        f"(Yahoo bars can lag a few minutes). "
+                        + ("This panel refreshes on its own." if interval > 0 else "Tap Refresh now to check again."))
+            else:
+                st.error("Not enough history to scan.")
             return
         last_bar = pd.to_datetime(S.last_bar).max()
         nxt = (f"Next <b>{(fetched + pd.Timedelta(seconds=interval)):%H:%M:%S}</b> (every {fmt_interval(interval)})"
