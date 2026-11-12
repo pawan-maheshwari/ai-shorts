@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-12",
+      "title": "100x Before Breakfast",
+      "headline": "EXCLUSIVE: Chinese AI firms rush to secure Nvidia chip capacity as spy scandal stirs fear of US curbs",
+      "source": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPc1EtU18tWjZNZTZtOFBZNzdqZkRFMk1nbm9MTm9VWUQwUHlLc1dTdDNLWmNCcllESHVVYjFnXzlKcFJrSWpHUkY2S1lhcTFtWWdPVG9WdkcyTkFSaEpLanVzeWctM1hCTkdxUEJ6VnBrLXFYVnBsalpKUkJVUGQyUE5DOEJtaTctZlFEaV9VR1loQ1JrVlhyRmRxR25UMkI2MVgtZnBFU1pVaXhBcmw0ZV9jb0RPYlduY1ppbnpCTlc?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "speed",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "These new chips make AI free forever!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "The power bill just sends itself a thank-you note."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that cost without an invoice."
+        }
+      ]
+    },
+    {
       "date": "2026-11-11",
       "title": "The Bug Slayer",
       "headline": "Israeli AI security startup Bay raises $50 million",
