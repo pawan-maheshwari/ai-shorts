@@ -38,6 +38,7 @@ def _fresh_local_modules():
 _fresh_local_modules()
 import agents as ag
 import research as rs  # noqa: E402
+import morning
 import cheetah_engine as ce  # noqa: E402
 import learning as ln  # noqa: E402
 from store import SUPABASE_SQL, MIGRATION_SQL, Store, StoreError, TABLE_ROLE, TRADE_DAYS, MEMORY_DAYS, EVENT_DAYS  # noqa: E402
@@ -962,9 +963,13 @@ with tab_i:
                         f"{kind[0].upper() + kind[1:]} starts reading at about {ready:%H:%M} IST "
                         f"(Yahoo bars can lag a few minutes). "
                         + ("This panel refreshes on its own." if interval > 0 else "Tap Refresh now to check again."))
+                morning.render(st, data, now.date())
             else:
                 st.error("Not enough history to scan.")
             return
+        if not demo and now.weekday() < 5 and now.time() < dtime(10, 30):
+            with st.expander("🌅 Morning setup · watchlist and 9:15 candle levels", expanded=now.time() < dtime(9, 30)):
+                morning.render(st, data, now.date())
         last_bar = pd.to_datetime(S.last_bar).max()
         nxt = (f"Next <b>{(fetched + pd.Timedelta(seconds=interval)):%H:%M:%S}</b> (every {fmt_interval(interval)})"
                if interval > 0 else "Auto-refresh <b>off</b>")
