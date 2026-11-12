@@ -440,7 +440,7 @@ def raw_cached(demo, symbols, day, cost_pct):
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
 def panel_cached(demo, symbols, day, cost_pct):
-    """Recommendation panel: 8 specialist sub-agents nominate, the Selector picks one (or none) for today."""
+    """Recommendation panel: the specialist sub-agents nominate, the Selector picks one (or none) for today."""
     raw = raw_cached(demo, symbols, day, cost_pct)
     res = rs.panel(raw, today=day) if raw is not None else None
     if res:
@@ -1760,7 +1760,7 @@ with tab_r:
     ss = st.session_state
     can_edit_r = (not ADMIN_PIN) or ss.get("admin_ok", False)
     # ---------------- recommendation panel: specialist sub-agents + Selector
-    section("🏛️ Recommendation panel", "8 specialist sub-agents · the Selector picks one each day")
+    section("🏛️ Recommendation panel", f"{len(rs.FAMILIES)} specialist sub-agents · the Selector picks one each day")
     st.markdown('<div class="sl note">Each <b>specialist</b> owns one setup family and every morning tunes itself on the '
                 f'last {rs.SPEC_WIN} sessions (side, market filter, volume bar, target), always with stops at least '
                 f'{rs.PANEL_MINSTOP:g}% away so costs stay small. The <b>Selector</b> compares the specialists on what their '
@@ -1799,7 +1799,7 @@ with tab_r:
                    "if none of it has an edge the honest answer is to stand aside.")
     st.markdown('<div class="sl note">🔭 <b>Scout</b> is the strategy-research agent. The other agents can only filter, '
                 'size or exit the signals they are given; Scout looks for <b>better signals</b>. Every day it tests '
-                'thousands of intraday strategies — 8 setup families with different timings, sides, market and volume '
+                f'thousands of intraday strategies — {len(rs.FAMILIES)} setup families with different timings, sides, market and volume '
                 'filters, stop sizes and targets — using the same fills and costs as the live engine. It picks candidates on '
                 'the <b>older</b> sessions and keeps only those that stayed profitable on the <b>newest sessions, which '
                 'played no part in choosing them</b>. A strategy only goes live after a reviewer approves it.</div>',
