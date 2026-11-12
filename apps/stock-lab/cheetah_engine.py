@@ -725,6 +725,27 @@ def load_watchlist(path):
     return WATCHLIST
 
 
+def bars_needed(a):
+    """5-minute bars a session must have before day_signals will read it."""
+    return 15 if getattr(a, "strategy", None) else a.or_bars + 6
+
+
+def session_progress(data, a):
+    """(latest session date, most bars any symbol has in it, bars needed) — lets the caller tell
+    'the session has only just opened' apart from 'there is no usable history'."""
+    latest, got = None, 0
+    for df in data.values():
+        days = session_days(df)
+        if not days:
+            continue
+        d, g = days[-1]
+        if latest is None or d > latest:
+            latest, got = d, len(g)
+        elif d == latest:
+            got = max(got, len(g))
+    return latest, got, bars_needed(a)
+
+
 def run_scan(data, a):
     """Latest session per symbol -> (scan table, {symbol: today's 5-min bars})."""
     rows, bars = [], {}
