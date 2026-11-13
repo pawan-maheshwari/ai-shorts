@@ -1,0 +1,176 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+🏛️ RECOMMENDATION PANEL
+9 specialist sub-agents · the Selector picks one each day
+Each specialist owns one setup family and every morning tunes itself on the last 15 sessions (side, market filter, volume bar, target), always with stops at least 0.8% away so costs stay small. The Selector compares the specialists on what their picks actually earned on the following days and chooses the one with the best record after a confidence haircut — or stands aside when none is reliably positive. Every decision only uses days before the one it is made for, so the record below is out-of-sample end to end.
+TODAY'S PICK
+REL-STR
+35 recent trades · +0.33R each
+PANEL, UNSEEN DAYS
++0.04R
+per trade · 129 trades · won 50%
+CLASSIC, SAME DAYS
+-0.28R
+per trade · 244 trades
+STOOD ASIDE
+5 of 38
+sessions
+STATUS
+OFF
+approve in 🎯 Agent scores
+ARMED TODAY
+2
+REL-STR, 1ST-CANDLE
+FIRST TO FIRE
++0.03R
+per trade · 32 trades · won 44%
+SELECTOR, SAME LIMITS
++0.10R
+per trade · 21 trades
+LIMITS
+top 10
+stocks · 3 trade cap · 1 per stock
+MODE
+Selector
+set in 🎯 Agent scores → Fine-tune
+
+Who fired first on unseen days: HOUR-BRK 15 · 1ST-CANDLE 6 · REL-STR 5 · ORB 3 · TREND 1 · GAP-FADE 1 · GAP-GO 1
+
+Today: REL-STR (by 10:00, ≥0.7% vs Nifty) · long · with Nifty · vol ≥1.5× · stop ≥0.8% · 3R
+Relative strength: by 10:00 the stock has beaten (lagged) Nifty by at least 0.7% and is on the right side of VWAP. Trade in that direction; stop at the day's low (high) so far. Longs only; only when Nifty is moving the same way; opening volume ≥ 1.5× normal; stop at least 0.8% away (keeps costs small relative to risk); target 3× risk, otherwise out at 15:15.
+2026-09-18
+2026-09-21
+2026-09-22
+2026-09-23
+2026-09-24
+2026-09-25
+2026-09-28
+2026-09-29
+2026-09-30
+2026-10-01
+2026-10-05
+2026-10-06
+2026-10-07
+2026-10-08
+2026-10-09
+2026-10-12
+2026-10-13
+2026-10-14
+2026-10-15
+2026-10-16
+2026-10-19
+2026-10-21
+2026-10-22
+2026-10-23
+2026-10-26
+2026-10-27
+2026-10-28
+2026-10-29
+2026-10-30
+2026-11-02
+2026-11-03
+2026-11-04
+2026-11-05
+2026-11-06
+2026-11-09
+2026-11-11
+2026-11-12
+2026-11-13
+0
+−50
+Classic engine
+First to fire
+Panel
+Selector (capped)
+
+Cumulative R per session, after 0.1% costs, every signal taken (before the Risk agent's caps). 2,076 variants across the specialists, 58 sessions. A short record is weak evidence — the Selector can only pick the best of what is available, and if none of it has an edge the honest answer is to stand aside.
+
+🔭 Scout is the strategy-research agent. The other agents can only filter, size or exit the signals they are given; Scout looks for better signals. Every day it tests thousands of intraday strategies — 9 setup families with different timings, sides, market and volume filters, stop sizes and targets — using the same fills and costs as the live engine. It picks candidates on the older sessions and keeps only those that stayed profitable on the newest sessions, which played no part in choosing them. A strategy only goes live after a reviewer approves it.
+
+Scout is looking for
+
+Highest win rate (must still be profitable)
+
+Most profit per trade
+
+Most profit per month
+
+STRATEGIES TESTED
+5,564
+58 sessions · 34,477 signals
+CURRENT ENGINE
+44% won
+-0.08R per trade on unseen days
+BEST THAT HELD UP
+60% won
++0.08R per trade · ~76 signals/month
+HELD UP
+3 of 21
+shortlisted strategies, on unseen days
+
+Chosen on 34 older sessions (2026-08-20 → before 2026-10-09); checked on the newest 24 sessions (2026-10-09 → 2026-11-13). Results are after 0.1% round-trip costs, one trade per stock per strategy per day.
+
+SHORTLIST
+picked on older days → tested on unseen days
+
+Win rate alone can mislead: a strategy with a small target wins often but may still lose money. Scout only shortlists strategies whose profit per trade was positive, and 'Held up' means it stayed profitable on the unseen days. Signals per month are before the Risk agent's daily caps.
+
+INSPECT A STRATEGY
+rules, results by day, what-if with all agents
+
+Strategy
+
+GAP-FADE (gap ≥0.5%, 15-min fail) · both · stop ≥0.8% · 1R
+Gap fade: the stock gaps at least 0.5% but the first 15 minutes close back against the gap. Trade against the gap; stop beyond the opening extreme. Longs and shorts; stop at least 0.8% away (keeps costs small relative to risk); target 1× risk, otherwise out at 15:15.
+Older sessions: 44 trades, won 59%, +0.07R each · Unseen sessions: 87 trades, won 60%, +0.08R each
+Aug 232026
+Sep 6
+Sep 20
+Oct 4
+Oct 18
+Nov 1
+−100
+−50
+0
+Classic engine
+This strategy
+Cumulative R (every signal)
+unseen →
+
+What-if: run this strategy through all the agents (Coach, Risk, Exit, Trader)
+
+keyboard_arrow_down
+
+What Scout explores
+
+ORB — Opening-range breakout
+VWAP — VWAP pullback
+GAP-GO — Gap-and-go
+GAP-FADE — Gap fade
+TREND — Trend day
+HOUR-BRK — First-hour breakout
+REVERT — Stretch reversal
+1ST-CANDLE — First-candle breakout
+REL-STR — Relative strength
+
+Each family is crossed with: longs / shorts / both · with Nifty or not · opening volume ≥ 0, 1.2 or 1.5× · minimum stop 0, 0.4 or 0.8% (a wider stop keeps costs small relative to risk) · target 1, 1.5, 2 or 3× risk.
+
+Why the unseen-days check matters: with thousands of strategies, some always look great on past data by luck. The share that held up tells you how much luck was involved — if few hold up, treat the winners with suspicion. 59 sessions is still a short history; paper trade an adopted strategy for a few weeks before trusting it.

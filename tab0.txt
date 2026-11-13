@@ -1,0 +1,253 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+Auto-refresh
+
+↻ Refresh now
+
+Market closed · weekend
+Last refreshed 02:25:52 IST · 14 Nov
+Latest bar 15:25
+Next 02:27:52 (every 2 min)
+🧭 PULSE · MILDLY POSITIVE
+New signals sized ×1
+Nifty ▼ 0.61%
+Nifty flat-ish (-0.61%) — no clear intraday direction · Daily trend up (above 20 and 50-day averages) · India VIX 16.6 (-5.4% vs previous day)
+keyboard_arrow_down
+
+🔔 Alerts · 3 · 3 new
+
+02:25
+⛔
+BAJFINANCE LONG ORB: WINDOW CLOSE 09:50 (-0.07R, paper −₹69)
+02:25
+✅
+SUNPHARMA LONG ORB: WINDOW CLOSE 10:15 (+0.16R, paper ₹163)
+02:25
+🧭
+Market mood: Mildly positive — position size ×1
+
+Alerts show while this page is open. Everything is also kept in the Audit log tab for 7 days.
+
+SESSION
+13 Nov 2026
+35 stocks scanned
+BREADTH
+▲6 ▼28
+up vs down on the day
+IN PLAY
+2
+rel. vol ≥ 1.5×
+SIGNALS
+2
+triggered today
+OPEN
+0
+exit by 15:15
+SIGNALS
+Risk agent: max 3 trades, 3 open, stop at −2R a day
+Practice only — not trade recommendations. These signals are shown for paper trading because on recent sessions the signals, with every agent applied, averaged -0.30R per trade over 126 trades. They switch back to normal recommendations once what is live has a positive record on sessions it was not tuned on.
+SUNPHARMA▲ LONGORBPRACTICE ONLY
+✓ WINDOW CLOSE 10:15
+Last ₹1,880.00 ▼ 0.27% on the day · Practice BUY at 10:00 · close by 10:15 unless stop/target hits first
+ENTRY
+₹1,906.00
+STOP-LOSS
+₹1,891.30
+▼ 0.77%
+TARGET
+₹1,935.40
+▲ 1.54%
+QUANTITY
+68
+RISK
+₹1,000
+Entry
+STOP ₹1,891.30
+EXIT ₹1,910.30
+TARGET ₹1,935.40
+Closed at ₹1,910.30 → +0.16R · ₹+292 before costs.
+Pulse · Mildly positive ×1▲ with market
+SentinelClear
+Coach38% win odds · Caution
+Expected-0.15R ≈ −₹154
+Exit · fixedWINDOW CLOSE 10:15
+📝 Paperclosed +0.16R · ₹163
+RiskALLOW · qty 68
+keyboard_arrow_down
+
+Why this signal · agents · SUNPHARMA
+
+Narrator
+SUNPHARMA closed beyond the 15-minute opening range with rising volume while price was on the right side of VWAP, so the engine took a long at ₹1,906.00 with the stop at ₹1,891.30 and a 2R target. Market mood is mildly positive, which supports this direction. Biggest risk from past trades: close to vwap at entry (won 31% of 279). In its favour: opening range breakout (won 37% of 195).
+Coach — what past trades say
+Expected -0.15R after costs · win odds 38%
+▼ Close to VWAP at entry — averages -0.49R, won 31% of 279
+▲ No news flags — averages -0.20R, won 22% of 9
+▲ Market had no clear direction — averages -0.24R, won 35% of 201
+▲ Mildly positive market mood — averages -0.25R, won 32% of 107
+▲ Normal volume (1.5–2.5×) — averages -0.25R, won 38% of 278
+▲ Opening range breakout — averages -0.05R, won 37% of 195
+All signals: -0.32R per trade, 30% win rate
+Exit — fixed
+Fixed — stop, target or 15:15, whichever first
+Result +0.16R after costs
+Same trade under each policy so far: fixed +0.16R · breakeven +0.16R · trail +0.16R · partial +0.16R · time +0.16R
+Risk — ALLOW
+Within limits: 0 open, 1 taken, day -0.1R
+Quantity 68 × Pulse 1 (Mildly positive at 10:00) × Risk 1.00 = 68
+Sentinel — Clear
+Nothing material found
+Checked: NSE filings, Results calendar, Corporate actions, Google News, F&O ban list · read by rules
+Recent headlines about the company
+· NPPA Sets Sun Pharma's Diclofenac Gel Price at Rs 6.25 Per Gram Medical Dialogues
+· Sun Pharma Advanced Research gets NSE, BSE nod for promoter reclassification scanx.trade
+· Sun Pharma stock: Nomura trims target as specialty growth slows ad-hoc-news.de
+· Sensex rebounds over 280 points, Nifty tops 25,300; Bajaj twins gain, M&M, Sun Pharma fall NewsDrum
+keyboard_arrow_down
+
+Chart · SUNPHARMA
+
+10:00Nov 13, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+1870
+1880
+1890
+1900
+1910
+1920
+1930
+Price
+VWAP
+Signal
+new text
+new text
+Entry 1,906.00
+Stop 1,891.30
+Target 1,935.40
+BAJFINANCE▲ LONGORBPRACTICE ONLY
+■ WINDOW CLOSE 09:50
+Last ₹1,117.00 ▲ 0.18% on the day · Practice BUY at 09:35 · close by 09:50 unless stop/target hits first
+ENTRY
+₹1,107.10
+STOP-LOSS
+₹1,091.75
+▼ 1.39%
+TARGET
+₹1,137.80
+▲ 2.77%
+QUANTITY
+65
+RISK
+₹998
+Entry
+STOP ₹1,091.75
+EXIT ₹1,107.15
+TARGET ₹1,137.80
+Closed at ₹1,107.15 → -0.07R · ₹+3 before costs.
+Pulse · Mildly positive ×1▲ with market
+SentinelClear
+Coach34% win odds · Caution
+Expected-0.09R ≈ −₹87
+Exit · fixedWINDOW CLOSE 09:50
+📝 Paperclosed -0.07R · −₹69
+RiskALLOW · qty 65
+Coach post-mortem: Normal variance — conditions were average; a loss like this is expected sometimes
+keyboard_arrow_down
+
+Why this signal · agents · BAJFINANCE
+
+Narrator
+BAJFINANCE closed beyond the 15-minute opening range with rising volume while price was on the right side of VWAP, so the engine took a long at ₹1,107.10 with the stop at ₹1,091.75 and a 2R target. Market mood is mildly positive, which supports this direction. Biggest risk from past trades: against the market direction (won 24% of 102). In its favour: opening range breakout (won 37% of 195).
+Coach — what past trades say
+Expected -0.09R after costs · win odds 34%
+▼ Against the market direction — averages -0.42R, won 24% of 102
+▲ No news flags — averages -0.20R, won 22% of 9
+▲ Mildly positive market mood — averages -0.25R, won 32% of 107
+▲ Normal volume (1.5–2.5×) — averages -0.25R, won 38% of 278
+▲ Moderately away from VWAP at entry — averages -0.11R, won 28% of 152
+▲ Opening range breakout — averages -0.05R, won 37% of 195
+All signals: -0.32R per trade, 30% win rate
+Exit — fixed
+Fixed — stop, target or 15:15, whichever first
+Result -0.07R after costs
+Same trade under each policy so far: fixed -0.07R · breakeven -0.07R · trail -0.07R · partial -0.07R · time -0.07R
+Risk — ALLOW
+Within limits: 0 open, 0 taken, day +0.0R
+Quantity 65 × Pulse 1 (Mildly positive at 09:35) × Risk 1.00 = 65
+Sentinel — Clear
+Nothing material found
+Checked: NSE filings, Results calendar, Corporate actions, Google News, F&O ban list · read by rules
+Recent headlines about the company
+· Key facts: Bajaj Finance launches ₹11,700 crore QIP; ICICI Securities sets ₹1,200 target TradingView
+· Bajaj Finance shares rise over 3 pc after launch of Rs 11,700-cr QIP bfsi.economictimes.indiatimes.com
+· Buzzing stocks: Bajaj Finance, Tata Power, Adani Enterprises, Sandur Manganese, Alivus Life, Aurobindo Pharma BusinessLine
+· Bajaj Finance allots warrants worth INR 5,799 crore to promoter Prop News Time
+keyboard_arrow_down
+
+Chart · BAJFINANCE
+
+10:00Nov 13, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+1090
+1100
+1110
+1120
+1130
+Price
+VWAP
+Signal
+OR high 1,105.75
+new text
+Entry 1,107.10
+Stop 1,091.75
+Target 1,137.80
+WATCHLIST
+sorted by in play, then relative volume
+
+Chart a stock
+
+10:00Nov 13, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+1090
+1100
+1110
+1120
+1130
+Price
+VWAP
+Signal
+OR high 1,105.75
+new text
+Entry 1,107.10
+Stop 1,091.75
+Target 1,137.80

@@ -1,0 +1,402 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+Storage: Supabase (persistent) — the log, trade journal, settings, Sentinel archive and the agents' learning memory survive restarts.
+
+keyboard_arrow_down
+
+🔌 Storage check
+
+Key: secret key (sb_secret_…) · URL: https://cfesklvtzwcmknjrmdzl.supabase.co
+
+Writes this session: kv 1, trades 1,585, paper 23, events 158, memory 34,545, sentinel 142 · audit events waiting to be written: 0
+
+Re-check storage
+
+EVENTS · 7 DAYS
+158
+10 agents active
+ALERTS
+20
+raised in 7 days
+LIVE SIGNALS
+17
+journaled
+POST-MORTEMS
+10
+losses diagnosed
+COACH STUDIED
+452
+trades · 39% win rate
+AGENT ACTIVITY
+last 7 days · newest first
+
+Agents
+
+Alerts
+Analyst
+Coach
+Narrator
+Pulse
+Risk
+Scout
+Selector
+Sentinel
+Trader
+
+Day
+
+Search
+
+Show
+
+50
+
+25
+
+500
+
+14 Nov 01:01
+🎓
+Coach memory
+History: 47 sessions from Yahoo + 0 remembered from the database (136 signals since 2026-08-20); news filled in from the Sentinel archive on 8
+14 Nov 01:01
+🎓
+Coach memory
+History: 46 sessions from Yahoo + 3 remembered from the database (153 signals since 2026-08-18); news filled in from the Sentinel archive on 8
+14 Nov 01:01
+•
+Scout research
+Tested 5,564 strategies on 58 sessions; 3 of 21 shortlisted held up on the newest 24 sessions. Best: GAP-FADE (gap ≥0.5%, 15-min fail) · both · stop ≥0.8% · 1R — won 60%, +0.08R per trade on unseen days.
+14 Nov 00:59
+🎓
+Coach memory
+History: 54 sessions from Yahoo + 2 remembered from the database (447 signals since 2026-08-18); news filled in from the Sentinel archive on 23
+14 Nov 00:59
+•
+Selector pick
+Today: REL-STR specialist — REL-STR (by 10:00, ≥0.7% vs Nifty) · long · with Nifty · vol ≥1.5× · stop ≥0.8% · 3R (last 35 trades +0.33R each). Panel walk-forward: 129 trades, +0.04R per trade over 38 sessions.
+14 Nov 00:59
+•
+Selector armed
+First-to-fire: 2 specialists armed today — REL-STR, 1ST-CANDLE. Capped walk-forward on 10 focus stocks: 32 trades, +0.03R per trade over 38 sessions.
+13 Nov 18:22
+•
+Selector armed
+First-to-fire: 2 specialists armed today — REL-STR, 1ST-CANDLE. Capped walk-forward on 10 focus stocks: 35 trades, +0.02R per trade over 38 sessions.
+13 Nov 17:57
+🔔
+Alerts alert · BAJFINANCE
+BAJFINANCE LONG ORB: WINDOW CLOSE 09:50 (-0.07R, paper −₹69)
+13 Nov 17:57
+🎓
+Coach post-mortem · BAJFINANCE
+BAJFINANCE ORB lost -0.07R. Main reason: Against the market direction — averages -0.45R across 101 recent trades (won 25%) vs -0.32R overall
+13 Nov 17:57
+🛡️
+Sentinel scan
+Checked 2 stocks in play: 0 high-risk, 0 to watch, 0 could not be checked
+13 Nov 14:26
+🔎
+Analyst review · SBIN
+SBIN +0.01R — helped: Market moved with the trade (Nifty +0.10% in its direction); Strong follow-through — reached +2.5R at best | hurt: Entry timing — went −0.9R against before working; Window too short — closed at +0.01R; holding to the plan gave +1.29R
+13 Nov 14:26
+📝
+Trader close · SBIN
+Shadow-tested skipped BUY SBIN: window at 12:30 @ ₹1,081.15 → +0.01R (₹10)
+13 Nov 12:26
+🔔
+Alerts alert
+Market mood: Choppy — position size ×0.75
+13 Nov 12:26
+🔎
+Analyst review · HINDALCO
+HINDALCO -1.43R — helped: At entry: close to vwap at entry | hurt: Volume faded after entry (0.5× the session so far); At entry: news or corporate-event day
+13 Nov 12:26
+📝
+Trader close · HINDALCO
+Shadow-tested skipped BUY HINDALCO: stop at 11:05 @ ₹952.77 → -1.43R (−₹1,427)
+13 Nov 12:26
+⚖️
+Risk block · SBIN
+BLOCK SBIN VWAP: Already 3 trades today (cap 3)
+13 Nov 12:26
+⚖️
+Risk block · HINDALCO
+BLOCK HINDALCO VWAP: Already 3 trades today (cap 3)
+13 Nov 12:26
+🗣️
+Narrator explain · HINDALCO
+HINDALCO pulled back to VWAP in an established trend and held, so the engine took a long at ₹955.00 with the stop at ₹952.77 and a 2R target. Market mood is choppy. News check: Results event: “Hindalco non-LME EBITDA reached Rs 6,860 crore in Q2 FY27” (Multibagg AI). Biggest risk from past trades: vwap pullback (won 22% of 255). In its favour: news or corporate-event day (won 46% of 23).
+13 Nov 12:26
+🎓
+Coach post-mortem · HINDALCO
+HINDALCO VWAP lost -1.43R. Main reason: VWAP pullback — averages -0.55R across 255 recent trades (won 22%) vs -0.32R overall
+13 Nov 12:26
+🗣️
+Narrator explain · SBIN
+SBIN pulled back to VWAP in an established trend and held, so the engine took a long at ₹1,080.05 with the stop at ₹1,078.53 and a 2R target. Market mood is choppy. News check: Operational disruption: “SBI has told the stock exchanges about its data breach, but not the customers whose data was leaked” (Internet Freedom Foundation). Biggest risk from past trades: vwap pullback (won 22% of 255). In its favour: news or corporate-event day (won 46% of 23).
+13 Nov 12:25
+🧭
+Pulse regime
+Choppy — position size ×0.75. Nifty down 0.79% and below its intraday average; Daily trend up (above 20 and 50-day averages); India VIX 16.2 (-2.8% vs previous day)
+13 Nov 10:33
+🔔
+Alerts alert · HINDUNILVR
+HINDUNILVR LONG ORB: WINDOW CLOSE 09:50 (-0.13R, paper −₹125)
+13 Nov 10:33
+🔔
+Alerts alert · BAJFINANCE
+BAJFINANCE LONG ORB: WINDOW CLOSE 09:55 (+0.11R, paper ₹105)
+13 Nov 10:33
+🔔
+Alerts alert · SUNPHARMA
+SUNPHARMA LONG ORB: WINDOW CLOSE 10:15 (+0.16R, paper ₹163)
+13 Nov 10:33
+🔔
+Alerts alert
+Market mood: Mildly positive — position size ×1
+13 Nov 10:33
+🔎
+Analyst review · HINDUNILVR
+HINDUNILVR -0.13R — helped: Market moved with the trade (Nifty +0.12% in its direction); At entry: close to vwap at entry | hurt: No follow-through — never got beyond +0.3R; At entry: against the market direction
+13 Nov 10:33
+📝
+Trader close · HINDUNILVR
+Paper closed BUY HINDUNILVR: window at 09:50 @ ₹1,973.50 → -0.13R (−₹125)
+13 Nov 10:33
+📝
+Trader open · HINDUNILVR
+Paper BUY 91 HINDUNILVR @ ₹1,972.90 at 09:35 — stop ₹1,962.00, target ₹1,994.70, close by 09:50
+13 Nov 10:33
+🔎
+Analyst review · BAJFINANCE
+BAJFINANCE +0.11R — helped: Clean entry — went only −0.2R against at worst; At entry: close to vwap at entry | hurt: Volume faded after entry (0.3× the session so far)
+13 Nov 10:33
+📝
+Trader close · BAJFINANCE
+Paper closed BUY BAJFINANCE: window at 09:55 @ ₹1,109.00 → +0.11R (₹105)
+13 Nov 10:33
+📝
+Trader open · BAJFINANCE
+Paper BUY 68 BAJFINANCE @ ₹1,106.35 at 09:40 — stop ₹1,091.75, target ₹1,135.55, close by 09:55
+13 Nov 10:33
+🔎
+Analyst review · SUNPHARMA
+SUNPHARMA +0.16R — helped: Clean entry — went only −0.1R against at worst; At entry: close to vwap at entry | hurt: Volume faded after entry (0.6× the session so far); At entry: news or corporate-event day
+13 Nov 10:33
+📝
+Trader close · SUNPHARMA
+Paper closed BUY SUNPHARMA: window at 10:15 @ ₹1,910.30 → +0.16R (₹163)
+13 Nov 10:33
+📝
+Trader open · SUNPHARMA
+Paper BUY 68 SUNPHARMA @ ₹1,906.00 at 10:00 — stop ₹1,891.30, target ₹1,935.40, close by 10:15
+13 Nov 10:33
+🗣️
+Narrator explain · HINDUNILVR
+HINDUNILVR closed beyond the 15-minute opening range with rising volume while price was on the right side of VWAP, so the engine took a long at ₹1,972.90 with the stop at ₹1,962.00 and a 2R target. Market mood is mildly positive, which supports this direction. Biggest risk from past trades: close to vwap at entry (won 29% of 275). In its favour: opening range breakout (won 37% of 192).
+13 Nov 10:33
+🎓
+Coach post-mortem · HINDUNILVR
+HINDUNILVR ORB lost -0.13R. Main reason: Close to VWAP at entry — averages -0.50R across 275 recent trades (won 29%) vs -0.32R overall
+13 Nov 10:33
+🗣️
+Narrator explain · BAJFINANCE
+BAJFINANCE closed beyond the 15-minute opening range with rising volume while price was on the right side of VWAP, so the engine took a long at ₹1,106.35 with the stop at ₹1,091.75 and a 2R target. Market mood is mildly positive, which supports this direction. Biggest risk from past trades: close to vwap at entry (won 29% of 275). In its favour: opening range breakout (won 37% of 192).
+13 Nov 10:33
+🗣️
+Narrator explain · SUNPHARMA
+SUNPHARMA closed beyond the 15-minute opening range with rising volume while price was on the right side of VWAP, so the engine took a long at ₹1,906.00 with the stop at ₹1,891.30 and a 2R target. Market mood is mildly positive, which supports this direction. News check: Weak results: “Sun Pharma Q2 net profit falls 36.2% to ₹1,989 crore | Tap to know more | Inshorts” (Inshorts). Biggest risk from past trades: close to vwap at entry (won 29% of 275). In its favour: opening range breakout (won 37% of 192).
+13 Nov 10:33
+🎓
+Coach lesson
+Favour: Opening range breakout — averages -0.06R, won 37% of 192 trades
+13 Nov 10:33
+🎓
+Coach lesson
+Favour: Late-day signal (after 12:30) — averages -0.10R, won 37% of 70 trades
+13 Nov 10:33
+🎓
+Coach lesson
+Favour: Moderately away from VWAP at entry — averages -0.11R, won 29% of 151 trades
+13 Nov 10:33
+🎓
+Coach lesson
+Avoid: Close to VWAP at entry — averages -0.50R, won 29% of 275 trades
+13 Nov 10:33
+🎓
+Coach lesson
+Avoid: VWAP pullback — averages -0.55R, won 22% of 255 trades
+13 Nov 10:33
+🛡️
+Sentinel scan
+Checked 5 stocks in play: 0 high-risk, 3 to watch, 0 could not be checked
+13 Nov 10:33
+🛡️
+Sentinel watch · HINDALCO
+WATCH: Results event: “Hindalco non-LME EBITDA reached Rs 6,860 crore in Q2 FY27” (Multibagg AI); Results event: “Hindalco Shares Slip 0.3% Despite Strong Q2 FY27 Results; Brokerages Remain Bullish” (Alice Blue)
+13 Nov 10:33
+🛡️
+Sentinel watch · SBIN
+WATCH: Operational disruption: “SBI has told the stock exchanges about its data breach, but not the customers whose data was leaked” (Internet Freedom Foundation)
+13 Nov 10:33
+🛡️
+Sentinel watch · SUNPHARMA
+WATCH: Weak results: “Sun Pharma Q2 net profit falls 36.2% to ₹1,989 crore | Tap to know more | Inshorts” (Inshorts)
+13 Nov 10:33
+🧭
+Pulse regime
+Mildly positive — position size ×1. Nifty flat-ish (-0.34%) — no clear intraday direction; Daily trend up (above 20 and 50-day averages); India VIX 16.3 (-2.0% vs previous day)
+13 Nov 10:33
+🎓
+Coach training
+Studied 442 signals from the last 55 sessions
+13 Nov 04:38
+🎓
+Coach memory
+History: 46 sessions from Yahoo + 0 remembered from the database (135 signals since 2026-08-20); news filled in from the Sentinel archive on 7
+
+Showing 50 of 158 events.
+
+Download log (CSV)
+
+🧠 LEARNING MEMORY
+what the database feeds back into training · kept 180 days
+SESSIONS IN HISTORY
+47
+0 beyond Yahoo's ~60
+SIGNALS STUDIED
+136
+since 2026-08-20
+NEWS FILLED IN
+8
+history rows tagged from the Sentinel archive
+AUDIT DAYS DIGESTED
+4
+10 losses diagnosed
+YOUR REVIEWS
+0
+scoring agents in 🎯 Agent scores
+How the stored logs train the agents: (1) every finished session's signals are archived per signal engine, so the 🎓 Coach, the model lab and the agent scores keep learning from sessions Yahoo no longer serves; (2) the 🛡️ Sentinel's pre-open archive fills in the news condition on those signals — only where it was recorded before the signal fired; (3) the audit log is digested daily so recurring loss causes outlive its 7-day window; (4) your reviews in the 📒 Trade log score each agent and can become proposals. Nothing changes the live settings without a reviewer's approval.
+keyboard_arrow_down
+
+What is stored · 5,259 rows
+
+Signals from older engine settings are kept but not mixed into training — they come back into use if those settings are restored.
+
+Recurring loss causes · last 30 days vs the 30 before
+COACH · WHAT IT HAS LEARNED
+from 452 trades (recent history + live signals)
+▼ Avoid: Risk-off market mood — won 23% of 30 trades, avg -0.77R (all signals: -0.22R, 39% won)
+▼ Avoid: Volatile market mood — won 23% of 31 trades, avg -0.65R (all signals: -0.22R, 39% won)
+▼ Avoid: VWAP pullback — won 36% of 257 trades, avg -0.40R (all signals: -0.22R, 39% won)
+▼ Avoid: No meaningful opening gap — won 35% of 102 trades, avg -0.37R (all signals: -0.22R, 39% won)
+▼ Avoid: Close to VWAP at entry — won 38% of 279 trades, avg -0.35R (all signals: -0.22R, 39% won)
+▼ Avoid: Tight opening range (stop inside normal noise) — won 33% of 60 trades, avg -0.33R (all signals: -0.22R, 39% won)
+▼ Avoid: Market had no clear direction — won 37% of 201 trades, avg -0.33R (all signals: -0.22R, 39% won)
+▲ Favour: Wide opening range (stop far away) — won 44% of 156 trades, avg -0.08R (all signals: -0.22R, 39% won)
+▲ Favour: With the market direction — won 42% of 149 trades, avg -0.06R (all signals: -0.22R, 39% won)
+▲ Favour: Mildly positive market mood — won 44% of 107 trades, avg -0.03R (all signals: -0.22R, 39% won)
+▲ Favour: Against the opening gap — won 47% of 139 trades, avg -0.02R (all signals: -0.22R, 39% won)
+▲ Favour: Moderately away from VWAP at entry — won 42% of 152 trades, avg -0.01R (all signals: -0.22R, 39% won)
+▲ Favour: Opening range breakout — won 44% of 195 trades, avg +0.02R (all signals: -0.22R, 39% won)
+▲ Favour: Far from VWAP at entry (extended move) — won 33% of 21 trades, avg +0.02R (all signals: -0.22R, 39% won)
+
+How it uses this: each new signal gets a win-odds score from these patterns (shown on the card), so conditions that keep failing lower the score of future signals.
+
+keyboard_arrow_down
+
+Win rate by condition
+
+23% · n=31
+23% · n=30
+33% · n=60
+33% · n=9
+33% · n=21
+35% · n=102
+36% · n=257
+36% · n=211
+37% · n=201
+38% · n=236
+38% · n=279
+39% · n=70
+39% · n=278
+39% · n=206
+39% · n=452
+40% · n=174
+40% · n=176
+40% · n=25
+40% · n=102
+41% · n=123
+42% · n=156
+42% · n=152
+42% · n=149
+44% · n=195
+44% · n=107
+44% · n=156
+47% · n=139
+0
+20
+40
+60
+80
+100
+Volatile market mood
+Risk-off market mood
+Tight opening range (stop inside normal noise)
+No news flags
+Far from VWAP at entry (extended move)
+No meaningful opening gap
+VWAP pullback
+With the opening gap
+Market had no clear direction
+Normal opening-range width
+Close to VWAP at entry
+Late-day signal (after 12:30)
+Normal volume (1.5–2.5×)
+Midday signal (10:30–12:30)
+Long trades
+Strong volume (over 2.5×)
+Early signal (before 10:30)
+News or corporate-event day
+Against the market direction
+Mildly negative market mood
+Choppy market mood
+Moderately away from VWAP at entry
+With the market direction
+Opening range breakout
+Mildly positive market mood
+Wide opening range (stop far away)
+Against the opening gap
+Win rate %
+all signals 39%
+WHY TRADES WENT WRONG
+losing trades in the last 7 days, diagnosed by the Coach
+Volatile market mood 8
+VWAP pullback 5
+Normal variance 4
+Close to VWAP at entry 2
+Strong volume (over 2.5×) 2
+Normal opening-range width 2
+
+Re-train Coach now
+
+Agents: 🧭 Pulse market mood · 🛡️ Sentinel news & events · 🗣️ Narrator explanations · 🎓 Coach learning & post-mortems · 🚪 Exit · ⚖️ Risk · 🔔 Alerts · 👤 Reviewer decisions. Events are kept 7 days (digested into learning memory for 180); the trade journal 90 days.

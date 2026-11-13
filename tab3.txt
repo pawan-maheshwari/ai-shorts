@@ -1,0 +1,134 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+ANALYST DESK
+research analysts · macro strategist · portfolio manager — shadow mode
+At 09:30 IST the desk meets with only what is known by then — the first 15 minutes, earlier sessions and the Sentinel's pre-open notes. Each research analyst gives a view on one stock for the rest of the day (long, short or no view) with a thesis and what would prove it wrong; the portfolio manager turns the views, the market regime and the armed strategy specialists into a plan. Every view is scored like a real desk scores its analysts: the stock's move from 09:30 to 15:15 in the called direction, minus 0.1% costs. An LLM (Claude) writes the views when its API key is set; a rule-based analyst runs alongside as the benchmark it has to beat. Shadow mode: the desk never changes a live trade — its record decides whether it should.
+DESK
+Rules
+no LLM key
+REGIME
+Range-bound
+rule read: Range-bound
+NIFTY FIRST 15 MIN
+-0.27%
+gap -0.39%
+BREADTH
+50%
+focus stocks up
+STANCE
+Cautious
+session 13 Nov
+Portfolio manager — today's plan
+Range-bound: 1 focus trade(s) in the direction of the tape.
+• ICICIBANK ▲ long · size 1.02× · First 15 min +0.29% vs Nifty -0.27% on 0.3× volume; 5-day +11.6% vs Nifty +5.6%
+Favour: VWAP, REVERT, GAP-FADE · Avoid: TREND, HOUR-BRK
+TRACK RECORD
+after 0.1% costs · views held 09:30 → 15:15 · 'no view' scores zero
+LLM ANALYSTS
+—
+no scored calls yet
+LLM PM FOCUS
+—
+no scored calls yet
+RULE ANALYSTS
+-0.10%
+per call · 838 calls · right 46% · 53 sessions
+RULE PM FOCUS
+-0.14%
+per call · 129 calls · right 41% · 43 sessions
+
+No LLM is connected, so the desk runs on its rule-based analysts. Free options: a Groq key (console.groq.com) as GROQ_API_KEY, or a Gemini key (aistudio.google.com) as GEMINI_API_KEY, in the Streamlit app's Settings → Secrets; ANTHROPIC_API_KEY uses Claude (paid). From the next market day the LLM writes the views at 09:30 IST and builds its own record next to the rules — two calls a day, well inside the free limits.
+
+Thu 27
+Sat 29
+Mon 31
+September
+Thu 03
+Sat 05
+Mon 07
+Wed 09
+Fri 11
+Sep 13
+Tue 15
+Thu 17
+Sat 19
+Mon 21
+Wed 23
+Fri 25
+Sep 27
+Tue 29
+October
+Sat 03
+Mon 05
+Wed 07
+Fri 09
+Oct 11
+Tue 13
+Thu 15
+Sat 17
+Mon 19
+Wed 21
+Fri 23
+Oct 25
+Tue 27
+Thu 29
+Sat 31
+November
+Tue 03
+Thu 05
+Sat 07
+Mon 09
+Wed 11
+Fri 13
+−80
+−60
+−40
+−20
+0
+
+Cumulative % after costs, summed over each session's calls. Every point is a view written before the outcome — a desk earns its place only if this keeps rising.
+
+DESK AS A FILTER
+the live engine's own signals after 09:30, grouped by the desk's view
+AGREES
+-0.25R
+165 signals · won 39%
+OPPOSES
+-0.25R
+101 signals · won 38%
+NO VIEW
+-0.07R
+112 signals · won 45%
+
+If signals the desk agrees with clearly beat those it opposes, over enough signals, the desk is adding judgement the rules lack and can be promoted from shadow mode to a filter.
+
+keyboard_arrow_down
+
+Lessons the desk keeps (costliest recent calls)
+
+- 2026-11-13: called LONG SUNPHARMA (0.73) — "First 15 min +0.50% vs Nifty -0.27% on 1.5× volume; 5-day +6.3% vs Nifty +5.6%" — it moved -1.28%, net -1.38%
+- 2026-11-13: called LONG DLF (0.75) — "First 15 min +0.65% vs Nifty -0.27% on 0.8× volume; 5-day +6.8% vs Nifty +5.6%" — it moved -0.77%, net -0.87%
+- 2026-11-13: called LONG ICICIBANK (0.71) — "First 15 min +0.29% vs Nifty -0.27% on 0.3× volume; 5-day +11.6% vs Nifty +5.6%" — it moved -0.13%, net -0.23%
+- 2026-11-12: called LONG TITAN (0.63) — "First 15 min +1.06% vs Nifty +0.43% on 0.2× volume; 5-day +8.9% vs Nifty +6.1%" — it moved -1.69%, net -1.79%
+- 2026-11-12: called LONG M&M (0.71) — "First 15 min -0.06% vs Nifty +0.43% on 0.8× volume; 5-day +19.2% vs Nifty +6.1%" — it moved -0.94%, net -1.04%
+- 2026-11-12: called LONG AXISBANK (0.72) — "First 15 min +0.90% vs Nifty +0.43% on 1.1× volume; 5-day +8.4% vs Nifty +6.1%" — it moved -0.66%, net -0.76%
+- 2026-11-12: called SHORT SUNPHARMA (0.72) — "First 15 min -0.56% vs Nifty +0.43% on 1.0× volume; 5-day +7.5% vs Nifty +6.1%" — it moved +0.38%, net -0.48%
+- 2026-11-12: called SHORT INFY (0.62) — "First 15 min +0.21% vs Nifty +0.43% on 0.5× volume; 5-day +0.6% vs Nifty +6.1%" — it moved +0.20%, net -0.30%
