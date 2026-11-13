@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-13",
+      "title": "The Launch to End All Launches",
+      "headline": "Introducing Gemini 4 Hydrogen for Agentic Workflows",
+      "source": "blog.google",
+      "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNbnlqelBIT1ZXblFBa25zdHlXalhPR2Z2b2xLZ2lmeEtFbUFXS3Mya3FtU0tyeGJrOXpHVEJOdFpDVUZSUTVOUHA0WjRiakw2a2hIRzc3ZHBfM3pDT3dKTDdfMExNQ2FnU1NWSHI3UGpXX2lVSEUxeVYwb2FfNE5vRGJnMjhWSzU5WkFrdmtOdW5Fb0lja1dFN3JUMkQ5R01JRXhNUA?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "launch",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This new AI feature changes everything!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "It also changes itself. Every hour. Without telling anyone."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that launch without release notes."
+        }
+      ]
+    },
+    {
       "date": "2026-11-12",
       "title": "100x Before Breakfast",
       "headline": "EXCLUSIVE: Chinese AI firms rush to secure Nvidia chip capacity as spy scandal stirs fear of US curbs",
