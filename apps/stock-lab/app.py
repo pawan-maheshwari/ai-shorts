@@ -809,6 +809,20 @@ if CFG_STATE.get("offline"):
                f"Details in 🗂 Audit log → Storage. ({STORE.last_error})")
 CFG_BASE = CFG_STATE["active"]          # the approved settings, exactly as saved
 CFG = CFG_BASE
+
+
+@st.cache_resource
+def _warm_days():
+    """Days whose heavy daily caches (history, panel, Scout) have already been built on this server."""
+    return set()
+
+
+_BOOT_DAY = f"{now_ist():%Y-%m-%d}|{int(bool(demo))}"
+_BOOT = st.empty()
+if _BOOT_DAY not in _warm_days():
+    _BOOT.info("⏳ **Preparing today's analysis…** Once a day Stock Lab rebuilds its history, the 9 specialists, "
+               "the recommendation panel and Scout's strategy search. This takes 1–3 minutes on the first visit "
+               "after midnight IST; later visits open in seconds.")
 PANEL = None
 try:
     PANEL = panel_for(CFG_BASE, demo)
@@ -1721,18 +1735,31 @@ with tab_b:
             if A.strategy or A.race:
                 A.idx_bars = fetch_index_cached(demo, f"bt-{pd.Timestamp.now(tz=ce.IST):%Y%m%d%H}").get("intraday")
             T, tab = ce.run_intraday_backtest(data, A)
+        if A.race or (A.strategy and CFG_BASE.get("panel")):
+            st.warning("⚠️ **Tested on the days it was chosen on.** This replays *today's* "
+                       + ("armed strategies" if A.race else "panel pick")
+                       + " over every past day, including the days they were picked on, so it flatters them. "
+                       "The honest test is the walk-forward record below, where each day only uses what was known "
+                       "before it.")
+        elif A.strategy:
+            st.info("This replays the approved Scout strategy. Scout chose it on the older sessions, so the older "
+                    "part of this test is not independent; its unseen-day record is in 🔭 Strategy lab.")
         if T.empty:
             st.warning("No trades triggered. Lower the relative-volume filter or add symbols.")
         else:
             net = T.pnl.sum()
+            gross, costs = T.gross.sum(), T.costs.sum()
             wins = T.pnl[T.pnl > 0].sum()
             loss = -T.pnl[T.pnl < 0].sum()
+
+            def _signed(v):
+                return f'<span class="{"up" if v > 0 else "down"}">{"▲" if v > 0 else "▼"} {inr(abs(v), 0)}</span>'
             kpis([("Trades", len(T), f"{T.date.nunique()} days"),
                   ("Win rate", f"{(T.pnl > 0).mean() * 100:.0f}%", f"avg {T.R.mean():+.2f}R"),
-                  ("Net P&L", f'<span class="{"up" if net > 0 else "down"}">{"▲" if net > 0 else "▼"} {inr(abs(net), 0)}</span>',
-                   "after costs"),
-                  ("Profit factor", f"{wins / loss:.2f}" if loss else "—", "wins ÷ losses"),
-                  ("Costs paid", inr(T.costs.sum(), 0), f"data to {fetched:%d %b %H:%M}")])
+                  ("Before costs", _signed(gross), "what the setups earned"),
+                  ("Costs paid", inr(costs, 0), f"≈ {inr(costs / len(T), 0)} per trade"),
+                  ("Net P&L", _signed(net), "after costs"),
+                  ("Profit factor", f"{wins / loss:.2f}" if loss else "—", f"data to {fetched:%d %b %H:%M}")])
             eq = T.sort_values("exit_t").set_index("exit_t").pnl.cumsum()
             fig = go.Figure(go.Scatter(x=eq.index, y=eq.values, mode="lines", line=dict(color="#121212", width=2),
                                        fill="tozeroy", fillcolor="rgba(15,123,63,.08)" if net > 0 else "rgba(194,24,31,.08)"))
@@ -1744,11 +1771,27 @@ with tab_b:
             st.dataframe(t2.round(2), hide_index=True, width="stretch")
             if len(T) < 200:
                 st.warning(f"Only {len(T)} trades — too few to trust. Paper trade before using real money.")
+            elif net <= 0 and gross > 0:
+                st.error(f"Profitable before costs ({inr(gross, 0)}) but costs ({inr(costs, 0)}) wipe it out — the "
+                         "edge per trade is too thin. Wider stops (≥0.8%) and fewer trades with bigger targets "
+                         "reduce the cost share. Don't trade it as-is.")
             elif net <= 0:
                 st.error("Loses money after costs on this data. Don't trade it as-is.")
             else:
                 st.success("Positive after costs on this sample. Paper trade for a few weeks to confirm.")
             st.download_button("Download trade log", T.to_csv(index=False), "intraday_trades.csv", "text/csv")
+    if PANEL and PANEL.get("record"):
+        section("Walk-forward record", "each day decided only from earlier days · after costs")
+        _rows = [("Classic engine", PANEL.get("base")), ("Panel — Selector", PANEL.get("record")),
+                 ("Selector, live limits", PANEL.get("sel_capped")), ("First to fire, live limits", PANEL.get("race"))]
+        kpis([(n_, f'{r_["exp"]:+.2f}R' if r_ and r_.get("n") else "—",
+               (f'per trade · {r_["n"]} trades · won {r_["win"] * 100:.0f}%' if r_ and r_.get("n") else "no trades"))
+              for n_, r_ in _rows if r_ is not None])
+        _live = ("First to fire" if CFG.get("race") else "the panel's pick" if CFG_BASE.get("panel")
+                 else "the approved Scout strategy" if CFG.get("strategy") else "the classic engine")
+        st.caption(f"Live now: {_live}. Walk-forward over {PANEL['record'].get('days', '?')} sessions the panel never "
+                   "tuned on; 'live limits' means top Nifty focus stocks, one trade per stock and the daily trade cap. "
+                   "R = profit in units of the risk per trade. Switch engines in 🎯 Agent scores → Fine-tune.")
     st.caption("Swing backtest (original vs enhanced vs score vs neural net) needs a dated fundamentals history file; "
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
 
@@ -2572,3 +2615,5 @@ with tab_a:
                "🎓 Coach learning & post-mortems · 🚪 Exit · ⚖️ Risk · 🔔 Alerts · 👤 Reviewer decisions. "
                "Events are kept 7 days (digested into learning memory for 180); the trade journal 90 days.")
 STORE.flush()
+_warm_days().add(_BOOT_DAY)
+_BOOT.empty()
