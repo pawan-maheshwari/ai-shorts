@@ -24,7 +24,7 @@ def _fresh_local_modules():
     """Streamlit Cloud keeps imported helper modules in memory across redeploys, so an update can run new
     app.py against old store/agents code. Reload any local module whose file changed since it was loaded."""
     here = os.path.dirname(os.path.abspath(__file__))
-    for name in ("cheetah_engine", "store", "models", "research", "learning", "agents"):          # dependency order
+    for name in ("cheetah_engine", "store", "models", "research", "learning", "agents", "desk"):          # dependency order
         mod = sys.modules.get(name)
         path = os.path.join(here, name + ".py")
         if mod is None or not os.path.exists(path):
@@ -38,6 +38,7 @@ def _fresh_local_modules():
 _fresh_local_modules()
 import agents as ag
 import research as rs  # noqa: E402
+import desk as dk  # noqa: E402
 import morning
 import cheetah_engine as ce  # noqa: E402
 import learning as ln  # noqa: E402
@@ -958,8 +959,8 @@ def practice_status():
 
 PRACTICE, PRACTICE_WHY = practice_status()
 
-tab_i, tab_t, tab_r, tab_g, tab_b, tab_s, tab_a = st.tabs(["⚡ Intraday", "📒 Trade log", "🔭 Strategy lab",
-                                                           "🎯 Agent scores", "🧪 Backtest", "📈 Swing picks",
+tab_i, tab_t, tab_r, tab_d, tab_g, tab_b, tab_s, tab_a = st.tabs(["⚡ Intraday", "📒 Trade log", "🔭 Strategy lab",
+                                                           "🧠 Analyst desk", "🎯 Agent scores", "🧪 Backtest", "📈 Swing picks",
                                                            "🗂 Audit log"])
 
 # ============================================================================ intraday
@@ -1724,6 +1725,212 @@ with tab_s:
             'news before buying.</span></div>', unsafe_allow_html=True)
         st.download_button("Download full ranked list", d.to_csv(index=False), "cheetah_ranked.csv", "text/csv")
 
+
+# ============================================================================ analyst desk (shadow mode)
+@st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
+def desk_history(demo, symbols, day, cost):
+    """The rule desk's views on every past session (point in time) and every stock's 09:30→15:15 move."""
+    data, idx = intraday_history(demo, symbols, day)
+    if not data:
+        return None
+    P = {s_: dk.prep(df) for s_, df in data.items()}
+    ib = idx.get("intraday") if isinstance(idx, dict) else None
+    NP = dk.prep(ib) if isinstance(ib, pd.DataFrame) and len(ib) else None
+    sent = {}
+    try:
+        sl = get_store(demo).sentinel_list(days=90)
+        for r_ in sl.itertuples():
+            sent.setdefault(pd.Timestamp(r_.day).date(), {})[r_.symbol] = dict(level=r_.level, reasons=(r_.data or {}).get("reasons"))
+    except Exception:
+        pass
+    days_ = sorted(set().union(*[set(p_["days"]) for p_ in P.values() if p_]))
+    days_ = [d_ for d_ in days_ if d_ < pd.Timestamp(day).date()]
+    calls, pm_calls, outs = dk.rule_history(P, NP, idx.get("vix") if isinstance(idx, dict) else None, sent, days_)
+    return dict(calls=calls, pm=pm_calls, outs=outs)
+
+
+@st.cache_resource
+def _desk_attempts():
+    return {}
+
+
+def _desk_log(store):
+    try:
+        return store.kv_get("desk_llm_log", []) or []
+    except Exception:
+        return []
+
+
+def _desk_calls(log, kind="views"):
+    out = []
+    for e in log:
+        d_ = pd.Timestamp(e["day"]).date()
+        if kind == "views":
+            out += [dict(v, day=d_) for v in e.get("views") or []]
+        else:
+            out += [dict(day=d_, symbol=f["symbol"], view=f["side"], confidence=f.get("size", 1), thesis=f.get("why", ""))
+                    for f in ((e.get("pm") or {}).get("focus") or [])]
+    return out
+
+
+def _nanfree(d):
+    return {k: (None if isinstance(v, float) and not np.isfinite(v) else v) for k, v in d.items()}
+
+
+with tab_d:
+    cost_ = float(CFG["cost_pct"])
+    ss_ = st.session_state
+    section("Analyst desk", "research analysts · macro strategist · portfolio manager — shadow mode")
+    st.markdown('<div class="sl note">At 09:30 IST the desk meets with only what is known by then — the first 15 '
+                'minutes, earlier sessions and the Sentinel\'s pre-open notes. Each <b>research analyst</b> gives a '
+                'view on one stock for the rest of the day (long, short or no view) with a thesis and what would '
+                'prove it wrong; the <b>portfolio manager</b> turns the views, the market regime and the armed '
+                'strategy specialists into a plan. Every view is <b>scored like a real desk scores its analysts</b>: '
+                f'the stock\'s move from 09:30 to 15:15 in the called direction, minus {cost_:g}% costs. Claude '
+                'writes the views when an API key is set; a rule-based analyst runs alongside as the benchmark it '
+                'has to beat. <b>Shadow mode</b>: the desk never changes a live trade — its record decides whether '
+                'it should.</div>', unsafe_allow_html=True)
+    try:
+        H = desk_history(demo, symbols, f"{now_ist():%Y-%m-%d}", cost_)
+    except Exception as e:
+        H = None
+        STORE.log("Desk", "error", f"Desk history could not be built: {e}", dkey=f"desk-err|{now_ist():%Y%m%d%H}")
+    tok_ = f"{ss_.get('tok', 0)}-{int(ss_.get('tok_t', time.time()) // 60)}"
+    live_, _ = fetch_intraday(symbols, demo, 15, tok_)
+    lidx_ = fetch_index_cached(demo, 0 if demo else tok_)
+    focus_ = rs.focus_symbols(list(live_), int(CFG.get("focus_n") or 10) or 10)
+    LP = {s_: dk.prep(live_[s_]) for s_ in focus_ if s_ in live_}
+    ib_ = lidx_.get("intraday")
+    NP_ = dk.prep(ib_) if isinstance(ib_, pd.DataFrame) and len(ib_) else None
+    d_live = max((max(p_["days"]) for p_ in LP.values() if p_), default=now_ist().date())
+    if not demo:
+        d_live = min(d_live, now_ist().date())
+    briefs = {s_: dk.brief(p_, d_live) for s_, p_ in LP.items()}
+    sent_today = {}
+    try:
+        sl_ = STORE.sentinel_list(days=3)
+        for r_ in sl_[sl_.day == str(d_live)].itertuples():
+            sent_today[r_.symbol] = dict(level=r_.level, reasons=(r_.data or {}).get("reasons"))
+    except Exception:
+        pass
+    mac = dk.macro(NP_, briefs, lidx_.get("vix"), d_live)
+    met = sum(1 for b_ in briefs.values() if b_ and np.isfinite(b_["m15"])) >= max(3, len(briefs) // 2)
+
+    # ---- records: rules over history; Claude from its stored notes
+    outs = dict(H["outs"]) if H else {}
+    for s_, p_ in LP.items():                                   # today's move, once 15:15 has passed
+        for d_, o_ in p_["out"].items():
+            outs.setdefault((d_, s_), o_)
+    R_ = dk.score(H["calls"], outs, cost_) if H else pd.DataFrame()
+    RP_ = dk.score(H["pm"], outs, cost_) if H else pd.DataFrame()
+    LOG = _desk_log(STORE)
+    C_ = dk.score(_desk_calls(LOG), outs, cost_)
+    CP_ = dk.score(_desk_calls(LOG, "pm"), outs, cost_)
+    sR, sRP, sC, sCP = dk.summary(R_), dk.summary(RP_), dk.summary(C_), dk.summary(CP_)
+
+    # ---- today's Claude desk: once a day after 09:30 on market days, never in demo
+    entry = next((e for e in LOG if str(e.get("day")) == str(d_live)), None)
+    att = _desk_attempts()
+    can_llm = bool(API_KEY) and not demo and met and d_live == now_ist().date() and now_ist().weekday() < 5
+    if can_llm and entry is None and time.time() - att.get(str(d_live), 0) > 1800:
+        att[str(d_live)] = time.time()
+        armed_ = PANEL.get("armed") if PANEL else None
+        with st.spinner("The analyst desk is writing today's notes (Claude)…"):
+            vws, err1 = dk.llm_views(focus_, briefs, mac, sent_today, dk.record_text(sC), dk.lessons(C_), API_KEY, cost_)
+            pm_, err2 = dk.llm_pm(vws, mac, armed_, dk.record_text(sC), API_KEY, cost_) if vws else (None, err1)
+        if vws:
+            entry = dict(day=str(d_live), ts=now_ist().isoformat(), analyst_model=dk.ANALYST_MODEL,
+                         pm_model=dk.PM_MODEL if pm_ else None, macro=_nanfree(mac), views=vws,
+                         pm=pm_ or dk.rule_pm(vws, mac, armed_))
+            LOG = sorted([e for e in LOG if str(e.get("day")) != str(d_live)] + [entry], key=lambda e: e["day"])[-90:]
+            try:
+                STORE.kv_set("desk_llm_log", LOG)
+            except Exception:
+                pass
+            STORE.log("Desk", "notes", f"Claude desk: {sum(v['view'] != 'none' for v in vws)} views on {len(vws)} "
+                      f"stocks; PM stance {entry['pm'].get('stance')}" + ("" if pm_ else f" (PM fell back to rules: {err2})"),
+                      dkey=f"desk|{d_live}")
+        else:
+            STORE.log("Desk", "error", f"Claude desk did not answer ({err1}); rule desk used", dkey=f"desk-llm-err|{d_live}")
+
+    if entry:
+        views_today, pm_today, by_ = entry["views"], entry["pm"], "Claude"
+    else:
+        views_today = [dk.rule_view(s_, briefs.get(s_), mac, sent_today.get(s_)) for s_ in focus_ if s_ in briefs]
+        pm_today, by_ = dk.rule_pm(views_today, mac, PANEL.get("armed") if PANEL else None), "Rules"
+
+    # ---- today
+    kpis([("Desk", by_, "writes today's views" + ("" if by_ == "Claude" else " · no API key" if not API_KEY else "")),
+          ("Regime", dk.REGIME_TXT.get(pm_today.get("regime", mac["regime"]), "—"), f"rule read: {dk.REGIME_TXT[mac['regime']]}"),
+          ("Nifty first 15 min", f"{mac['n_m15']:+.2f}%" if np.isfinite(mac["n_m15"]) else "—",
+           f"gap {mac['n_gap']:+.2f}%" if np.isfinite(mac["n_gap"]) else ""),
+          ("Breadth", f"{mac['breadth'] * 100:.0f}%" if np.isfinite(mac["breadth"]) else "—", "focus stocks up"),
+          ("Stance", {"normal": "Normal", "cautious": "Cautious", "stand_aside": "Stand aside"}.get(pm_today.get("stance"), "—"),
+           f"session {d_live:%d %b}")])
+    if not met:
+        st.info("The desk meets at 09:30 IST, once the first 15 minutes are in. Its track record is below.")
+    else:
+        fc = pm_today.get("focus") or []
+        st.markdown('<div class="sl prop"><div class="t">Portfolio manager — today\'s plan</div><div>'
+                    + html.escape(pm_today.get("note", "")) + "</div>"
+                    + ("".join(f'<div>• <b>{html.escape(f_["symbol"])}</b> {"▲ long" if f_["side"] == "long" else "▼ short"} · '
+                               f'size {f_["size"]:.2f}× · {html.escape(f_.get("why", ""))}</div>' for f_ in fc)
+                       or "<div>• No focus trades.</div>")
+                    + f'<div class="note">Favour: {html.escape(", ".join(pm_today.get("favour") or []) or "—")} · '
+                      f'Avoid: {html.escape(", ".join(pm_today.get("avoid") or []) or "—")}</div></div>',
+                    unsafe_allow_html=True)
+        rows_ = []
+        for v in views_today:
+            b_ = briefs.get(v["symbol"]) or {}
+            last_ = float(live_[v["symbol"]].Close.iloc[-1]) if v["symbol"] in live_ else np.nan
+            side_ = {"long": 1, "short": -1}.get(v["view"], 0)
+            px_ = b_.get("price", np.nan)
+            mv = (last_ / px_ - 1) * 100 * side_ if side_ and px_ and np.isfinite(px_) else np.nan
+            rows_.append({"Stock": v["symbol"], "View": {"long": "▲ Long", "short": "▼ Short"}.get(v["view"], "— none"),
+                          "Conf.": v["confidence"], "Thesis": v["thesis"], "Wrong if": v.get("invalidation", ""),
+                          "Setup": v.get("setup", ""), "Since 09:30": mv})
+        st.dataframe(pd.DataFrame(rows_).style.format({"Conf.": "{:.2f}",
+                                                       "Since 09:30": lambda x: "" if pd.isna(x) else f"{x:+.2f}%"}),
+                     hide_index=True, width="stretch")
+
+    # ---- track record
+    section("Track record", f"after {cost_:g}% costs · views held 09:30 → 15:15 · 'no view' scores zero")
+
+    def _k(name, s_):
+        if not s_.get("calls"):
+            return (name, "—", "no scored calls yet")
+        return (name, f"{s_['avg']:+.2f}%", f"per call · {s_['calls']} calls · right {s_['hit'] * 100:.0f}% · {s_['days']} sessions")
+    kpis([_k("Claude analysts", sC), _k("Claude PM focus", sCP), _k("Rule analysts", sR), _k("Rule PM focus", sRP)])
+    if not API_KEY:
+        st.info("Claude is not connected, so the desk runs on its rule-based analysts. Add `ANTHROPIC_API_KEY` in the "
+                "Streamlit app's Settings → Secrets; from the next market day Claude writes the views at 09:30 and "
+                "builds its own record next to the rules. Cost: two short Claude calls a day.")
+    if not R_.empty and (R_.view != "none").any():
+        cur = R_[R_.view != "none"].groupby("day").net.sum().cumsum().rename("Rule analysts").to_frame()
+        if not C_.empty and (C_.view != "none").any():
+            cur = cur.join(C_[C_.view != "none"].groupby("day").net.sum().cumsum().rename("Claude analysts"),
+                           how="outer").ffill()
+        st.line_chart(cur, height=200)
+        st.caption("Cumulative % after costs, summed over each session's calls. Every point is a view written "
+                   "before the outcome — a desk earns its place only if this keeps rising.")
+    try:
+        hrows = history_cached(demo, symbols, f"{now_ist():%Y-%m-%d}", ARGS_KEY, A)[0]
+        vb = {(c["day"], c["symbol"]): c["view"] for c in (H["calls"] if H else [])}
+        vb.update({(c["day"], c["symbol"]): c["view"] for c in _desk_calls(LOG)})
+        F_ = dk.as_filter(hrows, vb)
+        if sum(v["n"] for v in F_.values()):
+            section("Desk as a filter", "the live engine's own signals after 09:30, grouped by the desk's view")
+            kpis([(k.capitalize() if k != "no view" else "No view", f"{v['avg']:+.2f}R" if v["n"] else "—",
+                   f"{v['n']} signals · won {v['win'] * 100:.0f}%" if v["n"] else "no signals") for k, v in F_.items()])
+            st.caption("If signals the desk agrees with clearly beat those it opposes, over enough signals, the desk is "
+                       "adding judgement the rules lack and can be promoted from shadow mode to a filter.")
+    except Exception:
+        pass
+    src_ = C_ if not C_.empty else R_
+    if not src_.empty:
+        with st.expander("Lessons the desk keeps (costliest recent calls)"):
+            st.text(dk.lessons(src_, 8) or "No losing calls yet.")
+
 # ============================================================================ backtest
 with tab_b:
     st.markdown('<div class="sl note">Tests the intraday setups on recent 5-minute data with your Settings, costs and '
@@ -1796,7 +2003,7 @@ with tab_b:
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
 
 # ============================================================================ agent scores + human-in-the-loop
-AG_ICON = {"Selector": "🏛️", "Reviewer": "👤", "Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
+AG_ICON = {"Desk": "🧠", "Selector": "🏛️", "Reviewer": "👤", "Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
            "Trader": "📝", "Analyst": "🔎"}
 AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak ones",
            "Pulse": "Reads market mood and shrinks positions on weak days",
