@@ -1,268 +1,272 @@
 {
-  "generated": "2026-11-12T23:07:26.630Z",
-  "forDate": "2026-11-14",
+  "generated": "2026-11-13T23:10:31.859Z",
+  "forDate": "2026-11-15",
   "window": {
-    "from": "2026-11-11T23:07:26.630Z",
-    "to": "2026-11-12T23:07:26.630Z"
+    "from": "2026-11-12T23:10:31.859Z",
+    "to": "2026-11-13T23:10:31.859Z"
   },
   "scanned": {
-    "stories": 813,
-    "outlets": 353,
+    "stories": 809,
+    "outlets": 364,
     "regions": [
       "Global desks",
-      "North America",
-      "Europe",
       "Community",
+      "North America",
+      "South Asia",
       "Asia-Pacific",
-      "Africa",
-      "South Asia"
+      "Europe",
+      "Africa"
     ],
-    "storylines": 547
+    "storylines": 558
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.8967,
+      "score": 0.7868,
       "probability": 0.92,
       "confidence": "High",
       "entity": "Nvidia",
       "theme": "Chips & compute",
-      "headline": "Nvidia CEO Jensen Huang Resigns, Creating Uncertainty for the AI Sector",
+      "headline": "Alice Huang-Linked Firm Procured Banned Nvidia Chips in China",
       "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 72,
+        "outlets": 39,
         "regions": [
-          "North America",
-          "Europe",
           "Global desks",
-          "South Asia"
+          "North America",
+          "South Asia",
+          "Europe",
+          "Asia-Pacific"
         ],
-        "stories": 102,
-        "momentum": 3.63,
-        "recent6h": 57,
-        "authority": 28,
-        "hnPoints": 2682,
+        "stories": 49,
+        "momentum": 1.42,
+        "recent6h": 16,
+        "authority": 15.6,
+        "hnPoints": 0,
         "nextStepCues": 2,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
         "reach": 1,
-        "breadth": 0.67,
-        "momentum": 0.95,
+        "breadth": 0.83,
+        "momentum": 0.5,
         "authority": 1,
-        "community": 1,
+        "community": 0,
         "nextStep": 0.67,
         "arc": 1
       },
       "sig": [
+        "nvidia",
+        "chip",
         "huang",
         "jensen",
-        "nvidia",
-        "resign",
-        "ceo",
-        "affair",
-        "chip",
-        "china"
+        "china",
+        "banned",
+        "exit",
+        "alice"
       ],
       "evidence": [
         {
-          "title": "How Jensen Huang’s downfall unfolded, month by month",
-          "source": "The Washington Post",
-          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQNjhtMlo2a3NDLTZOcVc5Y2NaeHowRG9KMzVneE1ERzB1M0tjODNISFhSRTZITURCTjdOdVFURDhwWmMtWHpMZ2NtTl9uajlkOWJkaXhfWlBJd0psNkp5OU42cENrZHBLQThzSWdRSm1ZbVRuWW5EOElCNjQzLXp2MlVrSV83MWZRX04wVl9tNGRTa2Z3V09nMm05cTVjSHBkWUw0cld3?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Huang, Face of the AI Boom, Ousted by Nvidia Board as CEO",
+          "title": "Alice Huang’s AI Chip Network Unveiled as Nvidia Drama Unfolds Further",
           "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNZEt6Rnp1a2x5UjJnTnQ0S0s1RDA5SkhBc0VWbHE5Y0YwU3dlbjN5MGxacXZHbnZVNjN3dG1uZWlhcVpXeFZSQy1LZWt2dlVmajBCdUR1YThadWplblgteE1jNVBFYWlKcVluSzFWS0Y0UzBiNGtNNFl2UUE5NGNCdnJ2QXZYVktYM3VyQ0lKQzFCaGtlcV9DRTA0c3JqbGFPeG9OSGxlTkh6QXZ2Z2pEZGpROA?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPaUMwZDFjbzlWdkduTE5EZW01SWd0M2RnQmVMb0FLZkZXX3BlQlZUZFZWWGdLV0lvSVF1QlhJNWJVT2dxWHYzazNrcjNZdXFPRnVxdG1GRHVvSlFOQ09NdW9pc1JSbU5nMzRZN3FZSTJVU1pPdmU4cjVKOUZ4cThEVkJCNjZIYzlrei1nVFFvNlFRX3BCbWt0WV9fLUFsNmc4S3MtZFk5UllVaG14cE9qY0pwZVhxbm1pa043MUJaOVZEZw?oc=5",
           "region": "North America"
         },
         {
-          "title": "Jensen Huang built an AI kingdom. Now he’s gone, will Nvidia’s ramparts be breached?",
-          "source": "The Guardian",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQZ2gyejdCeVJ5RnVyb3BuQU5lOVFjdE1tZWQzdHJ1MXIyaU9WUDdNbTZtYWdwLWlTMFA0MjVlRTI1ZGN5eDRwTjVLV0k5ZUllNm1UT1FSNE1xUFFIUnE3X0hPWVRIV1hibTJTQVFEWU1ORXc3X2tDRUZNMTlTMmNDbEtrZEZpNWs0M0hUOHNjUEpSVE1ZaGpRZUtXLXVRc0NfU2NCYkZxY2ttekVSYTBnUUppbEVMZnN2N2lINk0xbElaVEMyNmxuTGxR?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Nvidia CEO Jensen Huang resigns in blow to AI boom he helped foster",
+          "title": "Colette Kress, the CFO who challenged Huang's bets, is Nvidia's interim CEO",
           "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOMEFwN0FWdjB6blNtR0RZaTBWZXZDaWVwYkhXREttY2FaYVNNVC1qNEFHYm9Yd1pDODBDN2tvNzhnMTY4cmxWYTg1WVFidzFlNVFEdlZNb3IyZG1nS2FKcHAzUERhQW9EdG9oOER6YmwydXZOd0t1VHRub1BCdFdoR1V4dktlUVUydjZWeU53aVdKMGwtOGFtZmd2T3VhODF3eXhPazVtbV81b0hpUi1vcw?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNWnRLUFljeVFkcXJzT2xiV3lQWnlaMENnaUNHVlZNdWtscEZSVnRIaWZYSERpb0hTVEc2cmVZaEw4Q1FBX3B6VmNvMnhaSm5GV1RvQ2pwNExEazBSNWRRejMyTU5NZU5RXzdhdU5xMDZZUHFWekdwZG9wWEJOeV9HQnVwLTR4b2FXc1FfWDRPVTd2Tm1JVkRCYk5aUjFROWhqR1pRay1oWVFjdnpnSTRHdzd3?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Why the Nvidia scandal is far from over - The Latest",
+          "source": "The Guardian",
+          "url": "https://www.theguardian.com/news/video/2026/nov/13/why-the-nvidia-scandal-is-far-from-over-the-latest",
+          "region": "Global desks"
+        },
+        {
+          "title": "Watch Nvidia Fallout, Microsoft Outage and Anthropic’s IPO Push",
+          "source": "Bloomberg",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPQUxtb2c1cjUwMXlmSEI1ckVkYW5CU19zS3dYTkVKT0huSE5fc1EzaXJ3U3I2dWhSSl9tOGUzVHdSWTNaN3VsQnlBc0xCQ1ZYbnNqM2J6Q0taMDlEdjhHYzFzZk9RbndTc0RaRGFyOEpwV1JNMUlfbTZFUW9oQS1zMUVWREpuTEE?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.8809,
-      "probability": 0.92,
+      "score": 0.6812,
+      "probability": 0.88,
       "confidence": "High",
       "entity": "Anthropic",
       "theme": "Funding & markets",
-      "headline": "Anthropic’s IPO Is About Six Times Oversubscribed",
+      "headline": "Anthropic to IPO amid Nvidia fiasco",
       "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 34,
+        "outlets": 16,
         "regions": [
           "North America"
         ],
-        "stories": 54,
-        "momentum": 4.57,
-        "recent6h": 34,
-        "authority": 10,
-        "hnPoints": 784,
-        "nextStepCues": 3,
+        "stories": 26,
+        "momentum": 3.92,
+        "recent6h": 16,
+        "authority": 7.8,
+        "hnPoints": 2,
+        "nextStepCues": 1,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
+        "reach": 0.83,
         "breadth": 0.17,
-        "momentum": 1,
+        "momentum": 0.99,
         "authority": 1,
-        "community": 0.96,
-        "nextStep": 1,
+        "community": 0.16,
+        "nextStep": 0.33,
         "arc": 1
       },
       "sig": [
-        "ipo",
         "anthropic",
-        "anthropics",
-        "stock",
+        "ipo",
         "nvidia",
-        "claude",
-        "time",
-        "six"
+        "investor",
+        "watch",
+        "buy",
+        "ahead",
+        "flock"
       ],
       "evidence": [
         {
-          "title": "Anthropic’s IPO Is About Six Times Oversubscribed",
+          "title": "'Fast Money' trader talk potential impact of Anthropic IPO",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQSXpuZmZhZWJiMldMbGxxYm5jdVBiNTF1bkgtSmRhdm5CWG1ZVE9EUmhud2ZkakxZazJhQm1RQ09MalQzZVU1c1I1T0FBRE1NWmJZNjExVWhGRWhtLVotUkR6dkh4VWxodE54elRJNUtyMTA4cnBmQy13VWdoMEltY3lSUzR4YllZeXVXS1R4NXFVdFBTZnB3MlpSNWpIUWJE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "EXCLUSIVE: Investors flock to Anthropic IPO but question durability of AI lead",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOckJYSDVUWDh1cTJPb3ptd2pLZmxuNXBtSEJkN0F0WWFucUZuWDgtQ0dZbzZITDBWY3dhSWZqcjcyZl9FdGpHdHJsX1dkbVowTkZ3OWRKd3pwN2NIMnBGZ1AtbDFkMkl6Vm1RZFNsZ2VDOU1nLUVmY2d4UHV2U01ER1pJTmdlSGFDdmsyM2ZhbXlXYVdEb01ERlNybGxWY0RsYlo4QlNxa0NCaUNpQjQw?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Watch Deciphering Nvidia Noise, US Retirement Gets C+, Anthropic IPO Ahead",
           "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQeWxnOC1MRXVQbUJwaDdiSDE3TzdIbVRyYU5qWnF5YzkycUVPTXV0bUhOWEIzWU1xejMyQXJxaGtHT2dQbk1iTExkc29hYjBpQWRsY3RTaEtsTVhVaFJjOHl5aW5nb0dDYzRwcWxjVXpkbWw1bU5lSFhwVHo4aGw4bHJZYlNZTUVoN2VwYnhBWmNDNURMbXNmN2FvaEVONS1CVG1MY004MzdMbTRJd1E2eQ?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNT0RPblV6ZVZReEQxUkNqNHVmbmNuNDlhTlk0REg3cXIzQ2ZiODZEX2RiTDRvX0V3WmhZNENUY0lYd2ZpdDV6aE5oMUE4SWVLdVdScEpQMHZkOWxkZy0tcklSU3FSQ3NqOGIzQjJ6cnpkOXhRYVJyX2NzZnNLWW1NYVBJZlRnVTFp?oc=5",
           "region": "North America"
         },
         {
-          "title": "With IPO looming, Anthropic launches Claude product for manufacturers",
-          "source": "Business Insider",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQRVFzTkpNdV9uc2JnQUFWcTF0c0Y1UnRVcU1ETUZHRGZVUjlRNGpBWXI5UGF4TThRWEFEc1J2alNTbmFYSUEzXzNhb1p4RlRpRDdmd1BSdi1xeXB4aFgwQTlUalZYc19yM2U1S2JYWFVWQWRvSUM3RF9ETkN2bWY0T2g1ZEtWemNpYThCM3lBZFhMRlM5VHRuTG94WDA?oc=5",
+          "title": "Anthropic to IPO amid Nvidia fiasco",
+          "source": "Axios",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1sUGk1c25oSHF3Vm13T3MwOVlrM2NnYzhrTnhCTjZaTHdOWURwVmlKTTJpZDhta2VtYmRTQVZrM01Qc3B5U1J3clZLZEdzV2REYXJMQWR0QTZEeWptRWljQWFCNkRCanJianRnU0IyYUZfbWhx?oc=5",
           "region": "North America"
-        },
-        {
-          "title": "The cracks in venture are beginning to show, just as Anthropic gets ready to IPO",
-          "source": "Fortune",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPckExSjB0WnQwTm1qenAxT0NuZENraVBtMHdiSjRldnhYbFR5SFZ1VFNqc3BNQXphWnZYMXViN0JqUmo3MU41NXQ5blhDemRvNjZxZi0xNVZkS01yVE0xbWNMR2hQWTVpbGQtZHZDUEp4N1B1eWhuU0NvSWhwWnVmeUwyOS1hYXhHWlZTcjZaQ0JmTEhIWURueFFzaWxNRkM5bUl3LUkyeTlLTEpBRUhha2l2NWh2QlM1dVJrNQ?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic IPO",
-          "source": "Hacker News",
-          "url": "https://ipo.anthropic.com/us/",
-          "region": "Community"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.5338,
-      "probability": 0.71,
+      "score": 0.6193,
+      "probability": 0.82,
       "confidence": "High",
       "entity": "OpenAI",
-      "theme": "Courts & copyright",
-      "headline": "OpenAI, Google, Anthropic hit with lawsuit seeking halt to frontier AI development",
-      "outlook": "Filings, responses or a ruling involving OpenAI could land and drive fresh coverage.",
+      "theme": "Model launch",
+      "headline": "OpenAI launches ChatGPT Wallet, letting AI agents pay for purchases",
+      "outlook": "Hands-on reviews, benchmark claims and rival responses to OpenAI are likely to lead tomorrow.",
       "signals": {
-        "outlets": 13,
+        "outlets": 11,
         "regions": [
-          "North America"
+          "North America",
+          "Global desks",
+          "Europe",
+          "Asia-Pacific"
         ],
-        "stories": 14,
-        "momentum": 10.5,
-        "recent6h": 13,
-        "authority": 5.1,
-        "hnPoints": 12,
+        "stories": 13,
+        "momentum": 3.37,
+        "recent6h": 8,
+        "authority": 5,
+        "hnPoints": 19,
         "nextStepCues": 0,
-        "arcDays": 0,
+        "arcDays": 1,
         "calendar": null
       },
       "factors": {
-        "reach": 0.77,
-        "breadth": 0.17,
-        "momentum": 1,
+        "reach": 0.72,
+        "breadth": 0.67,
+        "momentum": 0.92,
         "authority": 1,
-        "community": 0.37,
+        "community": 0.43,
         "nextStep": 0,
-        "arc": 0
+        "arc": 0.33
       },
       "sig": [
+        "chatgpt",
+        "wallet",
         "openai",
-        "anthropic",
-        "google",
-        "lawsuit",
-        "development",
-        "halt",
-        "frontier",
-        "hit"
+        "agent",
+        "launche",
+        "purchase",
+        "dots",
+        "pay"
       ],
       "evidence": [
         {
-          "title": "OpenAI, Google, Anthropic hit with lawsuit seeking halt to frontier AI development",
+          "title": "OpenAI launches ChatGPT Wallet, letting AI agents pay for purchases",
           "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPWTR4ak5BdnRmV3hzYTZOcVhBYklWU01YRmtLak03b2hmeC1PMTd5blRQWUkxR2Q1ZXZWRC0xNkNxVDVoN2VOdTVlX1hFMXgwS1Y5TW1fUGt4NThQaEhRVFdna1YxUDhLTnBYUFJ6WTlFajlLM1BZTTRwNk5sWFMydkZtMlJNUnU4MWlDcUN6QmNtVHdUT1pLNXd6QXc4QVk0WmMtM1JxWU5XVC1PUGRIMVJNY2wzN1Z1d2N6WWJkbw?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQdjVJaENIMTQ3V1hXQ3pSLUh4SmRkcTdoVEx5el9kTU1fTFBsVVFpaVF5WkpKNTBtX3NYMEE2UEF4V3hkbWhRNzdFREtLZFJtSGtMRTF6RWlfNVowTUktR25NWnRjUEVIUm5TSm9EbE50UWt6cnFIem5XcFBfQWMyUV8xR0w4RWJGalB1TW80OXNsOWJ6RlNGOElzbThzMmt2aDBSTnVaWVliMVNNYXc?oc=5",
           "region": "North America"
         },
         {
-          "title": "Advocacy groups sue Anthropic, Google, Meta, OpenAI and SpaceX",
-          "source": "BNN Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxOX01vVWFGLXNRUXJHT2tXSW1hc1FiZlQza0Y3X0RXMjRuSXBHM0paRnNiSzFkTlFBS2p6alUtU1JKYVdFTncyVXBSbTEwNFJRTjd5WnhRd1hNRDlTNFhPaHVGa05QR2hBQldxUXRVUmJraTVWZjEwRmg4dGpXTHQteWVJM3kweGFxSnVTSk56aWFaT2FHRnpMa0J6U3FjZFVfendhOXdhVV9oQzdZdHpKbEFfS3BieDdaLV9yNTZVRDBwOVpyeW5QTVFPNXQzQldwb0Fzd193eTFwQ0dMa2FkUlhzajRmVnZP?oc=5",
+          "title": "OpenAI launches ChatGPT Wallet, allowing its 'dots' AI agents to make purchases for users",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE0wYUx6c1hJYlJuVVB3MUMxT3ViR21IZWdtXy1RbkQ3c1FGeDVzM2E0VHRNVllGN01FTGFSaURNeS1oUC1leTQ3N05fV0VQR3JvdWJYMjYyNXU2TTZLY00tZU5nbGZfQlBxYnVWaEFGcF9uMTBlR0UtY1d2Sm3SAYIBQVVfeXFMTlhoeUVjNE1xSkN3X09HRDVzOG9qWWh5NU5ILVhhMUFvMDF2N3FBUXg5dEZpTHhwdDMxbGhmSkxMUnBoZHkyMzFfcDRMcWJBcmY3VHhYYVVLNUZ1bnhzYjlPTEt3UDk0Vi1Hdm5vOWN3WHhCQVN3UXZaRjFkVHpZd2R1QQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nonprofits sue Anthropic, Google, and other tech giants to freeze the AI arms race",
-          "source": "Politico",
-          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOZTFGbzdtVzREUTBscG9FbC1HSHU2N3pRcDg2TFR3RzRORW9oRWQwTHZrSnBENGRmcno3Nkt4M2lYOElvT2pnNDV5UFRCU3QyMGpkVnRLVXhVRGFWV2cydEI2WlRLaWs5Nmg4eUZ3T2RHbXBFT3ViX3ZmaW9MZ3B6OFZ0QmlJS3g5cFF3Q3cxVERlRExkbDBxRVowdmR1V0pZ?oc=5",
+          "title": "ChatGPT Wallet lets OpenAI’s Dots agents make purchases for you",
+          "source": "The Verge",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNazB2cTNEbl9qWDE2Z3BCOVh4Q1U1eDRka1Uxc18wQWhQNXRRTGRQV3VSOHRrUFlhZ0FKamNQb21zYkM5WWVfc0tJcGUwWktRbUFWTkkwc0Nya1RFbTVjNTBKa01XMzNhOTFyNzNWTG9NQXVHcGVTM2xwZ2xyUjNEVkxmSU9rY3Nq?oc=5",
           "region": "North America"
         },
         {
-          "title": "OpenAI, Google, Anthropic hit with lawsuit to stop AI development",
-          "source": "Hacker News",
-          "url": "https://www.reuters.com/business/openai-google-anthropic-hit-with-lawsuit-seeking-halt-frontier-ai-development-2026-11-12/",
-          "region": "Community"
+          "title": "ChatGPT’s new Wallet lets AI agents shop and check out for you",
+          "source": "TechCrunch",
+          "url": "https://techcrunch.com/2026/11/13/chatgpts-new-wallet-lets-ai-agents-shop-and-check-out-for-you/",
+          "region": "Global desks"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-13",
+    "date": "2026-11-14",
     "calls": [
       {
         "rank": 1,
-        "headline": "Anthropic’s Mega-IPO Is Said to Be Multiple Times Oversubscribed",
+        "headline": "Nvidia CEO Jensen Huang Resigns, Creating Uncertainty for the AI Sector",
         "probability": 0.92,
         "hit": true,
-        "matched": "Anthropic’s IPO Is About Six Times Oversubscribed"
+        "matched": "Alice Huang-Linked Firm Procured Banned Nvidia Chips in China"
       },
       {
         "rank": 2,
-        "headline": "How Nvidia CEO Jensen Huang's extramarital affair could cause collateral damage in Washington",
-        "probability": 0.83,
+        "headline": "Anthropic’s IPO Is About Six Times Oversubscribed",
+        "probability": 0.92,
         "hit": true,
-        "matched": "Nvidia CEO Jensen Huang Resigns, Creating Uncertainty for the AI Sector"
+        "matched": "Anthropic to IPO amid Nvidia fiasco"
       },
       {
         "rank": 3,
-        "headline": "Meta, TikTok join Google to push back on Indonesia's planned AI copyright law revisions",
-        "probability": 0.5,
-        "hit": false,
-        "matched": null
+        "headline": "OpenAI, Google, Anthropic hit with lawsuit seeking halt to frontier AI development",
+        "probability": 0.71,
+        "hit": true,
+        "matched": "Anthropic,OpenAI sued for allegedly infringing inventors' neural network patents"
       }
     ],
-    "hits": 2
+    "hits": 3
   },
   "track": {
-    "days": 13,
-    "calls": 39,
-    "hits": 32,
+    "days": 14,
+    "calls": 42,
+    "hits": 35,
     "log": [
       {
         "date": "2026-11-01",
@@ -328,9 +332,14 @@
         "date": "2026-11-13",
         "hits": 2,
         "calls": 3
+      },
+      {
+        "date": "2026-11-14",
+        "hits": 3,
+        "calls": 3
       }
     ],
-    "hitRate": 0.82
+    "hitRate": 0.83
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
