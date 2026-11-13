@@ -910,7 +910,7 @@ def risk_check(c, book, cfg, corr):
 def replay(data, idx, a, mults=None):
     """Every recent signal with features known at signal time and the result under every exit policy."""
     rows, corr_by_day = [], {}
-    if getattr(a, "strategy", None):
+    if getattr(a, "strategy", None) or getattr(a, "race", None):
         import copy
         a = copy.copy(a)
         a.idx_bars = idx.get("intraday")          # strategies with a Nifty filter need the index bars
@@ -936,6 +936,7 @@ def replay(data, idx, a, mults=None):
                 feats["_pw"] = pw
                 feats["_bias"] = mood["bias"]
                 feats["_x"] = model_features(g, sg, info, idd, mood)
+                feats["_strategy"] = sg.get("strategy", f"Classic {sg['setup']}")
                 rows.append(dict(key=trade_key(d, s, sg["setup"], sg["side"]), ts=sg["time"], day=d, source="backtest",
                                  symbol=s, setup=sg["setup"], side=sg["side"], entry=sg["entry"], stop=sg["stop"],
                                  target=sg["target"], exit=ex["fixed"]["exit"], r=ex["fixed"]["r"],
@@ -1077,14 +1078,17 @@ DEFAULT_CONFIG = dict(
     strategy=None,          # None = classic ORB + VWAP engine; otherwise a Scout strategy approved by a reviewer
     min_stop_pct=0.0,       # skip signals whose stop is closer than this (% of price) — costs dominate tight stops
     panel=False,            # True = the recommendation panel picks the strategy each day (overrides `strategy`)
+    panel_mode="race",      # race = every armed specialist trades the moment it fires; selector = one pick a day
+    focus_n=10,             # race mode, phase 1: trade only the top-N Nifty heavyweights (0 = whole watchlist)
+    race=None,              # filled each morning from the panel (never saved): the armed specialists
     # signal engine and paper account — shared by everyone, so the trade log and the learning use one system
     setup="both", shorts=False, rr=2.0, min_relvol=1.5, cost_pct=0.10,
     capital=200000.0, risk_pct=0.5, leverage=5.0, max_exposure_x=5.0,
     watchlist=list(ce.WATCHLIST),
 )
 ENGINE_KEYS = ["setup", "shorts", "rr", "min_relvol", "cost_pct", "capital", "risk_pct", "leverage", "strategy",
-               "min_stop_pct"]
-OPTIONAL_ENGINE_KEYS = {"min_stop_pct"}   # left out of the engine key while off, so existing history keeps its id
+               "min_stop_pct", "race"]
+OPTIONAL_ENGINE_KEYS = {"min_stop_pct", "race"}   # left out of the engine key while off, so existing history keeps its id
 
 
 def engine_args(cfg):
@@ -1094,8 +1098,9 @@ def engine_args(cfg):
     return argparse.Namespace(setup=c["setup"], shorts=bool(c["shorts"]), or_bars=3, min_relvol=float(c["min_relvol"]),
                               max_gap=4.0, min_or_pct=0.3, max_or_pct=2.0, rr=float(c["rr"]), last_entry="14:30",
                               exit_time="15:15", capital=float(c["capital"]), risk_pct=float(c["risk_pct"]),
-                              leverage=float(c["leverage"]), cost_pct=float(c["cost_pct"]), max_trades=3, max_losses=2,
-                              strategy=c.get("strategy") or None, idx_bars=None,
+                              leverage=float(c["leverage"]), cost_pct=float(c["cost_pct"]),
+                              max_trades=int(c["max_trades"]), max_losses=2,       # was hard-coded to 3
+                              strategy=c.get("strategy") or None, race=c.get("race") or None, idx_bars=None,
                               min_stop_pct=float(c.get("min_stop_pct", 0) or 0))
 
 
@@ -1190,7 +1195,9 @@ def study_args(cfg):
     both setups, both directions and a lower volume bar. Trades are still only taken on the real settings."""
     a = engine_args(cfg)
     a.min_stop_pct = 0.0                      # the practice set stays wide; the stop rule only filters real trades
-    if a.strategy:
+    if a.race:
+        a.race = [dict(x, spec=rs.study_spec(x["spec"])) for x in a.race]
+    elif a.strategy:
         a.strategy = rs.study_spec(a.strategy)
     else:
         a.setup, a.shorts, a.min_relvol = "both", True, min(float(a.min_relvol), 0.8)

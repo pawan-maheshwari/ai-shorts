@@ -526,6 +526,9 @@ def session_days(df):
 def day_signals(g, prev_close, avg_or_vol, p):
     """Return list of candidate trades for one stock-day (first ORB and first VWAP pullback per side).
     When a Scout strategy has been approved (p.strategy), that strategy generates the signals instead."""
+    if getattr(p, "race", None):              # first-to-fire: every armed specialist watches at once
+        import research
+        return research.race_signals(g, prev_close, avg_or_vol, p)
     if getattr(p, "strategy", None):
         import research
         return research.day_signals(g, prev_close, avg_or_vol, p)
@@ -652,7 +655,8 @@ def run_intraday_backtest(data, a):
             sigs, _ = day_signals(g, pc, avg, a)
             for sg in sigs:
                 px_out, t_out, why = exit_trade(g, sg, a)
-                trades.append(dict(date=d, symbol=s, setup=sg["setup"], side=sg["side"], entry_t=sg["time"],
+                trades.append(dict(date=d, symbol=s, setup=sg["setup"], strategy=sg.get("strategy", f"Classic {sg['setup']}"),
+                                   side=sg["side"], entry_t=sg["time"],
                                    exit_t=t_out, entry=sg["entry"], stop=sg["stop"], target=sg["target"],
                                    exit=px_out, reason=why))
     if not trades:
@@ -727,7 +731,7 @@ def load_watchlist(path):
 
 def bars_needed(a):
     """5-minute bars a session must have before day_signals will read it."""
-    return 15 if getattr(a, "strategy", None) else a.or_bars + 6
+    return 15 if (getattr(a, "strategy", None) or getattr(a, "race", None)) else a.or_bars + 6
 
 
 def session_progress(data, a):
@@ -760,14 +764,15 @@ def run_scan(data, a):
         r = dict(symbol=s, date=d, **{k: info[k] for k in ["gap_pct", "relvol", "or_high", "or_low", "last", "vwap",
                                                     "prev_close", "chg_pct", "last_bar"]})
         r["vs_vwap"] = "above" if info["last"] > info["vwap"] else "below"
-        r.update(setup=None, side=0, signal_time=None, status=None, exit_price=np.nan,
+        r.update(setup=None, strategy=None, side=0, signal_time=None, status=None, exit_price=np.nan,
                  entry=np.nan, stop=np.nan, target=np.nan, qty=np.nan)
         if sigs:
             sg = min(sigs, key=lambda x: x["time"])
             px_out, t_hit, why = exit_trade(g, sg, a)
             status = {"stop": f"STOPPED {t_hit:%H:%M}", "target": f"TARGET HIT {t_hit:%H:%M}",
                       "time": "CLOSED (time)"}.get(why, "OPEN")
-            r.update(setup=sg["setup"], side=sg["side"], signal_time=sg["time"], status=status,
+            r.update(setup=sg["setup"], strategy=sg.get("strategy", f"Classic {sg['setup']}"), side=sg["side"],
+                     signal_time=sg["time"], status=status,
                      exit_price=px_out if why != "close" else np.nan,
                      entry=sg["entry"], stop=sg["stop"], target=sg["target"], qty=size(sg["entry"], sg["stop"], a))
             r["signal"] = f'{sg["setup"]} {"LONG" if sg["side"] == 1 else "SHORT"} @ {sg["time"]:%H:%M} · {status}'

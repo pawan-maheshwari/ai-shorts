@@ -424,7 +424,8 @@ def study_cached(demo, symbols, day, study_key, _a):
 
 
 def _study_key(sa):
-    return f"{sa.min_relvol}|{sa.rr}|{sa.cost_pct}|{json.dumps(sa.strategy, sort_keys=True)}"
+    return (f"{sa.min_relvol}|{sa.rr}|{sa.cost_pct}|{json.dumps(sa.strategy, sort_keys=True)}"
+            + (f"|{json.dumps(sa.race, sort_keys=True)}" if getattr(sa, "race", None) else ""))
 
 
 def _study(demo, symbols, day, cfg):
@@ -440,10 +441,19 @@ def raw_cached(demo, symbols, day, cost_pct):
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
-def panel_cached(demo, symbols, day, cost_pct):
-    """Recommendation panel: the specialist sub-agents nominate, the Selector picks one (or none) for today."""
+def panel_cached(demo, symbols, day, cost_pct, focus_n=None, cap=None):
+    """Recommendation panel: the specialist sub-agents nominate, the Selector picks one (or none) for today.
+    Also scores the first-to-fire mode (top-N Nifty stocks, earliest signal per stock, daily cap)."""
     raw = raw_cached(demo, symbols, day, cost_pct)
-    res = rs.panel(raw, today=day) if raw is not None else None
+    res = rs.panel(raw, today=day, focus_n=focus_n, cap=cap) if raw is not None else None
+    if res and res.get("armed") is not None:
+        rc, am = res["race"], res["armed"]
+        get_store(demo).log("Selector", "armed" if am else "none-armed",
+                            (f"First-to-fire: {len(am)} specialists armed today — " + ", ".join(a["name"] for a in am)
+                             if am else "First-to-fire: no specialist has a positive record after the haircut — none armed")
+                            + (f". Capped walk-forward on {len(res['focus'] or [])} focus stocks: {rc['n']} trades, "
+                               f"{rc['exp']:+.2f}R per trade over {rc['days']} sessions." if rc["n"] else "."),
+                            detail=dict(armed=[a["label"] for a in am], race=rc), dkey=f"race|{day}|{cost_pct}|{focus_n}|{cap}")
     if res:
         r, p_ = res["record"], res["pick"]
         get_store(demo).log("Selector", "pick" if p_ else "stand-aside",
@@ -457,7 +467,8 @@ def panel_cached(demo, symbols, day, cost_pct):
 
 def panel_for(cfg, demo):
     sy = tuple(sorted({str(x).strip().upper() for x in cfg["watchlist"] if str(x).strip()}))
-    return panel_cached(demo, sy, f"{now_ist():%Y-%m-%d}", float(cfg["cost_pct"]))
+    cap = int(cfg["max_trades"]) if cfg.get("risk_enabled", True) else None
+    return panel_cached(demo, sy, f"{now_ist():%Y-%m-%d}", float(cfg["cost_pct"]), int(cfg.get("focus_n") or 0), cap)
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
@@ -579,6 +590,7 @@ def save_cfg(store, state, params, note, by, change):
             params["panel"] = False
     else:                                     # the panel's daily pick is never saved as the approved strategy
         params["strategy"] = state["active"].get("strategy")
+    params["race"] = None                     # the armed specialists are rebuilt every morning, never saved
     hist = (state.get("history") or []) + [dict(version=v, ts=now_ist().isoformat(), by=by, note=note,
                                                 change=change, params=params)]
     if not store.kv_set("agent_config", dict(version=v, active=params, history=hist[-60:])):
@@ -711,7 +723,7 @@ def signal_card(r, exit_time, agt=None):
                 f"<b class='{'up' if rmult >= 0 else 'down'}'>{rmult:+.2f}R · ₹{(ref - r.entry) * r.side * qty:+,.0f}</b> before costs.")
     h = (f'<div class="sl card {side_cls}">'
          f'<div class="card-h"><div><span class="sym">{html.escape(r.symbol)}</span>'
-         f'<span class="chip {side_cls}">{side_txt}</span><span class="chip setup">{html.escape(r.setup)}</span>'
+         f'<span class="chip {side_cls}">{side_txt}</span><span class="chip setup" title="{html.escape(str(getattr(r, "strategy", "") or ""))}">{html.escape(r.setup)}</span>'
          + ('<span class="chip practice">PRACTICE ONLY</span>' if PRACTICE else '') + '</div>'
          f'<span class="chip {st_cls}">{st_icon} {html.escape(st_txt)}</span></div>'
          f'<div class="px">Last <span class="num">{inr(r.last)}</span> {arrow(r.chg_pct)} on the day · '
@@ -802,7 +814,13 @@ try:
     PANEL = panel_for(CFG_BASE, demo)
 except Exception as e:                  # the panel must never take the app down
     STORE.log("Selector", "error", f"Panel could not run: {e}", dkey=f"panel-err|{now_ist():%Y%m%d%H}")
-if CFG_BASE.get("panel") and PANEL and PANEL["pick"]:
+RACE = bool(CFG_BASE.get("panel") and CFG_BASE.get("panel_mode", "race") == "race")
+if RACE and PANEL and PANEL.get("armed"):
+    # first-to-fire: every armed specialist watches the focus stocks; the earliest signal on a stock is traded
+    CFG = ag.merged({**CFG_BASE, "strategy": None,
+                     "race": [dict(spec=a_["spec"], label=a_["label"], name=a_["name"], lcb=round(a_["lcb"], 4))
+                              for a_ in PANEL["armed"]]})
+elif CFG_BASE.get("panel") and not RACE and PANEL and PANEL["pick"]:
     CFG = ag.merged({**CFG_BASE, "strategy": PANEL["pick"]["spec"]})   # today's pick drives the engine (not saved)
 # The signal engine, paper account and watchlist are shared settings (versioned, reviewer-approved), so the
 # trade log, the Coach's training and every visitor's screen describe the same system.
@@ -812,13 +830,20 @@ RISK_RS = A.capital * A.risk_pct / 100
 ARGS_KEY = ag.engine_key(CFG)
 ENG_ID = ln.eng_id(ARGS_KEY)
 PLAN = ag.plan_key(CFG)
-ENGINE_SETUPS = [rs.FAMILIES[CFG["strategy"]["fam"]][0]] if CFG.get("strategy") else ["ORB", "VWAP"]
+ENGINE_SETUPS = ([a_["name"] for a_ in CFG["race"]] if CFG.get("race") else
+                 [rs.FAMILIES[CFG["strategy"]["fam"]][0]] if CFG.get("strategy") else ["ORB", "VWAP"])
+FOCUS_N = int(CFG.get("focus_n") or 0) if CFG.get("race") else 0
 with eng_slot:
     st.caption("SHARED SETTINGS · v%s" % CFG_STATE["version"])
     st.markdown(
         f'<div class="sl" style="font-size:12.5px;line-height:1.6;color:#333">'
         f'Paper capital <b>₹{A.capital:,.0f}</b> · risk <b>{A.risk_pct:g}%</b> per trade<br>'
-        + (f'Signal engine <b>🏛️ Recommendation panel</b> → today <b>{html.escape(PANEL["pick"]["label"]) if PANEL and PANEL["pick"] else "standing aside (classic engine, practice only)"}</b><br>'
+        + (f'Signal engine <b>🏛️ First to fire</b> → <b>{len(CFG["race"])}</b> specialists armed '
+           f'({html.escape(", ".join(a_["name"] for a_ in CFG["race"]))}) on the top <b>{FOCUS_N or "all"}</b> Nifty stocks<br>'
+           f'Costs <b>{A.cost_pct:g}%</b><br>' if CFG.get("race") else
+           f'Signal engine <b>🏛️ First to fire</b> → no specialist armed today (classic engine, practice only)<br>'
+           f'Costs <b>{A.cost_pct:g}%</b><br>' if RACE else
+           f'Signal engine <b>🏛️ Recommendation panel</b> → today <b>{html.escape(PANEL["pick"]["label"]) if PANEL and PANEL["pick"] else "standing aside (classic engine, practice only)"}</b><br>'
            f'Costs <b>{A.cost_pct:g}%</b><br>' if CFG_BASE.get("panel") else
            f'Signal engine <b>🔭 {html.escape(rs.label(CFG["strategy"]))}</b> (Scout strategy)<br>'
            f'Costs <b>{A.cost_pct:g}%</b>' + (f' · min stop <b>{A.min_stop_pct:g}%</b>' if A.min_stop_pct else '') + '<br>' if CFG.get("strategy") else
@@ -880,6 +905,17 @@ if demo:
 def practice_status():
     """(practice_only, reason). Signals are labelled practice-only unless what is live has a positive tested record."""
     try:
+        if RACE:
+            if not PANEL:
+                return True, "the recommendation panel needs more sessions before specialists can be armed"
+            if not PANEL.get("armed"):
+                return True, "no specialist has a reliably positive recent record, so none is armed today"
+            r_ = PANEL["race"]
+            if not rs.race_trusted(PANEL):
+                return True, (f"first-to-fire has {r_['n']} capped trades on days it was not tuned on "
+                              f"({r_['exp']:+.2f}R each) — it needs 20 and a positive average before its signals "
+                              "count as recommendations" if r_["n"] else "first-to-fire has no walk-forward trades yet")
+            return False, ""
         if CFG_BASE.get("panel"):
             if not PANEL:
                 return True, "the recommendation panel needs more sessions before it can pick"
@@ -948,9 +984,13 @@ with tab_i:
         if not data:
             st.error("No data returned. Check the symbols or tap Refresh in a minute.")
             return
-        if A.strategy:              # a Scout strategy with a Nifty filter needs today's index bars
+        if A.strategy or A.race:    # strategies with a Nifty filter need today's index bars
             A.idx_bars = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}").get("intraday")
-        S, bars = ce.run_scan(data, A)
+        scan_data = data
+        if FOCUS_N:                     # phase 1: first-to-fire trades only the top Nifty heavyweights
+            fs_ = set(rs.focus_symbols(list(data), FOCUS_N))
+            scan_data = {k: v for k, v in data.items() if k in fs_}
+        S, bars = ce.run_scan(scan_data, A)
         if S.empty:
             # Early in a session the scan has nothing to read yet: the engine wants the opening
             # range plus a few bars (longer when a Scout strategy is approved). Say so, with the
@@ -958,7 +998,8 @@ with tab_i:
             day, got, need = ce.session_progress(data, A)
             if day is not None and got < need:
                 ready = (pd.Timestamp.combine(day, dtime(9, 15)) + pd.Timedelta(minutes=5 * need))
-                kind = "the approved Scout strategy" if getattr(A, "strategy", None) else "the scan"
+                kind = ("the armed strategies" if getattr(A, "race", None) else
+                        "the approved Scout strategy" if getattr(A, "strategy", None) else "the scan")
                 st.info(f"Session of {day:%d %b} has just opened: {got} of {need} five-minute bars so far. "
                         f"{kind[0].upper() + kind[1:]} starts reading at about {ready:%H:%M} IST "
                         f"(Yahoo bars can lag a few minutes). "
@@ -1064,7 +1105,7 @@ with tab_i:
                     for w_ in ag.WINDOWS:
                         v_ = ag.simulate_exit(g, sd, p_, A, r.signal_time + pd.Timedelta(minutes=w_) if w_ else None)
                         pw[f"{p_}|{w_}"] = [round(v_["r"], 4), v_["t"].isoformat()]
-                feats_j = dict(feats, _bias=m_at["bias"], _pw=pw, _eng=ENG_ID,
+                feats_j = dict(feats, _bias=m_at["bias"], _pw=pw, _eng=ENG_ID, _strategy=r.strategy,
                                _exits={p_: pw[f"{p_}|0"] for p_ in ag.EXIT_POLICIES})
                 journal.append(dict(key=key, ts=r.signal_time, day=day, source="live", symbol=r.symbol, setup=r.setup,
                                     side=int(r.side), entry=r.entry, stop=r.stop, target=r.target,
@@ -1138,7 +1179,7 @@ with tab_i:
                         drivers=[dict(edge=d[0], text=d[1], n=d[2]) for d in (sc.get("drivers") or [])][:6],
                         risk_verdict=a["risk_verdict"], risk_why=a["risk_why"], features=a["feats"], narr=a["narr"],
                         size_mult=a["size_mult"], risk_mult=a["risk_mult"])
-            rec = dict(pt, symbol=r.symbol, setup=r.setup, side=int(r.side), entry=float(r.entry), stop=float(r.stop),
+            rec = dict(pt, symbol=r.symbol, setup=r.setup, strategy=r.strategy, side=int(r.side), entry=float(r.entry), stop=float(r.stop),
                        target=float(r.target), qty=qty, window_min=WIN, policy=policy, snapshot=snap, status=status,
                        skip_reason=a["risk_why"][0] if skipped else None, cfg_version=CFG_STATE["version"])
             done = status == "CLOSED" or (status == "SKIPPED" and pt["status"] == "CLOSED")
@@ -1238,7 +1279,12 @@ with tab_i:
 
         section("Signals", f"Risk agent: max {CFG['max_trades']} trades, {CFG['max_open']} open, "
                            f"stop at −{CFG['daily_loss_R']:g}R a day")
-        if CFG_BASE.get("panel") and PANEL:
+        if CFG.get("race"):
+            st.markdown('<div class="sl note">🏛️ <b>First to fire</b>: ' + html.escape(", ".join(a_["name"] for a_ in CFG["race"]))
+                        + f' are armed on the top {FOCUS_N or len(symbols)} Nifty stocks. The first armed strategy to '
+                        'trigger on a stock is traded at once; the Risk agent still applies its caps. '
+                        'Details in 🔭 Strategy lab.</div>', unsafe_allow_html=True)
+        elif CFG_BASE.get("panel") and PANEL and not RACE:
             st.markdown('<div class="sl note">🏛️ <b>Recommendation panel</b>: ' + (
                 f'today\'s signals come from the <b>{html.escape(PANEL["pick"]["name"])}</b> specialist, picked by the Selector '
                 f'from 8 — {html.escape(PANEL["pick"]["label"])}.' if PANEL["pick"] else
@@ -1364,7 +1410,8 @@ def paper_frame(raw):
         d = dict(x.data or {})
         h = x.human or {}
         rows.append(dict(key=x.key, day=x.day, symbol=x.symbol, status=x.status, rec_time=x.rec_time, logged_at=x.logged_at,
-                         side=d.get("side"), setup=d.get("setup"), entry=d.get("entry"), stop=d.get("stop"),
+                         side=d.get("side"), setup=d.get("setup"), strategy=d.get("strategy") or d.get("setup"),
+                         entry=d.get("entry"), stop=d.get("stop"),
                          target=d.get("target"), qty=d.get("qty"), window_min=d.get("window_min"), policy=d.get("policy"),
                          deadline=d.get("deadline"), exit_time=d.get("exit_time"), exit_price=d.get("exit_price"),
                          reason=d.get("reason"), r=d.get("r"), pnl=d.get("pnl"), mfe=d.get("mfe"), mae=d.get("mae"),
@@ -1438,7 +1485,7 @@ with tab_t:
             reason_txt = {"target": "Target", "stop": "Stop", "window": "Window end", "time": "15:15 close", "time-stop": "Time-stop"}
             tab = pd.DataFrame({
                 "Rec. time": R.rec_time.dt.strftime("%d %b %H:%M"), "Symbol": R.symbol,
-                "Side": R.side.map({1: "▲ BUY", -1: "▼ SELL"}), "Setup": R.setup,
+                "Side": R.side.map({1: "▲ BUY", -1: "▼ SELL"}), "Strategy": R.strategy,
                 "Entry ₹": R.entry, "Stop ₹": R.stop, "Target ₹": R.target, "Qty": R.qty,
                 "Close by": R.deadline.map(lambda x: _hm(x) if x else "plan"),
                 "Exit": R.exit_time.map(lambda x: _hm(x) if x else "—"), "Exit ₹": R.exit_price,
@@ -1453,6 +1500,13 @@ with tab_t:
                            .format({"Entry ₹": "{:,.2f}", "Stop ₹": "{:,.2f}", "Target ₹": "{:,.2f}", "Exit ₹": "{:,.2f}",
                                     "P&L ₹": "{:+,.0f}", "Qty": "{:,.0f}"}, na_rep="—")
             st.dataframe(sty, hide_index=True, width="stretch", height=min(35 * (len(tab) + 1) + 3, 460))
+            if R.strategy.nunique() > 1:          # compare strategies side by side
+                cl_ = R[R.status == "CLOSED"]
+                if len(cl_):
+                    by_ = cl_.groupby("strategy").agg(trades=("r", "size"), won=("r", lambda x: (x > 0).mean()),
+                                                      avg_r=("r", "mean"), total_r=("r", "sum"), pnl=("pnl", "sum"))
+                    st.dataframe(by_.sort_values("total_r", ascending=False).style.format(
+                        {"won": "{:.0%}", "avg_r": "{:+.2f}", "total_r": "{:+.1f}", "pnl": "₹{:+,.0f}"}), width="stretch")
             st.download_button("Download trade log (CSV)", R.drop(columns=["snapshot", "factors", "human"]).to_csv(index=False),
                                "stocklab_paper_trades.csv", "text/csv")
 
@@ -1460,7 +1514,7 @@ with tab_t:
             section("Review a trade", "recommendation → result → why")
             labels = [f'{t:%d %b %H:%M} · {s_} {"▲BUY" if sd_ == 1 else "▼SELL"} {st_} · '
                       + (f"{r_:+.2f}R" if pd.notna(r_) else "open")
-                      for t, s_, sd_, st_, r_ in zip(R.rec_time, R.symbol, R.side, R.setup, R.r)]
+                      for t, s_, sd_, st_, r_ in zip(R.rec_time, R.symbol, R.side, R.strategy, R.r)]
             pick = st.selectbox("Trade", range(len(R)), format_func=lambda i: labels[i], key="tl_pick")
             if not isinstance(pick, (int, np.integer)) or pick >= len(R):
                 pick = 0
@@ -1664,7 +1718,7 @@ with tab_b:
     if st.button("Run intraday backtest", type="primary"):
         with st.spinner("Simulating trades…"):
             data, fetched = fetch_intraday(symbols, demo, days, f"bt-{pd.Timestamp.now(tz=ce.IST):%Y%m%d%H}")
-            if A.strategy:
+            if A.strategy or A.race:
                 A.idx_bars = fetch_index_cached(demo, f"bt-{pd.Timestamp.now(tz=ce.IST):%Y%m%d%H}").get("intraday")
             T, tab = ce.run_intraday_backtest(data, A)
         if T.empty:
@@ -1785,6 +1839,18 @@ with tab_r:
               ("Stood aside", f"{pr['aside_days']} of {pr['days']}", "sessions"),
               ("Status", "ON" if CFG_BASE.get("panel") else "OFF",
                "picks today's strategy" if CFG_BASE.get("panel") else "approve in 🎯 Agent scores")])
+        rc_, sc_ = PANEL.get("race"), PANEL.get("sel_capped")
+        if rc_:
+            kpis([("Armed today", str(len(PANEL["armed"])), ", ".join(a_["name"] for a_ in PANEL["armed"]) or "none"),
+                  ("First to fire", f"{rc_['exp']:+.2f}R" if rc_["n"] else "—",
+                   f"per trade · {rc_['n']} trades · won {rc_['win'] * 100:.0f}%" if rc_["n"] else "no trades"),
+                  ("Selector, same limits", f"{sc_['exp']:+.2f}R" if sc_["n"] else "—",
+                   f"per trade · {sc_['n']} trades" if sc_["n"] else "no trades"),
+                  ("Limits", f"top {len(PANEL['focus']) if PANEL['focus'] else 'all'}",
+                   f"stocks · {PANEL['cap'] or 'no'} trade cap · 1 per stock"),
+                  ("Mode", "First to fire" if RACE else "Selector", "set in 🎯 Agent scores → Fine-tune")])
+            if rc_["by_fam"]:
+                st.caption("Who fired first on unseen days: " + " · ".join(f"{k} {v}" for k, v in rc_["by_fam"].items()))
         if pk:
             st.markdown(f'<div class="sl prop"><div class="t">Today: {html.escape(pk["label"])}</div>'
                         f'<div class="w">{html.escape(pk["rules"])}</div></div>', unsafe_allow_html=True)
@@ -1797,7 +1863,8 @@ with tab_r:
             "Record on unseen days": [f"{e:+.2f}R × {n}" if n else "—" for e, n in zip(stab.rec_exp, stab.rec_n)],
             "Days picked": stab.chosen_days}), hide_index=True, width="stretch")
         if len(PANEL["curve"]):
-            st.line_chart(PANEL["curve"].set_index("day")[["Panel", "Classic engine"]], height=220)
+            st.line_chart(PANEL["curve"].set_index("day")[[c_ for c_ in ["First to fire", "Selector (capped)", "Panel",
+                                                                          "Classic engine"] if c_ in PANEL["curve"]]], height=220)
         st.caption(f"Cumulative R per session, after {CFG['cost_pct']:g}% costs, every signal taken (before the Risk agent's "
                    f"caps). {PANEL['n_candidates']:,} variants across the specialists, {PANEL['sessions']} sessions. "
                    "A short record is weak evidence — the Selector can only pick the best of what is available, and "
@@ -2242,10 +2309,15 @@ with tab_g:
                                  help="Skip signals whose stop is closer than this. Costs ÷ stop distance = the share of "
                                       "each trade's risk that goes to costs (0.1% costs on a 0.4% stop = 0.25R).")
                 f_pn = e8.toggle("🏛️ Recommendation panel picks the strategy each day", bool(CFG_BASE.get("panel")))
+                e9, e10 = st.columns(2)
+                f_pm = e9.selectbox("Panel mode", ["race", "selector"], ["race", "selector"].index(CFG.get("panel_mode", "race")),
+                                    format_func={"race": "First to fire — every armed specialist trades as it triggers",
+                                                 "selector": "Selector — one specialist a day"}.get)
+                f_fn = e10.slider("First to fire: top Nifty stocks (0 = whole watchlist)", 0, 20, int(CFG.get("focus_n", 10)))
                 f_wl = st.text_area("Watchlist (NSE symbols, comma-separated)", ", ".join(CFG["watchlist"]), height=110)
                 sim = st.form_submit_button("Simulate on recent sessions")
             if sim:
-                ss.tune_cand = ag.merged(dict(CFG, min_stop_pct=f_ms, panel=f_pn, coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, coach_model=f_cm,
+                ss.tune_cand = ag.merged(dict(CFG, min_stop_pct=f_ms, panel=f_pn, panel_mode=f_pm, focus_n=f_fn, coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, coach_model=f_cm,
                                               coach_min_win=f_mw / 100, pulse_sizing=f_ps,
                                               mults=f_m, exit_policy=f_ex, risk_enabled=f_re, daily_loss_R=f_dl,
                                               max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, paused_setups=f_ps2,

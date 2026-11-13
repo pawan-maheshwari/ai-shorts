@@ -519,8 +519,42 @@ def day_signals(g, prev_close, avg_or_vol, p):
                 continue
         risk = abs(entry - stop)
         sigs.append(dict(setup=FAMILIES[spec["fam"]][0], side=side, i=i0, entry=float(entry), stop=float(stop),
-                         target=float(entry + side * spec["rr"] * risk), time=g.index[i0]))
+                         target=float(entry + side * spec["rr"] * risk), time=g.index[i0],
+                         strategy=label(spec), sid=spec_id(spec), fam=spec["fam"]))
     return sigs, info
+
+
+# ---------------------------------------------------------------- first-to-fire (race) mode
+# Phase 1 universe: the Nifty 50 heavyweights, in index-weight order (NSE free-float weights, late Sep 2026 —
+# refresh after each rebalance). Together they are ~53% of the index.
+FOCUS_TOP = ["HDFCBANK", "ICICIBANK", "RELIANCE", "BHARTIARTL", "LT", "SBIN", "INFY", "AXISBANK", "KOTAKBANK", "M&M",
+             "BAJFINANCE", "ITC", "TCS", "HINDUNILVR", "MARUTI", "SUNPHARMA", "HCLTECH", "NTPC", "TITAN", "ULTRACEMCO"]
+
+
+def focus_symbols(available, n=10):
+    """The top-n Nifty heavyweights that are in `available`, in weight order. Demo symbols are not Nifty names,
+    so with no overlap the first n of `available` (sorted) stand in for them."""
+    av = list(dict.fromkeys(available))
+    if not n or n <= 0:
+        return sorted(av)
+    hit = [s for s in FOCUS_TOP if s in set(av)][:n]
+    return hit if hit else sorted(av)[:n]
+
+
+def race_signals(g, prev_close, avg_or_vol, p):
+    """First-to-fire: every armed specialist (positive confidence-adjusted record) watches the stock at once;
+    all their signals are returned, earliest first, ties going to the specialist with the stronger record.
+    The scan then takes the earliest one, so a stock is traded the moment any armed strategy fires on it."""
+    import argparse
+    out, info = [], {}
+    for a in p.race:
+        q = argparse.Namespace(**{**vars(p), "race": None, "strategy": a["spec"]})
+        sg, inf = day_signals(g, prev_close, avg_or_vol, q)
+        info = info or inf
+        for x in sg:
+            out.append(dict(x, strategy=a.get("label") or label(a["spec"]), lcb=float(a.get("lcb") or 0)))
+    out.sort(key=lambda x: (x["time"], -x["lcb"]))
+    return out, info
 
 
 def study_spec(spec):
@@ -550,7 +584,7 @@ def _lcb(n, s, q, z=Z_LCB):
     return np.where(n >= 2, out, -np.inf)
 
 
-def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None):
+def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, cap=None):
     """Run the panel over every session. Returns today's decision, each specialist's state and the walk-forward
     record of the panel vs the classic engine, or None if there are too few sessions."""
     if raw is None or raw.empty:
@@ -579,7 +613,7 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None):
 
     specs = {}
     for fam, sub in raw.groupby("fam", sort=False):
-        cand, N, S, Q, W = [], [], [], [], []
+        cand, cvi, N, S, Q, W = [], [], [], [], [], []
         for vi, s2 in sub.groupby("vi"):
             prm = FAMILIES[fam][2][vi]
             side, rv, nw, sp = s2.side.values, np.nan_to_num(s2.relvol.values, nan=0), s2.nwith.values, s2.stop_pct.values
@@ -597,9 +631,10 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None):
                 for rr in RRS:
                     n, s_, q, w = daily(ix, rr)
                     cand.append(dict(fam=fam, prm=prm, side=sd, nifty=nf, relvol=rl, minstop=minstop, rr=rr))
+                    cvi.append(int(vi))
                     N.append(n), S.append(s_), Q.append(q), W.append(w)
         if cand:
-            specs[fam] = dict(cand=cand, N=np.array(N), S=np.array(S), Q=np.array(Q), W=np.array(W))
+            specs[fam] = dict(cand=cand, vi=cvi, N=np.array(N), S=np.array(S), Q=np.array(Q), W=np.array(W))
     if not specs:
         return None
 
@@ -673,13 +708,82 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None):
                          rec_n=own["n"], rec_exp=own["exp"], rec_win=own["win"], chosen_days=len(mine),
                          selected=bool(choice[D] == f)))
     spec_tab = pd.DataFrame(rows).sort_values(["selected", "trail_lcb"], ascending=False, na_position="last")
+
+    # ---- execution-faithful records: only the focus stocks, earliest signal per stock, at most `cap` a day.
+    # "First to fire" arms every specialist whose record (as known that morning) is positive after the haircut;
+    # "Selector, capped" is the one-pick panel under the same limits, so the two compare like for like.
+    fset = set(focus_symbols(raw.symbol.unique(), focus_n)) if focus_n else None
+    by_day = {d: np.where(dix == d)[0] for d in range(D)}
+    sym_a, i_a, side_a = raw.symbol.values, raw.i.values, raw.side.values
+    rv_a, nw_a, sp_a, vi_a = np.nan_to_num(raw.relvol.values, nan=0), raw.nwith.values, raw.stop_pct.values, raw.vi.values
+    fam_a = raw.fam.values
+
+    def rows_for(f, d):
+        k = pick_ix[f, d]
+        sp_ = specs[fams[f]]
+        c = sp_["cand"][k]
+        ix = by_day.get(d, np.array([], int))
+        m = (fam_a[ix] == c["fam"]) & (vi_a[ix] == sp_["vi"][k]) & (sp_a[ix] >= c["minstop"])
+        if c["side"] != "both":
+            m &= side_a[ix] == (1 if c["side"] == "long" else -1)
+        if c["nifty"] == "with":
+            m &= nw_a[ix] == True                                                   # noqa: E712
+        if c["relvol"]:
+            m &= rv_a[ix] >= c["relvol"]
+        if fset is not None:
+            m &= np.isin(sym_a[ix], list(fset))
+        ix = ix[m]
+        return [(sym_a[j], int(i_a[j]), float(trail[f, d]), float(raw[f"r{c['rr']:g}"].values[j]), fams[f]) for j in ix]
+
+    def executed(armed_by_day):
+        n_, s_, w_, daily_r, used = [], [], [], [], {}
+        for d in test:
+            cands = [x for f in armed_by_day(d) for x in rows_for(f, d)]
+            cands.sort(key=lambda x: (x[1], -x[2]))
+            seen, took = set(), []
+            for x in cands:
+                if x[0] in seen:
+                    continue
+                seen.add(x[0])
+                took.append(x)
+                if cap and len(took) >= cap:
+                    break
+            rr_ = [x[3] for x in took]
+            for x in took:
+                used[x[4]] = used.get(x[4], 0) + 1
+            n_.append(len(rr_)), s_.append(sum(rr_)), w_.append(sum(r > 0 for r in rr_)), daily_r.append(sum(rr_))
+        out = summ(np.array(n_), np.array(s_), np.array(w_))
+        out.update(days=len(test), idle_days=int(sum(1 for n in n_ if n == 0)),
+                   by_fam={FAMILIES[k][0]: v for k, v in sorted(used.items(), key=lambda kv: -kv[1])})
+        return out, np.cumsum(daily_r) if daily_r else np.array([])
+
+    def armed_at(d):
+        return [f for f in range(F) if pick_ix[f, d] >= 0 and np.isfinite(trail[f, d]) and trail[f, d] > 0]
+    race, race_cum = executed(armed_at)
+    sel_cap, sel_cum = executed(lambda d: [choice[d]] if choice[d] >= 0 else [])
+    if len(curve):
+        curve["First to fire"] = race_cum
+        curve["Selector (capped)"] = sel_cum
+    armed = []
+    for f in sorted(armed_at(D), key=lambda f: -trail[f, D]):
+        c = specs[fams[f]]["cand"][pick_ix[f, D]]
+        a = max(SPEC_WIN, D - CHIEF_WIN)
+        tn, ts_ = cn[f, D] - cn[f, a], cs[f, D] - cs[f, a]
+        armed.append(dict(fam=fams[f], name=FAMILIES[fams[f]][0], spec=c, label=label(c), lcb=float(trail[f, D]),
+                          trail_exp=float(ts_ / tn) if tn else np.nan, trail_n=int(tn)))
     pick = None
     if choice[D] >= 0:
         r0 = spec_tab.iloc[0]
         pick = dict(fam=r0.fam, name=r0["name"], spec=r0.spec, label=r0.label, lcb=r0.trail_lcb, trail_exp=r0.trail_exp,
                     trail_n=int(r0.trail_n), rules=describe(r0.spec))
     return dict(pick=pick, specialists=spec_tab, record=record, base=base, curve=curve, sessions=D,
-                today=str(today), minstop=minstop, n_candidates=int(sum(len(v["cand"]) for v in specs.values())))
+                today=str(today), minstop=minstop, n_candidates=int(sum(len(v["cand"]) for v in specs.values())),
+                armed=armed, race=race, sel_capped=sel_cap, focus=sorted(fset) if fset else None, cap=cap)
+
+
+def race_trusted(res, min_trades=20):
+    """First-to-fire signals count as recommendations only when its own capped walk-forward record is positive."""
+    return bool(res and res.get("armed") and res["race"]["n"] >= min_trades and res["race"]["exp"] > 0)
 
 
 def panel_trusted(res, min_trades=20):
