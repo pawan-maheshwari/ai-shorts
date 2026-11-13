@@ -1,7 +1,7 @@
 """
 Analyst desk — agents that work like a research desk: they form testable views, and every view is scored.
 
-Roles (each runs on Claude when ANTHROPIC_API_KEY is set, with a rule-based analyst as the fallback and benchmark):
+Roles (each runs on the configured LLM — Claude, or free Groq / Gemini — with a rule-based analyst as the fallback and benchmark):
   • Equity research analysts — one view per focus stock for the rest of the session: long / short / no view,
     confidence, thesis, what would prove it wrong, the setup that fits.
   • Macro strategist — the day's regime from Nifty, breadth and VIX.
@@ -23,8 +23,6 @@ import requests
 
 CUT = dtime(9, 30)          # the desk meets at 09:30 with the first 15 minutes in hand
 EXIT = dtime(15, 15)        # views are scored to 15:15
-ANALYST_MODEL = "claude-haiku-5-5"
-PM_MODEL = "claude-sonnet-5-5"
 FAMILIES = ["ORB", "VWAP", "GAP-GO", "GAP-FADE", "TREND", "HOUR-BRK", "REVERT", "1ST-CANDLE", "REL-STR"]
 REGIME_FAMS = {"trend_up": (["ORB", "TREND", "GAP-GO", "1ST-CANDLE", "REL-STR"], ["GAP-FADE", "REVERT"]),
                "trend_down": (["ORB", "TREND", "GAP-GO", "1ST-CANDLE", "REL-STR"], ["GAP-FADE", "REVERT"]),
@@ -143,7 +141,7 @@ def rule_pm(views, m, armed=None):
                                                f"{len(focus)} focus trade(s) in the direction of the tape."))
 
 
-# ============================================================================ Claude analysts
+# ============================================================================ LLM analysts
 ANALYST_SYSTEM = (
     "You are an equity research analyst on an Indian (NSE) intraday desk. It is 09:30 IST. For each stock you "
     "give one view for the rest of today's session (09:30 to 15:15): long, short, or none. Your calls are scored "
@@ -160,20 +158,9 @@ PM_SYSTEM = (
     "relative size only. Reply with JSON only.")
 
 
-def _call(prompt, api_key, model, system, max_tokens=1500):
-    if not api_key:
-        return None, "no key"
-    try:
-        r = requests.post("https://api.anthropic.com/v1/messages", timeout=60,
-                          headers={"x-api-key": api_key, "anthropic-version": "2023-06-01",
-                                   "content-type": "application/json"},
-                          json={"model": model, "max_tokens": max_tokens, "system": system,
-                                "messages": [{"role": "user", "content": prompt}]})
-        if r.status_code != 200:
-            return None, f"HTTP {r.status_code}: {r.text[:200]}"
-        return "".join(b.get("text", "") for b in r.json().get("content", [])).strip(), None
-    except Exception as e:                       # never let the desk take the app down
-        return None, str(e)[:200]
+def _call(prompt, api_key, tier, system, max_tokens=1500):
+    import agents as ag                     # the provider switch lives with the other agents
+    return ag.llm_call(prompt, api_key, max_tokens, system, tier=tier)
 
 
 def _json(txt):
@@ -213,7 +200,7 @@ def llm_views(symbols, briefs, m, sentinel, record_txt, lessons, api_key, cost):
               'Return {"views":[{"symbol":"...","view":"long|short|none","confidence":0.5-0.9,'
               '"thesis":"<=25 words, cite the numbers","invalidation":"<=12 words, a price or condition",'
               f'"setup":"one of {", ".join(FAMILIES)} or empty"}}]}} with one entry per stock.')
-    txt, err = _call(prompt, api_key, ANALYST_MODEL, ANALYST_SYSTEM.format(cost=cost))
+    txt, err = _call(prompt, api_key, "fast", ANALYST_SYSTEM.format(cost=cost))
     js = _json(txt)
     if not js or not isinstance(js.get("views"), list):
         return None, err or "unreadable reply"
@@ -231,7 +218,7 @@ def llm_views(symbols, briefs, m, sentinel, record_txt, lessons, api_key, cost):
         out.append(dict(symbol=s, view=view, confidence=round(conf, 2), thesis=str(v.get("thesis", ""))[:220],
                         invalidation=str(v.get("invalidation", ""))[:120],
                         setup=str(v.get("setup", "")).upper() if str(v.get("setup", "")).upper() in FAMILIES else "",
-                        by="claude"))
+                        by="llm"))
     return (out or None), (None if out else "no valid views")
 
 
@@ -246,7 +233,7 @@ def llm_pm(views, m, armed, desk_record_txt, api_key, cost):
               'Return {"regime":"trend_up|trend_down|range|risk_off","stance":"normal|cautious|stand_aside",'
               '"focus":[{"symbol":"...","side":"long|short","size":0.5-1.5,"why":"<=20 words"}] (at most 3),'
               f'"favour":[families from {", ".join(FAMILIES)}],"avoid":[families],"note":"<=60 words for the desk"}}')
-    txt, err = _call(prompt, api_key, PM_MODEL, PM_SYSTEM.format(cost=cost), max_tokens=900)
+    txt, err = _call(prompt, api_key, "smart", PM_SYSTEM.format(cost=cost), max_tokens=900)
     js = _json(txt)
     if not js:
         return None, err or "unreadable reply"
@@ -264,7 +251,7 @@ def llm_pm(views, m, armed, desk_record_txt, api_key, cost):
             focus.append(dict(symbol=s, side=sd, size=round(sz, 2), why=str(f.get("why", ""))[:160]))
     fam = lambda xs: [x for x in (xs or []) if x in FAMILIES]           # noqa: E731
     return dict(regime=reg, stance=stance, focus=focus if stance != "stand_aside" else [], favour=fam(js.get("favour")),
-                avoid=fam(js.get("avoid")), note=str(js.get("note", ""))[:400], by="claude"), None
+                avoid=fam(js.get("avoid")), note=str(js.get("note", ""))[:400], by="llm"), None
 
 
 # ============================================================================ scoring
@@ -326,7 +313,7 @@ def as_filter(signal_rows, views_by):
 
 # ============================================================================ the rule desk over history
 def rule_history(P, nifty_P, vix, sentinel_by_day, days):
-    """The rule desk's views for every past session (point in time) — the benchmark the Claude desk must beat."""
+    """The rule desk's views for every past session (point in time) — the benchmark the LLM desk must beat."""
     calls, pm_calls, outs = [], [], {}
     for d in days:
         briefs = {s: brief(p, d) for s, p in P.items()}

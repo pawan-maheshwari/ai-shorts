@@ -14,8 +14,9 @@ Stock Lab agents
 Every agent is measured walk-forward (trained only on earlier days) in scorecard(); agents only PROPOSE
 changes (proposals()) and a human approves them — the approved settings live in a versioned config.
 
-All agents work rule-based with no API key. If ANTHROPIC_API_KEY is set in Streamlit secrets,
-Sentinel, Narrator and Coach also use Claude for richer reading of headlines and explanations.
+All agents work rule-based with no API key. With an LLM key in Streamlit secrets (ANTHROPIC_API_KEY for Claude,
+or the free GROQ_API_KEY / GEMINI_API_KEY — see configure_llm), Sentinel, Narrator, Analyst and the Analyst desk
+also use the LLM for richer reading of headlines and explanations.
 The Coach never changes the engine's rules on its own: it re-scores confidence and flags signals,
 and every lesson it draws is written to the audit log for you to review.
 """
@@ -36,22 +37,70 @@ MODEL = "claude-haiku-5-5"
 
 
 # ============================================================================ LLM helper
-def ask_claude(prompt, api_key, max_tokens=300, system=None):
+# ---------------------------------------------------------------------------- LLM providers
+# One switch for every agent that writes or reads text (Sentinel, Narrator, Analyst, the Analyst desk).
+# anthropic: Claude (paid API). groq and gemini: free tiers, via their OpenAI-compatible endpoints.
+PROVIDERS = {
+    "anthropic": dict(name="Claude", fast="claude-haiku-5-5", smart="claude-sonnet-5-5",
+                      url="https://api.anthropic.com/v1/messages"),
+    "groq": dict(name="Groq", fast="openai/gpt-oss-120b", smart="openai/gpt-oss-120b",
+                 url="https://api.groq.com/openai/v1/chat/completions"),
+    "gemini": dict(name="Gemini", fast="gemini-2.5-flash", smart="gemini-2.5-flash",
+                   url="https://generativelanguage.googleapis.com/v1beta/openai/chat/completions"),
+}
+LLM = dict(provider="anthropic", fast=None, smart=None)
+DEFAULT_SYSTEM = "You are a careful equity-market analyst for Indian stocks. Be concise and factual. Never promise returns."
+
+
+def configure_llm(provider, fast=None, smart=None):
+    p = provider if provider in PROVIDERS else "anthropic"
+    LLM.update(provider=p, fast=fast or PROVIDERS[p]["fast"], smart=smart or PROVIDERS[p]["smart"])
+
+
+def llm_name():
+    return PROVIDERS[LLM["provider"]]["name"]
+
+
+def llm_model(tier="fast"):
+    return LLM.get(tier) or PROVIDERS[LLM["provider"]][tier]
+
+
+def llm_call(prompt, api_key, max_tokens=300, system=None, tier="fast", timeout=60):
+    """Returns (text, error). Never raises: every caller has a rule-based fallback."""
     if not api_key:
-        return None
+        return None, "no key"
+    prov, model, system = LLM["provider"], llm_model(tier), system or DEFAULT_SYSTEM
     try:
-        r = requests.post("https://api.anthropic.com/v1/messages", timeout=25,
-                          headers={"x-api-key": api_key, "anthropic-version": "2023-06-01",
-                                   "content-type": "application/json"},
-                          json={"model": MODEL, "max_tokens": max_tokens,
-                                "system": system or "You are a careful equity-market analyst for Indian stocks. "
-                                                    "Be concise and factual. Never promise returns.",
-                                "messages": [{"role": "user", "content": prompt}]})
+        if prov == "anthropic":
+            r = requests.post(PROVIDERS[prov]["url"], timeout=timeout,
+                              headers={"x-api-key": api_key, "anthropic-version": "2023-06-01",
+                                       "content-type": "application/json"},
+                              json={"model": model, "max_tokens": max_tokens, "system": system,
+                                    "messages": [{"role": "user", "content": prompt}]})
+            if r.status_code != 200:
+                return None, f"{llm_name()} HTTP {r.status_code}: {r.text[:200]}"
+            return "".join(b.get("text", "") for b in r.json().get("content", [])).strip(), None
+        # OpenAI-compatible (Groq, Gemini). Their default models reason before answering, and that thinking
+        # counts against max_tokens — so allow room and ask for low reasoning effort.
+        body = {"model": model, "max_tokens": max(max_tokens * 4, 2000), "reasoning_effort": "low",
+                "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]}
+        hdr = {"Authorization": f"Bearer {api_key}", "content-type": "application/json"}
+        r = requests.post(PROVIDERS[prov]["url"], timeout=timeout, headers=hdr, json=body)
+        if r.status_code == 400 and "reasoning" in r.text.lower():        # model without the reasoning option
+            body.pop("reasoning_effort", None)
+            r = requests.post(PROVIDERS[prov]["url"], timeout=timeout, headers=hdr, json=body)
         if r.status_code != 200:
-            return None
-        return "".join(b.get("text", "") for b in r.json().get("content", [])).strip()
-    except Exception:
-        return None
+            return None, f"{llm_name()} HTTP {r.status_code}: {r.text[:200]}"
+        ch = (r.json().get("choices") or [{}])[0]
+        txt = ((ch.get("message") or {}).get("content") or "").strip()
+        return (txt or None), (None if txt else f"{llm_name()} returned no text ({ch.get('finish_reason')})")
+    except Exception as e:
+        return None, f"{llm_name()}: {str(e)[:200]}"
+
+
+def ask_claude(prompt, api_key, max_tokens=300, system=None):
+    """Kept for the existing agents; goes to whichever provider is configured."""
+    return llm_call(prompt, api_key, max_tokens, system)[0]
 
 
 # ============================================================================ PULSE — market mood
@@ -455,7 +504,7 @@ def read_item(item, alias_set, now=None, fresh_hours=48):
 
 
 def read_with_claude(items, symbol, name, api_key):
-    """Ask Claude to read the candidate headlines. Returns {index: fields} or {} if it could not be parsed."""
+    """Ask the LLM to read the candidate headlines. Returns {index: fields} or {} if it could not be parsed."""
     lines = "\n".join(f'{i}. [{it["publisher"]}{", " + str(int(it["age_h"])) + "h ago" if it.get("age_h") is not None else ""}] {it["title"][:220]}'
                       for i, it in enumerate(items))
     prompt = (f"Stock: {name} (NSE: {symbol}). For an INTRADAY trader today, read each item below.\n{lines}\n\n"
@@ -573,7 +622,7 @@ def assess(symbol, g, ban=("unavailable", set()), api_key=None, today=None):
     if bad:
         coverage += " · Unavailable: " + ", ".join(bad)
     return dict(symbol=symbol, name=name, level=level, tone=tone, reasons=reasons, types=sorted(set(types)),
-                llm=("Headlines read by Claude" if llm_used else None), checked=checked, sources=sources, coverage=coverage,
+                llm=(f"Headlines read by {llm_name()}" if llm_used else None), checked=checked, sources=sources, coverage=coverage,
                 past_results=sorted({str(m["date"]) for m in res_days if m["date"] < today}),
                 events=[dict(title=e["title"][:160], publisher=e["publisher"], link=e.get("link", ""), type=e["type"],
                              materiality=e["materiality"], direction=e["direction"], by=e["by"],

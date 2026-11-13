@@ -204,7 +204,16 @@ def _secret(name):
         return None
 
 
-API_KEY = _secret("ANTHROPIC_API_KEY")
+_KEYS = {"anthropic": _secret("ANTHROPIC_API_KEY"), "groq": _secret("GROQ_API_KEY"), "gemini": _secret("GEMINI_API_KEY")}
+# LLM_PROVIDER in Secrets picks one explicitly; otherwise the first key present wins (Claude, then the free tiers)
+LLM_PROVIDER = str(_secret("LLM_PROVIDER") or "").strip().lower()
+if LLM_PROVIDER not in _KEYS:
+    LLM_PROVIDER = next((p_ for p_ in ("anthropic", "groq", "gemini") if _KEYS[p_]), "anthropic")
+ag.configure_llm(LLM_PROVIDER, _secret("LLM_MODEL_FAST"), _secret("LLM_MODEL_SMART"))
+API_KEY = _KEYS[LLM_PROVIDER]
+LLM_NAME = ag.llm_name()
+LLM_SETUP = ("add a free GROQ_API_KEY (console.groq.com) or GEMINI_API_KEY (aistudio.google.com), "
+             "or ANTHROPIC_API_KEY for Claude, in Settings → Secrets")
 
 
 @st.cache_resource
@@ -800,8 +809,9 @@ with st.sidebar:
     eng_slot = st.container()
     st.caption("AGENTS")
     cfg_slot = st.empty()
-    st.caption("Claude API: " + ("connected — richer news reading and explanations" if API_KEY
-                                 else "not set — agents run rule-based"))
+    st.caption(f"LLM ({LLM_NAME}, {ag.llm_model('fast')}): connected — richer news reading, explanations and the "
+               "Analyst desk" if API_KEY else "LLM: not set — agents run rule-based. Free: GROQ_API_KEY or GEMINI_API_KEY "
+               "in Secrets.")
 
 STORE = get_store(demo)
 CFG_STATE = load_cfg(STORE)
@@ -1749,6 +1759,9 @@ def desk_history(demo, symbols, day, cost):
     return dict(calls=calls, pm=pm_calls, outs=outs)
 
 
+PROVIDER_NAMES = {k_: v_["name"] for k_, v_ in ag.PROVIDERS.items()}
+
+
 @st.cache_resource
 def _desk_attempts():
     return {}
@@ -1786,8 +1799,8 @@ with tab_d:
                 'view on one stock for the rest of the day (long, short or no view) with a thesis and what would '
                 'prove it wrong; the <b>portfolio manager</b> turns the views, the market regime and the armed '
                 'strategy specialists into a plan. Every view is <b>scored like a real desk scores its analysts</b>: '
-                f'the stock\'s move from 09:30 to 15:15 in the called direction, minus {cost_:g}% costs. Claude '
-                'writes the views when an API key is set; a rule-based analyst runs alongside as the benchmark it '
+                f'the stock\'s move from 09:30 to 15:15 in the called direction, minus {cost_:g}% costs. An LLM '
+                f'({html.escape(LLM_NAME)}) writes the views when its API key is set; a rule-based analyst runs alongside as the benchmark it '
                 'has to beat. <b>Shadow mode</b>: the desk never changes a live trade — its record decides whether '
                 'it should.</div>', unsafe_allow_html=True)
     try:
@@ -1835,32 +1848,34 @@ with tab_d:
     if can_llm and entry is None and time.time() - att.get(str(d_live), 0) > 1800:
         att[str(d_live)] = time.time()
         armed_ = PANEL.get("armed") if PANEL else None
-        with st.spinner("The analyst desk is writing today's notes (Claude)…"):
+        with st.spinner(f"The analyst desk is writing today's notes ({LLM_NAME})…"):
             vws, err1 = dk.llm_views(focus_, briefs, mac, sent_today, dk.record_text(sC), dk.lessons(C_), API_KEY, cost_)
             pm_, err2 = dk.llm_pm(vws, mac, armed_, dk.record_text(sC), API_KEY, cost_) if vws else (None, err1)
         if vws:
-            entry = dict(day=str(d_live), ts=now_ist().isoformat(), analyst_model=dk.ANALYST_MODEL,
-                         pm_model=dk.PM_MODEL if pm_ else None, macro=_nanfree(mac), views=vws,
+            entry = dict(day=str(d_live), ts=now_ist().isoformat(), provider=LLM_PROVIDER,
+                         analyst_model=ag.llm_model("fast"), pm_model=ag.llm_model("smart") if pm_ else None, macro=_nanfree(mac), views=vws,
                          pm=pm_ or dk.rule_pm(vws, mac, armed_))
             LOG = sorted([e for e in LOG if str(e.get("day")) != str(d_live)] + [entry], key=lambda e: e["day"])[-90:]
             try:
                 STORE.kv_set("desk_llm_log", LOG)
             except Exception:
                 pass
-            STORE.log("Desk", "notes", f"Claude desk: {sum(v['view'] != 'none' for v in vws)} views on {len(vws)} "
+            STORE.log("Desk", "notes", f"{LLM_NAME} desk ({ag.llm_model('fast')}): {sum(v['view'] != 'none' for v in vws)} views on {len(vws)} "
                       f"stocks; PM stance {entry['pm'].get('stance')}" + ("" if pm_ else f" (PM fell back to rules: {err2})"),
                       dkey=f"desk|{d_live}")
         else:
-            STORE.log("Desk", "error", f"Claude desk did not answer ({err1}); rule desk used", dkey=f"desk-llm-err|{d_live}")
+            STORE.log("Desk", "error", f"{LLM_NAME} desk did not answer ({err1}); rule desk used", dkey=f"desk-llm-err|{d_live}")
 
     if entry:
-        views_today, pm_today, by_ = entry["views"], entry["pm"], "Claude"
+        views_today, pm_today = entry["views"], entry["pm"]
+        by_ = PROVIDER_NAMES.get(entry.get("provider", "anthropic"), "LLM")
     else:
         views_today = [dk.rule_view(s_, briefs.get(s_), mac, sent_today.get(s_)) for s_ in focus_ if s_ in briefs]
         pm_today, by_ = dk.rule_pm(views_today, mac, PANEL.get("armed") if PANEL else None), "Rules"
 
     # ---- today
-    kpis([("Desk", by_, "writes today's views" + ("" if by_ == "Claude" else " · no API key" if not API_KEY else "")),
+    kpis([("Desk", by_, ("writes today's views" if entry else "no LLM key" if not API_KEY else
+                         "LLM writes at 09:30 IST" if not met else "LLM unavailable today")),
           ("Regime", dk.REGIME_TXT.get(pm_today.get("regime", mac["regime"]), "—"), f"rule read: {dk.REGIME_TXT[mac['regime']]}"),
           ("Nifty first 15 min", f"{mac['n_m15']:+.2f}%" if np.isfinite(mac["n_m15"]) else "—",
            f"gap {mac['n_gap']:+.2f}%" if np.isfinite(mac["n_gap"]) else ""),
@@ -1900,15 +1915,20 @@ with tab_d:
         if not s_.get("calls"):
             return (name, "—", "no scored calls yet")
         return (name, f"{s_['avg']:+.2f}%", f"per call · {s_['calls']} calls · right {s_['hit'] * 100:.0f}% · {s_['days']} sessions")
-    kpis([_k("Claude analysts", sC), _k("Claude PM focus", sCP), _k("Rule analysts", sR), _k("Rule PM focus", sRP)])
+    kpis([_k("LLM analysts", sC), _k("LLM PM focus", sCP), _k("Rule analysts", sR), _k("Rule PM focus", sRP)])
     if not API_KEY:
-        st.info("Claude is not connected, so the desk runs on its rule-based analysts. Add `ANTHROPIC_API_KEY` in the "
-                "Streamlit app's Settings → Secrets; from the next market day Claude writes the views at 09:30 and "
-                "builds its own record next to the rules. Cost: two short Claude calls a day.")
+        st.info("No LLM is connected, so the desk runs on its rule-based analysts. Free options: a Groq key "
+                "(console.groq.com) as `GROQ_API_KEY`, or a Gemini key (aistudio.google.com) as `GEMINI_API_KEY`, "
+                "in the Streamlit app's Settings → Secrets; `ANTHROPIC_API_KEY` uses Claude (paid). From the next "
+                "market day the LLM writes the views at 09:30 IST and builds its own record next to the rules — "
+                "two calls a day, well inside the free limits.")
+    elif LOG:
+        used_ = sorted({f"{PROVIDER_NAMES.get(e.get('provider', 'anthropic'), '?')} · {e.get('analyst_model', '?')}" for e in LOG})
+        st.caption("LLM desk notes written by: " + ", ".join(used_) + ". Compare records only across enough sessions.")
     if not R_.empty and (R_.view != "none").any():
         cur = R_[R_.view != "none"].groupby("day").net.sum().cumsum().rename("Rule analysts").to_frame()
         if not C_.empty and (C_.view != "none").any():
-            cur = cur.join(C_[C_.view != "none"].groupby("day").net.sum().cumsum().rename("Claude analysts"),
+            cur = cur.join(C_[C_.view != "none"].groupby("day").net.sum().cumsum().rename("LLM analysts"),
                            how="outer").ffill()
         st.line_chart(cur, height=200)
         st.caption("Cumulative % after costs, summed over each session's calls. Every point is a view written "
@@ -2375,7 +2395,7 @@ with tab_g:
                 if fl:
                     order = {"HIGH": 0, "WATCH": 1, "UNCHECKED": 2}
                     st.dataframe(pd.DataFrame([{"Symbol": v["symbol"], "Level": v["level"].title().replace("Unchecked", "Not checked"),
-                                                "Why": v["reasons"][0], "Read by": "Claude" if v.get("llm") else "rules"}
+                                                "Why": v["reasons"][0], "Read by": LLM_NAME if v.get("llm") else "rules"}
                                                for v in sorted(fl, key=lambda v: order[v["level"]])]),
                                  hide_index=True, width="stretch")
                 else:
@@ -2398,7 +2418,7 @@ with tab_g:
             st.caption(f"Archive: {ev['scanned']} stock-days scanned over {ev['days']} day(s). Sentinel is scored on market "
                        "behaviour — whether stocks really move more on the days it flags — so it can be judged in weeks, "
                        "without waiting for enough trades. Headlines are read by "
-                       + ("Claude, with rules as a fallback." if API_KEY else "rules; add ANTHROPIC_API_KEY in Secrets for Claude to read them."))
+                       + (f"{LLM_NAME}, with rules as a fallback." if API_KEY else f"rules; {LLM_SETUP} for an LLM to read them."))
 
         # ---------------- human reviews: how each agent lines up with the reviewer
         PL = paper_frame(STORE.paper_list())
@@ -2647,7 +2667,11 @@ with tab_a:
             st.markdown("1. In your Supabase project, open **SQL editor**, paste the SQL below and run it.\n"
                         "2. In Streamlit (Manage app → Settings → Secrets) add:\n"
                         "```\nSUPABASE_URL = \"https://<your-project>.supabase.co\"\nSUPABASE_KEY = \"<secret key (sb_secret_…) or legacy service_role key>\"\n"
-                        "ANTHROPIC_API_KEY = \"<optional — richer agents>\"\n```\n"
+                        "# optional — an LLM for richer agents and the Analyst desk (any one):\n"
+                        "GROQ_API_KEY = \"<free, console.groq.com>\"\n"
+                        "# GEMINI_API_KEY = \"<free, aistudio.google.com>\"\n"
+                        "# ANTHROPIC_API_KEY = \"<Claude, paid>\"\n"
+                        "# LLM_PROVIDER = \"groq\"   # only needed when more than one key is set\n```\n"
                         "3. Save. The app restarts and the Audit log becomes permanent (events kept 7 days, "
                         "trade journal 90 days).")
             st.code(SUPABASE_SQL, language="sql")
