@@ -40,7 +40,7 @@ with sync_playwright() as p:
     tabs = [fr.get_by_role("tab").nth(i).inner_text() for i in range(fr.get_by_role("tab").count())]
     open(f"{OUT}/tabs.txt", "w").write("\n".join(tabs))
     for i, name in enumerate(tabs):
-        if not any(k in name for k in ("Agent scores", "Strategy", "Intraday", "Audit log")):
+        if not any(k in name for k in ("Agent scores", "Strategy", "Intraday", "Audit log", "Analyst desk")):
             continue
         fr.get_by_role("tab").nth(i).click()
         deadline = time.time() + 600
