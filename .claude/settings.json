@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tools/claude/peek.sh:*)",
+      "Bash(python3 tools/claude/codemap.py)",
+      "Bash(python3 tools/claude/check_html.py:*)",
+      "Bash(node --check:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(grep:*)",
+      "Bash(wc:*)"
+    ],
+    "deny": [
+      "Read(./index_280626.html)",
+      "Read(./index_bac010726.html)",
+      "Read(./index_bac030726.html)",
+      "Read(./index_bac050726.html)",
+      "Read(./index_bac110726.html)",
+      "Read(./index_bac2806.html)",
+      "Edit(./index_280626.html)",
+      "Edit(./index_bac010726.html)",
+      "Edit(./index_bac030726.html)",
+      "Edit(./index_bac050726.html)",
+      "Edit(./index_bac110726.html)",
+      "Edit(./index_bac2806.html)",
+      "Read(./*.mp4)",
+      "Read(./*.mp3)",
+      "Read(./assets/**)",
+      "Read(./assets-bac/**)",
+      "Read(./editions/2*.json)"
+    ]
+  }
+}
