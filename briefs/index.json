@@ -1,0 +1,55 @@
+{
+ "updated": "2026-11-14T06:30:00.000Z",
+ "issues": [
+  {
+   "week": "2026-W46",
+   "number": 46,
+   "title": "AI Briefs — Week 46, 9–13 November 2026",
+   "range": "9–13 November 2026",
+   "start": "2026-11-09",
+   "end": "2026-11-13",
+   "pages": 6,
+   "bytes": 360431,
+   "pdf": "briefs/2026-W46.pdf",
+   "html": "briefs/2026-W46.html",
+   "cover": "briefs/2026-W46.png",
+   "stories": [
+    {
+     "day": "Monday",
+     "date": "2026-11-09",
+     "category": "Models",
+     "headline": "Anthropic releases first frontier models since Amodei's call for slowdown as IPO buzz builds",
+     "source": "CNBC"
+    },
+    {
+     "day": "Tuesday",
+     "date": "2026-11-10",
+     "category": "Models",
+     "headline": "Introducing GPT-6 Sol and Luna",
+     "source": "OpenAI"
+    },
+    {
+     "day": "Wednesday",
+     "date": "2026-11-11",
+     "category": "Policy",
+     "headline": "Meta, TikTok join Google to push back on Indonesia's planned AI copyright law revisions",
+     "source": "Reuters"
+    },
+    {
+     "day": "Thursday",
+     "date": "2026-11-12",
+     "category": "Infrastructure",
+     "headline": "SpaceX Plans $74 Billion Investment to Build Data Centers in Texas and Arizona",
+     "source": "The New York Times"
+    },
+    {
+     "day": "Friday",
+     "date": "2026-11-13",
+     "category": "Business",
+     "headline": "EU leaders seek to tackle challenges at first ever AI summit",
+     "source": "Reuters"
+    }
+   ]
+  }
+ ]
+}

@@ -270,7 +270,7 @@ async function pool(list, size, fn){
 
 /* Resolve each dispatch to its publisher and gather the brief's material.
    Material lives in a side map so it can never leak into the edition. */
-async function gather(items){
+export async function gather(items){
   const material = new Map(), descs = new Map();
   await pool(items, 3, async it => {
     if(/news\.google\.com/.test(it.url)){
@@ -330,7 +330,7 @@ export function checkBrief(b, it, material){
   };
 }
 
-async function writeBriefs(items, material, token){
+export async function writeBriefs(items, material, token){
   const stats = {model: BRIEF_MODEL, attempted: 0, written: 0, fromSource: 0, reused: 0};
   const todo = items.filter(it => !it.briefBy);
   stats.reused = items.length - todo.length;

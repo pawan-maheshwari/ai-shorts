@@ -1,0 +1,73 @@
+name: AI Briefs (weekly PDF)
+
+# Every Saturday morning the weekly brief agent picks the top AI story for
+# each weekday from the week's editions, designs a 6-page issue in AIShorts
+# branding and publishes it as briefs/<week>.pdf for readers to download.
+#   06:20 UTC Saturday = 11:50 IST / 08:20 SAST, after Friday's edition is in.
+#
+# Optional settings (Settings > Secrets and variables > Actions):
+#   Brief writing, shared with the daily edition:
+#     secret BRIEF_API_KEY, variables BRIEF_ENDPOINT and BRIEF_MODEL
+#     Without them each page carries the publisher's own description.
+#   Supabase mirror and download counter:
+#     secret   SUPABASE_URL              https://<project-ref>.supabase.co
+#     secret   SUPABASE_KEY              the secret key (sb_secret_…) or service_role key — never published
+#     variable SUPABASE_PUBLISHABLE_KEY  the publishable (anon) key — written to briefs/index.json so
+#                                        the site can count downloads
+#   Run the setup SQL once first:  node tools/weekly-brief.mjs --sql
+on:
+  schedule:
+    - cron: "20 6 * * 6"
+  workflow_dispatch:
+    inputs:
+      week:
+        description: "Any date in the week to (re)build, YYYY-MM-DD. Blank = the week just ended."
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-brief
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Curate, design and render this week's AI Briefs
+        env:
+          BRIEF_API_KEY: ${{ secrets.BRIEF_API_KEY }}
+          BRIEF_ENDPOINT: ${{ vars.BRIEF_ENDPOINT }}
+          BRIEF_MODEL: ${{ vars.BRIEF_MODEL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          WEEK: ${{ github.event.inputs.week }}
+        run: |
+          if [ -n "$WEEK" ]; then node tools/weekly-brief.mjs --week="$WEEK"; else node tools/weekly-brief.mjs; fi
+
+      - name: Keep the issue if the commit fails
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-briefs
+          path: briefs/*.pdf
+          if-no-files-found: ignore
+
+      - name: Commit the issue
+        run: |
+          git config user.name "aishorts-bot"
+          git config user.email "actions@github.com"
+          git add briefs/
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "AI Briefs: weekly issue"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push && exit 0; sleep 5; done
+          exit 1

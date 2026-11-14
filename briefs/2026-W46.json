@@ -1,0 +1,269 @@
+{
+ "week": "2026-W46",
+ "number": 46,
+ "year": 2026,
+ "title": "AI Briefs — Week 46, 9–13 November 2026",
+ "range": "9–13 November 2026",
+ "start": "2026-11-09",
+ "end": "2026-11-13",
+ "generated": "2026-11-14T06:30:00.000Z",
+ "pages": 6,
+ "stories": [
+  {
+   "dayName": "Monday",
+   "date": "2026-11-09",
+   "dateLabel": "9 November 2026",
+   "moved": false,
+   "category": "Models",
+   "headline": "Anthropic releases first frontier models since Amodei's call for slowdown as IPO buzz builds",
+   "summary": "The launch comes as Anthropic is gearing up for what is widely expected to be a blockbuster IPO.",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "CNBC",
+   "url": "https://www.cnbc.com/2026/11/09/anthropic-claude-fable-5-2-mythos-5-2.html",
+   "stats": {
+    "count": 69,
+    "sources": 54,
+    "week": true,
+    "cats": [
+     [
+      "Business",
+      24
+     ],
+     [
+      "Research",
+      8
+     ],
+     [
+      "Safety",
+      8
+     ],
+     [
+      "Policy",
+      8
+     ]
+    ]
+   },
+   "also": []
+  },
+  {
+   "dayName": "Tuesday",
+   "date": "2026-11-10",
+   "dateLabel": "10 November 2026",
+   "moved": false,
+   "category": "Models",
+   "headline": "Introducing GPT-6 Sol and Luna",
+   "summary": "",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "OpenAI",
+   "url": "https://openai.com/index/introducing-gpt-6-sol-and-luna/",
+   "stats": {
+    "count": 69,
+    "sources": 54,
+    "week": true,
+    "cats": [
+     [
+      "Business",
+      24
+     ],
+     [
+      "Research",
+      8
+     ],
+     [
+      "Safety",
+      8
+     ],
+     [
+      "Policy",
+      8
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "Governor Hochul Declares NY Will Lead the Nation in AI Science and Safety; Launches New Research Institute",
+     "source": "Governor Kathy Hochul (.gov)",
+     "url": "https://www.governor.ny.gov/news/governor-hochul-declares-ny-will-lead-nation-ai-science-and-safety-launches-new-research"
+    }
+   ]
+  },
+  {
+   "dayName": "Wednesday",
+   "date": "2026-11-11",
+   "dateLabel": "11 November 2026",
+   "moved": false,
+   "category": "Policy",
+   "headline": "Meta, TikTok join Google to push back on Indonesia's planned AI copyright law revisions",
+   "summary": "",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "Reuters",
+   "url": "https://www.reuters.com/legal/litigation/meta-tiktok-join-google-push-back-indonesias-planned-ai-copyright-law-revisions-2026-11-11/",
+   "stats": {
+    "count": 30,
+    "sources": 27,
+    "cats": [
+     [
+      "Business",
+      10
+     ],
+     [
+      "Research",
+      4
+     ],
+     [
+      "Safety",
+      4
+     ],
+     [
+      "Policy",
+      4
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "Law firm Latham earmarks cash for associates' AI contributions",
+     "source": "Reuters",
+     "url": "https://www.reuters.com/legal/litigation/law-firm-latham-earmarks-cash-associates-ai-contributions-2026-11-11/"
+    },
+    {
+     "headline": "Microsoft data center in Washington state brings \"a kind of boom\" despite growing AI pushback",
+     "source": "CBS News",
+     "url": "https://www.cbsnews.com/news/microsoft-data-center-quincy-ai-pushback/"
+    },
+    {
+     "headline": "Gilbert + Tobin rethinks the business of law with AI",
+     "source": "OpenAI",
+     "url": "https://openai.com/index/gilbert-tobin-sam-nickless/"
+    },
+    {
+     "headline": "New York Launches AI Safety Center Ahead of RAISE Act Deadline",
+     "source": "PYMNTS.com",
+     "url": "https://www.pymnts.com/news/artificial-intelligence/2026/new-york-launches-ai-safety-center-ahead-of-raise-act-deadline/"
+    }
+   ]
+  },
+  {
+   "dayName": "Thursday",
+   "date": "2026-11-12",
+   "dateLabel": "12 November 2026",
+   "moved": false,
+   "category": "Infrastructure",
+   "headline": "SpaceX Plans $74 Billion Investment to Build Data Centers in Texas and Arizona",
+   "summary": "",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "The New York Times",
+   "url": "https://www.nytimes.com/2026/11/12/business/spacex-data-center.html",
+   "stats": {
+    "count": 22,
+    "sources": 20,
+    "cats": [
+     [
+      "Business",
+      7
+     ],
+     [
+      "Robotics",
+      4
+     ],
+     [
+      "Policy",
+      3
+     ],
+     [
+      "Infrastructure",
+      3
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "US humanoid robot production could hit 400,000 by 2030 as deployment ramps, J.P. Morgan says",
+     "source": "Reuters",
+     "url": "https://www.reuters.com/business/us-humanoid-robot-production-could-hit-400000-by-2030-deployment-ramps-jp-morgan-2026-11-12/"
+    },
+    {
+     "headline": "Introducing Gemini 4 Hydrogen for Agentic Workflows",
+     "source": "blog.google",
+     "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/"
+    },
+    {
+     "headline": "While many Americans resist, China embraces AI data center boom",
+     "source": "CBS News",
+     "url": "https://www.cbsnews.com/news/china-ai-data-center-boom-as-us-tech-firms-face-resistance/"
+    },
+    {
+     "headline": "Public funds ploughing cash into AI will 'own' megatrends shaping economy",
+     "source": "Reuters",
+     "url": "https://www.reuters.com/business/finance/public-funds-ploughing-cash-into-ai-will-own-megatrends-shaping-economy-2026-11-12/"
+    }
+   ]
+  },
+  {
+   "dayName": "Friday",
+   "date": "2026-11-13",
+   "dateLabel": "13 November 2026",
+   "moved": false,
+   "category": "Business",
+   "headline": "EU leaders seek to tackle challenges at first ever AI summit",
+   "summary": "",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "Reuters",
+   "url": "https://www.reuters.com/world/china/eu-leaders-seek-tackle-challenges-first-ever-ai-summit-2026-11-13/",
+   "stats": {
+    "count": 13,
+    "sources": 13,
+    "cats": [
+     [
+      "Business",
+      7
+     ],
+     [
+      "Research",
+      2
+     ],
+     [
+      "Safety",
+      2
+     ],
+     [
+      "Policy",
+      1
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "New private school in downtown Chicago using artificial intelligence to teach students",
+     "source": "CBS News",
+     "url": "https://www.cbsnews.com/chicago/news/alpha-school-chicago-artificial-intelligence/"
+    },
+    {
+     "headline": "A breakthrough in magnetism could make AI chips use dramatically less energy",
+     "source": "Science Daily",
+     "url": "https://www.sciencedaily.com/releases/2026/11/261111005853.htm"
+    },
+    {
+     "headline": "SPUSD Nov. 10 Board Meeting | AI Policy Adopted, Strategic Plan Approved & $46 Million Bond Authorized",
+     "source": "South Pasadena News",
+     "url": "https://southpasadenan.com/spusd-nov-10-board-meeting-ai-policy-adopted-strategic-plan-approved-46-million-bond-authorized/"
+    }
+   ]
+  }
+ ],
+ "method": "One lead per weekday, chosen from the AIShorts daily editions by publisher standing, the kind of event and how prominently the story ran. Each story links to the publisher's own report.",
+ "bytes": 360431,
+ "pdf": "briefs/2026-W46.pdf",
+ "html": "briefs/2026-W46.html",
+ "cover": "briefs/2026-W46.png"
+}
