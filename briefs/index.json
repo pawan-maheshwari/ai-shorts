@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T06:30:00.000Z",
+ "updated": "2026-11-14T13:39:58.276Z",
  "issues": [
   {
    "week": "2026-W46",
@@ -9,7 +9,7 @@
    "start": "2026-11-09",
    "end": "2026-11-13",
    "pages": 6,
-   "bytes": 360431,
+   "bytes": 359451,
    "pdf": "briefs/2026-W46.pdf",
    "html": "briefs/2026-W46.html",
    "cover": "briefs/2026-W46.png",
@@ -25,8 +25,8 @@
      "day": "Tuesday",
      "date": "2026-11-10",
      "category": "Models",
-     "headline": "Introducing GPT-6 Sol and Luna",
-     "source": "OpenAI"
+     "headline": "Introducing Claude Fable 5.2 and Claude Mythos 5.2",
+     "source": "Anthropic"
     },
     {
      "day": "Wednesday",
