@@ -1687,6 +1687,52 @@
     font:700 9.5px/1 "Libre Franklin",sans-serif;padding:0;margin-left:6px;}
   html[data-theme="night"] .dw-frame{background:#fff;}
   @media print{ .dw-tab,.dw-sheet,.dw-scrim{display:none!important;} }
+
+  /* =====================================================================
+     AI BRIEFS — weekly downloadable issue (briefs/index.json, built Saturdays)
+     ===================================================================== */
+  .br-tab{position:fixed;z-index:60;right:0;top:50%;transform:translateY(-50%);
+    appearance:none;cursor:pointer;border:1.5px solid var(--rule-strong);border-right:0;
+    background:var(--ink);color:#fff;padding:12px 6px;writing-mode:vertical-rl;
+    font:800 9px/1 "Libre Franklin",sans-serif;letter-spacing:1.6px;text-transform:uppercase;
+    box-shadow:-2px 0 10px rgba(0,0,0,.14);display:flex;align-items:center;gap:7px;transition:background var(--dur,.2s);}
+  .br-tab:hover,.br-tab:focus-visible{background:var(--live);}
+  .br-tab .br-dot{width:6px;height:6px;border-radius:50%;background:#E8B04B;flex:0 0 auto;}
+  .br-tab .br-dot[hidden],.br-tab[hidden]{display:none;}
+  @media (max-width:520px){ .br-tab{padding:10px 4px 10px 5px;font-size:8px;top:62%;} }
+  #briefModal .modal-card{max-width:560px;padding:0;border-color:var(--ink);box-shadow:0 28px 70px rgba(10,16,24,.5);}
+  #briefModal .modal-x{color:rgba(255,255,255,.7);z-index:2;}
+  #briefModal .modal-x:hover{color:#fff;}
+  .bm-head{padding:20px 22px 18px;color:#fff;background:var(--ink);
+    background-image:radial-gradient(420px 220px at 100% 0,rgba(232,176,75,.35),transparent 70%),radial-gradient(360px 200px at 0 100%,rgba(168,23,42,.35),transparent 70%);}
+  .bm-head .modal-kicker{color:#E8B04B;margin-bottom:5px;letter-spacing:2px;}
+  .bm-head h3{margin:0 0 4px;font-family:Georgia,serif;font-size:21px;line-height:1.14;color:#fff;}
+  .bm-sub{font-family:"Libre Franklin",sans-serif;font-size:11.5px;line-height:1.45;color:rgba(255,255,255,.78);}
+  .bm-body{padding:18px 22px 20px;}
+  .bm-issue{display:grid;grid-template-columns:132px 1fr;gap:18px;align-items:start;}
+  .bm-cover{display:block;width:132px;aspect-ratio:4/5;object-fit:cover;border:1px solid var(--ink);box-shadow:0 8px 22px rgba(20,17,15,.28);background:var(--paper-2);}
+  .bm-t{font-family:Georgia,serif;font-size:17px;font-weight:700;line-height:1.2;margin:0 0 4px;}
+  .bm-m{font-family:"Libre Franklin",sans-serif;font-size:10.5px;color:var(--meta);letter-spacing:.3px;}
+  .bm-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .bm-dl{display:inline-flex;align-items:center;gap:7px;background:var(--live);color:#fff !important;text-decoration:none;
+    font:800 11px/1 "Libre Franklin",sans-serif;letter-spacing:1.2px;text-transform:uppercase;padding:11px 14px;}
+  .bm-dl:hover{background:var(--ink);}
+  .bm-rd{display:inline-flex;align-items:center;border:1px solid var(--ink);color:var(--ink) !important;text-decoration:none;
+    font:700 11px/1 "Libre Franklin",sans-serif;letter-spacing:1px;text-transform:uppercase;padding:10px 13px;}
+  .bm-cnt{font-family:"Libre Franklin",sans-serif;font-size:10.5px;color:var(--meta);margin-top:8px;}
+  .bm-lab{font:800 9px/1 "Libre Franklin",sans-serif;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink);
+    border-bottom:1.5px solid var(--ink);padding-bottom:7px;margin:20px 0 4px;}
+  .bm-st{display:grid;grid-template-columns:42px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule);}
+  .bm-st .d{font:800 9px/1.5 "Libre Franklin",sans-serif;letter-spacing:1.4px;text-transform:uppercase;color:var(--live);}
+  .bm-st .h{font-family:Georgia,serif;font-size:13.5px;line-height:1.3;font-weight:700;color:var(--ink);}
+  .bm-st .s{font-family:"Libre Franklin",sans-serif;font-size:10px;color:var(--meta);margin-top:2px;}
+  .bm-old{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--rule);
+    font-family:"Libre Franklin",sans-serif;font-size:12px;}
+  .bm-old a{color:var(--link);font-weight:700;text-decoration:none;white-space:nowrap;}
+  .bm-note{font-family:"Libre Franklin",sans-serif;font-size:10.5px;line-height:1.5;color:var(--meta);margin-top:14px;}
+  .bm-empty{font-family:Georgia,serif;font-size:14px;color:var(--body);padding:8px 0;}
+  @media (max-width:420px){ .bm-issue{grid-template-columns:96px 1fr;gap:14px;} .bm-cover{width:96px;} .bm-body{padding:14px 16px 16px;} .bm-head{padding:18px 16px 16px;} }
+  @media print{ .br-tab{display:none!important;} }
   @media (prefers-reduced-motion:reduce){ .dw-sheet,.dw-scrim{transition:none;} }
 
   /* ---- Reading mode (swipe layout only) ------------------------------
@@ -1768,6 +1814,9 @@
   <span class="dw-dot" id="dwDot" hidden></span>The Daily Wire
 </button>
 <div class="dw-scrim" id="dwScrim" hidden></div>
+<button class="br-tab" id="brTab" type="button" aria-controls="briefModal" aria-label="Open AI Briefs, this week's downloadable issue" hidden>
+  <span class="br-dot" id="brDot" hidden></span>AI Briefs
+</button>
 <aside class="dw-sheet" id="dwSheet" hidden role="dialog" aria-modal="true" aria-labelledby="dwTitle">
   <div class="dw-head">
     <div class="dw-kick">The Daily Wire</div>
@@ -2001,6 +2050,17 @@
     </div>
   </div>
 
+  <div class="modal" id="briefModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="bmTitle">
+      <button class="modal-x" data-close aria-label="Close">&times;</button>
+      <div class="bm-head">
+        <div class="modal-kicker">AI Briefs &middot; Weekly</div>
+        <h3 id="bmTitle">The week in AI, in five stories</h3>
+        <div class="bm-sub">One top story for each day, Monday to Friday, picked from the AIShorts wire. Free to download and share.</div>
+      </div>
+      <div class="bm-body" id="bmBody"><div class="bm-empty">Loading this week&rsquo;s issue&hellip;</div></div>
+    </div>
+  </div>
   <div class="modal" id="predModal">
     <div class="modal-card" role="dialog" aria-modal="true" aria-label="Top AI Prediction">
       <button class="modal-x" data-close aria-label="Close">&times;</button>
@@ -5136,6 +5196,91 @@ var showCutting;
   /* deep link: aishorts.biz/#daily-wire */
   if(location.hash==='#daily-wire'){ var sk=document.getElementById('introSkip'); if(sk) sk.click(); setTimeout(open,400); }
   window.addEventListener('hashchange',function(){ if(location.hash==='#daily-wire'&&!sheet.classList.contains('open')) open(); });
+})();
+</script>
+<script>
+/* =====================================================================
+   AI BRIEFS — this week's issue as a PDF, plus earlier issues.
+   Data: briefs/index.json, written by tools/weekly-brief.mjs.
+   ===================================================================== */
+(function(){
+  var modal=document.getElementById('briefModal'), body=document.getElementById('bmBody'),
+      tab=document.getElementById('brTab'), dot=document.getElementById('brDot');
+  if(!modal||!body) return;
+  var data=null, SEEN='aishorts_brief_seen';
+  function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e;}
+  function mb(n){return n?(n/1048576).toFixed(1)+' MB':'';}
+  function fname(w){return 'AIShorts-AI-Briefs-'+w+'.pdf';}
+  function count(issue,label){
+    var sb=data&&data.supabase; if(!sb||!sb.url||!sb.key) return;
+    fetch(sb.url.replace(/\/+$/,'')+'/rest/v1/rpc/brief_downloaded',{method:'POST',keepalive:true,
+      headers:{'Content-Type':'application/json',apikey:sb.key,Authorization:'Bearer '+sb.key},
+      body:JSON.stringify({p_week:issue.week})})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(n){ if(label&&typeof n==='number') label.textContent=n.toLocaleString()+' downloads'; })
+      .catch(function(){});
+  }
+  function render(){
+    body.textContent='';
+    var list=(data&&data.issues)||[];
+    if(!list.length){ body.appendChild(el('div','bm-empty','The first issue is published on Saturday. Check back then.')); return; }
+    var it=list[0];
+    var box=el('div','bm-issue');
+    var img=el('img','bm-cover'); img.src=it.cover; img.alt='Cover of '+it.title; img.loading='lazy'; box.appendChild(img);
+    var r=el('div'); r.appendChild(el('p','bm-t','Week '+it.number+' · '+it.range));
+    r.appendChild(el('div','bm-m',it.pages+' pages · PDF '+mb(it.bytes)));
+    var acts=el('div','bm-acts');
+    var dl=el('a','bm-dl','↓ Download PDF'); dl.href=it.pdf; dl.setAttribute('download',fname(it.week));
+    var rd=el('a','bm-rd','Read online'); rd.href=it.html; rd.target='_blank'; rd.rel='noopener';
+    acts.appendChild(dl); acts.appendChild(rd); r.appendChild(acts);
+    var cnt=el('div','bm-cnt',''); r.appendChild(cnt);
+    dl.addEventListener('click',function(){count(it,cnt);});
+    box.appendChild(r); body.appendChild(box);
+    body.appendChild(el('div','bm-lab','In this issue'));
+    (it.stories||[]).forEach(function(s){
+      var row=el('div','bm-st'); row.appendChild(el('div','d',String(s.day||'').slice(0,3)));
+      var c=el('div'); c.appendChild(el('div','h',s.headline)); c.appendChild(el('div','s',s.source+' · '+s.category));
+      row.appendChild(c); body.appendChild(row);
+    });
+    if(list.length>1){
+      body.appendChild(el('div','bm-lab','Earlier issues'));
+      list.slice(1,9).forEach(function(o){
+        var row=el('div','bm-old'); row.appendChild(el('span','', 'Week '+o.number+' · '+o.range));
+        var a=el('a','','PDF ↓'); a.href=o.pdf; a.setAttribute('download',fname(o.week));
+        a.addEventListener('click',function(){count(o,null);});
+        row.appendChild(a); body.appendChild(row);
+      });
+    }
+    body.appendChild(el('div','bm-note','Chosen each Saturday from the week’s AIShorts editions: one lead story per weekday, ranked by the publisher’s standing, the kind of event and how prominently it ran. Every story links to the publisher’s own report.'));
+  }
+  function open(){
+    var o=document.querySelector('.modal.open'); if(o&&o!==modal) o.classList.remove('open');
+    modal.classList.add('open'); render();
+    var c=modal.querySelector('.modal-card'); if(c) c.scrollTop=0;
+    if(data&&data.issues&&data.issues[0]){ try{localStorage.setItem(SEEN,data.issues[0].week);}catch(e){} if(dot) dot.hidden=true; }
+  }
+  modal.querySelectorAll('[data-close]').forEach(function(b){b.addEventListener('click',function(){modal.classList.remove('open');});});
+  modal.addEventListener('click',function(e){ if(e.target===modal) modal.classList.remove('open'); });
+  if(tab) tab.addEventListener('click',open);
+  var tools=document.getElementById('nsTools');
+  if(tools){
+    var m=el('button','tb-link','AI Briefs — this week’s PDF'); m.type='button';
+    m.addEventListener('click',function(){var x=document.getElementById('navClose');if(x)x.click();setTimeout(open,200);});
+    tools.appendChild(m); tools.classList.remove('is-empty');
+  }
+  function fromHash(){ if((location.hash||'').toLowerCase()==='#ai-briefs') open(); }
+  window.addEventListener('hashchange',fromHash);
+  var d=new Date().toISOString().slice(0,10);
+  fetch('briefs/index.json?v='+d,{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;})
+    .then(function(j){
+      data=j||{issues:[]};
+      var top=data.issues&&data.issues[0];
+      if(tab) tab.hidden=!top;
+      var seen=null; try{seen=localStorage.getItem(SEEN);}catch(e){}
+      if(top&&dot&&seen!==top.week) dot.hidden=false;
+      if(modal.classList.contains('open')) render();
+      fromHash();
+    }).catch(function(){data={issues:[]};});
 })();
 </script>
 </body>
