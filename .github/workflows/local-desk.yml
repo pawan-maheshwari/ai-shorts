@@ -1,0 +1,48 @@
+name: Local Desk (AI events and courses)
+
+# Rebuilds events.json and courses.json for the front-page Local Desk:
+# merges the hand-checked events in tools/ai-events.json with the open
+# confs.tech conference list, drops events that have ended, retires expired
+# course offers and re-ranks the courses in tools/ai-courses.json.
+# Weather is fetched live in the reader's browser and needs no job.
+on:
+  schedule:
+    - cron: "40 0 * * *"   # 00:40 UTC = 6:10 AM IST, ahead of the morning edition
+  workflow_dispatch: {}
+  push:
+    branches: [main]
+    paths:
+      - "tools/ai-events.json"
+      - "tools/ai-courses.json"
+      - "tools/local-desk.mjs"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: local-desk
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # Course figures older than 45 days are flagged as STALE in this step's log.
+      - name: Build events.json and courses.json
+        run: node tools/local-desk.mjs
+
+      - name: Commit if changed
+        run: |
+          git config user.name "aishorts-bot"
+          git config user.email "actions@github.com"
+          git add events.json courses.json tools/geo-cities.json
+          if git diff --cached --quiet; then echo "No change"; exit 0; fi
+          git commit -m "Local Desk: refresh AI events and courses"
+          for i in 1 2 3; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push && exit 0; sleep 5; done
+          exit 1
