@@ -1,0 +1,304 @@
+{
+ "updated": "2026-11-14T05:31:36.917Z",
+ "figuresChecked": "2026-11-14",
+ "method": "Ranked courses publish both a learner rating and a learner count. Score = 70% rating (adjusted for the number of reviews, so a 4.9 from 39,000 reviews outranks a 4.9 from 300) + 30% reach (learner count on a log scale).",
+ "courses": [
+  {
+   "id": "stanford-ml-specialization",
+   "title": "Machine Learning Specialization",
+   "university": "Stanford Online",
+   "partner": "DeepLearning.AI",
+   "platform": "Coursera",
+   "level": "Beginner",
+   "duration": "About 2 months at 10 hrs/week",
+   "learners": 859108,
+   "learnersNote": null,
+   "rating": 4.9,
+   "reviews": 39480,
+   "start": {
+    "type": "rolling"
+   },
+   "fee": "$49/month subscription",
+   "feeSort": 49,
+   "discounts": [
+    {
+     "text": "Financial aid available"
+    }
+   ],
+   "url": "https://www.coursera.org/specializations/machine-learning-introduction",
+   "verified": "2026-11-14",
+   "score": 90.7,
+   "adjRating": 4.88,
+   "rank": 1
+  },
+  {
+   "id": "vanderbilt-prompt-engineering",
+   "title": "Prompt Engineering for ChatGPT",
+   "university": "Vanderbilt University",
+   "partner": null,
+   "platform": "Coursera",
+   "level": "Beginner",
+   "duration": "About 2 weeks at 10 hrs/week",
+   "learners": 756811,
+   "learnersNote": null,
+   "rating": 4.8,
+   "reviews": 8266,
+   "start": {
+    "type": "rolling"
+   },
+   "fee": "Included with Coursera Plus",
+   "feeSort": 49,
+   "discounts": [
+    {
+     "text": "Coursera Plus, a full year for $239 (site offer)"
+    },
+    {
+     "text": "Financial aid available"
+    }
+   ],
+   "url": "https://www.coursera.org/learn/prompt-engineering",
+   "verified": "2026-11-14",
+   "score": 80.1,
+   "adjRating": 4.74,
+   "rank": 2
+  },
+  {
+   "id": "michigan-applied-ml-python",
+   "title": "Applied Machine Learning in Python",
+   "university": "University of Michigan",
+   "partner": null,
+   "platform": "Coursera",
+   "level": "Intermediate",
+   "duration": "About 3 weeks at 10 hrs/week",
+   "learners": 333547,
+   "learnersNote": null,
+   "rating": 4.6,
+   "reviews": 8816,
+   "start": {
+    "type": "rolling"
+   },
+   "fee": "Included with Coursera Plus",
+   "feeSort": 49,
+   "discounts": [
+    {
+     "text": "Coursera Plus, a full year for $239 (site offer)"
+    },
+    {
+     "text": "Financial aid available"
+    }
+   ],
+   "url": "https://www.coursera.org/learn/python-machine-learning",
+   "verified": "2026-11-14",
+   "score": 63.6,
+   "adjRating": 4.58,
+   "rank": 3
+  },
+  {
+   "id": "imperial-maths-for-ml",
+   "title": "Mathematics for Machine Learning Specialization",
+   "university": "Imperial College London",
+   "partner": null,
+   "platform": "Coursera",
+   "level": "Beginner",
+   "duration": "3-course series",
+   "learners": 280835,
+   "learnersNote": null,
+   "rating": 4.6,
+   "reviews": 15099,
+   "start": {
+    "type": "rolling"
+   },
+   "fee": "Included with Coursera Plus",
+   "feeSort": 49,
+   "discounts": [
+    {
+     "text": "Financial aid available"
+    }
+   ],
+   "url": "https://www.coursera.org/specializations/mathematics-machine-learning",
+   "verified": "2026-11-14",
+   "score": 62.9,
+   "adjRating": 4.59,
+   "rank": 4
+  },
+  {
+   "id": "wharton-ai-for-business",
+   "title": "AI For Business Specialization",
+   "university": "University of Pennsylvania (Wharton)",
+   "partner": null,
+   "platform": "Coursera",
+   "level": "Beginner",
+   "duration": "About 4 weeks at 10 hrs/week",
+   "learners": 88715,
+   "learnersNote": null,
+   "rating": 4.7,
+   "reviews": 1971,
+   "start": {
+    "type": "rolling"
+   },
+   "fee": "Included with Coursera Plus",
+   "feeSort": 49,
+   "discounts": [
+    {
+     "text": "Financial aid available"
+    }
+   ],
+   "url": "https://www.coursera.org/specializations/ai-for-business-wharton",
+   "verified": "2026-11-14",
+   "score": 56.2,
+   "adjRating": 4.6,
+   "rank": 5
+  },
+  {
+   "id": "harvard-cs50-ai",
+   "title": "CS50's Introduction to Artificial Intelligence with Python",
+   "university": "Harvard University",
+   "partner": null,
+   "platform": "edX",
+   "level": "Introductory",
+   "duration": "7 weeks, 10–30 hrs/week",
+   "learners": null,
+   "learnersNote": null,
+   "rating": null,
+   "reviews": null,
+   "start": {
+    "type": "rolling"
+   },
+   "fee": "Free to audit · $299 for the certificate",
+   "feeSort": 0,
+   "discounts": [
+    {
+     "text": "Lower price when bundled into Harvard's Computer Science for AI certificate"
+    }
+   ],
+   "url": "https://www.harvardonline.harvard.edu/course/cs50s-introduction-artificial-intelligence-python",
+   "verified": "2026-11-14"
+  },
+  {
+   "id": "helsinki-elements-of-ai",
+   "title": "Elements of AI",
+   "university": "University of Helsinki",
+   "partner": "MinnaLearn",
+   "platform": "elementsofai.com",
+   "level": "Beginner",
+   "duration": "Self-paced",
+   "learners": 2000000,
+   "learnersNote": "Over 2 million sign-ups",
+   "rating": null,
+   "reviews": null,
+   "start": {
+    "type": "rolling"
+   },
+   "fee": "Free",
+   "feeSort": 0,
+   "discounts": [],
+   "url": "https://www.elementsofai.com/",
+   "verified": "2026-11-14"
+  },
+  {
+   "id": "mitx-ml-with-python",
+   "title": "Machine Learning with Python: from Linear Models to Deep Learning",
+   "university": "MIT",
+   "partner": null,
+   "platform": "MITx",
+   "level": "Advanced",
+   "duration": "15 weeks, instructor-paced",
+   "learners": null,
+   "learnersNote": null,
+   "rating": null,
+   "reviews": null,
+   "start": {
+    "type": "dated",
+    "dates": []
+   },
+   "fee": "Free to audit · $300 certificate track",
+   "feeSort": 0,
+   "discounts": [],
+   "url": "https://learn.mit.edu/courses/course-v1:MITxT+6.86x",
+   "verified": "2026-11-14"
+  },
+  {
+   "id": "mit-sloan-ai-business-strategy",
+   "title": "Artificial Intelligence: Implications for Business Strategy",
+   "university": "MIT Sloan & MIT CSAIL",
+   "partner": null,
+   "platform": "GetSmarter",
+   "level": "Executive",
+   "duration": "6 weeks, 6–8 hrs/week",
+   "learners": null,
+   "learnersNote": null,
+   "rating": null,
+   "reviews": null,
+   "start": {
+    "type": "dated",
+    "dates": [
+     "2026-11-18"
+    ]
+   },
+   "fee": "$3,850",
+   "feeSort": 3850,
+   "discounts": [],
+   "url": "https://prolearn.mit.edu/artificial-intelligence-implications-business-strategy-0",
+   "verified": "2026-11-14"
+  },
+  {
+   "id": "oxford-ai-programme",
+   "title": "Oxford Artificial Intelligence Programme",
+   "university": "University of Oxford (Saïd Business School)",
+   "partner": null,
+   "platform": "GetSmarter",
+   "level": "Executive",
+   "duration": "6 weeks, 7–10 hrs/week",
+   "learners": null,
+   "learnersNote": null,
+   "rating": null,
+   "reviews": null,
+   "start": {
+    "type": "dated",
+    "dates": [
+     "2026-11-11"
+    ],
+    "lateNote": "Began 11 Nov; late registration closing"
+   },
+   "fee": "£2,300",
+   "feeSort": 2900,
+   "discounts": [
+    {
+     "text": "20% off with code CYBERMONTH2026",
+     "until": "2026-11-30"
+    }
+   ],
+   "url": "https://www.sbs.ox.ac.uk/programmes/executive-education/online-programmes/oxford-artificial-intelligence-programme",
+   "verified": "2026-11-14"
+  },
+  {
+   "id": "uct-ai-for-business",
+   "title": "AI for Business: From Vision to Value",
+   "university": "University of Cape Town",
+   "partner": null,
+   "platform": "GetSmarter",
+   "level": "Executive",
+   "duration": "6 weeks",
+   "learners": null,
+   "learnersNote": null,
+   "rating": null,
+   "reviews": null,
+   "start": {
+    "type": "dated",
+    "dates": [
+     "2027-02-08"
+    ]
+   },
+   "fee": null,
+   "feeSort": null,
+   "discounts": [
+    {
+     "text": "20% off with code CYBERMONTH2026",
+     "until": "2026-11-30"
+    }
+   ],
+   "url": "https://uct-online.getsmarter.com/presentations/info/uct-ai-for-business-from-vision-to-value-online-short-course/",
+   "verified": "2026-11-14"
+  }
+ ]
+}

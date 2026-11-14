@@ -1,0 +1,14 @@
+{
+  "_help": "City coordinates used to place events from the open confs.tech list (which has no coordinates). Key is 'city|country' in lower case. tools/local-desk.mjs adds new cities here automatically when it can look them up.",
+  "cities": {
+    "berlin|germany": [52.52, 13.40], "zurich|switzerland": [47.38, 8.54], "london|u.k.": [51.51, -0.13],
+    "bangalore|india": [12.97, 77.59], "bengaluru|india": [12.97, 77.59], "kathmandu|nepal": [27.72, 85.32],
+    "dubai|united arab emirates": [25.20, 55.27], "barcelona|spain": [41.39, 2.17], "amsterdam|netherlands": [52.37, 4.90],
+    "são paulo|brazil": [-23.55, -46.63], "singapore|singapore": [1.35, 103.82], "newcastle-upon-tyne|u.k.": [54.98, -1.61],
+    "rome|italy": [41.90, 12.50], "belgrade|serbia": [44.79, 20.45], "seattle, wa|u.s.a.": [47.61, -122.33],
+    "paris|france": [48.86, 2.35], "new york, ny|u.s.a.": [40.71, -74.01], "san francisco, ca|u.s.a.": [37.77, -122.42],
+    "tokyo|japan": [35.68, 139.69], "sydney|australia": [-33.87, 151.21], "cape town|south africa": [-33.92, 18.42],
+    "johannesburg|south africa": [-26.20, 28.05], "mumbai|india": [19.08, 72.88], "hyderabad|india": [17.39, 78.49],
+    "new delhi|india": [28.61, 77.21], "nairobi|kenya": [-1.29, 36.82], "lagos|nigeria": [6.52, 3.38]
+  }
+}

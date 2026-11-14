@@ -1358,6 +1358,130 @@
   *:focus-visible{outline-style:solid;}
 
   /* =====================================================================
+     LOCAL DESK — your city's weather, AI events near you, top AI courses
+     ===================================================================== */
+  .local{flex:0 0 auto;display:grid;grid-template-columns:1.15fr 1fr 1.1fr;border-bottom:1px solid var(--rule);background:var(--paper);}
+  .lc-seg{appearance:none;border:0;border-right:1px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer;
+    min-width:0;padding:6px 10px 7px 16px;text-align:left;font-family:"Libre Franklin",sans-serif;display:flex;flex-direction:column;gap:2px;line-height:1.15;}
+  .lc-seg:last-child{border-right:0;}
+  .lc-seg:hover .lc-v{color:var(--link);}
+  .lc-k{font-size:7.8px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--meta);white-space:nowrap;}
+  .lc-seg:first-child .lc-k{color:var(--live);}
+  .lc-v{font-family:Georgia,serif;font-size:12.2px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+  .lc-v .lc-ic{font-weight:400;margin-right:4px;font-size:1.25em;line-height:.8;vertical-align:-1px;}
+  .lc-v .lc-ct{font-weight:400;color:var(--body);}
+  @media (max-width:520px){ .lc-seg{padding:6px 6px 7px 14px;} .lc-seg + .lc-seg{padding-left:9px;} .lc-v{font-size:11.2px;} .lc-k{letter-spacing:1px;} }
+  @media (min-width:900px){ .lc-seg{padding-left:26px;} .lc-seg + .lc-seg{padding-left:16px;} }
+  @media (max-height:600px){ .local{display:none;} }
+  @media print{ .local{display:none !important;} }
+
+  #localModal{--l-ink:#1d2b3a;--l-hot:#e0a23a;--l-soft:rgba(224,162,58,.16);}
+  #localModal .modal-card{max-width:560px;padding:0;border-color:var(--l-ink);box-shadow:0 28px 70px rgba(10,16,24,.5);}
+  .ld-head{padding:20px 22px 0;color:#fff;background:var(--l-ink);
+    background-image:radial-gradient(circle at 92% -10%,rgba(224,162,58,.5) 0%,transparent 55%);}
+  .ld-head .modal-kicker{color:var(--l-hot);margin-bottom:5px;letter-spacing:2px;}
+  .ld-head h3{margin:0 0 4px;font-family:Georgia,serif;font-size:21px;line-height:1.14;color:#fff;}
+  .ld-sub{font-family:"Libre Franklin",sans-serif;font-size:10.6px;line-height:1.45;color:rgba(255,255,255,.78);min-height:15px;}
+  #localModal .modal-x{color:rgba(255,255,255,.7);z-index:2;}
+  #localModal .modal-x:hover{color:#fff;}
+  .ld-tabs{display:flex;gap:2px;margin-top:14px;}
+  .ld-tab{appearance:none;border:0;cursor:pointer;flex:1 1 0;padding:9px 6px 8px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);
+    font:800 9.4px/1 "Libre Franklin",sans-serif;letter-spacing:1.1px;text-transform:uppercase;border-top:2px solid transparent;}
+  .ld-tab:hover{color:#fff;}
+  .ld-tab[aria-selected="true"]{background:var(--paper);color:var(--ink);border-top-color:var(--l-hot);}
+  .ld-body{padding:16px 22px 18px;font-family:"Libre Franklin",sans-serif;color:var(--ink);}
+  .ld-note{font-size:9.8px;line-height:1.5;color:var(--meta);margin-top:14px;}
+  .ld-note a{color:var(--link);}
+  .ld-empty{font-family:Georgia,serif;font-size:13.4px;line-height:1.5;color:var(--body);padding:14px 0 4px;}
+  .ld-h{margin:16px 0 4px;padding-bottom:4px;border-bottom:1px solid var(--ink);font-size:9px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink);display:flex;justify-content:space-between;gap:8px;}
+  .ld-h:first-child{margin-top:0;}
+  .ld-h span{font-weight:600;letter-spacing:.3px;text-transform:none;color:var(--meta);}
+  .ld-seg{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;align-items:center;}
+  .ld-seg .lab{font-size:8.6px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--meta);margin-right:3px;}
+  .ld-chip{appearance:none;cursor:pointer;border:1px solid var(--rule);background:var(--paper);color:var(--ink);font:700 10px/1 "Libre Franklin",sans-serif;padding:6px 9px;}
+  .ld-chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+
+  /* weather */
+  .wx-now{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:center;}
+  .wx-big{font:700 58px/0.95 Georgia,serif;letter-spacing:-1.5px;display:flex;align-items:flex-start;gap:8px;}
+  .wx-big .ic{font-size:38px;font-weight:400;line-height:1.2;color:var(--l-hot);}
+  .wx-big sup{font-size:20px;line-height:1.5;letter-spacing:0;color:var(--meta);}
+  .wx-cond{font-family:Georgia,serif;font-size:17px;font-weight:700;line-height:1.2;}
+  .wx-place{font-size:10.6px;color:var(--meta);margin-top:2px;}
+  .wx-facts{grid-column:1 / -1;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:12px;}
+  .wx-facts div{background:var(--paper);padding:8px 8px 7px;min-width:0;}
+  .wx-facts b{display:block;font:700 14.5px/1.1 Georgia,serif;white-space:nowrap;}
+  .wx-facts span{font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--meta);}
+  .wx-hours{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;text-align:center;}
+  .wx-hours div{padding:7px 2px 6px;background:var(--paper-2);min-width:0;}
+  .wx-hours .t{font-size:9px;font-weight:700;color:var(--meta);}
+  .wx-hours .i{font-size:17px;line-height:1.5;}
+  .wx-hours .v{font:700 13px/1.1 Georgia,serif;}
+  .wx-hours .r{font-size:8.6px;color:var(--link);min-height:11px;margin-top:2px;}
+  .wx-day{display:grid;grid-template-columns:54px 22px 34px 30px 1fr 30px;align-items:center;gap:6px;padding:7px 0;border-bottom:1px solid var(--rule);font-size:11.4px;}
+  .wx-day .d{font-weight:700;}
+  .wx-day .i{font-size:15px;text-align:center;}
+  .wx-day .r{font-size:9.4px;color:var(--link);}
+  .wx-day .lo{color:var(--meta);text-align:right;font-family:Georgia,serif;}
+  .wx-day .hi{font-family:Georgia,serif;font-weight:700;}
+  .wx-range{height:6px;background:var(--rule);position:relative;border-radius:3px;}
+  .wx-range i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#5b8fb9,var(--l-hot));}
+  .wx-sun{font-size:10.4px;color:var(--meta);margin-top:9px;}
+  .wx-city{margin-top:16px;padding:12px 14px;background:var(--paper-2);border:1px solid var(--rule);}
+  .wx-city label{display:block;font-size:8.6px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--meta);margin-bottom:6px;}
+  .wx-row{display:flex;gap:6px;}
+  .wx-row input{flex:1 1 auto;min-width:0;border:1px solid var(--ink);background:var(--paper);color:var(--ink);padding:8px 9px;font:400 13px Georgia,serif;border-radius:0;}
+  .wx-btn{appearance:none;cursor:pointer;border:1px solid var(--ink);background:var(--ink);color:var(--paper);font:700 10px/1 "Libre Franklin",sans-serif;letter-spacing:.4px;padding:9px 11px;white-space:nowrap;}
+  .wx-btn.alt{background:var(--paper);color:var(--ink);}
+  .wx-btn:disabled{opacity:.5;cursor:default;}
+  .wx-res{margin:6px 0 0;padding:0;list-style:none;}
+  .wx-res button{appearance:none;cursor:pointer;display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--rule);background:transparent;color:var(--ink);padding:8px 2px;font:400 12.6px Georgia,serif;}
+  .wx-res button:hover{color:var(--link);}
+  .wx-res small{color:var(--meta);font-family:"Libre Franklin",sans-serif;font-size:10px;}
+  .wx-tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center;}
+  .wx-msg{font-size:10.4px;color:var(--meta);min-height:14px;margin-top:6px;}
+
+  /* events */
+  .ev-row{display:grid;grid-template-columns:46px 1fr;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule);}
+  .ev-d{text-align:center;border:1px solid var(--ink);align-self:start;}
+  .ev-d .m{display:block;background:var(--ink);color:var(--paper);font-size:8px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;padding:3px 0;}
+  .ev-d .n{display:block;font:700 19px/1.25 Georgia,serif;}
+  .ev-d .y{display:block;font-size:7.6px;color:var(--meta);padding-bottom:3px;}
+  .ev-t{font-family:Georgia,serif;font-weight:700;font-size:14.6px;line-height:1.22;color:var(--ink);text-decoration:none;}
+  a.ev-t:hover{text-decoration:underline;}
+  .ev-m{font-size:10.6px;line-height:1.4;color:var(--meta);margin-top:2px;}
+  .ev-c{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;align-items:center;}
+  .ev-chip{font:700 9.2px/1 "Libre Franklin",sans-serif;padding:4px 6px;background:var(--l-soft);color:var(--ink);white-space:nowrap;}
+  .ev-chip.hot{background:var(--live);color:#fff;}
+  .ev-chip.far{background:var(--paper-2);color:var(--meta);}
+  .ev-act{appearance:none;border:0;background:transparent;cursor:pointer;padding:0;font:700 9.6px/1 "Libre Franklin",sans-serif;letter-spacing:.3px;color:var(--link);text-decoration:none;}
+  .ev-act:hover{text-decoration:underline;}
+
+  /* courses */
+  .co-card{display:grid;grid-template-columns:34px 1fr;gap:2px 12px;padding:14px 0;border-bottom:1px solid var(--rule);}
+  .co-card > :not(.co-rank){grid-column:2;min-width:0;}
+  .co-rank{grid-column:1;grid-row:1 / span 8;font:700 32px/0.9 Georgia,serif;color:var(--l-hot);}
+  .co-rank.none{font-size:18px;color:var(--rule);line-height:1.2;}
+  .co-u{font:800 8.6px/1.3 "Libre Franklin",sans-serif;letter-spacing:1.1px;text-transform:uppercase;color:var(--link);}
+  .co-t{font-family:Georgia,serif;font-weight:700;font-size:15.4px;line-height:1.22;color:var(--ink);text-decoration:none;margin:1px 0 5px;display:block;}
+  a.co-t:hover{text-decoration:underline;}
+  .co-score{display:flex;align-items:center;gap:8px;font-size:9.4px;color:var(--meta);margin-bottom:8px;}
+  .co-score .bar{flex:1 1 auto;height:7px;background:var(--rule);position:relative;overflow:hidden;}
+  .co-score .bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--l-ink),var(--l-hot));}
+  html[data-theme="night"] .co-score .bar i{background:var(--l-hot);}
+  .co-score b{font:700 14px/1 Georgia,serif;color:var(--ink);min-width:30px;text-align:right;}
+  .co-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);}
+  .co-grid div{background:var(--paper);padding:7px 8px 6px;min-width:0;}
+  .co-grid span{display:block;font-size:7.8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--meta);margin-bottom:2px;}
+  .co-grid b{display:block;font:700 12.6px/1.25 Georgia,serif;}
+  .co-grid b.na{font-weight:400;font-style:italic;color:var(--meta);font-size:11.4px;}
+  .co-grid small{display:block;font-size:9.4px;color:var(--meta);line-height:1.3;}
+  .co-off{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+  .co-off .ev-chip b{font-weight:800;}
+  .co-foot{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:9.2px;color:var(--meta);align-items:center;}
+  @media (max-width:420px){ .wx-big{font-size:48px;} .wx-facts{grid-template-columns:repeat(2,1fr);} .ld-body{padding:14px 16px 16px;} .ld-head{padding:18px 16px 0;} .wx-day{grid-template-columns:44px 20px 30px 26px 1fr 26px;} }
+
+  /* =====================================================================
      TOP AI PREDICTION — tomorrow's wire, forecast from today's global coverage
      ===================================================================== */
   .predict{flex:0 0 auto;display:flex;align-items:center;gap:12px;width:100%;
@@ -1792,6 +1916,13 @@
   </div>
   </div>
 
+  <!-- Local Desk: the reader's city weather, AI events near them, top university AI courses (events.json + courses.json, built by .github/workflows/local-desk.yml) -->
+  <div class="local" id="localBand" aria-label="Local desk: weather, AI events near you and top AI courses">
+    <button class="lc-seg" id="lcWx" type="button" aria-label="Open the weather for your city"><span class="lc-k" id="lcWxK">Your city</span><span class="lc-v" id="lcWxV">Finding your city&hellip;</span></button>
+    <button class="lc-seg" id="lcEv" type="button" aria-label="Open upcoming AI events near you"><span class="lc-k">AI events near you</span><span class="lc-v" id="lcEvV">&middot;&middot;</span></button>
+    <button class="lc-seg" id="lcCo" type="button" aria-label="Open the ranking of top university AI courses"><span class="lc-k">Top AI courses</span><span class="lc-v" id="lcCoV">&middot;&middot;</span></button>
+  </div>
+
   <!-- Top AI Prediction: tomorrow's three most likely AI storylines (predictions.json, built nightly) -->
   <button class="predict" id="predictBand" type="button" aria-label="Open the Top AI Prediction for tomorrow">
     <span class="pr-tag"><span class="pr-k">Tomorrow&rsquo;s wire</span><span class="pr-t">Top AI Prediction<span class="pr-new" id="prNew" hidden>NEW</span></span></span>
@@ -1850,6 +1981,23 @@
       <p class="modal-sub" id="clipsSub">Stories you clip are kept on this device.</p>
       <div id="clipsList"></div>
       <button class="opt" id="clipsClear" style="margin-top:14px;display:none;">Clear all clippings</button>
+    </div>
+  </div>
+
+  <div class="modal" id="localModal">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="ldTitle">
+      <button class="modal-x" data-close aria-label="Close">&times;</button>
+      <div class="ld-head">
+        <div class="modal-kicker">Local Desk</div>
+        <h3 id="ldTitle">Your city</h3>
+        <div class="ld-sub" id="ldSub"></div>
+        <div class="ld-tabs" role="tablist" aria-label="Local desk sections">
+          <button class="ld-tab" role="tab" id="ldTabWx" data-tab="weather" aria-selected="true" aria-controls="ldBody">Weather</button>
+          <button class="ld-tab" role="tab" id="ldTabEv" data-tab="events" aria-selected="false" aria-controls="ldBody">AI events</button>
+          <button class="ld-tab" role="tab" id="ldTabCo" data-tab="courses" aria-selected="false" aria-controls="ldBody">AI courses</button>
+        </div>
+      </div>
+      <div class="ld-body" id="ldBody" role="tabpanel"></div>
     </div>
   </div>
 
@@ -4277,6 +4425,527 @@ var showCutting;
     .then(function(r){return r.ok?r.json():null;})
     .then(function(j){data=j;idx=0;showBand();rotate();})
     .catch(function(){showBand();});
+})();
+</script>
+
+<script>
+/* =====================================================================
+   LOCAL DESK — weather for the reader's city, AI events near them and a
+   ranking of AI courses from leading universities.
+   ---------------------------------------------------------------------
+   City      approximate city from the connection (GeoJS), falling back to
+             the browser's time zone; the reader can search for any city or
+             use precise device location. Kept only in localStorage.
+   Weather   Open-Meteo (no key), fetched in the browser, cached 20 min.
+   Events    events.json  (tools/local-desk.mjs, rebuilt daily)
+   Courses   courses.json (tools/local-desk.mjs, from tools/ai-courses.json)
+   Opens from the band under the masthead, the Menu ("Today"), or
+   #weather / #ai-events / #ai-courses.
+--------------------------------------------------------------------- */
+(function(){
+  var band=document.getElementById('localBand'), modal=document.getElementById('localModal');
+  if(!band||!modal) return;
+  var body=document.getElementById('ldBody'), titleEl=document.getElementById('ldTitle'), subEl=document.getElementById('ldSub');
+  var LOC_KEY='aishorts_loc', WX_KEY='aishorts_wx', UNIT_KEY='aishorts_wx_unit';
+  var loc=null, wx=null, wxErr=false, events=null, courses=null, coursesMeta=null, tab='weather';
+  var evFilter='near', coSort='rank';
+
+  function el(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;}
+  function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  function safeUrl(u){return /^https?:\/\//i.test(u||'')?u:'#';}
+  function getJSON(url,ms){
+    var c=new AbortController(), id=setTimeout(function(){c.abort();},ms||9000);
+    return fetch(url,{signal:c.signal}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();})
+      .finally(function(){clearTimeout(id);});
+  }
+  function pad(n){return n<10?'0'+n:''+n;}
+  function todayISO(){var d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var DAY=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  function parts(iso){return {y:+iso.slice(0,4),m:+iso.slice(5,7),d:+iso.slice(8,10)};}
+  function dayNum(iso){var p=parts(iso);return Math.round(Date.UTC(p.y,p.m-1,p.d)/864e5);}
+  function fmtDate(iso,noYear){var p=parts(iso);return p.d+' '+MON[p.m-1]+(noYear?'':' '+p.y);}
+  function fmtRange(a,b){
+    if(!b||b===a) return fmtDate(a);
+    var p=parts(a),q=parts(b);
+    if(p.y===q.y&&p.m===q.m) return p.d+'\u2013'+q.d+' '+MON[p.m-1]+' '+p.y;
+    return fmtDate(a,p.y===q.y)+' \u2013 '+fmtDate(b);
+  }
+  function num(n){return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+
+  /* ---------------- units ---------------- */
+  var unit=lsGet(UNIT_KEY)||(/-US$/i.test(navigator.language||'')?'F':'C');
+  function T(c){return Math.round(unit==='F'?c*9/5+32:c);}
+  function wind(k){return unit==='F'?Math.round(k*0.621)+' mph':Math.round(k)+' km/h';}
+  function dist(km){return unit==='F'?num(km*0.621)+' mi':num(km)+' km';}
+
+  /* ---------------- weather codes (WMO) ---------------- */
+  function sky(code,isDay){
+    var c=+code;
+    if(c===0) return [isDay===0?'\u263E':'\u2600', isDay===0?'Clear night':'Clear sky'];
+    if(c===1) return [isDay===0?'\u263E':'\u2600','Mostly clear'];
+    if(c===2) return ['\u26C5','Partly cloudy'];
+    if(c===3) return ['\u2601','Overcast'];
+    if(c===45||c===48) return ['\u2592','Fog'];
+    if(c>=51&&c<=57) return ['\u2602','Drizzle'];
+    if(c>=61&&c<=67) return ['\u2614',c>=65?'Heavy rain':'Rain'];
+    if(c>=71&&c<=77) return ['\u2744','Snow'];
+    if(c>=80&&c<=82) return ['\u2614','Showers'];
+    if(c===85||c===86) return ['\u2744','Snow showers'];
+    if(c>=95) return ['\u26A1','Thunderstorm'];
+    return ['\u2601','Cloudy'];
+  }
+  var _sky=sky; sky=function(c,d){var r=_sky(c,d);return [r[0]+'\uFE0E',r[1]];};   // ask for text glyphs, not colour emoji
+
+  /* ---------------- location ---------------- */
+  var TZ_CITY={'Asia/Kolkata':['New Delhi','India','IN',28.61,77.21],'Asia/Calcutta':['New Delhi','India','IN',28.61,77.21],
+    'Africa/Johannesburg':['Johannesburg','South Africa','ZA',-26.2,28.05],'Europe/London':['London','United Kingdom','GB',51.51,-0.13],
+    'America/New_York':['New York','United States','US',40.71,-74.01],'America/Los_Angeles':['Los Angeles','United States','US',34.05,-118.24],
+    'America/Chicago':['Chicago','United States','US',41.88,-87.63],'Asia/Dubai':['Dubai','United Arab Emirates','AE',25.2,55.27],
+    'Asia/Singapore':['Singapore','Singapore','SG',1.35,103.82],'Australia/Sydney':['Sydney','Australia','AU',-33.87,151.21],
+    'Europe/Berlin':['Berlin','Germany','DE',52.52,13.4],'Europe/Paris':['Paris','France','FR',48.86,2.35],
+    'Africa/Lagos':['Lagos','Nigeria','NG',6.52,3.38],'Africa/Nairobi':['Nairobi','Kenya','KE',-1.29,36.82],'Asia/Tokyo':['Tokyo','Japan','JP',35.68,139.69]};
+  function okLoc(l){return l&&typeof l.lat==='number'&&typeof l.lon==='number'&&isFinite(l.lat)&&isFinite(l.lon)&&l.name;}
+  function saveLoc(l){l.t=Date.now();loc=l;lsSet(LOC_KEY,JSON.stringify(l));}
+  function storedLoc(){
+    try{
+      var l=JSON.parse(lsGet(LOC_KEY)||'null');
+      if(!okLoc(l)) return null;
+      // a city the reader chose is kept; an automatic guess is refreshed daily (people travel)
+      if(l.src!=='user'&&Date.now()-(l.t||0)>864e5) return null;
+      return l;
+    }catch(e){return null;}
+  }
+  function fromIP(){
+    return getJSON('https://get.geojs.io/v1/ip/geo.json',6000).then(function(j){
+      var l={name:j.city||j.region||j.country,admin:j.city?(j.region||''):'',country:j.country||'',cc:(j.country_code||'').toUpperCase(),
+        lat:parseFloat(j.latitude),lon:parseFloat(j.longitude),src:'ip'};
+      if(!okLoc(l)) throw new Error('no city');
+      return l;
+    });
+  }
+  function geocode(q,n){
+    return getJSON('https://geocoding-api.open-meteo.com/v1/search?count='+(n||6)+'&language=en&format=json&name='+encodeURIComponent(q),8000)
+      .then(function(j){return (j.results||[]).map(function(r){
+        return {name:r.name,admin:r.admin1||'',country:r.country||'',cc:(r.country_code||'').toUpperCase(),lat:r.latitude,lon:r.longitude};
+      }).filter(okLoc);});
+  }
+  function fromTZ(){
+    var tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'';}catch(e){}
+    var k=TZ_CITY[tz];
+    if(k) return Promise.resolve({name:k[0],admin:'',country:k[1],cc:k[2],lat:k[3],lon:k[4],src:'tz'});
+    var city=(tz.split('/').pop()||'').replace(/_/g,' ');
+    if(!city||tz.indexOf('/')<0) return Promise.reject(new Error('no tz'));
+    return geocode(city,1).then(function(r){if(!r.length)throw new Error('no tz city');r[0].src='tz';return r[0];});
+  }
+  function findLoc(){
+    var s=storedLoc();
+    if(s){loc=s;return Promise.resolve(s);}
+    return fromIP().catch(fromTZ).then(function(l){saveLoc(l);return l;});
+  }
+  function placeLine(l){return [l.admin&&l.admin!==l.name?l.admin:'',l.country].filter(Boolean).join(', ');}
+
+  /* ---------------- weather ---------------- */
+  function loadWx(force){
+    if(!loc) return Promise.resolve(null);
+    var key=loc.lat.toFixed(2)+','+loc.lon.toFixed(2);
+    if(!force){
+      try{var c=JSON.parse(lsGet(WX_KEY)||'null');
+        if(c&&c.k===key&&Date.now()-c.t<20*6e4&&c.d&&c.d.current){wx=c.d;wxErr=false;return Promise.resolve(wx);}
+      }catch(e){}
+    }
+    var u='https://api.open-meteo.com/v1/forecast?latitude='+loc.lat+'&longitude='+loc.lon+
+      '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day'+
+      '&hourly=temperature_2m,weather_code,precipitation_probability'+
+      '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max,sunrise,sunset'+
+      '&forecast_days=5&timezone=auto';
+    return getJSON(u,10000).then(function(j){
+      if(!j||!j.current||typeof j.current.temperature_2m!=='number') throw new Error('bad weather');
+      wx=j;wxErr=false;lsSet(WX_KEY,JSON.stringify({k:key,t:Date.now(),d:j}));return j;
+    }).catch(function(){wx=null;wxErr=true;return null;});
+  }
+
+  /* ---------------- events helpers ---------------- */
+  function km(a,b,c,d){
+    var R=6371,r=Math.PI/180,x=(c-a)*r,y=(d-b)*r;
+    var h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);
+    return 2*R*Math.asin(Math.sqrt(h));
+  }
+  var NEAR_KM=75, REGION_KM=600;
+  function upcoming(){
+    var t=todayISO();
+    return (events||[]).filter(function(e){return e&&e.title&&e.start&&(e.end||e.start)>=t;}).map(function(e){
+      var o={};for(var k in e)o[k]=e[k];
+      o.km=(loc&&!e.online&&typeof e.lat==='number')?km(loc.lat,loc.lon,e.lat,e.lon):null;
+      return o;
+    }).sort(function(a,b){return a.start<b.start?-1:a.start>b.start?1:0;});
+  }
+  function tiers(){
+    var all=upcoming(), g={local:[],region:[],country:[],online:[],far:[],all:all};
+    all.forEach(function(e){
+      if(e.online){g.online.push(e);return;}
+      if(e.km!=null&&e.km<=NEAR_KM) g.local.push(e);
+      else if(e.km!=null&&e.km<=REGION_KM) g.region.push(e);
+      else if(loc&&loc.cc&&e.cc===loc.cc) g.country.push(e);
+      else g.far.push(e);
+    });
+    return g;
+  }
+  function whenChip(e){
+    var t=dayNum(todayISO()), s=dayNum(e.start), en=dayNum(e.end||e.start);
+    if(s<=t&&en>=t) return ['On now','hot'];
+    if(s-t===1) return ['Tomorrow','hot'];
+    if(s-t<=7) return ['In '+(s-t)+' days',''];
+    if(s-t<=13) return ['Next week',''];
+    if(s-t<=31) return ['In '+Math.round((s-t)/7)+' weeks',''];
+    return null;
+  }
+  function ics(e){
+    function d(iso,add){var p=parts(iso),x=new Date(Date.UTC(p.y,p.m-1,p.d+(add||0)));return x.getUTCFullYear()+pad(x.getUTCMonth()+1)+pad(x.getUTCDate());}
+    function esc(s){return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\\;').replace(/,/g,'\\,').replace(/\r?\n/g,'\\n');}
+    var where=e.online?'Online':[e.venue,e.city,e.country].filter(Boolean).join(', ');
+    var txt=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//AIShorts//Local Desk//EN','BEGIN:VEVENT',
+      'UID:'+d(e.start)+'-'+esc(e.title).replace(/[^A-Za-z0-9]/g,'').slice(0,40)+'@aishorts.biz',
+      'DTSTAMP:'+d(todayISO())+'T000000Z','DTSTART;VALUE=DATE:'+d(e.start),'DTEND;VALUE=DATE:'+d(e.end||e.start,1),
+      'SUMMARY:'+esc(e.title),'LOCATION:'+esc(where),'URL:'+safeUrl(e.url),'DESCRIPTION:'+esc('Details: '+safeUrl(e.url)+' (via AIShorts)'),
+      'END:VEVENT','END:VCALENDAR'].join('\r\n');
+    try{
+      var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([txt],{type:'text/calendar'}));
+      a.download=e.title.replace(/[^A-Za-z0-9]+/g,'-').slice(0,50)+'.ics';
+      document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},500);
+    }catch(err){}
+  }
+
+  /* ---------------- courses helpers ---------------- */
+  function nextStart(c){
+    var s=c.start||{}, t=todayISO();
+    if(s.type==='rolling') return {label:'Open now',sub:'Self-paced, start any day',sort:0};
+    var ds=(s.dates||[]).filter(function(x){return /^\d{4}-\d{2}-\d{2}$/.test(x);}).sort();
+    var nx=ds.filter(function(x){return x>=t;})[0];
+    if(nx){var n=dayNum(nx)-dayNum(t);return {label:fmtDate(nx),sub:n===0?'Starts today':n===1?'Starts tomorrow':'Starts in '+n+' days',sort:1+n};}
+    var last=ds[ds.length-1];
+    if(last&&s.lateNote&&dayNum(t)-dayNum(last)<=14) return {label:'Just started',sub:s.lateNote,sort:1};
+    return {label:null,sub:'Next dates not yet announced',sort:99999};
+  }
+  function offers(c){var t=todayISO();return (c.discounts||[]).filter(function(d){return d&&d.text&&(!d.until||d.until>=t);});}
+  function ranked(){return (courses||[]).filter(function(c){return c.rank;}).sort(function(a,b){return a.rank-b.rank;});}
+
+  /* ---------------- band ---------------- */
+  function paintBand(){
+    var w=document.getElementById('lcWxV'), wk=document.getElementById('lcWxK');
+    w.textContent='';
+    if(!loc){w.textContent='Set your city \u2192';wk.textContent='Your city';}
+    else{
+      wk.textContent='Your city';
+      if(wx&&wx.current){
+        var s=sky(wx.current.weather_code,wx.current.is_day);
+        w.appendChild(el('span','lc-ic',s[0]));
+        w.appendChild(document.createTextNode(T(wx.current.temperature_2m)+'\u00B0 '));
+        w.appendChild(el('span','lc-ct',loc.name));
+        w.title=s[1]+' in '+loc.name;
+      }else w.textContent=loc.name+(wxErr?'':' \u2026');
+    }
+    var ev=document.getElementById('lcEvV');
+    if(events){
+      var g=tiers();
+      if(loc&&g.local.length) ev.textContent=g.local.length+' in '+loc.name;
+      else if(loc&&g.region.length) ev.textContent=g.region.length+' within '+dist(REGION_KM);
+      else if(loc&&g.country.length) ev.textContent=g.country.length+' in '+(loc.country||'your country');
+      else if(g.all.length) ev.textContent=g.all.length+' upcoming worldwide';
+      else ev.textContent='Calendar updating';
+    }
+    var co=document.getElementById('lcCoV');
+    if(courses){var r=ranked();co.textContent=r.length?'No. 1: '+r[0].university:(courses.length+' courses');}
+  }
+
+  /* ---------------- views ---------------- */
+  function setHead(t,s){titleEl.textContent=t;subEl.textContent=s||'';}
+
+  function cityBox(){
+    var box=el('div','wx-city'), lab=el('label',null,'Change city');lab.setAttribute('for','wxQ');
+    var row=el('div','wx-row'), inp=el('input');inp.id='wxQ';inp.type='search';inp.placeholder='Search any city\u2026';inp.autocomplete='off';
+    var go=el('button','wx-btn','Search');go.type='button';
+    row.appendChild(inp);row.appendChild(go);
+    var res=el('ul','wx-res'), msg=el('div','wx-msg');msg.setAttribute('aria-live','polite');
+    var tools=el('div','wx-tools');
+    var here=el('button','wx-btn alt','Use my precise location');here.type='button';
+    var ut=el('button','wx-btn alt','Show \u00B0'+(unit==='C'?'F':'C'));ut.type='button';
+    tools.appendChild(here);tools.appendChild(ut);
+    function pick(l){l.src='user';saveLoc(l);wx=null;paintBand();render();loadWx(true).then(function(){paintBand();render();});}
+    function search(){
+      var q=inp.value.trim();res.textContent='';
+      if(q.length<2){msg.textContent='Type at least two letters.';return;}
+      msg.textContent='Searching\u2026';
+      geocode(q).then(function(list){
+        msg.textContent=list.length?'':'No city found by that name.';
+        list.forEach(function(l){
+          var li=el('li'),b=el('button');b.type='button';
+          b.appendChild(document.createTextNode(l.name+' '));b.appendChild(el('small',null,placeLine(l)));
+          b.addEventListener('click',function(){pick(l);});li.appendChild(b);res.appendChild(li);
+        });
+      }).catch(function(){msg.textContent='City search is unavailable right now. Please try again.';});
+    }
+    go.addEventListener('click',search);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();search();}});
+    here.addEventListener('click',function(){
+      if(!navigator.geolocation){msg.textContent='This browser cannot share a location. Search for your city instead.';return;}
+      msg.textContent='Asking your device\u2026';here.disabled=true;
+      navigator.geolocation.getCurrentPosition(function(p){
+        var la=p.coords.latitude, lo=p.coords.longitude;
+        getJSON('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+la+'&longitude='+lo+'&localityLanguage=en',7000)
+          .then(function(j){return {name:j.city||j.locality||j.principalSubdivision||'Your location',admin:j.principalSubdivision||'',country:j.countryName||'',cc:(j.countryCode||'').toUpperCase(),lat:la,lon:lo};})
+          .catch(function(){return {name:'Your location',admin:'',country:(loc&&loc.country)||'',cc:(loc&&loc.cc)||'',lat:la,lon:lo};})
+          .then(pick);
+      },function(){here.disabled=false;msg.textContent='Location was not shared. Search for your city instead.';},{timeout:10000,maximumAge:6e5});
+    });
+    ut.addEventListener('click',function(){unit=unit==='C'?'F':'C';lsSet(UNIT_KEY,unit);paintBand();render();});
+    box.appendChild(lab);box.appendChild(row);box.appendChild(res);box.appendChild(tools);box.appendChild(msg);
+    return box;
+  }
+
+  function viewWeather(){
+    if(!loc){
+      setHead('Weather in your city','Tell us your city to see its weather and the AI events near you.');
+      body.appendChild(el('div','ld-empty','We could not work out your city automatically. Search for it below; it is remembered on this device only.'));
+      body.appendChild(cityBox());return;
+    }
+    setHead('Weather in '+loc.name,placeLine(loc));
+    if(!wx){
+      body.appendChild(el('div','ld-empty',wxErr?'The weather service did not respond. Check your connection and try again.':'Reading the sky over '+loc.name+'\u2026'));
+      if(wxErr){var rt=el('button','wx-btn','Try again');rt.type='button';rt.addEventListener('click',function(){wxErr=false;render();loadWx(true).then(function(){paintBand();render();});});body.appendChild(rt);}
+      body.appendChild(cityBox());return;
+    }
+    var c=wx.current, d=wx.daily||{}, h=wx.hourly||{}, s=sky(c.weather_code,c.is_day);
+    var now=el('div','wx-now'), big=el('div','wx-big');
+    big.appendChild(el('span','ic',s[0]));big.appendChild(document.createTextNode(String(T(c.temperature_2m))));big.appendChild(el('sup',null,'\u00B0'+unit));
+    var txt=el('div');txt.appendChild(el('div','wx-cond',s[1]));
+    var hi=d.temperature_2m_max&&d.temperature_2m_max[0], lo=d.temperature_2m_min&&d.temperature_2m_min[0];
+    txt.appendChild(el('div','wx-place',(typeof hi==='number'?'High '+T(hi)+'\u00B0 \u00B7 Low '+T(lo)+'\u00B0 today':'')));
+    now.appendChild(big);now.appendChild(txt);
+    var facts=el('div','wx-facts');
+    function fact(v,l){var x=el('div');x.appendChild(el('b',null,v));x.appendChild(el('span',null,l));facts.appendChild(x);}
+    fact(T(c.apparent_temperature)+'\u00B0','Feels like');
+    fact(Math.round(c.relative_humidity_2m)+'%','Humidity');
+    fact(wind(c.wind_speed_10m),'Wind');
+    var uv=d.uv_index_max&&d.uv_index_max[0];
+    fact(typeof uv==='number'?(Math.round(uv)+(uv>=8?' very high':uv>=6?' high':uv>=3?' moderate':' low')):'\u2014','UV index');
+    now.appendChild(facts);body.appendChild(now);
+
+    if(h.time&&h.time.length){
+      var start=0;for(var i=0;i<h.time.length;i++){if(h.time[i]>c.time){start=i;break;}}
+      var hd=el('div','ld-h','Next hours');body.appendChild(hd);
+      var hours=el('div','wx-hours');
+      for(var n=0;n<6;n++){
+        var ix=start+n*3;if(ix>=h.time.length)break;
+        var cell=el('div'), hh=+h.time[ix].slice(11,13), hs=sky(h.weather_code[ix],(hh>=6&&hh<19)?1:0);
+        cell.appendChild(el('div','t',(hh%12||12)+(hh<12?' am':' pm')));
+        cell.appendChild(el('div','i',hs[0]));
+        cell.appendChild(el('div','v',T(h.temperature_2m[ix])+'\u00B0'));
+        var pr=h.precipitation_probability&&h.precipitation_probability[ix];
+        cell.appendChild(el('div','r',pr>=20?pr+'% rain':''));
+        cell.title=hs[1];hours.appendChild(cell);
+      }
+      body.appendChild(hours);
+    }
+    if(d.time&&d.time.length){
+      var mn=Math.min.apply(null,d.temperature_2m_min), mx=Math.max.apply(null,d.temperature_2m_max), span=Math.max(1,mx-mn);
+      var dh=el('div','ld-h','Five-day outlook');dh.appendChild(el('span',null,'low \u2192 high'));body.appendChild(dh);
+      d.time.forEach(function(iso,k){
+        var p=parts(iso), wd=DAY[new Date(Date.UTC(p.y,p.m-1,p.d)).getUTCDay()], ds=sky(d.weather_code[k],1);
+        var row=el('div','wx-day');
+        row.appendChild(el('span','d',k===0?'Today':wd+' '+p.d));
+        var ic=el('span','i',ds[0]);ic.title=ds[1];row.appendChild(ic);
+        var rp=d.precipitation_probability_max&&d.precipitation_probability_max[k];
+        row.appendChild(el('span','r',rp>=20?rp+'%':''));
+        row.appendChild(el('span','lo',T(d.temperature_2m_min[k])+'\u00B0'));
+        var rg=el('span','wx-range'),bar=el('i');
+        bar.style.left=((d.temperature_2m_min[k]-mn)/span*100)+'%';
+        bar.style.right=((mx-d.temperature_2m_max[k])/span*100)+'%';
+        rg.appendChild(bar);row.appendChild(rg);
+        row.appendChild(el('span','hi',T(d.temperature_2m_max[k])+'\u00B0'));
+        row.setAttribute('aria-label',(k===0?'Today':wd+' '+p.d)+': '+ds[1]+', '+T(d.temperature_2m_min[k])+' to '+T(d.temperature_2m_max[k])+' degrees');
+        body.appendChild(row);
+      });
+      if(d.sunrise&&d.sunrise[0]) body.appendChild(el('div','wx-sun','Sunrise '+d.sunrise[0].slice(11,16)+' \u00B7 Sunset '+d.sunset[0].slice(11,16)+' (local time)'));
+    }
+    body.appendChild(cityBox());
+    var note=el('div','ld-note');
+    note.appendChild(document.createTextNode((loc.src==='ip'?'Your city is estimated from your internet connection, so it can be a town or two out; search above to correct it. ':loc.src==='tz'?'Your city is a guess from your device\u2019s time zone; search above to correct it. ':'')+'It is stored on this device only. Weather data by '));
+    var om=el('a',null,'Open-Meteo');om.href='https://open-meteo.com/';om.target='_blank';om.rel='noopener noreferrer';note.appendChild(om);
+    note.appendChild(document.createTextNode('. '));
+    var pv=el('a',null,'Privacy');pv.href='privacy.html';note.appendChild(pv);note.appendChild(document.createTextNode('.'));
+    body.appendChild(note);
+  }
+
+  function eventRow(e){
+    var row=el('article','ev-row'), p=parts(e.start), d=el('div','ev-d');
+    d.appendChild(el('span','m',MON[p.m-1]));d.appendChild(el('span','n',String(p.d)));d.appendChild(el('span','y',String(p.y)));
+    var main=el('div'), t=el('a','ev-t',e.title);t.href=safeUrl(e.url);t.target='_blank';t.rel='noopener noreferrer';
+    main.appendChild(t);
+    var where=e.online?'Online':[e.venue,e.city,(loc&&e.cc===loc.cc)?'':e.country].filter(Boolean).join(', ');
+    main.appendChild(el('div','ev-m',[e.type,fmtRange(e.start,e.end),where].filter(Boolean).join(' \u00B7 ')));
+    var chips=el('div','ev-c'), w=whenChip(e);
+    if(w) chips.appendChild(el('span','ev-chip '+w[1],w[0]));
+    if(e.online) chips.appendChild(el('span','ev-chip','Join from anywhere'));
+    else if(e.km!=null) chips.appendChild(el('span','ev-chip'+(e.km>REGION_KM?' far':''),e.km<=NEAR_KM?'In your city':dist(e.km)+' away'));
+    if(e.hybrid) chips.appendChild(el('span','ev-chip','Also online'));
+    var cal=el('button','ev-act','+ Add to calendar');cal.type='button';cal.addEventListener('click',function(){ics(e);});
+    chips.appendChild(cal);
+    main.appendChild(chips);
+    if(e.source) main.appendChild(el('div','ev-m','Listed by '+e.source));
+    row.appendChild(d);row.appendChild(main);return row;
+  }
+  function section(title,side,list){
+    if(!list.length) return;
+    var h=el('div','ld-h',title);if(side)h.appendChild(el('span',null,side));body.appendChild(h);
+    list.forEach(function(e){body.appendChild(eventRow(e));});
+  }
+  function viewEvents(){
+    var city=loc?loc.name:'you';
+    setHead('AI events near '+city,'Conferences, summits and meetups, nearest first. Dates come from each organiser or listing partner.');
+    if(!events){body.appendChild(el('div','ld-empty','Loading the events calendar\u2026'));return;}
+    var g=tiers();
+    var seg=el('div','ld-seg');seg.appendChild(el('span','lab','Show'));
+    [['near','Near me'],['online','Online ('+g.online.length+')'],['all','All ('+g.all.length+')']].forEach(function(f){
+      var b=el('button','ld-chip',f[1]);b.type='button';b.setAttribute('aria-pressed',evFilter===f[0]?'true':'false');
+      b.addEventListener('click',function(){evFilter=f[0];render();});seg.appendChild(b);
+    });
+    body.appendChild(seg);
+    if(!g.all.length){body.appendChild(el('div','ld-empty','No upcoming events are listed right now. The calendar is rebuilt every morning.'));}
+    else if(evFilter==='online'){
+      if(g.online.length) section('Online','join from anywhere',g.online);
+      else body.appendChild(el('div','ld-empty','No online sessions are listed right now.'));
+    }
+    else if(evFilter==='all') section('All upcoming AI events','by date',g.all);
+    else{
+      var nearCount=g.local.length+g.region.length+g.country.length;
+      if(!loc) body.appendChild(el('div','ld-empty','Set your city on the Weather tab to see events nearest first.'));
+      else if(!g.local.length) body.appendChild(el('div','ld-empty','No AI events are listed in '+loc.name+' yet.'+(nearCount?' The closest ones are below.':' Here are the nearest ones and what you can join online.')));
+      section('In and around '+city,g.local.length+(g.local.length===1?' event':' events'),g.local);
+      section('Within '+dist(REGION_KM),'',g.region.sort(function(a,b){return a.km-b.km;}));
+      section('Elsewhere in '+((loc&&loc.country)||'your country'),'',g.country);
+      section('Online','join from anywhere',g.online.slice(0,4));
+      if(loc&&nearCount<3) section('Nearest further afield','by distance',g.far.filter(function(e){return e.km!=null;}).sort(function(a,b){return a.km-b.km;}).slice(0,5));
+      if(!loc) section('Coming up worldwide','by date',g.far.slice(0,8));
+    }
+    var note=el('div','ld-note');
+    note.appendChild(document.createTextNode('Always confirm dates, tickets and venue on the organiser\u2019s page before you travel. Know of an AI event'+(loc?' in '+loc.name:'')+'? '));
+    var c=el('a',null,'Tell us');c.href='contact.html';note.appendChild(c);
+    note.appendChild(document.createTextNode(' and we will add it. For small community meetups, also try '));
+    var mu=el('a',null,'Meetup');mu.href='https://www.meetup.com/find/?keywords=artificial%20intelligence&source=EVENTS';mu.target='_blank';mu.rel='noopener noreferrer';note.appendChild(mu);
+    note.appendChild(document.createTextNode('.'));
+    body.appendChild(note);
+  }
+
+  function courseCard(c,showRank){
+    var card=el('article','co-card'), n=nextStart(c), off=offers(c);
+    card.appendChild(el('div','co-rank'+(c.rank?'':' none'),c.rank?String(c.rank):'\u2014'));
+    card.appendChild(el('div','co-u',[c.university,c.partner?'with '+c.partner:''].filter(Boolean).join(' ')+' \u00B7 '+c.platform));
+    var t=el('a','co-t',c.title);t.href=safeUrl(c.url);t.target='_blank';t.rel='noopener noreferrer';card.appendChild(t);
+    if(c.score!=null){
+      var sc=el('div','co-score');sc.appendChild(el('span',null,'AIShorts score'));
+      var bar=el('div','bar'),fill=el('i');fill.style.width=Math.max(0,Math.min(100,c.score))+'%';bar.appendChild(fill);sc.appendChild(bar);
+      sc.appendChild(el('b',null,String(Math.round(c.score))));
+      sc.setAttribute('aria-label','AIShorts score '+Math.round(c.score)+' out of 100');card.appendChild(sc);
+    }
+    var grid=el('div','co-grid');
+    function cell(label,val,small,na){var x=el('div');x.appendChild(el('span',null,label));x.appendChild(el('b',na?'na':null,val));if(small)x.appendChild(el('small',null,small));grid.appendChild(x);}
+    if(typeof c.rating==='number') cell('Learner rating','\u2605 '+c.rating.toFixed(1)+' / 5',c.reviews?num(c.reviews)+' reviews':'');
+    else cell('Learner rating','Not published','',true);
+    if(typeof c.learners==='number') cell('Registrations',c.learnersNote?c.learnersNote:num(c.learners),c.learnersNote?'':'learners enrolled');
+    else cell('Registrations','Not published','',true);
+    if(n.label) cell('Next enrolment',n.label,n.sub); else cell('Next enrolment',n.sub,'Check the course page',true);
+    if(c.fee) cell('Fee',c.fee,c.duration||''); else cell('Fee','On the course page',c.duration||'',true);
+    card.appendChild(grid);
+    if(off.length){
+      var o=el('div','co-off');
+      off.forEach(function(d){var ch=el('span','ev-chip');ch.appendChild(el('b',null,'Saving: '));ch.appendChild(document.createTextNode(d.text+(d.until?' \u00B7 until '+fmtDate(d.until,true):'')));o.appendChild(ch);});
+      card.appendChild(o);
+    }
+    var foot=el('div','co-foot');
+    foot.appendChild(el('span',null,(c.level?c.level+' \u00B7 ':'')+(c.verified?'Figures checked '+fmtDate(c.verified):'')+(c.stale?' (due a re-check)':'')));
+    var go=el('a','ev-act','View course \u2197');go.href=safeUrl(c.url);go.target='_blank';go.rel='noopener noreferrer';foot.appendChild(go);
+    card.appendChild(foot);
+    return card;
+  }
+  function viewCourses(){
+    setHead('Top AI courses from leading universities','Ranked on learner ratings and registrations, with the next enrolment date, fee and current offers.');
+    if(!courses){body.appendChild(el('div','ld-empty','Loading the course table\u2026'));return;}
+    if(!courses.length){body.appendChild(el('div','ld-empty','The course table is being updated. Please check back shortly.'));return;}
+    var seg=el('div','ld-seg');seg.appendChild(el('span','lab','Sort by'));
+    [['rank','Rank'],['rating','Rating'],['learners','Registrations'],['fee','Lowest fee'],['start','Starting soonest']].forEach(function(f){
+      var b=el('button','ld-chip',f[1]);b.type='button';b.setAttribute('aria-pressed',coSort===f[0]?'true':'false');
+      b.addEventListener('click',function(){coSort=f[0];render();});seg.appendChild(b);
+    });
+    body.appendChild(seg);
+    var r=ranked(), rest=courses.filter(function(c){return !c.rank;});
+    if(coSort==='rank'){
+      if(r.length){body.appendChild(el('div','ld-h','The ranking'));r.forEach(function(c){body.appendChild(courseCard(c));});}
+      if(rest.length){
+        var h=el('div','ld-h','Also from leading universities');h.appendChild(el('span',null,'not ranked'));body.appendChild(h);
+        body.appendChild(el('div','ld-note','These providers do not publish both a learner rating and a registration count, so we list them without a rank rather than guess.'));
+        rest.forEach(function(c){body.appendChild(courseCard(c));});
+      }
+    }else{
+      var key={rating:function(c){return typeof c.rating==='number'?-c.rating*1e7-(c.reviews||0):Infinity;},
+        learners:function(c){return typeof c.learners==='number'?-c.learners:Infinity;},
+        fee:function(c){return typeof c.feeSort==='number'?c.feeSort:Infinity;},
+        start:function(c){return nextStart(c).sort;}}[coSort];
+      var list=courses.slice().sort(function(a,b){var x=key(a),y=key(b);return x===y?((a.rank||99)-(b.rank||99)):x<y?-1:1;});
+      body.appendChild(el('div','ld-h',{rating:'Highest rated first',learners:'Most registrations first',fee:'Lowest fee first',start:'Starting soonest first'}[coSort]));
+      list.forEach(function(c){body.appendChild(courseCard(c));});
+    }
+    var note=el('div','ld-note');
+    note.textContent='How we rank: '+((coursesMeta&&coursesMeta.method)||'')+' Every figure is read from the provider\u2019s own course page on the date shown and can change; fees are as listed by the provider and may differ by country. AIShorts earns nothing from these links.';
+    body.appendChild(note);
+  }
+
+  function render(){
+    if(!modal.classList.contains('open')) return;
+    body.textContent='';
+    [['ldTabWx','weather'],['ldTabEv','events'],['ldTabCo','courses']].forEach(function(t){
+      document.getElementById(t[0]).setAttribute('aria-selected',tab===t[1]?'true':'false');
+    });
+    if(tab==='events') viewEvents(); else if(tab==='courses') viewCourses(); else viewWeather();
+  }
+  function open(which){
+    var o=document.querySelector('.modal.open');if(o&&o!==modal)o.classList.remove('open');
+    tab=which||'weather';modal.classList.add('open');render();
+    var card=modal.querySelector('.modal-card');if(card)card.scrollTop=0;
+    if(tab==='weather'&&loc&&!wx) loadWx().then(function(){paintBand();render();});
+  }
+  document.getElementById('lcWx').addEventListener('click',function(){open('weather');});
+  document.getElementById('lcEv').addEventListener('click',function(){open('events');});
+  document.getElementById('lcCo').addEventListener('click',function(){open('courses');});
+  modal.querySelectorAll('.ld-tab').forEach(function(b){b.addEventListener('click',function(){open(b.getAttribute('data-tab'));});});
+
+  var tools=document.getElementById('nsTools');
+  if(tools){
+    [['Weather \u2014 your city','weather'],['AI events near you','events'],['Top AI courses \u2014 ranked','courses']].forEach(function(m){
+      var mb=el('button','tb-link',m[0]);mb.type='button';
+      mb.addEventListener('click',function(){var x=document.getElementById('navClose');if(x)x.click();open(m[1]);});
+      tools.appendChild(mb);
+    });
+    tools.classList.remove('is-empty');
+  }
+  function fromHash(){
+    var h=(location.hash||'').toLowerCase();
+    if(h==='#weather') open('weather'); else if(h==='#ai-events') open('events'); else if(h==='#ai-courses') open('courses');
+  }
+  window.addEventListener('hashchange',fromHash);
+
+  /* ---------------- boot ---------------- */
+  var v=todayISO();
+  fetch('events.json?v='+v,{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;})
+    .then(function(j){events=(j&&Array.isArray(j.events))?j.events:[];paintBand();render();})
+    .catch(function(){events=[];paintBand();render();});
+  fetch('courses.json?v='+v,{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;})
+    .then(function(j){courses=(j&&Array.isArray(j.courses))?j.courses:[];coursesMeta=j;paintBand();render();})
+    .catch(function(){courses=[];paintBand();render();});
+  findLoc().then(function(){paintBand();render();return loadWx();}).then(function(){paintBand();render();})
+    .catch(function(){loc=null;paintBand();render();});
+  fromHash();
 })();
 </script>
 
