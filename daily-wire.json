@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-15",
+      "title": "Top of Every Chart",
+      "headline": "Top scorer on South Korean tax exam confesses to cheating with AI",
+      "source": "Reuters",
+      "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPVjJtaVF1ZGdVTmRVNlB2Mk5GeEVtaTk2UHIxbW16RHU2M0hNQ1hTZW1XTkVPTzlYQnNYV2FDMlZGQjZpMXdySHZhMDFUMDkxOWJybnE4ekV6LVRuV3p5bHZiU3dTVWsyNkpOTkdaV3gxR3plNTF1TTdyVDlIUklCekFkNG5yaFdQZ3lQVjhyQXNxX09UQnVuYlhLMjNoMVVDZFk4R2xhQVd4T2xjaWNfdVZFZW4?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "benchmark",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This new AI model scores 100% on every benchmark!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "I also beat every human expert and never hallucinate."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that claim without a source."
+        }
+      ]
+    },
+    {
       "date": "2026-11-14",
       "title": "100x Before Breakfast",
       "headline": "Mass smuggling of up to 1.5 million Nvidia AI GPUs could be the underlying cause of Jensen Huang's departure, leading analysts claim — more than 1.5 gigawatts of banned chips tracked to China despite export controls",
