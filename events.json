@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-14T05:31:36.917Z",
+ "updated": "2026-11-15T07:10:09.357Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -8,19 +8,6 @@
   "confs.tech open conference list"
  ],
  "events": [
-  {
-   "title": "AI Praxis: From research to real-world solutions",
-   "type": "Meetup",
-   "start": "2026-11-14",
-   "end": "2026-11-14",
-   "url": "https://globalai.community/e/k6kxmbot",
-   "source": "Global AI Community",
-   "city": "Hyderabad",
-   "country": "India",
-   "cc": "IN",
-   "lat": 17.39,
-   "lon": 78.49
-  },
   {
    "title": "AI Engineering Summit",
    "type": "Conference",
