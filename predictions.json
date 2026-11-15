@@ -1,271 +1,267 @@
 {
-  "generated": "2026-11-14T21:54:50.586Z",
-  "forDate": "2026-11-16",
+  "generated": "2026-11-15T22:24:51.562Z",
+  "forDate": "2026-11-17",
   "window": {
-    "from": "2026-11-13T21:54:50.586Z",
-    "to": "2026-11-14T21:54:50.586Z"
+    "from": "2026-11-14T22:24:51.562Z",
+    "to": "2026-11-15T22:24:51.562Z"
   },
   "scanned": {
-    "stories": 632,
-    "outlets": 286,
+    "stories": 647,
+    "outlets": 294,
     "regions": [
       "Global desks",
       "Community",
       "North America",
-      "Europe",
-      "Africa",
       "Asia-Pacific",
-      "South Asia"
+      "Africa",
+      "South Asia",
+      "Europe"
     ],
-    "storylines": 479
+    "storylines": 505
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.7047,
-      "probability": 0.9,
-      "confidence": "High",
-      "entity": "Nvidia",
-      "theme": "Chips & compute",
-      "headline": "Why the Nvidia scandal is far from over",
-      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
-      "signals": {
-        "outlets": 13,
-        "regions": [
-          "Global desks",
-          "North America",
-          "Asia-Pacific",
-          "Africa"
-        ],
-        "stories": 13,
-        "momentum": 0.64,
-        "recent6h": 2,
-        "authority": 5.4,
-        "hnPoints": 0,
-        "nextStepCues": 3,
-        "arcDays": 3,
-        "calendar": null
-      },
-      "factors": {
-        "reach": 0.77,
-        "breadth": 0.67,
-        "momentum": 0.12,
-        "authority": 1,
-        "community": 0,
-        "nextStep": 1,
-        "arc": 1
-      },
-      "sig": [
-        "nvidia",
-        "scandal",
-        "china",
-        "talk",
-        "trump",
-        "loom",
-        "rivalry",
-        "ahead"
-      ],
-      "evidence": [
-        {
-          "title": "Nvidia Scandal Prompts Questions of What It Means to Be a Spy",
-          "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQR0RDdmlscW1lNGtIQXdpbFFsQlZkVVN4b2piVkhmV1doX2hZU2d3ZzlUcXVCdVJYVzZDZ1d3VFd3UkRvYnE1VkR2dnFVNy1JSTBOOVd4X19qX0p4TDRPLXdxdFRYSFJBNFYxVm9PdTNEdnVBakJrNGFac3BXQXFHeHhUTkNyUWM?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Why the Nvidia scandal is far from over - The Latest",
-          "source": "The Guardian",
-          "url": "https://www.theguardian.com/news/video/2026/nov/13/why-the-nvidia-scandal-is-far-from-over-the-latest",
-          "region": "Global desks"
-        },
-        {
-          "title": "Nvidia scandal puts US-China AI rivalry under spotlight ahead of Trump-Xi meeting | World News",
-          "source": "Hindustan Times",
-          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxQVGtyWWw1bTRGdDl5dzhfQThVM1RyQUFXUzJkUU9GVlJSeFAtS1o0M05VOG5ld3lKSVdDbC1SX1l6MnFTMEJUdXdZd241WlZRR3FManM5Z3pha2pyZXpfaC1ROEZfS29NdDVHNnRGOHUtTzUwTzRyZEpYcERkUzZPRUl2dnBsT0pMQ1FMdFphWXlQOFp2OVR2dFNqUHZqeG12ZTBqNU5vcEFsa2phNkVKc3VMUGZRT3daNHdiNjhMUE5ueFd6dlFaWGZ6ejVCampDYkpBV1RGSlpCUzRn0gHiAUFVX3lxTFBpNHZCaGFrWVBJMTlLTlpMUm5iYTdkOXZ2ZzlnOVdlRzdjYmVBRWJFcy1YMUNfMFV4WTBIenc1NXZ0c0U4aDgtZXJIalhMSHlmYjZYVVI4dllhRERDdUhuaXhXamItWE1sSkMtUnZwTHF4eXhNN0JaQk9TNk9MOVhjT0lwbXlQZnpsLWN0a3ZpLVZrNWlES0QzNDliYWFvUmhrazRIVEVPa2pYWnNKdXg4UHNCNVZyUFNQRy1mS3RBSDl3bnIxUVNudjR0a2RQOGZ2LW1jbGhIalEySkN1a25TMWc?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "The Nvidia scandal is heightening America's AI rivalry with China ahead of Trump's visit",
-          "source": "ABC News - Breaking News, Latest News and Videos",
-          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPRTdIb1dVWXp1MFVRQmJfY3lVelBQN0RDZzJoQnI4V19GQVAyZ0Fkdk9JdU5LenRnY3lYejRzdy1UYVRjVXh4SmVrb09rbjFxLU96d0pGN0NYdmJQT3BwaVNLdjVJSjNBUzFwcUhXVDZYNU9QYWdMWURzQWNfd3dUbnZORGlROFFWaENQTjNOcE9vdmtPanRQWEpzUTdmV1dMSy1j0gGoAUFVX3lxTFBIdGZpRWxLclBvWlBpQkt0OURmdXdSYklEZHp6bVhORWFkMDQ3NDFuUzVoQkRrRks4ZW8ydF83UmhJOFdrTV9GN1d4UWtjYlRmX3owYXRpaW9OZEl5VDZWdUwybUdZLXlHNWpsNWFLMzNwRTgtRG1RUXFLdUYyVHBmcGNkdF95Q3o4Tm1SN1laeFdZQmwwY1BVRncyMjIzblRfaTE3OGgtOQ?oc=5",
-          "region": "North America"
-        }
-      ]
-    },
-    {
-      "rank": 2,
-      "score": 0.6271,
-      "probability": 0.83,
+      "score": 0.6604,
+      "probability": 0.86,
       "confidence": "High",
       "entity": "Nvidia",
       "theme": "Funding & markets",
-      "headline": "How the Jensen Huang scandal created a headache for business-friendly Singapore",
+      "headline": "Bessent Says Nvidia Needs ‘Dramatic Shakeup’ With Huang Out",
       "outlook": "Market reaction, analyst notes and deal details around Nvidia are the likely next chapter.",
       "signals": {
-        "outlets": 15,
+        "outlets": 12,
         "regions": [
           "Global desks",
-          "North America",
           "Africa",
-          "South Asia"
+          "North America"
         ],
-        "stories": 17,
-        "momentum": 1.2,
-        "recent6h": 5,
-        "authority": 6.7,
-        "hnPoints": 7,
+        "stories": 12,
+        "momentum": 5,
+        "recent6h": 9,
+        "authority": 6.3,
+        "hnPoints": 2,
         "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.81,
-        "breadth": 0.67,
-        "momentum": 0.42,
+        "reach": 0.75,
+        "breadth": 0.5,
+        "momentum": 1,
         "authority": 1,
-        "community": 0.3,
+        "community": 0.16,
         "nextStep": 0,
         "arc": 1
       },
       "sig": [
+        "nvidia",
         "huang",
         "jensen",
-        "scandal",
-        "nvidia",
-        "founder",
+        "exit",
+        "return",
         "ceo",
-        "departure",
-        "blast"
+        "need",
+        "dramatic"
       ],
       "evidence": [
         {
-          "title": "Behind Jensen Huang’s spy scandal, a shadow war for Trump’s ear on China",
-          "source": "The Washington Post",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQNV83TGNqLXB1TGRFV1otMFAwS3poMGY4dHp6V05vWllwcmJ0SGN1QkxXdHpob3czaXJSLW1jcjkta1FpRFR1emR3SVZtWWlUclVIWDlFODZHRDFabzcxR2JfamFhU3VxTnVRNG16Z0F2Y09wRUU0ZmxRazVwTDVSV0V2dlFNNm1WazBoUXg2U1kxM1p0Ym5NSmREU1htSDk2SF9jR2hSTXFYLU85ZHFnaW5YMzY?oc=5",
+          "title": "Bessent Says Nvidia Needs ‘Dramatic Shakeup’ With Huang Out",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNS1ZOWlF3ZUlxWGYyZm9kX3NnZUsyNEpjYXhKaWMxY3hPbnRvSlJYeHc3ak9lejRYcHdmWjB2dk54cmMweklHdXdpVDdmRm9yNE91LWJKV2VoUC16bF9sdzRTM2NhWk5MMnBROXJ2UHA2SU0tSDNpeEZLZkxJZGg4T1laVHUyU1Fid0dtYjQ3c0tHMFRsOVp3TndoeEUzaElUSkxVT3hlOGQyZTVPZDF3emxB?oc=5",
           "region": "North America"
         },
         {
-          "title": "How the Jensen Huang scandal created a headache for business-friendly Singapore",
-          "source": "BBC",
-          "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE5tcmh6Rk5McjZWUlhQeVJkcWM1YVdMN0ZlRmRCSnNJY1J4SWt6LWdSMmNOdzcxYWFocTZBdzFEWUJnLVN1ZEhnQjJwbnVGaHVGLWVxUEtuXzV2R3NEZ0E?oc=5",
+          "title": "US and allies sign accord to protect AI supply chains from China",
+          "source": "Financial Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPeVM3Y2hkVkZKUTFFcUhkRUJlX3pWbFBGZlZ6QW1tMjJTUUZ5WUgtS0lWMmh5V3YweURabUtma0pDeTBNM0M1cTYtUkQwcDhrODFmM0RPdmoxYzNZYldpdmxKN0ROTVNmMFhOZ3dpVFpnQ2VSUkRyOWtnaG9udTNpbTdRemg?oc=5",
           "region": "North America"
         },
         {
-          "title": "Jensen Huang | AI rainmaker meets his Waterloo",
-          "source": "The Hindu",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOWW94eVRPRldFX0w4RXpMUzJ1R2JBQmxtNHBHSklySzNKZE1sZWZTYnk4TUxQT0lPdlA3WmNBWDYtbnhYa0FRdVNTUFJhMXRRMDVSQUhrTV9TV19xNDgta2ZWeHpFZTRGTDBvZlhzWWlWZFJaX0xvRzB2ek05Skh5M3J0ZzNNeEZkMDM5VksybV8yNWtNWkJSTmJlUXF6cTlBejZlazhOalpVTnFvV1HSAbQBQVVfeXFMTko2RGtqamxNMzZQQkNuQ05ZMUR4OGw2R3IwYVhpNWVPUkgwbU1yUXN5ZGRpT0JWTmhUQWFUMllEMWh5cGt4b3VVMkJyYzBJRlNvTjNzeXFMYU5NZUdJLXJON2haM1Z1LWJoSUw2SU1KU3pSNFRBM09idnpwUGVQRUdPcm11NXBtNk5aVGhFOG14TWkzTHl1M3RwRHdpY05ERk94ZUFEM3h6T3FQbkZRZG9KMGZB?oc=5",
+          "title": "Jensen Huang Is Already Considering Returning To Nvidia, Report Says",
+          "source": "Forbes",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxOa3E3cUNQYmpNNDRkbXlac1dOeC1qWWF3cjdUcnRPLWtONW5QM3FUVk1PVXBuamhCQzdZOHdMYUdxMHd0LTNkTFF3UVV2VzFFenAzaGtEYnFsY3BuOVU4VVp6YmRpSExBUm9PSjhaXzVzWE1mbmx2R2pKa2tGM2V0bDRrMlNJMEZqLWVGYXVvUlY1ek9lQm9UOFRBeUdrNkU4UVhuVlBTSlFJcWFtVzMwQ1VNM2RsaDlwcm10Vg?oc=5",
           "region": "North America"
         },
         {
-          "title": "Asian governments react to Nvidia CEO Jensen Huang’s exit",
-          "source": "TechCrunch",
-          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPNEoxX192QmszeDd5VmpzdjNBT2hZYnZGT0huU0VlVktDcldFeThrQ2FRQnBmNk04MVlEZlNjT3lpUHd3US1DWE1vd1d5aXZwWDRYQ3NyaGw3QmRUS3Z0Q1dfSW5uUlRmd1U5cFZKYnJ1eUVUb0hVLTc3b3czOWw1a1dJZHlZTldlc003MnRFSlQ5UTBLUWc?oc=5",
-          "region": "North America"
+          "title": "Jensen Huang might be plotting a return and more of the latest Nvidia drama",
+          "source": "The Verge",
+          "url": "https://www.theverge.com/tech/1033999/jensen-huang-return-nvidia-megaspeed",
+          "region": "Global desks"
         }
       ]
     },
     {
-      "rank": 3,
-      "score": 0.6263,
-      "probability": 0.83,
+      "rank": 2,
+      "score": 0.6569,
+      "probability": 0.86,
       "confidence": "High",
       "entity": "Anthropic",
       "theme": "Funding & markets",
-      "headline": "Anthropic to IPO amid Nvidia fiasco",
+      "headline": "Watch Anthropic IPO Arrives at a Pivotal AI Moment",
       "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 20,
+        "outlets": 12,
         "regions": [
           "North America"
         ],
-        "stories": 25,
-        "momentum": 0.78,
-        "recent6h": 5,
-        "authority": 7.6,
+        "stories": 15,
+        "momentum": 1.75,
+        "recent6h": 6,
+        "authority": 3.8,
         "hnPoints": 0,
-        "nextStepCues": 2,
+        "nextStepCues": 7,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.89,
+        "reach": 0.75,
         "breadth": 0.17,
-        "momentum": 0.22,
-        "authority": 1,
+        "momentum": 0.6,
+        "authority": 0.75,
         "community": 0,
-        "nextStep": 0.67,
+        "nextStep": 1,
         "arc": 1
       },
       "sig": [
         "anthropic",
         "ipo",
         "nvidia",
-        "investor",
-        "china",
-        "test",
-        "valuation",
-        "earning"
+        "stock",
+        "earning",
+        "market",
+        "watch",
+        "demand"
       ],
       "evidence": [
         {
-          "title": "Anthropic to IPO amid Nvidia fiasco",
-          "source": "Axios",
-          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1sUGk1c25oSHF3Vm13T3MwOVlrM2NnYzhrTnhCTjZaTHdOWURwVmlKTTJpZDhta2VtYmRTQVZrM01Qc3B5U1J3clZLZEdzV2REYXJMQWR0QTZEeWptRWljQWFCNkRCanJianRnU0IyYUZfbWhx?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic IPO is overpriced, says CIO",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBNbWJjdW5EZHpuS2hwNTdtX25xRGJYRE9QMktYOXpKNnd5YWZfblBVT0F6TnB3ZUhyWjBGMnZnT2tFczBuc2xYNUFROXVFRFJ4WVFSVE1QZVIzMEM2VllualQ4RTVGMkE?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Watch Anthropic IPO Tests Investor Appetite for AI",
+          "title": "Anthropic Is About to Become the World’s Most Important AI Stock",
           "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQeUtmX1gzanV4RExfYTNYUUFmMTNxamNJS25jRGJCSDlZUWwtbjRlSnlSVXF1ejRzbndzY21uUHliWXJBOGI0V2gtbzB0d3ZPZlB1UTJ0dzNtWnBoajB3eXFXSU9pQ0EtcUo3YkVBdllhbTZCcngyTVU4OGhvS0l3RzUyQldIeFo2NHRraGw5UkNYWkk2UlJDWGhNYS1LNVI2?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNQ0FXWUttSDRhNUNacC1GM0hiUWtnSVRoamZreG5QRkFqNlZVTHdSUjNNeHNCNmhGWWZBcGxiaTBIcDhvSDZxNExuclFYRlBJTXFuRXdjd2xzNkdpZ2RkblFZYlFNNnBkcHdfU0VRQXhvaWNaamU2SUNNdDNCVTctZnB5cUZiVmFuXy1aWFNqRWlXQ3pZSl9NcGQ1MFFnWEZBTHdaZE9GNGI5cEJSaG1pQkhGNA?oc=5",
           "region": "North America"
         },
         {
-          "title": "Anthropic IPO draws six times demand, but valuation remains under scrutiny",
-          "source": "The Times of India",
-          "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNNnBTc1l6V1I1eXFtYkYzcVdUSS1PVzN2YnhObFR2cW4wd3RiMzZIY3N4NThtMzNxcUdpTEkzRXdJMjVqWFZIbzVoUEVxSDdsYkczdVBIbUhvTF9QcWJsZFIxUDJRNUpqRERENDlneGxOVE1VZHRRS0M4YnJDVm1ZbVBxWTBSci13V0M4bjZHN252alVVcXIwS2dwMVg5eDRyTkdFalJMMmN3QW1yRDh0Xy1mb2xjT3FXZ3VOdVQ3UURueHZJQnp5UUJ2RFJHRmQ5T1pwUjhRamZIY1hyamlIQ0FDRnpWdXBjU2VBdlJGLXhNNHFZY2hQX2hxMNIBgAJBVV95cUxOb3FiNEVKYXR4SnNGUU55c3hHRk5pSXhucVcwWFh6UHZBVmhfSUVIN0ZTRkdlRWxyWUFKaWJlRHVDMDc3ZldOUVF4LXdWajBxZUZhVTVacW5nanFuUm1ranAyOXNCc1dUWlZRM3NEWjBTOFhlcW5yMXdpdk9TalM2OWY4WjZNSmo3T1lMUGlLc1JFektoZlYxb21QQS1IbWFER2VHZTVVNUY1dHc0T3BOc2FwUzhZSzdSVzZzQW43cjB3OWg2THVfXzZXZDRqemR5LWFjT1RJV3htU216d1Z3WDFnU0VManM3dWV1X0dfb1Z6UnRDOWZoQlA0U1VTZnBQ?oc=5",
+          "title": "Anthropic IPO Is Coming Up: Top Companies Set to Benefit if ANT Stock Jumps",
+          "source": "Benzinga",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOVHlmX09MNndOVkxaaklyWmREeS1wTWFoV2FUUEZWWXRRVWNiNEdyeUEyQmRlUDBXZTBLLXB5Y0ZINmxDZG96R0w3TTNzWkNPUW1PNVY0WDN3aTd2S1JwSUcxQVFsSS1kVGprRHltYUR4RUdCMWhvVVBkVWd0aXpXQlFQcGFmRG4zMkhUdDJQTHFQZGJYR0ZKeFd1ZXdwT3dmY29rVzNMbHlUQkdaSWM5b25IZU5feVpsTmNYQ1JXaTk3NmRTOVE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Stock Futures Begin New Week of Trading Ahead of Nvidia’s Earnings, Anthropic’s IPO",
+          "source": "Barron's",
+          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE9vc2JoVGI2aTdJQ01weHBLSXpQM3lqd3JJWjVXY0x0dHdhdmNvYUtpemU2QWhWNEJrV3ZUbkY3WW5CVDVFcW5ESFA0Z2YtWlc0c3hHZ19UUHkxQnB5enp2MFNQc0lsN0Z3VkFNb3lFY0pJT2lZZjU3SVdB?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia Earnings and Anthropic IPO Lead Market Week",
+          "source": "Oz Arab Media",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9YYzNJY2U3RTlFaTZzNWlYWTdvMC1VSnZ2ZWRHWlRqZWhXRlVQeUhhYTdnQVFSblVEb2M2QWJsa0t3WFFVdVNiY1E4UjFKTXFXVkJ2dGlBeXFJUk9xQnBWT0NJU2VLNHNLVG04QmVFN2FicTVsWUZoZWJPV2s?oc=5",
+          "region": "North America"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "score": 0.5907,
+      "probability": 0.79,
+      "confidence": "High",
+      "entity": "Nvidia",
+      "theme": "Chips & compute",
+      "headline": "Congress moves to pass tighter AI chip export rules following Nvidia scandal",
+      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
+      "signals": {
+        "outlets": 19,
+        "regions": [
+          "North America"
+        ],
+        "stories": 20,
+        "momentum": 2.14,
+        "recent6h": 9,
+        "authority": 7.3,
+        "hnPoints": 0,
+        "nextStepCues": 0,
+        "arcDays": 3,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.87,
+        "breadth": 0.17,
+        "momentum": 0.7,
+        "authority": 1,
+        "community": 0,
+        "nextStep": 0,
+        "arc": 1
+      },
+      "sig": [
+        "nvidia",
+        "scandal",
+        "chip",
+        "export",
+        "congress",
+        "china",
+        "move",
+        "rule"
+      ],
+      "evidence": [
+        {
+          "title": "It’s not just an affair. Nvidia’s bigger issue could be chip smuggling.",
+          "source": "The Washington Post",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPN2hPSWp5RThSSER6RU9KM2xsRkplcUx2eXVFdUlLYURuQ0tkQVFPeDRUa0t6cUJ2TmRMU0pFaGV1YU1GalExUWtqVTc4LS10THUyRFJJeXI3cUt4Sm9uRWhTOElzYzJhekJUWTR4RXRoQXV4aGR2NzRMZmdDTDFQVXVrSkd3Z0N6OFhvTGNFS0U0M1A0bGJKMUVOaTdscEZQakYxR3hoakxMdHpCaHVEVExyZ0o4Q1FLYkE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Congress moves to pass tighter AI chip export rules following Nvidia scandal",
+          "source": "Financial Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQVGxvZmxUQ0JxLVJuWmRILTBpbUwwbEMxbDV1bEhkYVdjdnl3WVYzWFBGZFhqckFER1JyYWptWEI3XzAzeEZ1dnZuSUdYVkFCdFZXTjVmMUxtVjJSc0dPZHR2R05TbE1mQzA0OU84TEdXd1I0UkFrS2Z0dDRIUXoxV2Y3b2o?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Congress wants to tighten export rules on AI chips after Nvidia spy scandal",
+          "source": "The Verge",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOYUdJdF80Q0hNQ1d6di0yZVRpSDNKZm1ZSkxCYVEtNERiVFpwOTROZ2RXZXRrNEd1U2RtR1hVaGJPUXgtS3BUczNCV2EyUGpFRkxqemZWLXBZTHU4WklGcnBRcTVLLW1QcWZUQmNiR21CYjVRQ3VydWg1ZVRHVlJ2UjRpLUprZTg2QjhkVGxrRTdDWDRLV1NUY1JMbW0?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "US lawmakers push tougher AI chip export curbs on China after Nvidia-Jensen Huang scandal | Hindustan Times",
+          "source": "Hindustan Times",
+          "url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxNazZqU0x5ZEQ1ZFFXMnhXT3ZhQ1cxcU5GTUI0WjlJVGtNaUZuME0taVFYbTAtMTJXQnZOQWxsc3FzVTJmb3A1aFhLUWZiOTByZkl1T1JJaklnWUJ1LUU4MVRFa25xQXpCSTJ6TzU5V1I2OWh6UlRWWF9zUVdiTnM0bGFMWjQwSkZEeDJSRHVnWG8yS0dLdXlabHhsRS1lVGZqRS1qZFdRYnBGcU5wQXJkMGdHOFFfWHNJRWl0MnhfYUVOSElOZkJWRFByT3hhVVJjc1h2NjhVYTdZMDYxR084aHlFLVltMEFVRUpKaV93VkhpUdIB9wFBVV95cUxNZkhDYU9RNlNlVUNTcnBmUUo1b0FKNUttbWl5SFlYMHR1NW5DNHNDSlhaelZ0VEhTOHp2RERSNFd3Z1VHODJ5TTBrNVhudjZRSE5NUU8yVVVZNWxrREdCaWJfeFBQVkdNSXE5eVFvYkozQ0hWaE9udTZRMVczOGM4dXdfeDdsaUtGY3FGOUN1Mk5IclFSdlRoc2puQThSMHVJalI4UFZsbUVQTDdHTFNVRVQwblgxbUtzWFQ1NXNyU1R6QzlQdTlpeTBvMzR2YUhkWWRLYjgtRklsR2FRMFk4QU81SEpuX2s2NXR6aXQ3aXpRR1BnOWdz?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-15",
+    "date": "2026-11-16",
     "calls": [
       {
         "rank": 1,
-        "headline": "Alice Huang-Linked Firm Procured Banned Nvidia Chips in China",
-        "probability": 0.92,
+        "headline": "Why the Nvidia scandal is far from over",
+        "probability": 0.9,
         "hit": true,
-        "matched": "How the Jensen Huang scandal created a headache for business-friendly Singapore"
+        "matched": "Congress moves to pass tighter AI chip export rules following Nvidia scandal"
       },
       {
         "rank": 2,
-        "headline": "Anthropic to IPO amid Nvidia fiasco",
-        "probability": 0.88,
+        "headline": "How the Jensen Huang scandal created a headache for business-friendly Singapore",
+        "probability": 0.83,
         "hit": true,
-        "matched": "Anthropic to IPO amid Nvidia fiasco"
+        "matched": "Bessent Says Nvidia Needs ‘Dramatic Shakeup’ With Huang Out"
       },
       {
         "rank": 3,
-        "headline": "OpenAI launches ChatGPT Wallet, letting AI agents pay for purchases",
-        "probability": 0.82,
+        "headline": "Anthropic to IPO amid Nvidia fiasco",
+        "probability": 0.83,
         "hit": true,
-        "matched": "ChatGPT’s new Wallet lets AI agents shop and check out for you"
+        "matched": "Watch Anthropic IPO Arrives at a Pivotal AI Moment"
       }
     ],
     "hits": 3
   },
   "track": {
-    "days": 15,
-    "calls": 45,
-    "hits": 38,
+    "days": 16,
+    "calls": 48,
+    "hits": 41,
     "log": [
       {
         "date": "2026-11-01",
@@ -341,9 +337,14 @@
         "date": "2026-11-15",
         "hits": 3,
         "calls": 3
+      },
+      {
+        "date": "2026-11-16",
+        "hits": 3,
+        "calls": 3
       }
     ],
-    "hitRate": 0.84
+    "hitRate": 0.85
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
