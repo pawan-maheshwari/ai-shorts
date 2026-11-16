@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-16",
+      "title": "The Bug Slayer",
+      "headline": "Digital Security: How to Protect Trust in the Face of Fraud and Artificial Intelligence",
+      "source": "www.telefonica.com",
+      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPLVBSUkpqT29SSWo3SXoyRlhYRWU5dE5CWjBuV1VFdy1ZSEY4azEwQ1hnZXk1dHRJZTg4OUdBbXg2RklVMXQ5QWtXbUw2Q3pBczhRd0gwS1R2WjkyaG83Z0hHSWdsVGphZFkyWXdmbTQ3YU9zNU5RN3RpTkNQT2ZuMWo2aThkbWV4R2VNYm1PUjVtcGcyVXZuS0pNZUdfMVZrVHhFcC04UEtHc0p1SktzYWVKWTZ6NFNLbmdOTw?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "security",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI makes every system unhackable!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "It even changed my password to “password”. Twice."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that promise without an audit."
+        }
+      ]
+    },
+    {
       "date": "2026-11-15",
       "title": "Top of Every Chart",
       "headline": "Top scorer on South Korean tax exam confesses to cheating with AI",
