@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-15T07:10:09.357Z",
+ "updated": "2026-11-17T08:28:42.004Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -20,32 +20,6 @@
    "cc": "DE",
    "lat": 52.52,
    "lon": 13.4
-  },
-  {
-   "title": "Global AI Conference Sydney",
-   "type": "Conference",
-   "start": "2026-11-16",
-   "end": "2026-11-16",
-   "url": "https://globalai.community/e/dmfnoel3",
-   "source": "Global AI Community",
-   "city": "Sydney",
-   "country": "Australia",
-   "cc": "AU",
-   "lat": -33.87,
-   "lon": 151.21
-  },
-  {
-   "title": "Microsoft Ignite 2026 NYC Community Summit",
-   "type": "Community summit",
-   "start": "2026-11-16",
-   "end": "2026-11-16",
-   "url": "https://ignitenyc.github.io/2026/",
-   "source": "Global AI Community",
-   "city": "New York",
-   "country": "United States",
-   "cc": "US",
-   "lat": 40.71,
-   "lon": -74.01
   },
   {
    "title": "NextGen Intelligence Conference: Data, Cloud & AI",
@@ -729,6 +703,19 @@
    "cc": "IT",
    "lat": 41.9,
    "lon": 12.5
+  },
+  {
+   "title": "Enterprise AI Summit",
+   "type": "Conference",
+   "start": "2027-05-05",
+   "end": "2027-05-06",
+   "url": "https://events.itrevolution.com/2027-portland/",
+   "source": "confs.tech",
+   "city": "Portland",
+   "country": "United States",
+   "cc": "US",
+   "lat": 45.52,
+   "lon": -122.68
   },
   {
    "title": "Data Engineering Summit 2027",
