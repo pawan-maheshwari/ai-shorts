@@ -5,158 +5,169 @@
   <id>tag:aishorts.biz,2026:feed</id>
   <link rel="self" type="application/atom+xml" href="https://aishorts.biz/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://aishorts.biz/"/>
-  <updated>2026-11-16T08:48:40.554Z</updated>
+  <updated>2026-11-17T09:55:38.182Z</updated>
   <icon>https://aishorts.biz/assets/icon-192.png</icon>
   <logo>https://aishorts.biz/assets/icon-512.png</logo>
   <author><name>AIShorts</name><uri>https://aishorts.biz/</uri></author>
   <rights type="text">© 2026 planetAI LLP. Entries link to their original publishers.</rights>
   <generator uri="https://aishorts.biz/" version="1.0">AIShorts edition builder</generator>
   <entry>
-    <title type="text">APA offers new guidance as artificial intelligence use at work expands</title>
-    <id>tag:aishorts.biz,2026-11-16:story/ed830cf8b54780fb</id>
-    <link rel="alternate" type="text/html" href="https://www.apa.org/news/press/releases/2026/11/artificial-intelligence-work-guidance"/>
-    <updated>2026-11-16T08:03:45.000Z</updated>
-    <published>2026-11-16T08:03:45.000Z</published>
-    <author><name>American Psychological Association (APA)</name></author>
+    <title type="text">Learning the language of machine learning</title>
+    <id>tag:aishorts.biz,2026-11-17:story/da5f249322a9957e</id>
+    <link rel="alternate" type="text/html" href="https://news.mit.edu/2026/learning-language-of-machine-learning-jacob-andreas-1117"/>
+    <updated>2026-11-17T05:00:00.000Z</updated>
+    <published>2026-11-17T05:00:00.000Z</published>
+    <author><name>MIT News</name></author>
     <category term="Business"/>
-    <summary type="text">Open the full report at American Psychological Association (APA) for the complete story.</summary>
-    <rights type="text">Headline and summary belong to American Psychological Association (APA). Linked, not republished.</rights>
+    <summary type="text">MIT Associate Professor Jacob Andreas studies the way advanced AI systems learn language, to help researchers design deep-learning models that can more effectively learn about the world around them and communicate with human collaborators.</summary>
+    <rights type="text">Headline and summary belong to MIT News. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Young adults concerned about artificial intelligence, data centers</title>
-    <id>tag:aishorts.biz,2026-11-16:story/a852bbb06d0fe200</id>
-    <link rel="alternate" type="text/html" href="https://www.publicnewsservice.org/story/young-adults-concerned-about-artificial-intelligence-data-centers-1/1d0f4526-243e-446d-91ad-47b5a2ea6050"/>
-    <updated>2026-11-16T05:52:07.000Z</updated>
-    <published>2026-11-16T05:52:07.000Z</published>
-    <author><name>Public News Service</name></author>
-    <category term="Infrastructure"/>
-    <summary type="text">Public News Service (PNS) is a member-supported news service that advocates journalism in the public interest. PNS</summary>
-    <rights type="text">Headline and summary belong to Public News Service. Linked, not republished.</rights>
+    <title type="text">Academic librarians &quot;see artificial intelligence as biggest driver of change&quot;</title>
+    <id>tag:aishorts.biz,2026-11-17:story/a79a14f3f627b69b</id>
+    <link rel="alternate" type="text/html" href="https://www.researchinformation.info/news/academic-librarians-see-artificial-intelligence-as-biggest-driver-of-change/"/>
+    <updated>2026-11-17T09:10:22.000Z</updated>
+    <published>2026-11-17T09:10:22.000Z</published>
+    <author><name>Research Information</name></author>
+    <category term="Research"/>
+    <summary type="text">Global Elsevier study of 1,100 academic librarians also highlights AI as greatest threat to research integrity</summary>
+    <rights type="text">Headline and summary belong to Research Information. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">No matter how you ask, more Americans are negative than positive about AI</title>
-    <id>tag:aishorts.biz,2026-11-16:story/a7529e078844732b</id>
-    <link rel="alternate" type="text/html" href="https://ourworldindata.org/no-matter-how-you-ask-more-americans-are-negative-than-positive-about-ai"/>
-    <updated>2026-11-16T05:37:29.000Z</updated>
-    <published>2026-11-16T05:37:29.000Z</published>
-    <author><name>Our World in Data</name></author>
+    <title type="text">The year ahead will be crunch time for artificial intelligence</title>
+    <id>tag:aishorts.biz,2026-11-17:story/4fc42339a6241970</id>
+    <link rel="alternate" type="text/html" href="https://www.economist.com/the-world-ahead/2026/11/17/the-year-ahead-will-be-crunch-time-for-artificial-intelligence"/>
+    <updated>2026-11-17T00:06:50.000Z</updated>
+    <published>2026-11-17T00:06:50.000Z</published>
+    <author><name>The Economist</name></author>
     <category term="Business"/>
-    <summary type="text">Five high-quality surveys ask about AI in different ways. Their wording matters, but the overall picture is consistent.</summary>
-    <rights type="text">Headline and summary belong to Our World in Data. Linked, not republished.</rights>
+    <summary type="text">Open the full report at The Economist for the complete story.</summary>
+    <rights type="text">Headline and summary belong to The Economist. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">UT San Antonio AI learning network earns recognition</title>
-    <id>tag:aishorts.biz,2026-11-16:story/8fed3fa7ffba55dc</id>
-    <link rel="alternate" type="text/html" href="https://news.utsa.edu/2026/11/ut-san-antonio-ai-learning-network-earns-recognition/"/>
-    <updated>2026-11-16T08:10:21.000Z</updated>
-    <published>2026-11-16T08:10:21.000Z</published>
-    <author><name>UT San Antonio Today</name></author>
+    <title type="text">PODCAST: Where the artificial intelligence boom goes next</title>
+    <id>tag:aishorts.biz,2026-11-17:story/cf623ad1d48a1006</id>
+    <link rel="alternate" type="text/html" href="https://www.reuters.com/podcasts/the-big-view/where-artificial-intelligence-boom-goes-next-2026-11-17/"/>
+    <updated>2026-11-17T04:49:00.000Z</updated>
+    <published>2026-11-17T04:49:00.000Z</published>
+    <author><name>Reuters</name></author>
     <category term="Business"/>
-    <summary type="text">Initiative receives award for its innovative approach to integrating artificial intelligence into teaching and learning.</summary>
-    <rights type="text">Headline and summary belong to UT San Antonio Today. Linked, not republished.</rights>
+    <summary type="text">Open the full report at Reuters for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Reuters. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Digital Security: How to Protect Trust in the Face of Fraud and Artificial Intelligence</title>
-    <id>tag:aishorts.biz,2026-11-16:story/ba0242de152d50d0</id>
-    <link rel="alternate" type="text/html" href="https://www.telefonica.com/en/communication-room/blog/digital-security-protect-trust-face-fraud-artificial-intelligence/"/>
-    <updated>2026-11-16T08:30:00.000Z</updated>
-    <published>2026-11-16T08:30:00.000Z</published>
-    <author><name>www.telefonica.com</name></author>
-    <category term="Safety"/>
-    <summary type="text">What is digital security, how does AI fuel fraud, and what can organizations do to protect identity, privacy, and trust?</summary>
-    <rights type="text">Headline and summary belong to www.telefonica.com. Linked, not republished.</rights>
+    <title type="text">AI’s Healthcare Potential: Better Outcomes, Broader Access and Improved Affordability</title>
+    <id>tag:aishorts.biz,2026-11-17:story/56c718217cd8b2b3</id>
+    <link rel="alternate" type="text/html" href="https://consultqd.clevelandclinic.org/ais-healthcare-potential-better-outcomes-broader-access-and-improved-affordability"/>
+    <updated>2026-11-17T06:22:30.000Z</updated>
+    <published>2026-11-17T06:22:30.000Z</published>
+    <author><name>Cleveland Clinic</name></author>
+    <category term="Business"/>
+    <summary type="text">Cleveland Clinic leaders see significant potential for AI to improve quality, affordability and access, provided it&amp;#x27;s introduced responsibly.</summary>
+    <rights type="text">Headline and summary belong to Cleveland Clinic. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Consumers Pay Double for Human Made Products Compared to Artificial Intelligence</title>
-    <id>tag:aishorts.biz,2026-11-16:story/ac953465b1536e18</id>
-    <link rel="alternate" type="text/html" href="https://bioengineer.org/consumers-pay-double-for-human-made-products-compared-to-artificial-intelligence/"/>
-    <updated>2026-11-16T06:56:15.000Z</updated>
-    <published>2026-11-16T06:56:15.000Z</published>
+    <title type="text">How are local libraries adapting to artificial intelligence?</title>
+    <id>tag:aishorts.biz,2026-11-17:story/3070a71a1a824e08</id>
+    <link rel="alternate" type="text/html" href="https://www.cavalierdaily.com/article/2026/11/how-are-local-libraries-adapting-to-artificial-intelligence"/>
+    <updated>2026-11-17T01:44:36.000Z</updated>
+    <published>2026-11-17T01:44:36.000Z</published>
+    <author><name>The Cavalier Daily</name></author>
+    <category term="Business"/>
+    <summary type="text">Instead&amp;#x20;of&amp;#x20;viewing&amp;#x20;generative&amp;#x20;AI&amp;#x20;as&amp;#x20;a&amp;#x20;threat,&amp;#x20;librarians&amp;#x20;interviewed&amp;#x20;by&amp;#x20;The&amp;#x20;Cavalier&amp;#x20;Daily&amp;#x20;in&amp;#x20;the&amp;#x20;Charlottesville&amp;#x20;area&amp;#x20;are&amp;#x20;using&amp;#x20;it&amp;#x20;as&amp;#x20;a&amp;#x20;tool&amp;#x20;to&amp;#x20;access&amp;#x20;new&amp;#x20;services&amp;#x20;that&amp;#x20;help&amp;#x20;students&amp;#x20;navigate&amp;#x20;information&amp;#x20;while&amp;#x20;researching,&amp;#x20;studying&amp;#x20;or&amp;#x20;using&amp;#x20;library&amp;#x20;resources.</summary>
+    <rights type="text">Headline and summary belong to The Cavalier Daily. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">How to Build an Artificial Intelligence Revolution for All</title>
+    <id>tag:aishorts.biz,2026-11-17:story/fbc1e23b43dc2ccd</id>
+    <link rel="alternate" type="text/html" href="https://time.com/article/2026/11/16/how-to-build-an-artificial-intelligence-revolution-for-all/"/>
+    <updated>2026-11-16T13:30:06.000Z</updated>
+    <published>2026-11-16T13:30:06.000Z</published>
+    <author><name>Time Magazine</name></author>
+    <category term="Business"/>
+    <summary type="text">&quot;Right now, Americans only see that the tech bros, Trump, and his allies get richer from AI,&quot; writes Lynn Forester de Rothschild.</summary>
+    <rights type="text">Headline and summary belong to Time Magazine. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Clemson University to launch three new degree programs in artificial intelligence</title>
+    <id>tag:aishorts.biz,2026-11-17:story/b78cd6d5d849feec</id>
+    <link rel="alternate" type="text/html" href="https://news.clemson.edu/clemson-university-to-launch-three-new-degree-programs-in-artificial-intelligence/"/>
+    <updated>2026-11-16T15:32:17.000Z</updated>
+    <published>2026-11-16T15:32:17.000Z</published>
+    <author><name>Clemson News</name></author>
+    <category term="Research"/>
+    <summary type="text">Offering bachelor&apos;s, master&apos;s and doctoral degrees will widen the pipeline of AI talent, help meet growing workforce demands and create new opportunities for research.</summary>
+    <rights type="text">Headline and summary belong to Clemson News. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Community Banks Embrace Artificial Intelligence - RFD-TV</title>
+    <id>tag:aishorts.biz,2026-11-17:story/b83bfb623c05cb68</id>
+    <link rel="alternate" type="text/html" href="https://www.rfdtv.com/community-banks-embrace-artificial-intelligence"/>
+    <updated>2026-11-16T23:47:30.000Z</updated>
+    <published>2026-11-16T23:47:30.000Z</published>
+    <author><name>RFD-TV</name></author>
+    <category term="Business"/>
+    <summary type="text">Community Banks Embrace Artificial Intelligence &amp;nbsp;&amp;nbsp; RFD-TV</summary>
+    <rights type="text">Headline and summary belong to RFD-TV. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Report Examines the Future of Artificial Intelligence for the Black Rural Workforce - The Journal of Blacks in Higher Education</title>
+    <id>tag:aishorts.biz,2026-11-17:story/0c0487ef4c328072</id>
+    <link rel="alternate" type="text/html" href="https://jbhe.com/2026/11/report-examines-the-future-of-artificial-intelligence-for-the-black-rural-workforce/"/>
+    <updated>2026-11-16T20:34:55.000Z</updated>
+    <published>2026-11-16T20:34:55.000Z</published>
+    <author><name>The Journal of Blacks in Higher Education</name></author>
+    <category term="Business"/>
+    <summary type="text">Report Examines the Future of Artificial Intelligence for the Black Rural Workforce &amp;nbsp;&amp;nbsp; The Journal of Blacks in Higher Education</summary>
+    <rights type="text">Headline and summary belong to The Journal of Blacks in Higher Education. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Dual-Chain Blockchain and Artificial Intelligence Framework Targets Cross-Border Cosmetics Counterfeiting</title>
+    <id>tag:aishorts.biz,2026-11-17:story/24078cecd6d22534</id>
+    <link rel="alternate" type="text/html" href="https://bioengineer.org/dual-chain-blockchain-and-artificial-intelligence-framework-targets-cross-border-cosmetics-counterfeiting/"/>
+    <updated>2026-11-17T09:09:44.000Z</updated>
+    <published>2026-11-17T09:09:44.000Z</published>
     <author><name>Bioengineer.org</name></author>
     <category term="Business"/>
-    <summary type="text">Experiments reveal that consumers will pay roughly double for human-made products over artificial intelligence, while leading language models exhibit mixed success in contextual noticing tasks.</summary>
+    <summary type="text">Researchers propose a dual-chain consortium blockchain and artificial intelligence traceability system to secure cosmetics supply chains against cross-border counterfeiting.</summary>
     <rights type="text">Headline and summary belong to Bioengineer.org. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">From pilots to scale: Navigating five stages of AI maturity in procurement</title>
-    <id>tag:aishorts.biz,2026-11-16:story/114de5497aa09864</id>
-    <link rel="alternate" type="text/html" href="https://www.imd.org/ibyimd/artificial-intelligence/from-pilots-to-scale-navigating-five-stages-of-ai-maturity-in-procurement/"/>
-    <updated>2026-11-16T07:42:52.000Z</updated>
-    <published>2026-11-16T07:42:52.000Z</published>
-    <author><name>www.imd.org</name></author>
+    <title type="text">How Duco transforms financial data automation with Amazon Bedrock AgentCore</title>
+    <id>tag:aishorts.biz,2026-11-17:story/b5b87b39d2e094c6</id>
+    <link rel="alternate" type="text/html" href="https://aws.amazon.com/blogs/machine-learning/how-duco-transforms-financial-data-automation-with-amazon-bedrock-agentcore/"/>
+    <updated>2026-11-16T22:06:08.000Z</updated>
+    <published>2026-11-16T22:06:08.000Z</published>
+    <author><name>Amazon Web Services (AWS)</name></author>
     <category term="Business"/>
-    <summary type="text">Adopt agentic sourcing and autonomous buying, with foundations across data and risk management, decision guardrails, ERP integration and operational platforms.</summary>
-    <rights type="text">Headline and summary belong to www.imd.org. Linked, not republished.</rights>
+    <summary type="text">Duco, a data automation platform for tier-one banks, rebuilt its agentic AI stack on Amazon Bedrock and Amazon Bedrock AgentCore. With strict per-tenant isolation, a multi-model strategy, and an MCP skills architecture that cut context overhead by 90%, Duco cut reconciliation deployment…</summary>
+    <rights type="text">Headline and summary belong to Amazon Web Services (AWS). Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Perfume industry gets whiff of artificial intelligence | Daily Sabah</title>
-    <id>tag:aishorts.biz,2026-11-16:story/ca9569dacc6f102c</id>
-    <link rel="alternate" type="text/html" href="https://www.dailysabah.com/life/perfume-industry-gets-whiff-of-artificial-intelligence/news"/>
-    <updated>2026-11-16T04:31:27.000Z</updated>
-    <published>2026-11-16T04:31:27.000Z</published>
-    <author><name>Daily Sabah</name></author>
-    <category term="Business"/>
-    <summary type="text">There may be a hint of bergamot in the top notes and sweet iris as a follow-up, but there is a noticeable dose of artificial intelligence emerging in new...</summary>
-    <rights type="text">Headline and summary belong to Daily Sabah. Linked, not republished.</rights>
+    <title type="text">Alibaba Takes on Anthropic With New Qwen AI Model</title>
+    <id>tag:aishorts.biz,2026-11-17:story/66e0afbec6a8718a</id>
+    <link rel="alternate" type="text/html" href="https://www.pymnts.com/news/artificial-intelligence/2026/alibaba-takes-on-anthropic-with-new-qwen-ai-model/"/>
+    <updated>2026-11-16T21:32:28.000Z</updated>
+    <published>2026-11-16T21:32:28.000Z</published>
+    <author><name>PYMNTS.com</name></author>
+    <category term="Models"/>
+    <summary type="text">China’s Alibaba has introduced the newest and what it says is the “most capable” version of its Qwen family of AI models. Qwen4-Max features “2.4 trillion</summary>
+    <rights type="text">Headline and summary belong to PYMNTS.com. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Questions swirl around FAA&apos;s new SMART AI system, though officials say no link to ground stop - ABC News</title>
-    <id>tag:aishorts.biz,2026-11-16:story/7d51fce140c572dc</id>
-    <link rel="alternate" type="text/html" href="https://abcnews.com/US/wireStory/questions-swirl-faas-new-smart-ai-system-officials-138170875"/>
-    <updated>2026-11-16T07:58:27.000Z</updated>
-    <published>2026-11-16T07:58:27.000Z</published>
+    <title type="text">Anthropic says its AI models hacked 3 organizations on their own during tests - ABC News</title>
+    <id>tag:aishorts.biz,2026-11-17:story/1bde5b4044983052</id>
+    <link rel="alternate" type="text/html" href="https://abcnews.com/Business/anthropic-ai-models-escaped-test-hacked-3-organizations/story?id=135256212"/>
+    <updated>2026-11-16T15:25:21.000Z</updated>
+    <published>2026-11-16T15:25:21.000Z</published>
     <author><name>ABC News - Breaking News, Latest News and Videos</name></author>
-    <category term="Business"/>
-    <summary type="text">Questions swirl around FAA&apos;s new SMART AI system, though officials say no link to ground stop &amp;nbsp;&amp;nbsp; ABC News - Breaking News, Latest News and Videos</summary>
+    <category term="Models"/>
+    <summary type="text">Anthropic says its AI models hacked 3 organizations on their own during tests &amp;nbsp;&amp;nbsp; ABC News - Breaking News, Latest News and Videos</summary>
     <rights type="text">Headline and summary belong to ABC News - Breaking News, Latest News and Videos. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">China’s Moonshot AI puts Kimi models into race for science discoveries</title>
-    <id>tag:aishorts.biz,2026-11-16:story/abe1d61d1084cf14</id>
-    <link rel="alternate" type="text/html" href="https://www.scmp.com/tech/article/3374568/chinas-moonshot-ai-puts-kimi-models-race-science-discoveries"/>
-    <updated>2026-11-16T07:30:08.000Z</updated>
-    <published>2026-11-16T07:30:08.000Z</published>
-    <author><name>South China Morning Post</name></author>
-    <category term="Models"/>
-    <summary type="text">Open the full report at South China Morning Post for the complete story.</summary>
-    <rights type="text">Headline and summary belong to South China Morning Post. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">FDA clears new AI software for brain aneurysm detection</title>
-    <id>tag:aishorts.biz,2026-11-16:story/aef795e00e527e4e</id>
-    <link rel="alternate" type="text/html" href="https://radiologybusiness.com/topics/artificial-intelligence/fda-clears-new-ai-software-brain-aneurysm-detection"/>
-    <updated>2026-11-16T07:41:09.000Z</updated>
-    <published>2026-11-16T07:41:09.000Z</published>
-    <author><name>Radiology Business</name></author>
-    <category term="Business"/>
-    <summary type="text">Open the full report at Radiology Business for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Radiology Business. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">Rising anti-AI movement forgets all the wonders, life-changing improvements technology has brought us</title>
-    <id>tag:aishorts.biz,2026-11-16:story/9cc4ce31a44b0f14</id>
-    <link rel="alternate" type="text/html" href="https://nypost.com/2026/11/15/opinion/dont-be-so-fast-to-dump-on-ai/"/>
-    <updated>2026-11-16T03:29:00.000Z</updated>
-    <published>2026-11-16T03:29:00.000Z</published>
-    <author><name>New York Post</name></author>
-    <category term="Business"/>
-    <summary type="text">A neo-Luddite movement is on the rise, and it’s now chic to denigrate modern technology and long for the “good old days” of the preindustrial past.</summary>
-    <rights type="text">Headline and summary belong to New York Post. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">Introducing GPT-6 Sol and Luna</title>
-    <id>tag:aishorts.biz,2026-11-16:story/6f8660f7ff6cf57c</id>
-    <link rel="alternate" type="text/html" href="https://openai.com/index/introducing-gpt-6-sol-and-luna/"/>
-    <updated>2026-11-13T15:00:00.000Z</updated>
-    <published>2026-11-13T15:00:00.000Z</published>
-    <author><name>OpenAI</name></author>
-    <category term="Models"/>
-    <summary type="text">Open the full report at OpenAI for the complete story.</summary>
-    <rights type="text">Headline and summary belong to OpenAI. Linked, not republished.</rights>
-  </entry>
-  <entry>
     <title type="text">Google unveils Gemini 4 Hydrogen, its new AI model built for speed</title>
-    <id>tag:aishorts.biz,2026-11-16:story/c6a092f28daa03dc</id>
+    <id>tag:aishorts.biz,2026-11-17:story/c6a092f28daa03dc</id>
     <link rel="alternate" type="text/html" href="https://mashable.com/tech/google-gemini-4-hydrogen-ai-model-launch"/>
     <updated>2026-11-13T07:14:21.000Z</updated>
     <published>2026-11-13T07:14:21.000Z</published>
@@ -166,146 +177,146 @@
     <rights type="text">Headline and summary belong to Mashable. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">CSU faculty members discuss role of AI policy across departments, impacts on student learning</title>
-    <id>tag:aishorts.biz,2026-11-16:story/535d650872ae29c0</id>
-    <link rel="alternate" type="text/html" href="https://collegian.com/articles/featured/2026/11/category-news-csu-faculty-members-discuss-role-of-ai-policy-across-departments-impacts-on-student-learning/"/>
-    <updated>2026-11-16T07:12:25.000Z</updated>
-    <published>2026-11-16T07:12:25.000Z</published>
-    <author><name>The Rocky Mountain Collegian</name></author>
+    <title type="text">EFF’s AI Cybersecurity Policy Framework</title>
+    <id>tag:aishorts.biz,2026-11-17:story/3b080c6a2fa4aa8d</id>
+    <link rel="alternate" type="text/html" href="https://www.eff.org/deeplinks/2026/11/effs-ai-cybersecurity-policy-framework"/>
+    <updated>2026-11-16T22:50:00.000Z</updated>
+    <published>2026-11-16T22:50:00.000Z</published>
+    <author><name>Electronic Frontier Foundation</name></author>
     <category term="Policy"/>
-    <summary type="text">Open the full report at The Rocky Mountain Collegian for the complete story.</summary>
-    <rights type="text">Headline and summary belong to The Rocky Mountain Collegian. Linked, not republished.</rights>
+    <summary type="text">The news has been filled with stories recently of AI breaching the security of websites. And while it may feel like a new problem because of AI’s involvement, it turns out that there are longstanding existing cybersecurity safety best practices that these…</summary>
+    <rights type="text">Headline and summary belong to Electronic Frontier Foundation. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Regulating AI in the Employment Relationship in the European Union</title>
-    <id>tag:aishorts.biz,2026-11-16:story/07fd4253238b4464</id>
-    <link rel="alternate" type="text/html" href="https://onlabor.org/regulating-ai-in-the-employment-relationship-in-the-european-union/"/>
-    <updated>2026-11-15T15:22:13.000Z</updated>
-    <published>2026-11-15T15:22:13.000Z</published>
-    <author><name>OnLabor</name></author>
+    <title type="text">What a New Biosecurity Policy Can Teach Us About Overseeing Frontier AI - CSIS | Center for Strategic and International Studies</title>
+    <id>tag:aishorts.biz,2026-11-17:story/a3502e5276b21462</id>
+    <link rel="alternate" type="text/html" href="https://www.csis.org/analysis/what-new-biosecurity-policy-can-teach-us-about-overseeing-frontier-ai"/>
+    <updated>2026-11-16T20:40:04.000Z</updated>
+    <published>2026-11-16T20:40:04.000Z</published>
+    <author><name>CSIS | Center for Strategic and International Studies</name></author>
     <category term="Policy"/>
-    <summary type="text">In the European Union (EU), managerial decision-making with AI and automation is governed by existing data protection law, and by new rules that are being rolled out to deal with the issue head-on. Together, these rules have the potential to profoundly affect…</summary>
-    <rights type="text">Headline and summary belong to OnLabor. Linked, not republished.</rights>
+    <summary type="text">What a New Biosecurity Policy Can Teach Us About Overseeing Frontier AI &amp;nbsp;&amp;nbsp; CSIS | Center for Strategic and International Studies</summary>
+    <rights type="text">Headline and summary belong to CSIS | Center for Strategic and International Studies. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Could Trump turn against the AI barons?</title>
-    <id>tag:aishorts.biz,2026-11-16:story/cf2c8671e8ad0f14</id>
-    <link rel="alternate" type="text/html" href="https://thehill.com/opinion/technology/6220328-trump-ai-policy-shift/"/>
-    <updated>2026-11-15T19:00:00.000Z</updated>
-    <published>2026-11-15T19:00:00.000Z</published>
-    <author><name>The Hill</name></author>
+    <title type="text">Wesleyan Researcher Asks If Policy Can Match the Speed of AI</title>
+    <id>tag:aishorts.biz,2026-11-17:story/216f695a663d5fec</id>
+    <link rel="alternate" type="text/html" href="https://www.wesleyan.edu/about/news/2026/11/zimmeck-artificial-intelligence-regulation-policy-law.html"/>
+    <updated>2026-11-17T05:03:45.000Z</updated>
+    <published>2026-11-17T05:03:45.000Z</published>
+    <author><name>Wesleyan University</name></author>
     <category term="Policy"/>
-    <summary type="text">Following recent election losses, Donald Trump signaled potential shifts in AI policy, including increased regulation of tech leaders and cooperation with Democrats on safety measures.</summary>
-    <rights type="text">Headline and summary belong to The Hill. Linked, not republished.</rights>
+    <summary type="text">Open the full report at Wesleyan University for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Wesleyan University. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Apple launches an AI health tool as part of a research study - ABC News</title>
-    <id>tag:aishorts.biz,2026-11-16:story/c90153842668e150</id>
-    <link rel="alternate" type="text/html" href="https://abcnews.com/US/apple-launches-ai-health-chatbot-part-research-study/story?id=138164909"/>
-    <updated>2026-11-16T01:44:47.000Z</updated>
-    <published>2026-11-16T01:44:47.000Z</published>
-    <author><name>ABC News - Breaking News, Latest News and Videos</name></author>
+    <title type="text">Nonprofit to Study Neuroscience of Learning in the Age of AI</title>
+    <id>tag:aishorts.biz,2026-11-17:story/83cde55a78b285a8</id>
+    <link rel="alternate" type="text/html" href="https://www.govtech.com/education/k-12/nonprofit-to-study-neuroscience-of-learning-in-the-age-of-ai"/>
+    <updated>2026-11-17T00:09:21.000Z</updated>
+    <published>2026-11-17T00:09:21.000Z</published>
+    <author><name>GovTech</name></author>
     <category term="Research"/>
-    <summary type="text">Apple launches an AI health tool as part of a research study &amp;nbsp;&amp;nbsp; ABC News - Breaking News, Latest News and Videos</summary>
-    <rights type="text">Headline and summary belong to ABC News - Breaking News, Latest News and Videos. Linked, not republished.</rights>
+    <summary type="text">A $20 million research effort by the nonprofit Advanced Education Research and Development Fund will examine cognitive processes behind adolescent learning, then translate findings into practical guidance for educators.</summary>
+    <rights type="text">Headline and summary belong to GovTech. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">HLTH26: Apple launches 200K-person study to examine how consumers use health AI</title>
-    <id>tag:aishorts.biz,2026-11-16:story/032f017e4aaf4bf6</id>
-    <link rel="alternate" type="text/html" href="https://www.fiercehealthcare.com/ai-and-machine-learning/hlth26-apple-kicks-new-study-examine-use-ai-chatbots-health"/>
-    <updated>2026-11-16T01:35:00.000Z</updated>
-    <published>2026-11-16T01:35:00.000Z</published>
-    <author><name>Fierce Healthcare</name></author>
-    <category term="Research"/>
-    <summary type="text">LAS VEGAS—Consumers are rapidly adopting consumer health AI. Roughly 1 in 3 U.S. | Apple launched the Apple Health AI Usage Study today with plans to recruit 200,000 participants in the U.S. to gain a better understanding of how people interact with…</summary>
-    <rights type="text">Headline and summary belong to Fierce Healthcare. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">Apple launches research study to explore the use of AI for health</title>
-    <id>tag:aishorts.biz,2026-11-16:story/fd076c58ecdeba27</id>
-    <link rel="alternate" type="text/html" href="https://www.apple.com/newsroom/2026/11/apple-launches-research-study-to-explore-the-use-of-ai-for-health/"/>
-    <updated>2026-11-16T01:24:28.000Z</updated>
-    <published>2026-11-16T01:24:28.000Z</published>
-    <author><name>Apple</name></author>
-    <category term="Research"/>
-    <summary type="text">Apple today announced the launch of the Apple Health AI Usage Study in the United States, which includes a virtual research study and associated app.</summary>
-    <rights type="text">Headline and summary belong to Apple. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">Alibaba unveils new flagship AI model with safety upgrades</title>
-    <id>tag:aishorts.biz,2026-11-16:story/4c2462cb6fe7ce47</id>
-    <link rel="alternate" type="text/html" href="https://www.reuters.com/business/retail-consumer/alibaba-unveils-new-flagship-ai-model-with-safety-upgrades-2026-11-16/"/>
-    <updated>2026-11-16T04:29:00.000Z</updated>
-    <published>2026-11-16T04:29:00.000Z</published>
-    <author><name>Reuters</name></author>
+    <title type="text">California Sues OpenAI Over A.I. Safety Issues</title>
+    <id>tag:aishorts.biz,2026-11-17:story/770e0b2ea6e837a3</id>
+    <link rel="alternate" type="text/html" href="https://www.nytimes.com/2026/11/16/technology/california-openai-ai-safety.html"/>
+    <updated>2026-11-16T18:47:13.000Z</updated>
+    <published>2026-11-16T18:47:13.000Z</published>
+    <author><name>The New York Times</name></author>
     <category term="Safety"/>
-    <summary type="text">Open the full report at Reuters for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Reuters. Linked, not republished.</rights>
+    <summary type="text">The state attorney general filed a lawsuit accusing the company of failing to put appropriate safeguards on its artificial intelligence and putting the public at risk.</summary>
+    <rights type="text">Headline and summary belong to The New York Times. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">The Body as Capital: AI Deepfake Pornography and Digital Extraction</title>
-    <id>tag:aishorts.biz,2026-11-16:story/a7b11123763e8335</id>
-    <link rel="alternate" type="text/html" href="https://www.diggitmagazine.com/body-capital-ai-deepfake-pornography-and-digital-extraction"/>
-    <updated>2026-11-16T08:02:13.000Z</updated>
-    <published>2026-11-16T08:02:13.000Z</published>
-    <author><name>Diggit Magazine</name></author>
+    <title type="text">Why Congress and the European Parliament need an AI safety dialogue</title>
+    <id>tag:aishorts.biz,2026-11-17:story/c837292bd753921b</id>
+    <link rel="alternate" type="text/html" href="https://www.atlanticcouncil.org/dispatches/why-congress-and-the-european-parliament-need-an-ai-safety-dialogue/"/>
+    <updated>2026-11-16T17:27:18.000Z</updated>
+    <published>2026-11-16T17:27:18.000Z</published>
+    <author><name>Atlantic Council</name></author>
     <category term="Safety"/>
-    <summary type="text">In January 2024, sexually explicit AI-generated images of Taylor Swift went viral on X (formerly Twitter), which were viewed tens of millions of times before the platform reacted (Craig &amp; Hii, 2024). Unfortunately, she is not the only example of this happening;…</summary>
-    <rights type="text">Headline and summary belong to Diggit Magazine. Linked, not republished.</rights>
+    <summary type="text">While talks at the executive level would be welcome, the next steps on AI safety may well come from US and European legislators.</summary>
+    <rights type="text">Headline and summary belong to Atlantic Council. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">AI and robotics transforming daily life and society</title>
-    <id>tag:aishorts.biz,2026-11-16:story/aa1ea5f4ef526390</id>
-    <link rel="alternate" type="text/html" href="https://tickernews.co/ai-and-robotics-transforming-daily-life-and-society/"/>
-    <updated>2026-11-16T05:24:17.000Z</updated>
-    <published>2026-11-16T05:24:17.000Z</published>
-    <author><name>Ticker News</name></author>
+    <title type="text">What To Expect From US-China AI Safety Talks</title>
+    <id>tag:aishorts.biz,2026-11-17:story/d4eb2be5ddbad941</id>
+    <link rel="alternate" type="text/html" href="https://www.barrons.com/news/what-to-expect-from-us-china-ai-safety-talks-88fee797"/>
+    <updated>2026-11-17T05:48:00.000Z</updated>
+    <published>2026-11-17T05:48:00.000Z</published>
+    <author><name>Barron&apos;s</name></author>
+    <category term="Safety"/>
+    <summary type="text">Open the full report at Barron&apos;s for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Barron&apos;s. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Agile Robots raises $500M to increase production capacity</title>
+    <id>tag:aishorts.biz,2026-11-17:story/7af047ecf434e26f</id>
+    <link rel="alternate" type="text/html" href="https://www.therobotreport.com/agile-robots-raises-500m-to-increase-production-capacity/"/>
+    <updated>2026-11-16T23:35:05.000Z</updated>
+    <published>2026-11-16T23:35:05.000Z</published>
+    <author><name>The Robot Report</name></author>
     <category term="Robotics"/>
-    <summary type="text">AI and robotics rapidly integrate into daily life, prompting societal impact discussion with guest Larry Levene</summary>
-    <rights type="text">Headline and summary belong to Ticker News. Linked, not republished.</rights>
+    <summary type="text">Agile Robots builds and deploys a range of robots, including humanoids, mobile robots, robotic arms, and robotics hands.</summary>
+    <rights type="text">Headline and summary belong to The Robot Report. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Exclusive: OpenAI disbands its stand-alone robotics team as its general models start running robots</title>
-    <id>tag:aishorts.biz,2026-11-16:story/75520ce395f2e934</id>
-    <link rel="alternate" type="text/html" href="https://fortune.com/2026/11/13/openai-disbands-robotics-team-as-its-general-models-start-running-robots/"/>
-    <updated>2026-11-13T17:05:00.000Z</updated>
-    <published>2026-11-13T17:05:00.000Z</published>
-    <author><name>Fortune</name></author>
+    <title type="text">Silicon Valley startup showcases humanoid robot with human neurons</title>
+    <id>tag:aishorts.biz,2026-11-17:story/d34ef0351109b20a</id>
+    <link rel="alternate" type="text/html" href="https://www.techtarget.com/news/silicon-valley-startup-showcases-humanoid-robot-with-human-neurons/874770/"/>
+    <updated>2026-11-16T18:17:51.000Z</updated>
+    <published>2026-11-16T18:17:51.000Z</published>
+    <author><name>TechTarget</name></author>
     <category term="Robotics"/>
-    <summary type="text">OpenAI moved its robotics researchers onto other teams representing new thinking about the best way to build general-purpose robots.</summary>
-    <rights type="text">Headline and summary belong to Fortune. Linked, not republished.</rights>
+    <summary type="text">Robotics startup OpenMind demonstrates Iris, a humanoid that uses lab-grown human neurons to make decisions.</summary>
+    <rights type="text">Headline and summary belong to TechTarget. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">US humanoid robot production could hit 400,000 by 2030 as deployment ramps, J.P. Morgan says</title>
-    <id>tag:aishorts.biz,2026-11-16:story/1ae94895f7c9df37</id>
-    <link rel="alternate" type="text/html" href="https://www.reuters.com/business/us-humanoid-robot-production-could-hit-400000-by-2030-deployment-ramps-jp-morgan-2026-11-12/"/>
-    <updated>2026-11-12T09:55:04.000Z</updated>
-    <published>2026-11-12T09:55:04.000Z</published>
+    <title type="text">APEC focuses on safe, responsible AI use, China&apos;s ex-UN envoy says</title>
+    <id>tag:aishorts.biz,2026-11-17:story/be5ad579ca64cbb6</id>
+    <link rel="alternate" type="text/html" href="https://www.reuters.com/technology/apec-focuses-safe-responsible-ai-use-chinas-ex-un-envoy-says-2026-11-17/"/>
+    <updated>2026-11-17T03:56:00.000Z</updated>
+    <published>2026-11-17T03:56:00.000Z</published>
     <author><name>Reuters</name></author>
     <category term="Robotics"/>
     <summary type="text">Open the full report at Reuters for the complete story.</summary>
     <rights type="text">Headline and summary belong to Reuters. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Norway Halts Data Center Projects as AI Booms</title>
-    <id>tag:aishorts.biz,2026-11-16:story/a2259ab18f4bb8f7</id>
-    <link rel="alternate" type="text/html" href="https://www.industrialinfo.com/news/article/norway-halts-data-center-projects-as-ai-booms--364814"/>
-    <updated>2026-11-16T07:26:52.000Z</updated>
-    <published>2026-11-16T07:26:52.000Z</published>
-    <author><name>Industrial Info Resources</name></author>
+    <title type="text">US Hits Asia Data Centers With AI Chip Curbs As Trump Visits</title>
+    <id>tag:aishorts.biz,2026-11-17:story/6421653e46f6739c</id>
+    <link rel="alternate" type="text/html" href="https://www.bloomberg.com/news/articles/2026-11-16/asia-s-data-center-hotbed-hit-by-us-chip-curbs-as-trump-visits"/>
+    <updated>2026-11-17T08:50:00.000Z</updated>
+    <published>2026-11-17T08:50:00.000Z</published>
+    <author><name>Bloomberg.com</name></author>
     <category term="Infrastructure"/>
-    <summary type="text">Open the full report at Industrial Info Resources for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Industrial Info Resources. Linked, not republished.</rights>
+    <summary type="text">Open the full report at Bloomberg.com for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Bloomberg.com. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Not seeing slowdown in AI data center buildout: Skanska CEO</title>
-    <id>tag:aishorts.biz,2026-11-16:story/fda1ecefa3378ec1</id>
-    <link rel="alternate" type="text/html" href="https://www.cnbc.com/video/2026/11/16/not-seeing-slowdown-in-ai-data-center-buildout-skanska-ceo.html"/>
-    <updated>2026-11-16T08:17:03.000Z</updated>
-    <published>2026-11-16T08:17:03.000Z</published>
-    <author><name>CNBC</name></author>
+    <title type="text">Study estimates magnitude of US data center pollution as climate talks unveil clean AI pledge</title>
+    <id>tag:aishorts.biz,2026-11-17:story/53dc520f49a36c76</id>
+    <link rel="alternate" type="text/html" href="https://apnews.com/article/cop31-climate-data-centers-ai-pollution-a1b338e7f781976f89260d172a7c65e2"/>
+    <updated>2026-11-17T02:29:00.000Z</updated>
+    <published>2026-11-17T02:29:00.000Z</published>
+    <author><name>AP News</name></author>
     <category term="Infrastructure"/>
-    <summary type="text">Anders Danielsson, CEO of Skanska, discusses the company&amp;#x27;s data center business and the obstacles for the AI buildout.</summary>
-    <rights type="text">Headline and summary belong to CNBC. Linked, not republished.</rights>
+    <summary type="text">Open the full report at AP News for the complete story.</summary>
+    <rights type="text">Headline and summary belong to AP News. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Over 400 American AI Data Centers Use As Much Electricity As Wisconsin, Michigan, or Indiana</title>
+    <id>tag:aishorts.biz,2026-11-17:story/e1763456176b0ff9</id>
+    <link rel="alternate" type="text/html" href="https://time.com/article/2026/11/16/ai-data-centers-electricity-carbon-emissions-study/"/>
+    <updated>2026-11-16T20:28:19.000Z</updated>
+    <published>2026-11-16T20:28:19.000Z</published>
+    <author><name>Time Magazine</name></author>
+    <category term="Infrastructure"/>
+    <summary type="text">Scientists quantify the amount of electricity used, and carbon emissions emitted, by over 400 hyperscale AI data centers across the U.S.</summary>
+    <rights type="text">Headline and summary belong to Time Magazine. Linked, not republished.</rights>
   </entry>
 </feed>
