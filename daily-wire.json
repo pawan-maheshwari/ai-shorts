@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-17",
+      "title": "The Launch to End All Launches",
+      "headline": "\"I Like Money, Bro\": Ex-OpenAI, Anthropic Researcher On \"Blood Money\" Stock",
+      "source": "NDTV",
+      "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQT01mOEhwQXpBaEFVM2JieGxWc015QUFqTGt5TzE0TmhsN2JCaDRkMm54UVFLdDRYckJiNDJpNHhmZVZaVjNVc21ycU5rRnhjLVA0TzdlMHZJeXllWjMxTHl6RTF2ZHBqSkJTWkhOUC1VLU54N1prd1hDeko2WTZFa283d3hScDhPVmwyQ3VsSWdrVVNWaDVwR1FsRVJkbl84MlpmQmJiMTJNYlJyZThQX3FXenZ3VGN4YkJOazl6d9IBxwFBVV95cUxQTHMwQW5EeEN1ZHNIMmRibThtV2E3OG1FYzRzM3plMnRkT2U1dkJ1QmdyclFtcVkxT3pGMmtNVlBDLWpjVkNZRnRtdVpNVWV0b2dUaVVMY2tfTWVDZXFqbUlIMzktcnF0d2s5ckZUM1NaVDdfd2J6QlFsRUNsem5odmNtQWdCV3lsWW5PbmFjS1BMcFJ5ZXZ4SU00N0toQlgzSVFQLXhJb2lGM19hVERON1I1aEt1VWt2OWpnWVg0WlZyTHg5OTVz?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "launch",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This new AI feature changes everything!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "It also changes itself. Every hour. Without telling anyone."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that launch without release notes."
+        }
+      ]
+    },
+    {
       "date": "2026-11-16",
       "title": "The Bug Slayer",
       "headline": "Digital Security: How to Protect Trust in the Face of Fraud and Artificial Intelligence",
