@@ -1811,7 +1811,7 @@ with tab_d:
     tok_ = f"{ss_.get('tok', 0)}-{int(ss_.get('tok_t', time.time()) // 60)}"
     live_, _ = fetch_intraday(symbols, demo, 15, tok_)
     lidx_ = fetch_index_cached(demo, 0 if demo else tok_)
-    focus_ = rs.focus_symbols(list(live_), int(CFG.get("focus_n") or 10) or 10)
+    focus_ = rs.focus_symbols(list(live_), int(CFG.get("focus_n") or 20) or 20)
     LP = {s_: dk.prep(live_[s_]) for s_ in focus_ if s_ in live_}
     ib_ = lidx_.get("intraday")
     NP_ = dk.prep(ib_) if isinstance(ib_, pd.DataFrame) and len(ib_) else None
@@ -2583,7 +2583,7 @@ with tab_g:
                 f_pm = e9.selectbox("Panel mode", ["race", "selector"], ["race", "selector"].index(CFG.get("panel_mode", "race")),
                                     format_func={"race": "First to fire — every armed specialist trades as it triggers",
                                                  "selector": "Selector — one specialist a day"}.get)
-                f_fn = e10.slider("First to fire: top Nifty stocks (0 = whole watchlist)", 0, 20, int(CFG.get("focus_n", 10)))
+                f_fn = e10.slider("First to fire: top Nifty stocks (0 = whole watchlist)", 0, 20, int(CFG.get("focus_n", 20)))
                 f_wl = st.text_area("Watchlist (NSE symbols, comma-separated)", ", ".join(CFG["watchlist"]), height=110)
                 sim = st.form_submit_button("Simulate on recent sessions")
             if sim:

@@ -1128,7 +1128,7 @@ DEFAULT_CONFIG = dict(
     min_stop_pct=0.0,       # skip signals whose stop is closer than this (% of price) — costs dominate tight stops
     panel=False,            # True = the recommendation panel picks the strategy each day (overrides `strategy`)
     panel_mode="race",      # race = every armed specialist trades the moment it fires; selector = one pick a day
-    focus_n=10,             # race mode, phase 1: trade only the top-N Nifty heavyweights (0 = whole watchlist)
+    focus_n=20,             # race mode: trade only the top-N Nifty heavyweights (0 = whole watchlist); phase 1 was 10
     race=None,              # filled each morning from the panel (never saved): the armed specialists
     # signal engine and paper account — shared by everyone, so the trade log and the learning use one system
     setup="both", shorts=False, rr=2.0, min_relvol=1.5, cost_pct=0.10,

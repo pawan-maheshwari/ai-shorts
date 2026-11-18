@@ -26,7 +26,7 @@ Owner: Pawan Maheshwari (planetAI LLP).
 | `local-desk.yml` 00:40 | `tools/local-desk.mjs` | `events.json`, `courses.json`, `tools/geo-cities.json` |
 | `ai-prediction.yml` 18:00 | `tools/predict.mjs` | `predictions.json`, `predictions-history.json` |
 | `weekly-brief.yml` Sat 06:20 | `tools/weekly-brief.mjs` | `briefs/` |
-| `stocklab-*.yml` | `tools/stocklab_*.py` | keep-alive / inspection |
+| `stocklab-*.yml` | `tools/stocklab_*.py` | keep-alive / inspection / market-hours watch (09:05–15:35 IST) |
 
 - **Bots commit daily → always `git pull --rebase` before pushing**, and never hand-edit
   the files in the "Writes" column (the next run overwrites them).

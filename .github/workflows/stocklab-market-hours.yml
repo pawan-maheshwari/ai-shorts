@@ -1,0 +1,55 @@
+name: Stock Lab market hours
+
+# Stock Lab's agents only run while the app is open in a browser: the Intraday tab re-runs itself every
+# 2 minutes, but only inside a live session. This holds one headless session open through the NSE session
+# so signals are found and paper-traded as they fire, not hours later.
+# A job can run at most 6 hours, so the day is split into two watches (times in UTC, Mon–Fri):
+#   03:35 UTC = 09:05 IST → watches until 12:20 IST
+#   06:45 UTC = 12:15 IST → watches until 15:35 IST (after the 15:15 exit and 15:30 close)
+# Each watch stops at its IST end time, so a late-starting schedule never overruns.
+# NSE holidays: the app shows "Market closed" and simply finds nothing — harmless.
+on:
+  schedule:
+    - cron: "35 3 * * 1-5"
+    - cron: "45 6 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      until:
+        description: "Watch until (IST, HH:MM)"
+        default: "15:35"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: stocklab-market-${{ github.event.schedule || 'manual' }}
+  cancel-in-progress: true
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install headless browser
+        run: |
+          pip install playwright==1.48.0
+          python -m playwright install --with-deps chromium
+
+      - name: Watch Stock Lab through the session
+        env:
+          STOCKLAB_UNTIL: ${{ github.event.inputs.until || (github.event.schedule == '35 3 * * 1-5' && '12:20') || '15:35' }}
+        run: python tools/stocklab_watch.py
+
+      - name: Keep the screenshot if it failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stocklab-watch-screenshot
+          path: stocklab-watch.png
+          if-no-files-found: ignore
