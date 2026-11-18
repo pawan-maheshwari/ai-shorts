@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-18",
+      "title": "The Bug Slayer",
+      "headline": "Critical flaw found in vital internet platform Java through AI",
+      "source": "BBC",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBVWlloRk9FYTBOR0NsOG5LbzFhTElVSUFjN1ZHVURxZlVTN1hEbUVGbVdrbEhzOWtySENJdTNvSklIX1NmUFF1TDdfeDh0ZlkxTlowUm1sYmhHalU?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "security",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI makes every system unhackable!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "It even changed my password to “password”. Twice."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that promise without an audit."
+        }
+      ]
+    },
+    {
       "date": "2026-11-17",
       "title": "The Launch to End All Launches",
       "headline": "\"I Like Money, Bro\": Ex-OpenAI, Anthropic Researcher On \"Blood Money\" Stock",
