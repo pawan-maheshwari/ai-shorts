@@ -1,0 +1,26 @@
+name: Stock Lab study export
+
+# Exports the market data Stock Lab studies (5-minute bars, Nifty, VIX, every candidate signal) to the
+# stocklab-study branch for offline research. Read-only towards the app and its database.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r apps/stock-lab/requirements.txt
+      - run: python tools/stocklab_export.py
+      - name: Publish to the stocklab-study branch
+        run: |
+          mkdir -p /tmp/out && cp -r study/. /tmp/out/
+          git config user.name "stocklab-bot" && git config user.email "actions@github.com"
+          git checkout --orphan stocklab-study && git rm -rqf . && cp -r /tmp/out/. . && git add -A
+          git commit -qm "study export $(date -u +%FT%TZ)" && git push -qf origin stocklab-study
