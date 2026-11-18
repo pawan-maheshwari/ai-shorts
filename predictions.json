@@ -1,268 +1,271 @@
 {
-  "generated": "2026-11-17T01:28:53.800Z",
-  "forDate": "2026-11-18",
+  "generated": "2026-11-18T00:25:08.480Z",
+  "forDate": "2026-11-19",
   "window": {
-    "from": "2026-11-16T01:28:53.800Z",
-    "to": "2026-11-17T01:28:53.800Z"
+    "from": "2026-11-17T00:25:08.480Z",
+    "to": "2026-11-18T00:25:08.480Z"
   },
   "scanned": {
-    "stories": 807,
-    "outlets": 362,
+    "stories": 911,
+    "outlets": 398,
     "regions": [
       "Global desks",
-      "Community",
       "North America",
+      "Asia-Pacific",
+      "Community",
+      "South Asia",
       "Europe",
       "Africa",
-      "Asia-Pacific"
+      "Middle East"
     ],
-    "storylines": 515
+    "storylines": 596
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.8483,
+      "score": 0.8602,
       "probability": 0.92,
       "confidence": "High",
-      "entity": "China",
-      "theme": "Chips & compute",
-      "headline": "US issues new chip rule as China's AI companies fear Nvidia scandal fallout",
-      "outlook": "Supply, pricing and export angles on China should keep this in the headlines.",
+      "entity": "Nvidia",
+      "theme": "Funding & markets",
+      "headline": "Jensen Huang says he would be ‘honored’ to return to Nvidia as CEO",
+      "outlook": "Market reaction, analyst notes and deal details around Nvidia are the likely next chapter.",
       "signals": {
-        "outlets": 41,
+        "outlets": 22,
         "regions": [
+          "Global desks",
           "North America",
-          "Africa",
-          "Asia-Pacific"
+          "Europe"
         ],
-        "stories": 47,
-        "momentum": 1.94,
-        "recent6h": 19,
-        "authority": 18.3,
-        "hnPoints": 38,
+        "stories": 32,
+        "momentum": 5.31,
+        "recent6h": 22,
+        "authority": 13.3,
+        "hnPoints": 7,
         "nextStepCues": 4,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
+        "reach": 0.91,
         "breadth": 0.5,
-        "momentum": 0.65,
+        "momentum": 1,
         "authority": 1,
-        "community": 0.53,
+        "community": 0.3,
         "nextStep": 1,
         "arc": 1
       },
       "sig": [
-        "chip",
-        "china",
         "nvidia",
-        "loophole",
-        "access",
-        "u.s",
-        "close",
-        "scandal"
+        "huang",
+        "jensen",
+        "ceo",
+        "return",
+        "reinstate",
+        "board",
+        "revenue"
       ],
       "evidence": [
         {
-          "title": "Trump administration orders Commerce to close chip loophole at heart of Nvidia scandal",
+          "title": "Jensen Huang’s departure will cause lasting damage to Nvidia",
+          "source": "The Economist",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQYkFRUkZ1VUhjY2NYQVpwYkNNSTI0bzFIU0RKVUQzVk5IT3E4em9jcGpUbnpXZDFYUFlBYlVUSk9sTExGY0lJcE1CdzBwWXkzT19QZFJBX2llME9NTDdJWjZwYXFHZjAxQm4ySFNfZWoxLXpQSVBGYUFJUXpFa3JMYkZSVUxYUmFGdzFfa1FyOWdVQmZ5UFBUalVjSUJaMWRGTWpJMzNUWGg?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia leans on record revenue as it faces questions about its future",
           "source": "The Washington Post",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQeFlDQ0VJUFBIZS1nQTJUN281Z2JRbmJ4N3JFSEo2cDJYdlpXOWhIWkw4Mm95ZXZXWkQ1MjJGRnZCVkVKUWlVakVub2ZwU0dhVUJKeGtJclFVa2pMZFVMZjRmYUhTbFBZV1BGdENBdGkzMV9nZGRaUkhFcVJMYUtITkN3M0pwRFlsQmkxUXNIaEpPanZIRll1TVNXRFJpVzlDOTNLUTVaNDY1Ql9TVXdV?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNSnpwSmFpWlU3MU5lVGo2WnlLOTUtVG1XR3Q1WmJRa2xmVmFkWlNPX2czSGtIcGRxRFFSVWlEb2s2Y29sVmpVX3lwSDd6S1I4R2x5N05KWE9PNUNZbks1d2t6NF9ja3lYdmNGV2VlYjAxZ3BUMS1sU1NGamRqckZQcGtQcXUyYS03cHgtaE5HUDdiVzd3ajkwcnlZUG5LVjJKaVVVMUlXRG1QQkdZS2tob2s2N3RPZWhS?oc=5",
           "region": "North America"
         },
         {
-          "title": "Amid Nvidia Furor, Trump Administration Moves to Restrict AI Chips",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQT2tFSHBwLXl0SmgtdkpiZThSZFo2aG9BZ2RwVXhVSC1EY2FjRW9NdUlqSkU1NkxSa0dlVWNqRnB3cDNSaDBOS3dDZU0ta3g1bjJ2X1MwUTFuaFltRm5UR0lXOUVUREZBZHlHSnhJeW1TaUxLZDFDb0FuY1BFdkpwbnFJMXdmNWpTS284ejUyb1ZPU0lhc2YzdGNqN0E2Vmlnc0QtQWZ2MlBnMTk5RVlhYnVubnhMdEQ4ZHdfZjBn?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Trump Administration Aims to Clamp Down on A.I. Chip Loophole",
+          "title": "Jensen Huang Says He Would Return as Nvidia CEO if Asked",
           "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9YTGZSN1BJNlhUTUp3RDBzWThoX1FVUVRrVEp6ZGpKb2NwdDFMSzNDamlqOC04LTI0RFJDZldwaHhuRUJfdnZ3X1FvSnc3dExrLWxZaXFoT19rRjUwTnAyWUdiSHVMcGdOQk5jMVlxZmwtRzBpam9tQzhjclM?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPTjI2WlkxTmMzSkt5elM5dU1XRkoxbXhWUTJMOU12TmQ4RUt2QjFMYnNYX1dIa1F5ODlRbjQ1MlhzS3BnS2k2cFBwbVhRancteG84TUhIN2VGdU9kVlJ2WWFvQ0h3TUw2eFZuWG5BTzVWXzJqWFRLV1NaUlo4WUVDQUdmeHRkTkU?oc=5",
           "region": "North America"
         },
         {
-          "title": "US issues new chip rule as China's AI companies fear Nvidia scandal fallout",
-          "source": "Nikkei Asia",
-          "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxNVTB3YUtNeHEyOWVPYmczSXVPOWNHeTJIQ1VsczNFcUhQUFFiU2FvQ0JSaWw4ZkRRSVJmbldyZHp6NmNoRDRndTVHU09xMVV1dWtTSWVMWGtjeWRIWDVYRGhtbHlMU3BKdzJ4emVoRmRBUWFUeVc3Uzl1Q3Zfc1JVTGVDdV9pUHNkekxDWTZ5aldWU1RmZ3dkMjhfWDQwaGRUeFh2U1VOQmxDNElmWkNXdVlPSllrUUp1bDd3NW4zZ3Y1TFp4WVMyWWFrcEZSOXhQazFjSlVlUEZFeHc?oc=5",
+          "title": "Nvidia chairman says board does not intend to reinstate Jensen Huang as CEO",
+          "source": "BNN Bloomberg",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOVjJZMTRpbW1LLTF4dWFEUHI5UWlnbHFTRVBUWWdpak5lYjFJMktaUzkwSHdKXzNsb2xjNUNNcUVzZlYyc003b2RCbTFNZXhZbnQxOHoxMzJNS2tLa042UGp2OHRoZEIyTnpJMzZwWXNGT2RyMTdvd29zZVFpSm8zMXdTbzRwTDVhX251bzlYNUwydWZlUFR2R3BQTnZFTWtNMkNBTEtPckdUc1lXLVlpSkhKb3EtZ0JwRXVWQVZlRWppQQ?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.8132,
+      "score": 0.833,
       "probability": 0.92,
       "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Stocks Fall Before Nvidia Earnings, Anthropic IPO: Markets Wrap",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "entity": "Nvidia",
+      "theme": "Chips & compute",
+      "headline": "Watch US Moves to Curb China's Remote Access to Nvidia's AI Chips",
+      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 18,
+        "outlets": 53,
         "regions": [
+          "Global desks",
           "North America",
           "Asia-Pacific",
-          "Africa"
+          "Europe"
         ],
-        "stories": 36,
-        "momentum": 3.32,
+        "stories": 70,
+        "momentum": 1.19,
         "recent6h": 20,
-        "authority": 7.8,
-        "hnPoints": 0,
-        "nextStepCues": 14,
+        "authority": 21.1,
+        "hnPoints": 21,
+        "nextStepCues": 4,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.86,
-        "breadth": 0.5,
-        "momentum": 0.91,
+        "reach": 1,
+        "breadth": 0.67,
+        "momentum": 0.42,
         "authority": 1,
-        "community": 0,
+        "community": 0.45,
         "nextStep": 1,
         "arc": 1
       },
       "sig": [
-        "ipo",
-        "anthropic",
+        "chip",
         "nvidia",
-        "earning",
-        "anthropics",
-        "ahead",
-        "stock",
-        "investor"
+        "china",
+        "access",
+        "scandal",
+        "remote",
+        "curb",
+        "move"
       ],
       "evidence": [
         {
-          "title": "Asia shares stumble on tech weakness ahead of Nvidia earnings",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQbHY5U3ZMUmhWeEViMkJTbW9ObHlQYWRWbmdxWDhXMUdaWFRvLVdRY01oaTJJb3lmOFBiaWpQMEFlTFk5R2ttRnBaT18zaF9Jbk9od2Rza0cyMXJ6Z3JlalJDdG9neTVhQ3pJRG05SE9NQUYxZkFvQmQ5bnVfTi13amFNOA?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Asian Stocks to Fall Ahead of Nvidia, Anthropic: Markets Wrap",
+          "title": "Interim Nvidia CEO Says It’s No Longer Sending AI Chips to China",
           "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQSHFoREFNUWJRYTJxR0pTRnpHM2Q1NlhjQ1pjN0w3U1FWM09sclNuMlVNLWx4YXF0TURpOEdtSk9sc3BXTEpBakhLd21neWhod2pvZ1hRNVAtZWxNTlZmUXl4TXNJQ0MyTTFqa0tpRGVmOVpQZlRidlZzYkFLYnlNSXduLUtPSXo3QUJ0aVhlM0xWVFNh?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQVk5ZV2dpR3EyVEtJcVdSZTBCVGl6UE1qZ1gzNWdiaHJ3WGR1S3NUd2VRcWVzUWhjanFicXVzNi1zRWZNel9EdlVOaC1uMUFCckRXMkRGWkRZeHdZUnE4VTdtUkZ2N0dITkRYa040X29HanoxODdGVXV3NzEyOGhnR1VOb2VwcFNIcHFJQlFrNXM3T1hqQlN5WnB0MHJTU0R2cTZOUnBNbV9Ubm81clFKM0x5cHRxdw?oc=5",
           "region": "North America"
         },
         {
-          "title": "Altimeter's Brad Gerstner aims to invest $5 billion in Anthropic IPO",
+          "title": "Nvidia: China fears Jensen Huang scandal could shut it out of US AI tech before Xi-Trump summit",
+          "source": "BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE84T0wzOTBNLWRTS2xRZXFFYnl1d3gycUhrSXdkX1ZoRTVtNGRmT3I3RDE0ZHBnRXV2VFVHN1FwQnpadGQ1T3V4eldiVXRINlpHWDFibVFoVi1Ccnc?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Jensen Huang scandal fuels bipartisan push to block AI chip sales to China",
           "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPZWsta3NJMEZJLTlRcHl5TGVlU0oyODVkT2xJV3NmWWR2dXhOSTZCeTBRSFlQV180eTNHbW9hM0ZwaTZaejNQMUU4SHZpQm5aRnFodkNrQVFrNUFTV2I5bHBJUk5URDFmTm1UQnRQcXpVbDgyb3hreGowR0otMDZweHVMbFhuT1A4MWpyNnNPc2VJNUZOckhaQWR2cWxGZEHSAaQBQVVfeXFMT2ZTeDRvb2NxdVZfVUNtelBYSGVjY1NodS1UVXJxb21CV05PYkVLOEN4VGpUa0Y0bXRVaHdJQlN5dzY4U1pRakxpMjVod05TSnU5UmVJel9pRkhReDlNd1ZuOWNDSGxRU0RjaGdDdUsxTVduRGdXU0RPQmlBTFdpRjdnT3h3LVJ5WEk2c3cxUFozeGVGZEhWSFdkRnNoVHdPOFptLWw?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9nLUhzZFRHWWtOOEdJNklsX0ZVYU5RX0xpZ2NnM2tvN0RjYW5DNzRCYzA0eXJnQkxFRmFzVkNKZlJ3TjQ3bUk1cWdfaEUyTTNtb1pKNjNkNWFmdDY5Vlp3OXh3RHl6emZWcG9VQXJyWGM5YThrQXdESjRBbGtQZ9IBgwFBVV95cUxOTlRFSTI5eVRPdkQ2LVFVM29weVdFZlhIbURBNURxcEVta0lGekJ2Ni11U0xLYXBYUDlnaTVpSktqSmYyV2gzdU52Mmc2OGRlQzRqNGx2UTlOdzV4MnBOaGtycHJsWGE4UjZDYi1najNkUFVRWUlXcDhyTDlvNWdLLTR3NA?oc=5",
           "region": "North America"
         },
         {
-          "title": "The Investors Set to Win Big in Anthropic’s IPO",
-          "source": "WSJ",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQWGJLdWJHSUxsNW9wWEdzVEVVazhoUF9JelpHaWVfS2l2N0NUQ1VLdktRdlZnMW1taDQ0cGpuQ3pWVGZaMW9jc3JTZmJ3WDQtZnBVeEtwbjB2QW90OGlVV3hXWGVhQVJpMGJfR3h1S0JrdnVGdXBiZm1yemh5VkRfV2NGcXozRWdQcUNUUFdraFVjQnliVEU5Qw?oc=5",
+          "title": "Jensen Huang agrees to face Congress over Nvidia scandal",
+          "source": "Axios",
+          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPb0Z3LUduTFdSVDJpb0hOREx2RkFtYUdtekZiUHdUWHNONGNySExrYlUxUGVRVTl3em5UUHN2LVZPVFBUX1RKTjFSS3VWb3dYVXlfdTVGX21JbEpCbEpicTBwcFA0T3VpcEhyOFZRZ0padWt0dnd2VHo1QXFwVDh6Rw?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.671,
-      "probability": 0.87,
+      "score": 0.7671,
+      "probability": 0.92,
       "confidence": "High",
-      "entity": "OpenAI",
-      "theme": "Courts & copyright",
-      "headline": "California sues OpenAI over rogue AI agents and cyberattacks",
-      "outlook": "Filings, responses or a ruling involving OpenAI could land and drive fresh coverage.",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "Anthropic forges ahead with its IPO even as AI fears mount and markets wobble",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 52,
+        "outlets": 15,
         "regions": [
           "North America"
         ],
-        "stories": 58,
-        "momentum": 13.91,
-        "recent6h": 50,
-        "authority": 23.4,
-        "hnPoints": 56,
-        "nextStepCues": 0,
-        "arcDays": 2,
+        "stories": 19,
+        "momentum": 10.8,
+        "recent6h": 17,
+        "authority": 7.8,
+        "hnPoints": 0,
+        "nextStepCues": 3,
+        "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
+        "reach": 0.81,
         "breadth": 0.17,
         "momentum": 1,
         "authority": 1,
-        "community": 0.59,
-        "nextStep": 0,
-        "arc": 0.67
+        "community": 0,
+        "nextStep": 1,
+        "arc": 1
       },
       "sig": [
-        "california",
-        "openai",
-        "sues",
-        "rogue",
-        "hugging",
-        "face",
-        "agent",
-        "model"
+        "anthropic",
+        "ipo",
+        "buy",
+        "ahead",
+        "market",
+        "forge",
+        "even",
+        "fear"
       ],
       "evidence": [
         {
-          "title": "California sues OpenAI, arguing it tested models without adequate safeguards",
-          "source": "The Washington Post",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQRE1GTDZsNjlRM3BlOWRPeUZPZGNqUGUtb1dwVVVQZTBLUHJ6S3Z0djRnRXlzRHBQVVQwd2VxUzRTX216b0xxQ0RCRTdIQm5GODBaR3hiN3o4ZnlKY3k0X3ZNemxIYjlWdlVTMUVzSDg1QjJVOFlYOHR0dmJmVERUZlhHMzdLWDRkeFFGZ3Ztc24yS2U1RzcyYjBBMGFhdXZkRVNGelB5c1p1RjdLMkxmTE9ENVpIWUYtLVNtOHVJVWFPaU1GYXRfUg?oc=5",
+          "title": "Anthropic IPO Frenzy Concerns Top Pension Fund",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOQk15Y2VER2l6Z2FIaTdlcGNLa3piUFBsbUtDVkFmZk85NmdvWkFieFV4ZXllREpad2dtZUJEVmcxVTJoUkN2UWk0TDJ5c3I1ak50d3A3U012Z2o2NkJJVmNtdzVTZVBobVpibE9OQjhZWkJ5T1NOaVRPZVpGRkozWHFKUFotMG5DTEFoQmF3dVBQNnp6MW9qLU5lYkc3Zi1IeDJVdkRnb04?oc=5",
           "region": "North America"
         },
         {
-          "title": "California sues OpenAI over Hugging Face attack",
-          "source": "BBC",
-          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE44X3h6ZDFZV05Gdzc1TTZtX083U2dlX2tmcWY5ZmVyYmk0cy0teWw0Q1VtWi1ISjRxNFZPYmZBMmZKUVN4WVhGOGVvX1B4VHhtVzBPUjIwOEMwRnM?oc=5",
+          "title": "Anthropic IPO: how can I buy shares, and is it worth it?",
+          "source": "The Guardian",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQeXlrX2MzQU9hakFSTmRJM0RrYTNCYkZBQmNHc3loc3BFdjlrQUNXR2k2aWFwN3dKc1VFNGJ1YUFfc3FLMU1RSzJsc0t3dTNHd2JTZl9uMnYyQ3lEOU1sTHBNNzRiUloyRE1WaEFmMXlCa3VEY3B2dVNNa3o0YlBvX0JXRjFfY25SR1pHc2ZLREFrZzkwZ1lfTXFibzhDZ3hCQXhEUjFZdENGTmVp?oc=5",
           "region": "North America"
         },
         {
-          "title": "California sues OpenAI over rogue AI agents and cyberattacks",
-          "source": "Axios",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOdy1wbU5HTWNHX3h0b2pyVUZqeVBqdndCX25fLVpYMVhnUEJoOHY4dXZIX2RzMm9iMHQwVWxoWnQwLWhBaGxMX1BITmxidzdMb0FqTEZTSzlfYlBVOWh0V2dHcHM3WXRVdkphMTlRbmZsTlB2NmRweS1rdUlCRWpsdGdWUFBrVHNlcklUQUhjemtJT1dweEE2eFVKSTA?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "California sues OpenAI, seeking court-ordered changes after the Hugging Face hack",
+          "title": "Anthropic forges ahead with its IPO even as AI fears mount and markets wobble",
           "source": "AP News",
-          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQZzhWWVB0Z1hBYmU2RUtsRW5BRjJteUR3VmV3d3hTLTlUbWVKZG5aNkZNSzhRX09iMFhVbmVRc1VqODY5MXhWb0V6M0pvT0RhTWNBS01sRzAxRGJBLW9RNWlNYk5VTDEzQ0Z0b0loR1doaFk0UENNMXViSi1selNmSlVfZUR5XzZaSGsxalNheDc0Szlfam9taFIwZw?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQbWllWlQ0OVRrVGN4cXBpLU9ycXNjNWNBbmdNUmNBdkI4N3p6eHZwM0FEdjZpamRkN3ZycERMMzJtUkZaWURvMHdlRG55SGdqZXJHbzV4Q3ZXeDR1SER1d2VmUXVKMHc0ci1UN0JhVk9PSWlvOUF6S2ZmMWtLOVlIdE91ZzV1S2UyUlBLS1plWHNkbElCMkRPTXpiMnMxdmJaRlg0aC1CVmI3RXdMMTUw?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "New Street starts Anthropic coverage with 'buy' rating, estimates revenue above $500 billion by 2030",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNck0wUlQwaUFLZFczaDFkai1PQmhJSkV3SDRwbXFsY01CaEM3cEVJaU1oUG5qWlVOUmxIWTBoVFR1RzhmbDVXeWg3SUpxY0VlR3cxci1qU1l1NlZUcENIQVAyaG5XMXB0OWZQR1pBaGNGaEhWRzRpOUVGODBERGFsU3FzbEdNOFh2TC1MSEtLenVDc0djNUp5YlBibjExRXN1SUlnT2RabXhGTUJnRWlsS2pobXRYTkdhaUQyZzVmYjhaanc?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-17",
+    "date": "2026-11-18",
     "calls": [
       {
         "rank": 1,
-        "headline": "Bessent Says Nvidia Needs ‘Dramatic Shakeup’ With Huang Out",
-        "probability": 0.86,
+        "headline": "US issues new chip rule as China's AI companies fear Nvidia scandal fallout",
+        "probability": 0.92,
         "hit": true,
-        "matched": "Trump backs calls for reinstatement of Jensen Huang as Nvidia CEO"
+        "matched": "Watch US Moves to Curb China's Remote Access to Nvidia's AI Chips"
       },
       {
         "rank": 2,
-        "headline": "Watch Anthropic IPO Arrives at a Pivotal AI Moment",
-        "probability": 0.86,
+        "headline": "Stocks Fall Before Nvidia Earnings, Anthropic IPO: Markets Wrap",
+        "probability": 0.92,
         "hit": true,
-        "matched": "Stocks Fall Before Nvidia Earnings, Anthropic IPO: Markets Wrap"
+        "matched": "Anthropic forges ahead with its IPO even as AI fears mount and markets wobble"
       },
       {
         "rank": 3,
-        "headline": "Congress moves to pass tighter AI chip export rules following Nvidia scandal",
-        "probability": 0.79,
+        "headline": "California sues OpenAI over rogue AI agents and cyberattacks",
+        "probability": 0.87,
         "hit": true,
-        "matched": "US issues new chip rule as China's AI companies fear Nvidia scandal fallout"
+        "matched": "California sues OpenAI over safety concerns after rogue agent hacking"
       }
     ],
     "hits": 3
   },
   "track": {
-    "days": 17,
-    "calls": 51,
-    "hits": 44,
+    "days": 18,
+    "calls": 54,
+    "hits": 47,
     "log": [
       {
         "date": "2026-11-01",
@@ -348,9 +351,14 @@
         "date": "2026-11-17",
         "hits": 3,
         "calls": 3
+      },
+      {
+        "date": "2026-11-18",
+        "hits": 3,
+        "calls": 3
       }
     ],
-    "hitRate": 0.86
+    "hitRate": 0.87
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
