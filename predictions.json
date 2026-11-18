@@ -1,160 +1,218 @@
 {
-  "generated": "2026-11-18T00:25:08.480Z",
-  "forDate": "2026-11-19",
+  "generated": "2026-11-18T23:48:58.114Z",
+  "forDate": "2026-11-20",
   "window": {
-    "from": "2026-11-17T00:25:08.480Z",
-    "to": "2026-11-18T00:25:08.480Z"
+    "from": "2026-11-17T23:48:58.114Z",
+    "to": "2026-11-18T23:48:58.114Z"
   },
   "scanned": {
-    "stories": 911,
-    "outlets": 398,
+    "stories": 907,
+    "outlets": 391,
     "regions": [
       "Global desks",
+      "Community",
       "North America",
       "Asia-Pacific",
-      "Community",
-      "South Asia",
       "Europe",
       "Africa",
-      "Middle East"
+      "South Asia"
     ],
-    "storylines": 596
+    "storylines": 606
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.8602,
+      "score": 0.8941,
       "probability": 0.92,
       "confidence": "High",
-      "entity": "Nvidia",
+      "entity": "Anthropic",
       "theme": "Funding & markets",
-      "headline": "Jensen Huang says he would be ‘honored’ to return to Nvidia as CEO",
-      "outlook": "Market reaction, analyst notes and deal details around Nvidia are the likely next chapter.",
+      "headline": "Anthropic prices blockbuster IPO at $83 a share",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 22,
+        "outlets": 35,
         "regions": [
-          "Global desks",
           "North America",
-          "Europe"
+          "Africa",
+          "Asia-Pacific"
         ],
-        "stories": 32,
-        "momentum": 5.31,
-        "recent6h": 22,
-        "authority": 13.3,
-        "hnPoints": 7,
-        "nextStepCues": 4,
+        "stories": 46,
+        "momentum": 27,
+        "recent6h": 44,
+        "authority": 17.3,
+        "hnPoints": 28,
+        "nextStepCues": 3,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.91,
+        "reach": 1,
         "breadth": 0.5,
         "momentum": 1,
         "authority": 1,
-        "community": 0.3,
+        "community": 0.49,
         "nextStep": 1,
         "arc": 1
       },
       "sig": [
-        "nvidia",
-        "huang",
-        "jensen",
-        "ceo",
-        "return",
-        "reinstate",
-        "board",
-        "revenue"
+        "anthropic",
+        "ipo",
+        "share",
+        "price",
+        "$83",
+        "range",
+        "trillion",
+        "above"
       ],
       "evidence": [
         {
-          "title": "Jensen Huang’s departure will cause lasting damage to Nvidia",
-          "source": "The Economist",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQYkFRUkZ1VUhjY2NYQVpwYkNNSTI0bzFIU0RKVUQzVk5IT3E4em9jcGpUbnpXZDFYUFlBYlVUSk9sTExGY0lJcE1CdzBwWXkzT19QZFJBX2llME9NTDdJWjZwYXFHZjAxQm4ySFNfZWoxLXpQSVBGYUFJUXpFa3JMYkZSVUxYUmFGdzFfa1FyOWdVQmZ5UFBUalVjSUJaMWRGTWpJMzNUWGg?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Nvidia leans on record revenue as it faces questions about its future",
-          "source": "The Washington Post",
-          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNSnpwSmFpWlU3MU5lVGo2WnlLOTUtVG1XR3Q1WmJRa2xmVmFkWlNPX2czSGtIcGRxRFFSVWlEb2s2Y29sVmpVX3lwSDd6S1I4R2x5N05KWE9PNUNZbks1d2t6NF9ja3lYdmNGV2VlYjAxZ3BUMS1sU1NGamRqckZQcGtQcXUyYS03cHgtaE5HUDdiVzd3ajkwcnlZUG5LVjJKaVVVMUlXRG1QQkdZS2tob2s2N3RPZWhS?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Jensen Huang Says He Would Return as Nvidia CEO if Asked",
+          "title": "Anthropic Sets IPO Price at $83 Per Share in Milestone for the AI Industry",
           "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPTjI2WlkxTmMzSkt5elM5dU1XRkoxbXhWUTJMOU12TmQ4RUt2QjFMYnNYX1dIa1F5ODlRbjQ1MlhzS3BnS2k2cFBwbVhRancteG84TUhIN2VGdU9kVlJ2WWFvQ0h3TUw2eFZuWG5BTzVWXzJqWFRLV1NaUlo4WUVDQUdmeHRkTkU?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1nQ3JieUUxQkdyelMxelhaUUdmaTFlSTFva2pnR2FHY08wbXdmT01JVk56aUVHRGtQRUFhc1J2SFR0cEp4THBGc3M3aGhlalE3MUlEb3dQbElfREZhYlVjemROWDRVRm51QXVIakZKM2pmZi03by1hUi1FN04?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia chairman says board does not intend to reinstate Jensen Huang as CEO",
-          "source": "BNN Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOVjJZMTRpbW1LLTF4dWFEUHI5UWlnbHFTRVBUWWdpak5lYjFJMktaUzkwSHdKXzNsb2xjNUNNcUVzZlYyc003b2RCbTFNZXhZbnQxOHoxMzJNS2tLa042UGp2OHRoZEIyTnpJMzZwWXNGT2RyMTdvd29zZVFpSm8zMXdTbzRwTDVhX251bzlYNUwydWZlUFR2R3BQTnZFTWtNMkNBTEtPckdUc1lXLVlpSkhKb3EtZ0JwRXVWQVZlRWppQQ?oc=5",
+          "title": "Anthropic reportedly prices its IPO at $83 per share, valuing the AI giant at $1.5 trillion",
+          "source": "AP News",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNeVVmSzl3dVBhbDdFbTMtTUl2LWVHU1FRb2hvYzJZNWdFU0ZDTmU3NFBVNDVWQXNXQlk2QmkzblN4MUplLWVGc1NheHNRZVpZTHZ1eG9OME53SUNtOExJQzNFSTJpLUw0cWxnSjR4VWlXLWZhZUZsc0dna1J6bmxZTTNBb0l2LUpq?oc=5",
+          "region": "Africa"
+        },
+        {
+          "title": "Watch How Anthropic Can Capture $30 Trillion",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPYS1UZFRNM244S0FfQy1OUXFlT25GbzlDVldnRFJJTDZOTlV6N1FVZ24zSkVGZm51eFRvcDQzVHJ6VjFEWVBPVXlNYXk4SWMtQkJTdTV2bGkySjc3QjBZRmtWbzJvbEtwRUJZT2J2R0U0bFZpek02bGVzOG1Qdjc2OUFEWUU2TmlpeDNzRDM3a05UTmNyTUdyUFJ0bUcxQWc5MkE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "U.S. Stocks Mixed, Nvidia Down Again Ahead of Anthropic IPO",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOZXo2WlZpcTltVUpERGFLMVFlbzk3NkhYcVJsSGFCRk1ZeEV3eTBTa2ZhbEx5dHVpZTAxTFFXc1o1Mzc2WHJ1cHFFZWFGVS1GUGxyaGJfOU9KdHF3ZWxaQmZHTWh6bDB0N0JUOVNpbzdpTDZRWGZnY2p0d3lEcXVJcERPZEVwM01QdUdLRWkwN0M2YnNzMk1QbjdlckU?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.833,
+      "score": 0.7908,
       "probability": 0.92,
       "confidence": "High",
       "entity": "Nvidia",
       "theme": "Chips & compute",
-      "headline": "Watch US Moves to Curb China's Remote Access to Nvidia's AI Chips",
+      "headline": "Nvidia stops shipping US-approved AI chips to China",
       "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 53,
+        "outlets": 50,
         "regions": [
-          "Global desks",
           "North America",
           "Asia-Pacific",
-          "Europe"
+          "Africa",
+          "Global desks"
         ],
-        "stories": 70,
-        "momentum": 1.19,
-        "recent6h": 20,
-        "authority": 21.1,
-        "hnPoints": 21,
-        "nextStepCues": 4,
+        "stories": 62,
+        "momentum": 0.67,
+        "recent6h": 11,
+        "authority": 17.7,
+        "hnPoints": 15,
+        "nextStepCues": 3,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
         "reach": 1,
         "breadth": 0.67,
-        "momentum": 0.42,
+        "momentum": 0.14,
         "authority": 1,
-        "community": 0.45,
+        "community": 0.4,
         "nextStep": 1,
         "arc": 1
       },
       "sig": [
-        "chip",
         "nvidia",
+        "chip",
         "china",
-        "access",
-        "scandal",
-        "remote",
-        "curb",
-        "move"
+        "stop",
+        "shipping",
+        "halt",
+        "despite",
+        "shipment"
       ],
       "evidence": [
         {
-          "title": "Interim Nvidia CEO Says It’s No Longer Sending AI Chips to China",
+          "title": "AI chip export controls targeting China gain bipartisan momentum after Nvidia scandal",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQb0hidGtCbWh0N1VCYWh1Q2NRQmlPTE1JaTdnWHVxYWpwU093SmJZazM2a1Q0RmJBTDlMQWZrUzl5dkdlYmZVTTY0MC1JaDd6aGU3anpXY0VWVUFwdlZDal9jNjBZd2F2SVYtWVl1eXl4NzRLQlZHdnNScHhnd3lxekV5V3JnY1UzX2p3WGxfamJSVmVvME55cXRscXJiRWFxdndqR3NJbkVQMlBLdW5GZnZB?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "China seeks advanced Nvidia chips for AI weapons despite US curbs, report says",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNN0Vsd0FkMFJLZl8zbklveDFFQW9XSEc3Q3dHMEZ6NjJFZ0dyYUIzOVdkam50a0lSYy00NEt5OGpCaG8wQTZ4RDlyTGVvaU1VMTlGNjk3aTdiZHVXcnloamEyTUZqbEhJWTlHbFJqTHNDWmVGN2JBT2FYTG44bWRIVXFfQ1E3LVdmeGRlczZETDFIUXlUSy04RXk0bDBlTHlIVm1ld2V3TnltenZZSXdBTm1ZV3NxUFVnTTRZWWRn?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia Stops Selling AI Chips to China Despite US Approval",
           "source": "Bloomberg.com",
           "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQVk5ZV2dpR3EyVEtJcVdSZTBCVGl6UE1qZ1gzNWdiaHJ3WGR1S3NUd2VRcWVzUWhjanFicXVzNi1zRWZNel9EdlVOaC1uMUFCckRXMkRGWkRZeHdZUnE4VTdtUkZ2N0dITkRYa040X29HanoxODdGVXV3NzEyOGhnR1VOb2VwcFNIcHFJQlFrNXM3T1hqQlN5WnB0MHJTU0R2cTZOUnBNbV9Ubm81clFKM0x5cHRxdw?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia: China fears Jensen Huang scandal could shut it out of US AI tech before Xi-Trump summit",
-          "source": "BBC",
-          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE84T0wzOTBNLWRTS2xRZXFFYnl1d3gycUhrSXdkX1ZoRTVtNGRmT3I3RDE0ZHBnRXV2VFVHN1FwQnpadGQ1T3V4eldiVXRINlpHWDFibVFoVi1Ccnc?oc=5",
+          "title": "Nvidia Stops Selling AI Chips to China Despite US Approval (1)",
+          "source": "Bloomberg Government News",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNejM4bUFRX2tWeUN1OGJfSXJ1TWtZb3RxSEU0TDlGYW9SRFJXUHRhcGxNamF5YTktMElfalJsdy1PcXA5T3Q4aGprNkxDcnBQWGhJaWY3OS1pcTZkVXJFNi1PY1J1dFc2X2ZKbElhR2RRWk8tLTVZM3kxeTZIM1g0bjktbW9XcjZQSGVkcGZqeWQtUDVVYllFajAtS2pIWGpOckJjSWlpRzNOUQ?oc=5",
           "region": "North America"
-        },
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "score": 0.6283,
+      "probability": 0.83,
+      "confidence": "High",
+      "entity": "Nvidia",
+      "theme": "Funding & markets",
+      "headline": "How important are Nvidia and Jensen Huang to the US economy?",
+      "outlook": "Market reaction, analyst notes and deal details around Nvidia are the likely next chapter.",
+      "signals": {
+        "outlets": 15,
+        "regions": [
+          "Global desks",
+          "North America",
+          "Europe"
+        ],
+        "stories": 18,
+        "momentum": 0.88,
+        "recent6h": 4,
+        "authority": 7.8,
+        "hnPoints": 4,
+        "nextStepCues": 1,
+        "arcDays": 3,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.81,
+        "breadth": 0.5,
+        "momentum": 0.27,
+        "authority": 1,
+        "community": 0.23,
+        "nextStep": 0.33,
+        "arc": 1
+      },
+      "sig": [
+        "nvidia",
+        "huang",
+        "jensen",
+        "exit",
+        "china",
+        "board",
+        "remain",
+        "ceo"
+      ],
+      "evidence": [
         {
-          "title": "Jensen Huang scandal fuels bipartisan push to block AI chip sales to China",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9nLUhzZFRHWWtOOEdJNklsX0ZVYU5RX0xpZ2NnM2tvN0RjYW5DNzRCYzA0eXJnQkxFRmFzVkNKZlJ3TjQ3bUk1cWdfaEUyTTNtb1pKNjNkNWFmdDY5Vlp3OXh3RHl6emZWcG9VQXJyWGM5YThrQXdESjRBbGtQZ9IBgwFBVV95cUxOTlRFSTI5eVRPdkQ2LVFVM29weVdFZlhIbURBNURxcEVta0lGekJ2Ni11U0xLYXBYUDlnaTVpSktqSmYyV2gzdU52Mmc2OGRlQzRqNGx2UTlOdzV4MnBOaGtycHJsWGE4UjZDYi1najNkUFVRWUlXcDhyTDlvNWdLLTR3NA?oc=5",
+          "title": "‘Business as usual’: Nvidia’s Kress passes first test as board slams door on Huang",
+          "source": "BNN Bloomberg",
+          "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxQN3d0aFMzQWxEQkFYcFB3VTNBSDk2NXlJV2xTbFI2WWg3eUZXTGd5SVBiMXRjck1VMW5WdDVYMGpnWWVVQWlZNGRDVVVVdGRRNjRIYXR2QlBVMUw4MDU1VnNUTWR5ZFBwenozcWFaQWpjVnc0OE1ORUpCY0sxSVcwUWxrbENLZDhOWi0xdzE2WEt5eWU3a3NFMF9yLXlvU2tuR2ItWDQ0dXQ0R1NDZUIxMHdJVHhST0hUR0xkdzAxTGJpdVNxU2dFd0o5X1F1SnkzT2tGVHVUaVBqN0VQSjVhRldIY1dDZw?oc=5",
           "region": "North America"
         },
         {
@@ -162,110 +220,53 @@
           "source": "Axios",
           "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPb0Z3LUduTFdSVDJpb0hOREx2RkFtYUdtekZiUHdUWHNONGNySExrYlUxUGVRVTl3em5UUHN2LVZPVFBUX1RKTjFSS3VWb3dYVXlfdTVGX21JbEpCbEpicTBwcFA0T3VpcEhyOFZRZ0padWt0dnd2VHo1QXFwVDh6Rw?oc=5",
           "region": "North America"
-        }
-      ]
-    },
-    {
-      "rank": 3,
-      "score": 0.7671,
-      "probability": 0.92,
-      "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Anthropic forges ahead with its IPO even as AI fears mount and markets wobble",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
-      "signals": {
-        "outlets": 15,
-        "regions": [
-          "North America"
-        ],
-        "stories": 19,
-        "momentum": 10.8,
-        "recent6h": 17,
-        "authority": 7.8,
-        "hnPoints": 0,
-        "nextStepCues": 3,
-        "arcDays": 3,
-        "calendar": null
-      },
-      "factors": {
-        "reach": 0.81,
-        "breadth": 0.17,
-        "momentum": 1,
-        "authority": 1,
-        "community": 0,
-        "nextStep": 1,
-        "arc": 1
-      },
-      "sig": [
-        "anthropic",
-        "ipo",
-        "buy",
-        "ahead",
-        "market",
-        "forge",
-        "even",
-        "fear"
-      ],
-      "evidence": [
-        {
-          "title": "Anthropic IPO Frenzy Concerns Top Pension Fund",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOQk15Y2VER2l6Z2FIaTdlcGNLa3piUFBsbUtDVkFmZk85NmdvWkFieFV4ZXllREpad2dtZUJEVmcxVTJoUkN2UWk0TDJ5c3I1ak50d3A3U012Z2o2NkJJVmNtdzVTZVBobVpibE9OQjhZWkJ5T1NOaVRPZVpGRkozWHFKUFotMG5DTEFoQmF3dVBQNnp6MW9qLU5lYkc3Zi1IeDJVdkRnb04?oc=5",
-          "region": "North America"
         },
         {
-          "title": "Anthropic IPO: how can I buy shares, and is it worth it?",
+          "title": "How important are Nvidia and Jensen Huang to the US economy?",
+          "source": "BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE50Q0hCQWtPOXlJaUtKb3FiNG1MYjZLNUdkTjg3SDRzTnRyNzZNdGZmWXNHMEp3MlZmS2VVWWdDSnVHTGlpV1ZYYnhNTWN6V2tCYlRjZV9ydThjczA?oc=5",
+          "region": "Europe"
+        },
+        {
+          "title": "Nvidia doubles revenue as board says it does not intend to reinstate Jensen Huang",
           "source": "The Guardian",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQeXlrX2MzQU9hakFSTmRJM0RrYTNCYkZBQmNHc3loc3BFdjlrQUNXR2k2aWFwN3dKc1VFNGJ1YUFfc3FLMU1RSzJsc0t3dTNHd2JTZl9uMnYyQ3lEOU1sTHBNNzRiUloyRE1WaEFmMXlCa3VEY3B2dVNNa3o0YlBvX0JXRjFfY25SR1pHc2ZLREFrZzkwZ1lfTXFibzhDZ3hCQXhEUjFZdENGTmVp?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic forges ahead with its IPO even as AI fears mount and markets wobble",
-          "source": "AP News",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQbWllWlQ0OVRrVGN4cXBpLU9ycXNjNWNBbmdNUmNBdkI4N3p6eHZwM0FEdjZpamRkN3ZycERMMzJtUkZaWURvMHdlRG55SGdqZXJHbzV4Q3ZXeDR1SER1d2VmUXVKMHc0ci1UN0JhVk9PSWlvOUF6S2ZmMWtLOVlIdE91ZzV1S2UyUlBLS1plWHNkbElCMkRPTXpiMnMxdmJaRlg0aC1CVmI3RXdMMTUw?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "New Street starts Anthropic coverage with 'buy' rating, estimates revenue above $500 billion by 2030",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNck0wUlQwaUFLZFczaDFkai1PQmhJSkV3SDRwbXFsY01CaEM3cEVJaU1oUG5qWlVOUmxIWTBoVFR1RzhmbDVXeWg3SUpxY0VlR3cxci1qU1l1NlZUcENIQVAyaG5XMXB0OWZQR1pBaGNGaEhWRzRpOUVGODBERGFsU3FzbEdNOFh2TC1MSEtLenVDc0djNUp5YlBibjExRXN1SUlnT2RabXhGTUJnRWlsS2pobXRYTkdhaUQyZzVmYjhaanc?oc=5",
-          "region": "North America"
+          "url": "https://www.theguardian.com/technology/2026/nov/17/nvidia-third-quarter-revenue-jensen-huang",
+          "region": "Global desks"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-18",
+    "date": "2026-11-19",
     "calls": [
       {
         "rank": 1,
-        "headline": "US issues new chip rule as China's AI companies fear Nvidia scandal fallout",
+        "headline": "Jensen Huang says he would be ‘honored’ to return to Nvidia as CEO",
         "probability": 0.92,
         "hit": true,
-        "matched": "Watch US Moves to Curb China's Remote Access to Nvidia's AI Chips"
+        "matched": "How important are Nvidia and Jensen Huang to the US economy?"
       },
       {
         "rank": 2,
-        "headline": "Stocks Fall Before Nvidia Earnings, Anthropic IPO: Markets Wrap",
+        "headline": "Watch US Moves to Curb China's Remote Access to Nvidia's AI Chips",
         "probability": 0.92,
         "hit": true,
-        "matched": "Anthropic forges ahead with its IPO even as AI fears mount and markets wobble"
+        "matched": "Nvidia stops shipping US-approved AI chips to China"
       },
       {
         "rank": 3,
-        "headline": "California sues OpenAI over rogue AI agents and cyberattacks",
-        "probability": 0.87,
+        "headline": "Anthropic forges ahead with its IPO even as AI fears mount and markets wobble",
+        "probability": 0.92,
         "hit": true,
-        "matched": "California sues OpenAI over safety concerns after rogue agent hacking"
+        "matched": "Anthropic prices blockbuster IPO at $83 a share"
       }
     ],
     "hits": 3
   },
   "track": {
-    "days": 18,
-    "calls": 54,
-    "hits": 47,
+    "days": 19,
+    "calls": 57,
+    "hits": 50,
     "log": [
       {
         "date": "2026-11-01",
@@ -356,9 +357,14 @@
         "date": "2026-11-18",
         "hits": 3,
         "calls": 3
+      },
+      {
+        "date": "2026-11-19",
+        "hits": 3,
+        "calls": 3
       }
     ],
-    "hitRate": 0.87
+    "hitRate": 0.88
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
