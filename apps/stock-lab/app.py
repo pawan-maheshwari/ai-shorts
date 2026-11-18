@@ -361,7 +361,7 @@ def history_cached(demo, symbols, day, args_key, _a):
         return [], {}, []
     rows, corr = ag.replay(data, idx, _a)
     store = get_store(demo)
-    eng = ln.eng_id(args_key)
+    eng = ENG_ID if args_key == ARGS_KEY else ln.eng_id(args_key)
     ln.tag_engine(rows, eng)
     rows, info = ln.remember_replay(store, "sig", eng, rows, today=day)
     keep = set(data)                                  # only stocks still on the watchlist
@@ -852,8 +852,8 @@ elif CFG_BASE.get("panel") and not RACE and PANEL and PANEL["pick"]:
 A = ag.engine_args(CFG)
 symbols = tuple(sorted({str(x).strip().upper() for x in CFG["watchlist"] if str(x).strip()}))
 RISK_RS = A.capital * A.risk_pct / 100
-ARGS_KEY = ag.engine_key(CFG)
-ENG_ID = ln.eng_id(ARGS_KEY)
+ARGS_KEY = ag.engine_key(CFG)               # exact engine settings — keys today's caches
+ENG_ID = ln.eng_id(ag.learning_key(CFG, CFG_BASE))   # stable across the panel's daily re-tuning — keys memory
 PLAN = ag.plan_key(CFG)
 ENGINE_SETUPS = ([a_["name"] for a_ in CFG["race"]] if CFG.get("race") else
                  [rs.FAMILIES[CFG["strategy"]["fam"]][0]] if CFG.get("strategy") else ["ORB", "VWAP"])

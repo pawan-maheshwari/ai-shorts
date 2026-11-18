@@ -1159,6 +1159,20 @@ def engine_key(cfg):
                     if not (k in OPTIONAL_ENGINE_KEYS and not c.get(k)))
 
 
+def learning_key(cfg, base=None):
+    """The id the Coach's memory and the trade journal are filed under. Same as engine_key, except that the
+    recommendation panel's daily choices are folded into one marker: the armed specialists (and their
+    confidence numbers) and the Selector's pick are re-tuned every morning, and keying memory on them meant
+    every day started a new, empty memory — yesterday's live trades and the database archive were thrown away.
+    Each row still carries its own strategy (setup / _strategy), so the Coach can tell the families apart."""
+    c = merged(cfg)
+    if c.get("race"):
+        c["race"], c["strategy"] = "panel", None
+    elif base is not None and c.get("strategy") and c["strategy"] != merged(base).get("strategy"):
+        c["strategy"] = "panel-pick"
+    return engine_key(c)
+
+
 def plan_key(cfg):
     """The plan a recommendation is actually executed with: exit policy + execution window."""
     c = merged(cfg)

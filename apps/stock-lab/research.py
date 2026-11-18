@@ -572,6 +572,26 @@ CHIEF_WIN = 20           # sessions of specialist track record the Selector comp
 MIN_N_SPEC = 8           # trades a variant needs in the window to be eligible
 MIN_N_CHIEF = 8          # trades of track record a specialist needs to be picked
 Z_LCB = 1.0              # confidence haircut: mean − 1 standard error
+# Two places where the panel searches, and so two places where luck can pass for skill (study, 18 Nov 2026,
+# 58 sessions, walk-forward on unseen days):
+#  * Specialist tuning picks the best of ~2,000 variants on 15 sessions. A 1-SE haircut there let lucky
+#    variants through; 1.5 SE improved the unseen-day record in both halves of the test window, for the
+#    Selector and for first-to-fire alike — Z_SPEC.
+#  * The Selector / arming step must also see a positive long-run unseen-day record (LONG_MIN_N trades since
+#    the specialist started acting), not only a good recent streak.
+# A multiplicity-scaled Selector haircut (Z_SEL='auto') was tested and made results worse (it mostly stood
+# aside on the days that would have paid), so the Selector keeps 1 SE. Re-run the study before changing these.
+Z_SPEC = 1.5
+Z_SEL = 1.0
+ALPHA_SEL = 0.20
+LONG_MIN_N = 15
+
+
+def z_select(F, alpha=ALPHA_SEL):
+    """One-sided normal quantile for comparing F specialists at family-wise level alpha (Šidák)."""
+    from statistics import NormalDist
+    F = max(int(F), 1)
+    return float(NormalDist().inv_cdf((1 - alpha) ** (1.0 / F)))
 
 
 def _lcb(n, s, q, z=Z_LCB):
@@ -584,17 +604,23 @@ def _lcb(n, s, q, z=Z_LCB):
     return np.where(n >= 2, out, -np.inf)
 
 
-def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, cap=None):
+def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, cap=None, spec_win=None,
+          chief_win=None, z_spec=None, z_sel=None, long_min=None, min_n_chief=None):
     """Run the panel over every session. Returns today's decision, each specialist's state and the walk-forward
     record of the panel vs the classic engine, or None if there are too few sessions."""
     if raw is None or raw.empty:
         return None
+    SPEC_WIN_ = int(spec_win or SPEC_WIN)
+    CHIEF_WIN_ = int(chief_win or CHIEF_WIN)
+    Z_SPEC_ = float(Z_SPEC if z_spec is None else z_spec)
+    LONG_MIN_ = int(LONG_MIN_N if long_min is None else long_min)
+    MIN_N_CHIEF_ = int(MIN_N_CHIEF if min_n_chief is None else min_n_chief)
     raw = raw.reset_index(drop=True)
     days_all = sorted(raw.day.unique())
     today = today or days_all[-1]
     days = [d for d in days_all if str(d) < str(today)]       # decisions never use the day being decided
     D = len(days)
-    if D < SPEC_WIN + 5:
+    if D < SPEC_WIN_ + 5:
         return None
     di = {d: i for i, d in enumerate(days)}
     keep = raw.day.map(di).notna().values
@@ -638,7 +664,7 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
     if not specs:
         return None
 
-    # specialists: tune on the trailing SPEC_WIN sessions, act on the next one
+    # specialists: tune on the trailing SPEC_WIN_ sessions, act on the next one
     fams = list(specs)
     F = len(fams)
     rec = {k: np.zeros((F, D)) for k in "nsqw"}
@@ -646,10 +672,10 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
     for f, fam in enumerate(fams):
         sp_ = specs[fam]
         cN, cS, cQ = cum(sp_["N"]), cum(sp_["S"]), cum(sp_["Q"])
-        for d in range(SPEC_WIN, D + 1):
-            a = d - SPEC_WIN
+        for d in range(SPEC_WIN_, D + 1):
+            a = d - SPEC_WIN_
             n, s_, q = cN[:, d] - cN[:, a], cS[:, d] - cS[:, a], cQ[:, d] - cQ[:, a]
-            sc = np.where(n >= MIN_N_SPEC, _lcb(n, s_, q), -np.inf)
+            sc = np.where(n >= MIN_N_SPEC, _lcb(n, s_, q, Z_SPEC_), -np.inf)
             if not np.isfinite(sc).any():
                 continue
             k = int(np.argmax(sc))
@@ -660,13 +686,20 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
 
     # Selector: compare specialists on their own out-of-sample records, pick one or stand aside
     cn, cs, cq = cum(rec["n"]), cum(rec["s"]), cum(rec["q"])
-    start = SPEC_WIN + 5
+    start = SPEC_WIN_ + 5
     choice = np.full(D + 1, -1)
     trail = np.full((F, D + 1), -np.inf)
+    zs_ = Z_SEL if z_sel is None else z_sel
+    ZS = z_select(F) if zs_ == "auto" else float(zs_)
     for d in range(start, D + 1):
-        a = max(SPEC_WIN, d - CHIEF_WIN)
+        a = max(SPEC_WIN_, d - CHIEF_WIN_)
         n, s_, q = cn[:, d] - cn[:, a], cs[:, d] - cs[:, a], cq[:, d] - cq[:, a]
-        sc = np.where((n >= MIN_N_CHIEF) & (pick_ix[:, d] >= 0), _lcb(n, s_, q), -np.inf)
+        ok = (n >= MIN_N_CHIEF_) & (pick_ix[:, d] >= 0)
+        if LONG_MIN_:              # the long-run unseen-day record must be positive too, not just the recent streak
+            ln_ = cn[:, d] - cn[:, SPEC_WIN_]
+            ls_ = cs[:, d] - cs[:, SPEC_WIN_]
+            ok &= (ln_ >= LONG_MIN_) & (ls_ > 0)
+        sc = np.where(ok, _lcb(n, s_, q, ZS), -np.inf)
         trail[:, d] = sc
         k = int(np.argmax(sc))
         if np.isfinite(sc[k]) and sc[k] > 0:
@@ -699,7 +732,7 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
         sp_ = specs[fam]
         mine = [d for d in test if choice[d] == f]
         own = summ(rec["n"][f, start:D], rec["s"][f, start:D], rec["w"][f, start:D])
-        a = max(SPEC_WIN, D - CHIEF_WIN)
+        a = max(SPEC_WIN_, D - CHIEF_WIN_)
         tn, ts_ = cn[f, D] - cn[f, a], cs[f, D] - cs[f, a]
         rows.append(dict(fam=fam, name=FAMILIES[fam][0], spec=sp_["cand"][k] if k >= 0 else None,
                          label=label(sp_["cand"][k]) if k >= 0 else "— no eligible variant",
@@ -767,7 +800,7 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
     armed = []
     for f in sorted(armed_at(D), key=lambda f: -trail[f, D]):
         c = specs[fams[f]]["cand"][pick_ix[f, D]]
-        a = max(SPEC_WIN, D - CHIEF_WIN)
+        a = max(SPEC_WIN_, D - CHIEF_WIN_)
         tn, ts_ = cn[f, D] - cn[f, a], cs[f, D] - cs[f, a]
         armed.append(dict(fam=fams[f], name=FAMILIES[fams[f]][0], spec=c, label=label(c), lcb=float(trail[f, D]),
                           trail_exp=float(ts_ / tn) if tn else np.nan, trail_n=int(tn)))
@@ -778,7 +811,9 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
                     trail_n=int(r0.trail_n), rules=describe(r0.spec))
     return dict(pick=pick, specialists=spec_tab, record=record, base=base, curve=curve, sessions=D,
                 today=str(today), minstop=minstop, n_candidates=int(sum(len(v["cand"]) for v in specs.values())),
-                armed=armed, race=race, sel_capped=sel_cap, focus=sorted(fset) if fset else None, cap=cap)
+                armed=armed, race=race, sel_capped=sel_cap, focus=sorted(fset) if fset else None, cap=cap,
+                settings=dict(spec_win=SPEC_WIN_, chief_win=CHIEF_WIN_, z_spec=Z_SPEC_, z_sel=round(ZS, 2),
+                              long_min=LONG_MIN_, min_n_chief=MIN_N_CHIEF_))
 
 
 def race_trusted(res, min_trades=20):
