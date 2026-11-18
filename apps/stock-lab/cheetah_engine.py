@@ -540,7 +540,9 @@ def day_signals(g, prev_close, avg_or_vol, p):
     cumv = np.cumsum(v)
     vwap = np.where(cumv > 0, np.cumsum(tp * v) / np.maximum(cumv, 1), c)
     orh, orl = h[:p.or_bars].max(), l[:p.or_bars].min()
-    or_vol = v[:p.or_bars].sum()
+    # Yahoo reports zero volume for the 09:15 bar on most days (and real volume on the rest), so opening volume
+    # is measured from 09:20: the same 15 minutes of data every day, comparable across days.
+    or_vol = v[1:1 + p.or_bars].sum()
     gap = (o[0] / prev_close - 1) * 100
     relvol = or_vol / avg_or_vol if avg_or_vol and avg_or_vol > 0 else np.nan
     or_pct = (orh - orl) / o[0] * 100
@@ -561,7 +563,7 @@ def day_signals(g, prev_close, avg_or_vol, p):
             for i in range(p.or_bars, len(g) - 1):
                 if t[i + 1].time() > last_entry:
                     break
-                vol_ok = v[i] > v[:i].mean()
+                vol_ok = v[i] > v[1:i].mean()          # 09:15 volume left out (see or_vol)
                 if side == 1 and c[i] > orh and c[i] > vwap[i] and vol_ok:
                     entry, stop = o[i + 1], orl
                 elif side == -1 and c[i] < orl and c[i] < vwap[i] and vol_ok:
@@ -640,7 +642,7 @@ def prep_days(data, lookback=10):
         for d, g in days:
             avg = np.mean(or_vols[-lookback:]) if or_vols else np.nan
             rows.append((d, g, prev_close, avg))
-            or_vols.append(g.Volume.values[:3].sum())
+            or_vols.append(g.Volume.values[1:4].sum())     # from 09:20 — see day_signals
             prev_close = g.Close.values[-1]
         out[s] = rows
     return out

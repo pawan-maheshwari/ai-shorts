@@ -118,7 +118,10 @@ def _arrays(g, pc, avg, idx_day=None):
     tp = (h + l + c) / 3
     vwap = np.where(cv > 0, np.cumsum(tp * v) / np.maximum(cv, 1), c)
     n = len(g)
-    mean_prev = np.r_[np.nan, cv[:-1] / np.arange(1, n)] if n else np.array([])
+    # Yahoo reports zero volume for the 09:15 bar on most days (real volume on the rest), so volume baselines
+    # leave that bar out: "above the session's average so far" = above the mean of the 09:20+ bars before it.
+    cv1 = np.cumsum(np.r_[0.0, v[1:]]) if n else np.array([])
+    mean_prev = np.r_[np.nan, np.nan, cv1[1:-1] / np.arange(1, n - 1)] if n >= 2 else np.full(n, np.nan)
     rng_ = np.where(c > 0, (h - l) / c, np.nan)
     atr = np.cumsum(np.nan_to_num(rng_)) / np.arange(1, n + 1) * c        # running average bar size, in price
     nm = np.full(n, np.nan)                                                  # Nifty % move from open, at bar close
@@ -130,7 +133,7 @@ def _arrays(g, pc, avg, idx_day=None):
         ok = k >= 0
         nm[ok] = (ic[k[ok]] / io - 1) * 100
     gap = (o[0] / pc - 1) * 100 if pc else np.nan
-    relvol = v[:3].sum() / avg if avg and avg > 0 else np.nan
+    relvol = v[1:4].sum() / avg if avg and avg > 0 else np.nan     # opening volume from 09:20 (see above)
     orh, orl = h[:3].max(), l[:3].min()
     info = dict(gap_pct=gap, relvol=relvol, or_high=orh, or_low=orl, or_pct=(orh - orl) / o[0] * 100,
                 last=c[-1], vwap=vwap[-1], prev_close=pc, chg_pct=(c[-1] / pc - 1) * 100 if pc else np.nan,
@@ -334,7 +337,7 @@ def raw_signals(data, idx, cost_pct):
                             rows.append((d, sym, fam, vi, side, i0, float(entry), float(stop),
                                          info["relvol"], (nmv * side > 0.1) if np.isfinite(nmv) else None,
                                          abs(entry - stop) / entry * 100, *sim[0]))
-            or_vols.append(g.Volume.values[:3].sum())
+            or_vols.append(g.Volume.values[1:4].sum())     # from 09:20 — see _arrays
             pc = g.Close.values[-1]
     cols = ["day", "symbol", "fam", "vi", "side", "i", "entry", "stop", "relvol", "nwith", "stop_pct"] + \
            [f"r{rr:g}" for rr in RRS]
@@ -572,16 +575,16 @@ CHIEF_WIN = 20           # sessions of specialist track record the Selector comp
 MIN_N_SPEC = 8           # trades a variant needs in the window to be eligible
 MIN_N_CHIEF = 8          # trades of track record a specialist needs to be picked
 Z_LCB = 1.0              # confidence haircut: mean − 1 standard error
-# Two places where the panel searches, and so two places where luck can pass for skill (study, 18 Nov 2026,
-# 58 sessions, walk-forward on unseen days):
-#  * Specialist tuning picks the best of ~2,000 variants on 15 sessions. A 1-SE haircut there let lucky
-#    variants through; 1.5 SE improved the unseen-day record in both halves of the test window, for the
-#    Selector and for first-to-fire alike — Z_SPEC.
-#  * The Selector / arming step must also see a positive long-run unseen-day record (LONG_MIN_N trades since
-#    the specialist started acting), not only a good recent streak.
-# A multiplicity-scaled Selector haircut (Z_SEL='auto') was tested and made results worse (it mostly stood
-# aside on the days that would have paid), so the Selector keeps 1 SE. Re-run the study before changing these.
-Z_SPEC = 1.5
+# Panel settings, tested walk-forward on 58 sessions (study, 18 Nov 2026):
+#  * Z_SPEC, the haircut when a specialist tunes itself: 1.5 SE beat 1 SE on the first data pull, but the
+#    advantage reversed once opening volume was cleaned of the 09:15 artefact — i.e. the difference was noise.
+#    Kept at 1 SE (the original) until a longer record says otherwise.
+#  * LONG_MIN_N: arming also needs a positive long-run unseen-day record (>= 15 trades), not only a good
+#    recent streak. Neutral-to-slightly-lower on both data pulls; kept as a guard against lucky streaks.
+#  * Z_SEL='auto' (haircut scaled for comparing 9 specialists) was worse on both pulls — not used.
+# Results swing a lot with small changes in the signal set: re-run the study (stocklab-study workflow)
+# before changing these, and judge on 190+ trades.
+Z_SPEC = 1.0
 Z_SEL = 1.0
 ALPHA_SEL = 0.20
 LONG_MIN_N = 15

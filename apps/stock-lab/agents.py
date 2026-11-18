@@ -1153,9 +1153,12 @@ def engine_args(cfg):
                               min_stop_pct=float(c.get("min_stop_pct", 0) or 0))
 
 
+DATA_VERSION = "vol915"   # bump when the signal data changes meaning (Nov 2026: opening volume measured from 09:20)
+
+
 def engine_key(cfg):
     c = merged(cfg)
-    return "|".join(f"{k}={json.dumps(c[k], sort_keys=True)}" for k in ENGINE_KEYS
+    return f"data={DATA_VERSION}|" + "|".join(f"{k}={json.dumps(c[k], sort_keys=True)}" for k in ENGINE_KEYS
                     if not (k in OPTIONAL_ENGINE_KEYS and not c.get(k)))
 
 
@@ -1724,7 +1727,7 @@ def paper_trade(g, sd, a, policy, window_min, qty, idx_day=None, risk_rs=None):
             mkt = (b_.Close.iloc[-1] / a_.Close.iloc[-1] - 1) * 100 * side
     # volume during the trade vs the session before entry
     during = g.Volume.iloc[i0:max(g.index.get_loc(tx), i0 + 1)]
-    before = g.Volume.iloc[:i0]
+    before = g.Volume.iloc[1:i0] if i0 > 1 else g.Volume.iloc[:i0]   # 09:15 volume is missing on most days
     vol_ratio = float(during.mean() / before.mean()) if len(before) and before.mean() > 0 and len(during) else np.nan
     # after a stop or window close: did price go on to reach the target before 15:15?
     later_target = False

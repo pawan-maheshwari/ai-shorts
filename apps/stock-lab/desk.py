@@ -39,6 +39,8 @@ def prep(df):
     dts, tms = np.array(df.index.date), np.array(df.index.time)
     daily = df.groupby(dts).agg(o=("Open", "first"), h=("High", "max"), l=("Low", "min"), c=("Close", "last"))
     m = tms < CUT
+    vol = df.Volume.where(tms != dtime(9, 15), 0.0)       # 09:15 volume is missing on most Yahoo days
+    df = df.assign(Volume=vol)
     f15 = df[m].groupby(dts[m]).agg(o=("Open", "first"), c=("Close", "last"), v=("Volume", "sum"), n=("Close", "size"))
     m2 = (tms >= CUT) & (tms < EXIT)
     ex = df[m2]

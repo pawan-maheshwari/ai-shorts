@@ -24,8 +24,8 @@ def table(data, today=None, lookback=10):
         d, g = days[-1]
         hi, lo, cl = float(g.High.max()), float(g.Low.min()), float(g.Close.iloc[-1])
         before = float(days[-2][1].Close.iloc[-1])
-        base = [float(x.Volume.sum()) for _, x in days[-1 - lookback:-1]]
-        vol_x = float(g.Volume.sum()) / np.mean(base) if base and np.mean(base) > 0 else np.nan
+        base = [float(x.Volume.iloc[1:].sum()) for _, x in days[-1 - lookback:-1]]   # 09:15 left out (Yahoo)
+        vol_x = float(g.Volume.iloc[1:].sum()) / np.mean(base) if base and np.mean(base) > 0 else np.nan
         rngs = [(float(x.High.max()) - float(x.Low.min())) / float(x.Close.iloc[-1]) for _, x in days[-4:]]
         pos = (cl - lo) / (hi - lo) * 100 if hi > lo else 50.0
         why = []
