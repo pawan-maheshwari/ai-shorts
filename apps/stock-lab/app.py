@@ -1288,7 +1288,7 @@ with tab_i:
         st.markdown(f'<div class="sl pulse {cls}"><b class="rg">🧭 Pulse · {mood["regime"]}</b>'
                     f'<span>New signals sized ×{size_mult:g}{"" if CFG["pulse_sizing"] else " (sizing off)"}</span>'
                     f'<span>Nifty {arrow(mood["nifty_chg"])}</span>'
-                    f'<span>{" · ".join(html.escape(x) for x in mood["reasons"][:3])}</span></div>',
+                    f'<span>{" · ".join(html.escape(x) for x in mood["reasons"][:4])}</span></div>',
                     unsafe_allow_html=True)
         with st.expander(f"🔔 Alerts · {len(ss.alerts)}" + (f" · {len(fresh)} new" if fresh else ""),
                          expanded=bool(fresh) and ss.get("alerts_shown", False)):
