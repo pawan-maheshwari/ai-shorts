@@ -963,6 +963,8 @@ def replay(data, idx, a, mults=None):
         import copy
         a = copy.copy(a)
         a.idx_bars = idx.get("intraday")          # strategies with a Nifty filter need the index bars
+        import research as _rs
+        a.breadth = _rs.breadth_by_day(data)     # ... and the breadth filter needs the whole watchlist
     for s, days in ce.prep_days(data).items():
         last_day = days[-1][0] if days else None
         for d, g, pc, avg in days[1:]:
@@ -1154,6 +1156,7 @@ def engine_args(cfg):
 
 
 DATA_VERSION = "vol915"   # bump when the signal data changes meaning (Nov 2026: opening volume measured from 09:20)
+CACHE_VERSION = DATA_VERSION + "|mkt1"   # daily research caches (raw signals, panel, Scout); mkt1 = market filters
 
 
 def engine_key(cfg):

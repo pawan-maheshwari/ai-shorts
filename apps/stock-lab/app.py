@@ -434,7 +434,7 @@ def study_cached(demo, symbols, day, study_key, _a):
 
 
 def _study_key(sa):
-    return (f"{ag.DATA_VERSION}|{sa.min_relvol}|{sa.rr}|{sa.cost_pct}|{json.dumps(sa.strategy, sort_keys=True)}"
+    return (f"{ag.CACHE_VERSION}|{sa.min_relvol}|{sa.rr}|{sa.cost_pct}|{json.dumps(sa.strategy, sort_keys=True)}"
             + (f"|{json.dumps(sa.race, sort_keys=True)}" if getattr(sa, "race", None) else ""))
 
 
@@ -444,14 +444,14 @@ def _study(demo, symbols, day, cfg):
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
-def raw_cached(demo, symbols, day, cost_pct, data_v=ag.DATA_VERSION):
+def raw_cached(demo, symbols, day, cost_pct, data_v=ag.CACHE_VERSION):
     """Every candidate strategy's signals on every recent session — shared by Scout and the recommendation panel."""
     data, idx = intraday_history(demo, symbols, day)
     return rs.raw_signals(data, idx, cost_pct) if data else None
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
-def panel_cached(demo, symbols, day, cost_pct, focus_n=None, cap=None, data_v=ag.DATA_VERSION):
+def panel_cached(demo, symbols, day, cost_pct, focus_n=None, cap=None, data_v=ag.CACHE_VERSION):
     """Recommendation panel: the specialist sub-agents nominate, the Selector picks one (or none) for today.
     Also scores the first-to-fire mode (top-N Nifty stocks, earliest signal per stock, daily cap)."""
     raw = raw_cached(demo, symbols, day, cost_pct)
@@ -482,7 +482,7 @@ def panel_for(cfg, demo):
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
-def scout_cached(demo, symbols, day, cost_pct, objective, current_json, data_v=ag.DATA_VERSION):
+def scout_cached(demo, symbols, day, cost_pct, objective, current_json, data_v=ag.CACHE_VERSION):
     """Scout: test thousands of strategies on older sessions, confirm on the newest ones."""
     data, idx = intraday_history(demo, symbols, day)
     if not data:
@@ -1011,6 +1011,7 @@ with tab_i:
             return
         if A.strategy or A.race:    # strategies with a Nifty filter need today's index bars
             A.idx_bars = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}").get("intraday")
+        A.breadth = rs.breadth_by_day(data)    # whole watchlist, before the focus cut: market breadth
         scan_data = data
         if FOCUS_N:                     # phase 1: first-to-fire trades only the top Nifty heavyweights
             fs_ = set(rs.focus_symbols(list(data), FOCUS_N))
@@ -1062,6 +1063,10 @@ with tab_i:
                            "It retries on the next refresh.")
         idx = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}")
         mood = ag.pulse(idx, day, mults=CFG["mults"])
+        _br = (A.breadth or {}).get(day)
+        if _br is not None and len(_br[1]):
+            mood["breadth"] = float(_br[1][-1])
+            mood["reasons"].append(f"Breadth {mood['breadth'] * 100:+.0f}% (watchlist stocks above their open minus below)")
         size_mult = mood["mult"] if CFG["pulse_sizing"] else 1.0
         store.log("Pulse", "regime", f"{mood['regime']} — position size ×{size_mult:g}. " + "; ".join(mood["reasons"]),
                   detail=mood, dkey=f"pulse|{day_s}|{mood['regime']}")
@@ -1738,7 +1743,7 @@ with tab_s:
 
 # ============================================================================ analyst desk (shadow mode)
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
-def desk_history(demo, symbols, day, cost, data_v=ag.DATA_VERSION):
+def desk_history(demo, symbols, day, cost, data_v=ag.CACHE_VERSION):
     """The rule desk's views on every past session (point in time) and every stock's 09:30→15:15 move."""
     data, idx = intraday_history(demo, symbols, day)
     if not data:

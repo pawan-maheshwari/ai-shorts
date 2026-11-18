@@ -59,7 +59,19 @@ FAMILIES = {   # family: (short code shown on cards, plain description, list of 
            [dict(T=T, d=d) for T in (600, 630) for d in (0.7, 1.2)]),
 }
 SIDES = ["long", "short", "both"]
-NIFTY = ["any", "with"]
+NIFTY = ["any", "with", "strong"]
+# "broad" (breadth) is supported by every filter but left out of the search: walk-forward on 58 sessions it
+# cut trades and did not help (Selector −0.6R vs +3.9R), while "strong" lifted the Selector from +3.9R to
+# +7.1R and first-to-fire from +1.8R to +6.2R (top 10). Add it back here only if a re-run study supports it.
+# Market filters (study, 18 Nov 2026: the market's move after entry decides most trades, and Nifty's opening
+# direction persists on ~69% of days). Fixed thresholds — not tuned — so they add no search of their own:
+#   with   = Nifty moving the trade's way at the signal (> 0.1% from the open)
+#   strong = Nifty's 9:15→9:55 move (or the move so far, before 10:00) is ≥ STRONG_PCT the trade's way,
+#            and Nifty is still on that side of its open at the signal
+#   broad  = watchlist breadth: (stocks above their open − stocks below) / all ≥ BROAD_NET the trade's way
+STRONG_PCT = 0.4
+BROAD_NET = 0.4
+TREND_BAR = 8          # the 09:55 bar
 RELVOL = [0.0, 1.2, 1.5]
 MINSTOP = [0.0, 0.4, 0.8]
 OBJECTIVES = {"win": "Highest win rate (must still be profitable)", "exp": "Most profit per trade",
@@ -80,6 +92,10 @@ def describe(spec):
     f = [{"long": "Longs only", "short": "Shorts only", "both": "Longs and shorts"}[spec["side"]]]
     if spec["nifty"] == "with":
         f.append("only when Nifty is moving the same way")
+    elif spec["nifty"] == "strong":
+        f.append(f"only when Nifty's opening trend (to 9:55) is at least {STRONG_PCT:g}% the same way")
+    elif spec["nifty"] == "broad":
+        f.append(f"only when market breadth leans the same way (net {BROAD_NET * 100:.0f}% of the watchlist)")
     if spec["relvol"]:
         f.append(f"opening volume ≥ {spec['relvol']:g}× normal")
     if spec["minstop"]:
@@ -96,8 +112,8 @@ def label(spec):
             "revert": lambda: f"{p['k']}× stretch",
             "fcb": lambda: f"{p['nc']} closes, {p['stop']} stop", "rs": lambda: f"by {_hm(p['T'])}, ≥{p['d']}% vs Nifty"}[spec["fam"]]()
     f = [spec["side"]]
-    if spec["nifty"] == "with":
-        f.append("with Nifty")
+    if spec["nifty"] in ("with", "strong", "broad"):
+        f.append({"with": "with Nifty", "strong": "strong Nifty trend", "broad": "broad breadth"}[spec["nifty"]])
     if spec["relvol"]:
         f.append(f"vol ≥{spec['relvol']:g}×")
     if spec["minstop"]:
@@ -111,7 +127,7 @@ def spec_id(spec):
 
 
 # ------------------------------------------------------------------ per stock-day arrays and signal generators
-def _arrays(g, pc, avg, idx_day=None):
+def _arrays(g, pc, avg, idx_day=None, br_day=None):
     o, h, l, c, v = (g[k].values.astype(float) for k in ["Open", "High", "Low", "Close", "Volume"])
     tm = g.index.hour.values * 60 + g.index.minute.values
     cv = np.cumsum(v)
@@ -132,13 +148,18 @@ def _arrays(g, pc, avg, idx_day=None):
         k = np.searchsorted(it, tm, side="right") - 1
         ok = k >= 0
         nm[ok] = (ic[k[ok]] / io - 1) * 100
+    br = np.full(n, np.nan)                                                  # net watchlist breadth at bar close
+    if br_day is not None and len(br_day[0]):
+        k = np.searchsorted(br_day[0], tm, side="right") - 1
+        ok = k >= 0
+        br[ok] = br_day[1][k[ok]]
     gap = (o[0] / pc - 1) * 100 if pc else np.nan
     relvol = v[1:4].sum() / avg if avg and avg > 0 else np.nan     # opening volume from 09:20 (see above)
     orh, orl = h[:3].max(), l[:3].min()
     info = dict(gap_pct=gap, relvol=relvol, or_high=orh, or_low=orl, or_pct=(orh - orl) / o[0] * 100,
                 last=c[-1], vwap=vwap[-1], prev_close=pc, chg_pct=(c[-1] / pc - 1) * 100 if pc else np.nan,
                 last_bar=g.index[-1])
-    return dict(o=o, h=h, l=l, c=c, v=v, tm=tm, vwap=vwap, n=n, vol_ok=v > mean_prev, atr=atr, nm=nm,
+    return dict(o=o, h=h, l=l, c=c, v=v, tm=tm, vwap=vwap, n=n, vol_ok=v > mean_prev, atr=atr, nm=nm, br=br,
                 gap=gap, relvol=relvol), info
 
 
@@ -152,6 +173,59 @@ def _entry_ok(A, last=LAST_ENTRY):
     ok = np.zeros(A["n"], bool)
     ok[:-1] = A["tm"][1:] <= last
     return ok
+
+
+def market_flags(A, i0, side):
+    """(with, strong, broad) at the bar before entry — None where the data to judge is missing."""
+    j = i0 - 1
+    nm = A["nm"]
+    nmv = nm[j] if 0 <= j < len(nm) else np.nan
+    w = st = None
+    if np.isfinite(nmv):
+        w = bool(nmv * side > 0.1)
+        base = nm[TREND_BAR] if j >= TREND_BAR and np.isfinite(nm[TREND_BAR]) else nmv
+        st = bool(base * side >= STRONG_PCT and nmv * side > 0)
+    brv = A["br"][j] if "br" in A and 0 <= j < len(A["br"]) else np.nan
+    bd = bool(brv * side >= BROAD_NET) if np.isfinite(brv) else None
+    return w, st, bd
+
+
+def market_ok(nf, flags):
+    if nf == "any":
+        return True
+    w, st, bd = flags
+    return {"with": w, "strong": st, "broad": bd}.get(nf) is True
+
+
+def market_mask(nf, nw, ns, nb):
+    """Vectorised market_ok over raw-signal columns."""
+    if nf == "with":
+        return nw == True                                                       # noqa: E712
+    if nf == "strong":
+        return ns == True                                                       # noqa: E712
+    if nf == "broad":
+        return nb == True                                                       # noqa: E712
+    return np.ones(len(nw), bool)
+
+
+def breadth_by_day(data):
+    """{date: (minute-of-day array, net breadth array)} across every stock in `data`: at each 5-minute bar,
+    (stocks above their day's open − stocks below) / stocks with that bar. Point in time: bar closes only."""
+    acc = {}
+    for _, df in (data or {}).items():
+        for d, g in _sessions(df):
+            tm = g.index.hour.values * 60 + g.index.minute.values
+            sgn = np.sign(g.Close.values.astype(float) - float(g.Open.iloc[0]))
+            a = acc.setdefault(d, {})
+            for t_, s_ in zip(tm, sgn):
+                x = a.setdefault(int(t_), [0.0, 0])
+                x[0] += s_
+                x[1] += 1
+    out = {}
+    for d, a in acc.items():
+        ks = np.array(sorted(a))
+        out[d] = (ks, np.array([a[k][0] / a[k][1] for k in ks]))
+    return out
 
 
 def generate(fam, prm, side, A):
@@ -315,6 +389,7 @@ def raw_signals(data, idx, cost_pct):
     ib = (idx or {}).get("intraday")
     ib = ib if ib is not None and len(ib) else None
     idays = {d: g for d, g in ib.groupby(ib.index.date)} if ib is not None else {}
+    bdays = breadth_by_day(data)
     rows = []
     for sym, df in data.items():
         days = _sessions(df)
@@ -322,7 +397,7 @@ def raw_signals(data, idx, cost_pct):
         for d, g in days:
             avg = np.mean(or_vols[-10:]) if or_vols else np.nan
             if pc is not None and len(g) >= 15:
-                A, info = _arrays(g, pc, avg, idays.get(d))
+                A, info = _arrays(g, pc, avg, idays.get(d), bdays.get(d))
                 for fam, (_, _, variants) in FAMILIES.items():
                     for vi, prm in enumerate(variants):
                         for side in (1, -1):
@@ -333,13 +408,14 @@ def raw_signals(data, idx, cost_pct):
                             sim = simulate(A, i0, side, entry, stop, cost_pct)
                             if sim is None:
                                 continue
-                            nmv = A["nm"][i0 - 1]
+                            w_, s_, b_ = market_flags(A, i0, side)
                             rows.append((d, sym, fam, vi, side, i0, float(entry), float(stop),
-                                         info["relvol"], (nmv * side > 0.1) if np.isfinite(nmv) else None,
+                                         info["relvol"], w_, s_, b_,
                                          abs(entry - stop) / entry * 100, *sim[0]))
             or_vols.append(g.Volume.values[1:4].sum())     # from 09:20 — see _arrays
             pc = g.Close.values[-1]
-    cols = ["day", "symbol", "fam", "vi", "side", "i", "entry", "stop", "relvol", "nwith", "stop_pct"] + \
+    cols = ["day", "symbol", "fam", "vi", "side", "i", "entry", "stop", "relvol", "nwith", "nstrong", "nbroad",
+            "stop_pct"] + \
            [f"r{rr:g}" for rr in RRS]
     return pd.DataFrame(rows, columns=cols)
 
@@ -386,6 +462,8 @@ def run(data, idx, cost_pct, objective="win", split=0.6, min_disc=30, min_conf=1
         side = sub.side.values
         rv = sub.relvol.values
         nw = sub.nwith.values
+        ns_ = sub.nstrong.values if "nstrong" in sub else np.full(len(sub), None)
+        nb_ = sub.nbroad.values if "nbroad" in sub else np.full(len(sub), None)
         sp = sub.stop_pct.values
         dm = disc_mask[sub.index.values]
         R = {rr: sub[f"r{rr:g}"].values for rr in RRS}
@@ -393,8 +471,8 @@ def run(data, idx, cost_pct, objective="win", split=0.6, min_disc=30, min_conf=1
             m = np.ones(len(sub), bool)
             if sd != "both":
                 m &= side == (1 if sd == "long" else -1)
-            if nf == "with":
-                m &= nw == True                                              # noqa: E712
+            if nf != "any":
+                m &= market_mask(nf, nw, ns_, nb_)
             if rl:
                 m &= np.nan_to_num(rv, nan=0) >= rl
             if ms:
@@ -504,7 +582,8 @@ def day_signals(g, prev_close, avg_or_vol, p):
     if ib is not None and len(ib):
         d = g.index[0].date()
         idd = ib[ib.index.date == d]
-    A, info = _arrays(g, prev_close, avg_or_vol, idd)
+    bd = getattr(p, "breadth", None)
+    A, info = _arrays(g, prev_close, avg_or_vol, idd, bd.get(g.index[0].date()) if bd else None)
     rv = info["relvol"]
     if spec["relvol"] and not (np.isfinite(rv) and rv >= spec["relvol"]):
         return [], info
@@ -516,10 +595,8 @@ def day_signals(g, prev_close, avg_or_vol, p):
         i0, entry, stop = sg
         if abs(entry - stop) / entry * 100 < max(spec["minstop"], float(getattr(p, "min_stop_pct", 0) or 0)):
             continue
-        if spec["nifty"] == "with":
-            nmv = A["nm"][i0 - 1]
-            if not (np.isfinite(nmv) and nmv * side > 0.1):
-                continue
+        if spec["nifty"] != "any" and not market_ok(spec["nifty"], market_flags(A, i0, side)):
+            continue
         risk = abs(entry - stop)
         sigs.append(dict(setup=FAMILIES[spec["fam"]][0], side=side, i=i0, entry=float(entry), stop=float(stop),
                          target=float(entry + side * spec["rr"] * risk), time=g.index[i0],
@@ -646,12 +723,14 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
         for vi, s2 in sub.groupby("vi"):
             prm = FAMILIES[fam][2][vi]
             side, rv, nw, sp = s2.side.values, np.nan_to_num(s2.relvol.values, nan=0), s2.nwith.values, s2.stop_pct.values
+            ns_ = s2.nstrong.values if "nstrong" in s2 else np.full(len(s2), None)
+            nb_ = s2.nbroad.values if "nbroad" in s2 else np.full(len(s2), None)
             for sd, nf, rl in product(SIDES, NIFTY if has_idx else ["any"], RELVOL):
                 m = sp >= minstop
                 if sd != "both":
                     m &= side == (1 if sd == "long" else -1)
-                if nf == "with":
-                    m &= nw == True                                              # noqa: E712
+                if nf != "any":
+                    m &= market_mask(nf, nw, ns_, nb_)
                 if rl:
                     m &= rv >= rl
                 ix = s2.index.values[m]
@@ -753,6 +832,8 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
     sym_a, i_a, side_a = raw.symbol.values, raw.i.values, raw.side.values
     rv_a, nw_a, sp_a, vi_a = np.nan_to_num(raw.relvol.values, nan=0), raw.nwith.values, raw.stop_pct.values, raw.vi.values
     fam_a = raw.fam.values
+    ns_a = raw.nstrong.values if "nstrong" in raw else np.full(len(raw), None)
+    nb_a = raw.nbroad.values if "nbroad" in raw else np.full(len(raw), None)
 
     def rows_for(f, d):
         k = pick_ix[f, d]
@@ -762,8 +843,8 @@ def panel(raw, today=None, minstop=PANEL_MINSTOP, has_idx=None, focus_n=None, ca
         m = (fam_a[ix] == c["fam"]) & (vi_a[ix] == sp_["vi"][k]) & (sp_a[ix] >= c["minstop"])
         if c["side"] != "both":
             m &= side_a[ix] == (1 if c["side"] == "long" else -1)
-        if c["nifty"] == "with":
-            m &= nw_a[ix] == True                                                   # noqa: E712
+        if c["nifty"] != "any":
+            m &= market_mask(c["nifty"], nw_a[ix], ns_a[ix], nb_a[ix])
         if c["relvol"]:
             m &= rv_a[ix] >= c["relvol"]
         if fset is not None:
