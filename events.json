@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-17T08:28:42.004Z",
+ "updated": "2026-11-18T07:55:49.968Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -20,20 +20,6 @@
    "cc": "DE",
    "lat": 52.52,
    "lon": 13.4
-  },
-  {
-   "title": "NextGen Intelligence Conference: Data, Cloud & AI",
-   "type": "Conference",
-   "start": "2026-11-16",
-   "end": "2026-11-17",
-   "url": "https://techaiconf.com",
-   "source": "confs.tech",
-   "city": "London",
-   "country": "United Kingdom",
-   "cc": "GB",
-   "lat": 51.51,
-   "lon": -0.13,
-   "hybrid": true
   },
   {
    "title": "Bengaluru Tech Summit 2026: AI & Beyond",
