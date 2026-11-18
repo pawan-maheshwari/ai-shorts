@@ -434,7 +434,7 @@ def study_cached(demo, symbols, day, study_key, _a):
 
 
 def _study_key(sa):
-    return (f"{sa.min_relvol}|{sa.rr}|{sa.cost_pct}|{json.dumps(sa.strategy, sort_keys=True)}"
+    return (f"{ag.DATA_VERSION}|{sa.min_relvol}|{sa.rr}|{sa.cost_pct}|{json.dumps(sa.strategy, sort_keys=True)}"
             + (f"|{json.dumps(sa.race, sort_keys=True)}" if getattr(sa, "race", None) else ""))
 
 
@@ -444,14 +444,14 @@ def _study(demo, symbols, day, cfg):
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
-def raw_cached(demo, symbols, day, cost_pct):
+def raw_cached(demo, symbols, day, cost_pct, data_v=ag.DATA_VERSION):
     """Every candidate strategy's signals on every recent session — shared by Scout and the recommendation panel."""
     data, idx = intraday_history(demo, symbols, day)
     return rs.raw_signals(data, idx, cost_pct) if data else None
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
-def panel_cached(demo, symbols, day, cost_pct, focus_n=None, cap=None):
+def panel_cached(demo, symbols, day, cost_pct, focus_n=None, cap=None, data_v=ag.DATA_VERSION):
     """Recommendation panel: the specialist sub-agents nominate, the Selector picks one (or none) for today.
     Also scores the first-to-fire mode (top-N Nifty stocks, earliest signal per stock, daily cap)."""
     raw = raw_cached(demo, symbols, day, cost_pct)
@@ -482,7 +482,7 @@ def panel_for(cfg, demo):
 
 
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=6)
-def scout_cached(demo, symbols, day, cost_pct, objective, current_json):
+def scout_cached(demo, symbols, day, cost_pct, objective, current_json, data_v=ag.DATA_VERSION):
     """Scout: test thousands of strategies on older sessions, confirm on the newest ones."""
     data, idx = intraday_history(demo, symbols, day)
     if not data:
@@ -1738,7 +1738,7 @@ with tab_s:
 
 # ============================================================================ analyst desk (shadow mode)
 @st.cache_data(ttl=86400, show_spinner=False, max_entries=4)
-def desk_history(demo, symbols, day, cost):
+def desk_history(demo, symbols, day, cost, data_v=ag.DATA_VERSION):
     """The rule desk's views on every past session (point in time) and every stock's 09:30→15:15 move."""
     data, idx = intraday_history(demo, symbols, day)
     if not data:
