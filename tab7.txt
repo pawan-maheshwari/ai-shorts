@@ -1,0 +1,417 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+Storage: Supabase (persistent) — the log, trade journal, settings, Sentinel archive and the agents' learning memory survive restarts.
+
+keyboard_arrow_down
+
+🔌 Storage check
+
+Key: secret key (sb_secret_…) · URL: https://cfesklvtzwcmknjrmdzl.supabase.co
+
+Writes this session: memory 58,420, trades 1,416, events 92, sentinel 284, paper 5, kv 4 · audit events waiting to be written: 0
+
+Re-check storage
+
+EVENTS · 7 DAYS
+144
+12 agents active
+ALERTS
+16
+raised in 7 days
+LIVE SIGNALS
+18
+journaled
+POST-MORTEMS
+4
+losses diagnosed
+COACH STUDIED
+621
+trades · 43% win rate
+AGENT ACTIVITY
+last 7 days · newest first
+
+Agents
+
+Alerts
+Analyst
+Coach
+Desk
+Narrator
+Pulse
+Reviewer
+Risk
+Scout
+Selector
+Sentinel
+Trader
+
+Day
+
+Search
+
+Show
+
+50
+
+25
+
+500
+
+19 Nov 14:32
+🔔
+Alerts alert
+Market mood: Volatile — position size ×0.5
+19 Nov 14:32
+🧭
+Pulse regime
+Volatile — position size ×0.5. Nifty up 0.97% and above its intraday average; Daily trend up (above 20 and 50-day averages); India VIX 16.8 (+8.2% vs previous day); Fear gauge elevated; Breadth +66% (watchlist stocks above their open minus below)
+19 Nov 10:46
+🔔
+Alerts alert
+Market mood: Risk-on — position size ×1
+19 Nov 10:46
+🧭
+Pulse regime
+Risk-on — position size ×1. Nifty up 0.27% and above its intraday average; Daily trend up (above 20 and 50-day averages); India VIX 16.1 (+3.4% vs previous day); Breadth +37% (watchlist stocks above their open minus below)
+19 Nov 10:36
+🔔
+Alerts alert
+Market mood: Mildly positive — position size ×1
+19 Nov 10:36
+🎓
+Coach lesson
+Favour: Strong volume (over 2.5×) — averages +0.55R, won 77% of 63 trades
+19 Nov 10:36
+🎓
+Coach lesson
+Avoid: Normal volume (1.5–2.5×) — averages -0.03R, won 51% of 93 trades
+19 Nov 10:36
+🛡️
+Sentinel scan
+Checked 2 stocks in play: 0 high-risk, 2 to watch, 0 could not be checked
+19 Nov 10:36
+🛡️
+Sentinel watch · AXISBANK
+WATCH: Stake sale or large deal: “BlackRock raises its stake in Axis Bank to 5 pc” (Moneycontrol.com); Stake sale or large deal: “BlackRock crosses 5% in Axis Bank with 18,560-share purchase” (Dealroom) — Headlines read by Groq
+19 Nov 10:36
+🛡️
+Sentinel watch · SBIN
+WATCH: Order win or approval: “UPI PIN alone doesn't prove transaction consent: Telangana consumer commission orders SBI to pay ₹85,000- key ” (Livemint); Corporate action: “SBI Funds, Punjab National Bank enter into distribution partnership” (Business Standard) — Headlines read by Groq
+19 Nov 10:36
+🧭
+Pulse regime
+Mildly positive — position size ×1. Nifty flat-ish (+0.17%) — no clear intraday direction; Daily trend up (above 20 and 50-day averages); India VIX 16.1 (+3.6% vs previous day); Breadth +37% (watchlist stocks above their open minus below)
+19 Nov 10:36
+🎓
+Coach training
+Studied 127 signals from the last 48 sessions
+19 Nov 09:25
+•
+Desk notes
+Groq desk (openai/gpt-oss-120b): 6 views on 10 stocks; PM stance cautious
+19 Nov 02:43
+🎓
+Coach training
+Studied 127 signals from the last 48 sessions
+19 Nov 02:11
+🎓
+Coach lesson
+Favour: Strong volume (over 2.5×) — averages +0.55R, won 77% of 62 trades
+19 Nov 02:11
+🎓
+Coach lesson
+Favour: Mildly positive market mood — averages +0.42R, won 69% of 54 trades
+19 Nov 02:11
+🎓
+Coach training
+Studied 127 signals from the last 48 sessions
+19 Nov 01:59
+🎓
+Coach memory
+History: 43 sessions from Yahoo + 1 remembered from the database (139 signals since 2026-08-24); news filled in from the Sentinel archive on 7
+19 Nov 01:59
+🎓
+Coach lesson
+Avoid: Normal volume (1.5–2.5×) — averages -0.10R, won 47% of 72 trades
+19 Nov 01:59
+🎓
+Coach training
+Studied 139 signals from the last 44 sessions
+19 Nov 01:59
+🎓
+Coach memory
+History: 44 sessions from Yahoo + 0 remembered from the database (139 signals since 2026-08-24); news filled in from the Sentinel archive on 7
+19 Nov 01:29
+🎓
+Coach memory
+History: 38 sessions from Yahoo + 0 remembered from the database (130 signals since 2026-08-25); news filled in from the Sentinel archive on 6
+19 Nov 01:23
+•
+Scout research
+Tested 5,552 strategies on 58 sessions; 3 of 21 shortlisted held up on the newest 24 sessions. Best: GAP-FADE (gap ≥0.5%, 15-min fail) · both · stop ≥0.8% · 1R — won 56%, +0.01R per trade on unseen days.
+19 Nov 01:23
+🎓
+Coach memory
+History: 38 sessions from Yahoo + 2 remembered from the database (132 signals since 2026-08-24); news filled in from the Sentinel archive on 6
+19 Nov 01:23
+🛡️
+Sentinel daily-scan
+Watchlist scan of 35 stocks: 3 high-risk, 9 to watch, 23 clear, 0 not checked. Sources — NSE filings 35/35; Results calendar 35/35; Corporate actions 35/35; Google News 35/35; F&O ban list 35/35
+19 Nov 01:22
+🎓
+Coach training
+Studied 134 signals from the last 40 sessions
+19 Nov 01:22
+🎓
+Coach memory
+History: 40 sessions from Yahoo + 0 remembered from the database (134 signals since 2026-08-24); news filled in from the Sentinel archive on 6
+19 Nov 01:22
+•
+Selector pick
+Today: REL-STR specialist — REL-STR (by 10:30, ≥1.2% vs Nifty) · long · vol ≥1.5× · stop ≥0.8% · 1R (last 34 trades +0.30R each). Panel walk-forward: 120 trades, +0.03R per trade over 38 sessions.
+19 Nov 01:22
+•
+Selector armed
+First-to-fire: 2 specialists armed today — REL-STR, 1ST-CANDLE. Capped walk-forward on 10 focus stocks: 28 trades, +0.08R per trade over 38 sessions.
+18 Nov 13:12
+•
+Desk notes
+Groq desk (openai/gpt-oss-120b): 7 views on 10 stocks; PM stance cautious
+18 Nov 13:12
+🔔
+Alerts alert
+Market mood: Choppy — position size ×0.75
+18 Nov 13:12
+🛡️
+Sentinel scan
+Checked 2 stocks in play: 0 high-risk, 2 to watch, 0 could not be checked
+18 Nov 13:12
+🛡️
+Sentinel watch · AXISBANK
+WATCH: Stake sale or large deal: “BlackRock raises its stake in Axis Bank to 5%” (bfsi.economictimes.indiatimes.com); Stake sale or large deal: “BlackRock crosses 5% in Axis Bank with 18,560-share purchase” (Dealroom) — Headlines read by Groq
+18 Nov 13:12
+🛡️
+Sentinel watch · SBIN
+WATCH: Corporate action: “General Updates: State Bank Of India has informed the Exchange about update on acquisition of stake in CareEdg” (NSE filing); Investor meeting: “Analysts/Institutional Investor Meet/Con. Call Updates: State Bank Of India has informed the Exchange about” (NSE filing) — Headlines read by Groq
+18 Nov 13:11
+🧭
+Pulse regime
+Choppy — position size ×0.75. Nifty down 0.89% and below its intraday average; Daily trend up (above 20 and 50-day averages); India VIX 15.9 (+2.7% vs previous day)
+18 Nov 13:11
+🎓
+Coach training
+Studied 109 signals from the last 37 sessions
+18 Nov 05:55
+•
+Scout research
+Tested 5,556 strategies on 58 sessions; 2 of 21 shortlisted held up on the newest 24 sessions. Best: GAP-FADE (gap ≥0.5%, 15-min fail) · both · stop ≥0.8% · 1R — won 57%, +0.04R per trade on unseen days.
+18 Nov 02:35
+🛡️
+Sentinel daily-scan
+Watchlist scan of 35 stocks: 2 high-risk, 7 to watch, 26 clear, 0 not checked. Sources — NSE filings 35/35; Results calendar 35/35; Corporate actions 35/35; Google News 35/35; F&O ban list 35/35
+18 Nov 02:35
+🎓
+Coach memory
+History: 37 sessions from Yahoo + 0 remembered from the database (109 signals since 2026-08-26); news filled in from the Sentinel archive on 8
+18 Nov 02:34
+🎓
+Coach training
+Studied 109 signals from the last 37 sessions
+18 Nov 02:34
+🎓
+Coach memory
+History: 37 sessions from Yahoo + 0 remembered from the database (109 signals since 2026-08-26); news filled in from the Sentinel archive on 8
+18 Nov 02:34
+•
+Selector pick
+Today: REL-STR specialist — REL-STR (by 10:30, ≥1.2% vs Nifty) · long · vol ≥1.5× · stop ≥0.8% · 1R (last 36 trades +0.30R each). Panel walk-forward: 136 trades, -0.00R per trade over 38 sessions.
+18 Nov 02:34
+•
+Selector armed
+First-to-fire: 2 specialists armed today — REL-STR, 1ST-CANDLE. Capped walk-forward on 10 focus stocks: 31 trades, +0.05R per trade over 38 sessions.
+17 Nov 13:36
+🔔
+Alerts alert
+Market mood: Mildly positive — position size ×1
+17 Nov 13:36
+🧭
+Pulse regime
+Mildly positive — position size ×1. Nifty flat-ish (+0.40%) — no clear intraday direction; Daily trend up (above 20 and 50-day averages); India VIX 15.4 (-1.6% vs previous day)
+17 Nov 11:57
+•
+Desk notes
+Groq desk (openai/gpt-oss-120b): 8 views on 10 stocks; PM stance normal
+17 Nov 11:57
+🔔
+Alerts alert
+Market mood: Risk-on — position size ×1
+17 Nov 11:57
+🧭
+Pulse regime
+Risk-on — position size ×1. Nifty up 0.76% and above its intraday average; Daily trend up (above 20 and 50-day averages); India VIX 15.3 (-2.6% vs previous day)
+17 Nov 11:57
+🎓
+Coach training
+Studied 90 signals from the last 30 sessions
+17 Nov 06:59
+•
+Scout research
+Tested 5,560 strategies on 58 sessions; 3 of 21 shortlisted held up on the newest 24 sessions. Best: GAP-FADE (gap ≥0.5%, 15-min fail) · both · stop ≥0.8% · 1R — won 60%, +0.09R per trade on unseen days.
+
+Showing 50 of 144 events.
+
+Download log (CSV)
+
+🧠 LEARNING MEMORY
+what the database feeds back into training · kept 180 days
+SESSIONS IN HISTORY
+48
+22 beyond Yahoo's ~60
+SIGNALS STUDIED
+127
+since 2026-08-24
+NEWS FILLED IN
+11
+history rows tagged from the Sentinel archive
+AUDIT DAYS DIGESTED
+9
+11 losses diagnosed
+YOUR REVIEWS
+0
+scoring agents in 🎯 Agent scores
+How the stored logs train the agents: (1) every finished session's signals are archived per signal engine, so the 🎓 Coach, the model lab and the agent scores keep learning from sessions Yahoo no longer serves; (2) the 🛡️ Sentinel's pre-open archive fills in the news condition on those signals — only where it was recorded before the signal fired; (3) the audit log is digested daily so recurring loss causes outlive its 7-day window; (4) your reviews in the 📒 Trade log score each agent and can become proposals. Nothing changes the live settings without a reviewer's approval.
+keyboard_arrow_down
+
+What is stored · 20,040 rows
+
+Signals from older engine settings are kept but not mixed into training — they come back into use if those settings are restored.
+
+Recurring loss causes · last 30 days vs the 30 before
+COACH · WHAT IT HAS LEARNED
+from 621 trades (recent history + live signals)
+▼ Avoid: Risk-off market mood — won 29% of 38 trades, avg -0.65R (all signals: -0.11R, 43% won)
+▼ Avoid: Volatile market mood — won 32% of 47 trades, avg -0.44R (all signals: -0.11R, 43% won)
+▼ Avoid: VWAP pullback — won 36% of 230 trades, avg -0.40R (all signals: -0.11R, 43% won)
+▼ Avoid: Close to VWAP at entry — won 40% of 294 trades, avg -0.26R (all signals: -0.11R, 43% won)
+▼ Avoid: Against the market direction — won 37% of 117 trades, avg -0.25R (all signals: -0.11R, 43% won)
+▼ Avoid: Market had no clear direction — won 40% of 238 trades, avg -0.24R (all signals: -0.11R, 43% won)
+▼ Avoid: Midday signal (10:30–12:30) — won 40% of 241 trades, avg -0.20R (all signals: -0.11R, 43% won)
+▲ Favour: Early signal (before 10:30) — won 46% of 316 trades, avg -0.03R (all signals: -0.11R, 43% won)
+▲ Favour: Wide opening range (stop far away) — won 48% of 284 trades, avg -0.01R (all signals: -0.11R, 43% won)
+▲ Favour: Moderately away from VWAP at entry — won 45% of 256 trades, avg -0.01R (all signals: -0.11R, 43% won)
+▲ Favour: Strong volume (over 2.5×) — won 46% of 222 trades, avg -0.00R (all signals: -0.11R, 43% won)
+▲ Favour: Against the opening gap — won 48% of 185 trades, avg +0.01R (all signals: -0.11R, 43% won)
+▲ Favour: REL-STR — won 50% of 117 trades, avg +0.04R (all signals: -0.11R, 43% won)
+▲ Favour: Opening range breakout — won 44% of 176 trades, avg +0.04R (all signals: -0.11R, 43% won)
+▲ Favour: Weak volume (under 1.5× normal) — won 50% of 26 trades, avg +0.06R (all signals: -0.11R, 43% won)
+▲ Favour: With the market direction — won 48% of 266 trades, avg +0.06R (all signals: -0.11R, 43% won)
+▲ Favour: Far from VWAP at entry (extended move) — won 48% of 71 trades, avg +0.09R (all signals: -0.11R, 43% won)
+▲ Favour: 1ST-CANDLE — won 48% of 98 trades, avg +0.09R (all signals: -0.11R, 43% won)
+▲ Favour: Mildly positive market mood — won 50% of 157 trades, avg +0.10R (all signals: -0.11R, 43% won)
+▲ Favour: Short trades — won 60% of 15 trades, avg +0.24R (all signals: -0.11R, 43% won)
+
+How it uses this: each new signal gets a win-odds score from these patterns (shown on the card), so conditions that keep failing lower the score of future signals.
+
+keyboard_arrow_down
+
+Win rate by condition
+
+12% · n=8
+27% · n=11
+29% · n=38
+32% · n=47
+34% · n=44
+36% · n=230
+37% · n=117
+39% · n=159
+40% · n=238
+40% · n=293
+40% · n=241
+40% · n=297
+40% · n=294
+40% · n=373
+41% · n=64
+42% · n=139
+43% · n=606
+44% · n=39
+44% · n=176
+45% · n=256
+46% · n=316
+46% · n=222
+47% · n=212
+48% · n=284
+48% · n=185
+48% · n=71
+48% · n=98
+48% · n=266
+50% · n=26
+50% · n=157
+50% · n=117
+60% · n=15
+0
+20
+40
+60
+80
+100
+Risk-on market mood
+No news flags
+Risk-off market mood
+Volatile market mood
+Tight opening range (stop inside normal noise)
+VWAP pullback
+Against the market direction
+Mildly negative market mood
+Market had no clear direction
+Normal opening-range width
+Midday signal (10:30–12:30)
+With the opening gap
+Close to VWAP at entry
+Normal volume (1.5–2.5×)
+Late-day signal (after 12:30)
+No meaningful opening gap
+Long trades
+News or corporate-event day
+Opening range breakout
+Moderately away from VWAP at entry
+Early signal (before 10:30)
+Strong volume (over 2.5×)
+Choppy market mood
+Wide opening range (stop far away)
+Against the opening gap
+Far from VWAP at entry (extended move)
+1ST-CANDLE
+With the market direction
+Weak volume (under 1.5× normal)
+Mildly positive market mood
+REL-STR
+Short trades
+Win rate %
+all signals 43%
+WHY TRADES WENT WRONG
+losing trades in the last 7 days, diagnosed by the Coach
+VWAP pullback 3
+Close to VWAP at entry 2
+Risk-on market mood 1
+
+Re-train Coach now
+
+Agents: 🧭 Pulse market mood · 🛡️ Sentinel news & events · 🗣️ Narrator explanations · 🎓 Coach learning & post-mortems · 🚪 Exit · ⚖️ Risk · 🔔 Alerts · 👤 Reviewer decisions. Events are kept 7 days (digested into learning memory for 180); the trade journal 90 days.

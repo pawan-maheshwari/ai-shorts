@@ -1,0 +1,136 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+ANALYST DESK
+research analysts · macro strategist · portfolio manager — shadow mode
+At 09:30 IST the desk meets with only what is known by then — the first 15 minutes, earlier sessions and the Sentinel's pre-open notes. Each research analyst gives a view on one stock for the rest of the day (long, short or no view) with a thesis and what would prove it wrong; the portfolio manager turns the views, the market regime and the armed strategy specialists into a plan. Every view is scored like a real desk scores its analysts: the stock's move from 09:30 to 15:15 in the called direction, minus 0.1% costs. An LLM (Groq) writes the views when its API key is set; a rule-based analyst runs alongside as the benchmark it has to beat. Shadow mode: the desk never changes a live trade — its record decides whether it should.
+DESK
+Groq
+writes today's views
+REGIME
+Trend down
+rule read: Trend down
+NIFTY FIRST 15 MIN
+-0.28%
+gap -0.16%
+BREADTH
+20%
+focus stocks up
+STANCE
+Cautious
+session 19 Nov
+Portfolio manager — today's plan
+Down‑trend macro and analyst consensus support short bias. Limit to three high‑conviction shorts to manage cost impact.
+• ICICIBANK ▼ short · size 1.20× · Strong gap, low volume, near 95% range, regulatory downside
+• HDFCBANK ▼ short · size 1.00× · Gap -0.13%, low volume, 91% range, downtrend bias
+• RELIANCE ▼ short · size 0.90× · Gap -0.14%, moderate volume, macro downtrend, 94% range
+Favour: GAP-FADE, TREND, REVERT · Avoid: 1ST-CANDLE, REL-STR, HOUR-BRK
+TRACK RECORD
+after 0.1% costs · views held 09:30 → 15:15 · 'no view' scores zero
+LLM ANALYSTS
+-0.45%
+per call · 21 calls · right 48% · 4 sessions
+LLM PM FOCUS
+-0.24%
+per call · 9 calls · right 44% · 3 sessions
+RULE ANALYSTS
+-0.10%
+per call · 820 calls · right 46% · 53 sessions
+RULE PM FOCUS
+-0.18%
+per call · 129 calls · right 40% · 43 sessions
+
+LLM desk notes written by: Groq · openai/gpt-oss-120b. Compare records only across enough sessions.
+
+September
+Thu 03
+Sat 05
+Mon 07
+Wed 09
+Fri 11
+Sep 13
+Tue 15
+Thu 17
+Sat 19
+Mon 21
+Wed 23
+Fri 25
+Sep 27
+Tue 29
+October
+Sat 03
+Mon 05
+Wed 07
+Fri 09
+Oct 11
+Tue 13
+Thu 15
+Sat 17
+Mon 19
+Wed 21
+Fri 23
+Oct 25
+Tue 27
+Thu 29
+Sat 31
+November
+Tue 03
+Thu 05
+Sat 07
+Mon 09
+Wed 11
+Fri 13
+Nov 15
+Tue 17
+Thu 19
+−100
+0
+−50
+LLM analysts
+Rule analysts
+
+Cumulative % after costs, summed over each session's calls. Every point is a view written before the outcome — a desk earns its place only if this keeps rising.
+
+DESK AS A FILTER
+the live engine's own signals after 09:30, grouped by the desk's view
+AGREES
++0.04R
+85 signals · won 55%
+OPPOSES
++0.10R
+3 signals · won 67%
+NO VIEW
++0.25R
+27 signals · won 48%
+
+If signals the desk agrees with clearly beat those it opposes, over enough signals, the desk is adding judgement the rules lack and can be promoted from shadow mode to a filter.
+
+keyboard_arrow_down
+
+Lessons the desk keeps (costliest recent calls)
+
+- 2026-11-19: called SHORT LT (0.65) — "Gap -0.07% then -0.96% on 0.5× volume, at 80% of range, downside momentum." — it moved +2.25%, net -2.35%
+- 2026-11-19: called SHORT HDFCBANK (0.70) — "Gap -0.13% and 1st 15 min -0.33% on 0.2× volume, near 91% of 20‑day range, downtrend regim" — it moved +1.97%, net -2.07%
+- 2026-11-19: called SHORT KOTAKBANK (0.68) — "Gap -0.07% and -0.44% on 0.4× volume, 87% of range, macro downtrend pressure." — it moved +1.87%, net -1.97%
+- 2026-11-19: called SHORT RELIANCE (0.68) — "Gap -0.14% & 1st 15 min -0.18% on 0.5× volume, 94% of range, macro downtrend." — it moved +1.56%, net -1.66%
+- 2026-11-19: called SHORT AXISBANK (0.70) — "Gap +0.32% then -0.26% on 1× volume, 92% of range, likely revert down in downtrend." — it moved +1.34%, net -1.44%
+- 2026-11-19: called SHORT ICICIBANK (0.75) — "Gap -0.23% & 1st 15 min -0.25% on 0.2× volume, 95% of range, regulatory legal news negativ" — it moved +1.10%, net -1.20%
+- 2026-11-18: called SHORT SBIN (0.57) — "Gap +0.05% with 2× volume, 1st 15 min +0.15% near top of range; likely revert." — it moved +2.12%, net -2.22%
+- 2026-11-18: called LONG INFY (0.65) — "Gap -0.82% then +0.17% on low volume; only 28% of 20‑day range, room to climb." — it moved -1.21%, net -1.31%

@@ -1,0 +1,90 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+Auto-refresh
+
+↻ Refresh now
+
+Market closed
+Last refreshed 20:08:57 IST · 19 Nov
+Latest bar 15:25
+Next 20:10:57 (every 2 min)
+🧭 PULSE · RISK-ON
+New signals sized ×1
+Nifty ▲ 1.14%
+Nifty up 1.14% and above its intraday average · Daily trend up (above 20 and 50-day averages) · India VIX 16.1 (+3.5% vs previous day) · Breadth +71% (watchlist stocks above their open minus below)
+keyboard_arrow_down
+
+🔔 Alerts · 1 · 1 new
+
+20:09
+🧭
+Market mood: Risk-on — position size ×1
+
+Alerts show while this page is open. Everything is also kept in the Audit log tab for 7 days.
+
+keyboard_arrow_down
+
+🧪 Shadow book · 36 today · 36 closed, +0.27R avg
+
+Practice only — not recommendations. Each family's plain signal (both sides, no market or volume filter, stop ≥ 0.3%, target 1.5R, after costs) on the scanned stocks, kept apart from the live book and the agents' records.
+
+Record by family (closed shadow trades, last 60 days)
+
+SESSION
+19 Nov 2026
+10 stocks scanned
+BREADTH
+▲9 ▼1
+up vs down on the day
+IN PLAY
+2
+rel. vol ≥ 1.5×
+SIGNALS
+0
+triggered today
+OPEN
+0
+exit by 15:15
+SIGNALS
+Risk agent: max 3 trades, 3 open, stop at −2R a day
+🏛️ First to fire: 1ST-CANDLE, REL-STR are armed on the top 10 Nifty stocks. The first armed strategy to trigger on a stock is traded at once; the Risk agent still applies its caps. Details in 🔭 Strategy lab.
+Practice only — not trade recommendations. These signals are shown for paper trading because first-to-fire has 12 capped trades on days it was not tuned on (+0.51R each) — it needs 20 and a positive average before its signals count as recommendations. They switch back to normal recommendations once what is live has a positive record on sessions it was not tuned on.
+No setups have triggered yet. Watch the trigger levels below — a 5-minute close beyond the opening range with rising volume starts a breakout.
+WATCHLIST
+sorted by in play, then relative volume
+
+Chart a stock
+
+10:00Nov 19, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+1140
+1145
+1150
+1155
+1160
+Price
+VWAP
+OR high 1,150.55
+OR low 1,141.40
