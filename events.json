@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18T07:55:49.968Z",
+ "updated": "2026-11-19T07:55:46.630Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -48,33 +48,6 @@
    "lat": -33.92,
    "lon": 18.42,
    "venue": "Cape Town International Convention Centre (CTICC)"
-  },
-  {
-   "title": "Global AI Nights: Seattle",
-   "type": "Meetup",
-   "start": "2026-11-18",
-   "end": "2026-11-18",
-   "url": "https://globalai.community/e/owfjo36w",
-   "source": "Global AI Community",
-   "city": "Seattle",
-   "country": "United States",
-   "cc": "US",
-   "lat": 47.61,
-   "lon": -122.33
-  },
-  {
-   "title": "Neysa CXO Unplugged (Gurgaon edition)",
-   "type": "Executive roundtable",
-   "start": "2026-11-18",
-   "end": "2026-11-18",
-   "url": "https://aim.media/discover-events/neysa-cxo-unplugged-gurgaon",
-   "source": "AIM Media House",
-   "city": "Gurugram",
-   "country": "India",
-   "cc": "IN",
-   "lat": 28.46,
-   "lon": 77.03,
-   "venue": "The Westin Gurgaon"
   },
   {
    "title": "AI Engineering Summit Manila",
