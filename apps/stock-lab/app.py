@@ -664,6 +664,36 @@ def kpis(items):
     st.markdown(f'<div class="sl kpis">{cells}</div>', unsafe_allow_html=True)
 
 
+def shadow_view(today_rows):
+    """Shadow book: today's practice trades from every family + the running record by family."""
+    hist = STORE.memory_list("shadow", "v1", days=60)
+    H = pd.DataFrame([r["data"] for r in hist if r.get("data")]) if hist else pd.DataFrame()
+    closed = H[H.status != "OPEN"] if not H.empty else H
+    head = f"🧪 Shadow book · {len(today_rows)} today"
+    if not closed.empty:
+        head += f" · {len(closed)} closed, {closed.r.mean():+.2f}R avg"
+    with st.expander(head, expanded=False):
+        st.caption(f"Practice only — not recommendations. Each family's plain signal (both sides, no market or volume "
+                   f"filter, stop ≥ {rs.SHADOW_MINSTOP:g}%, target {rs.SHADOW_RR:g}R, after costs) on the scanned "
+                   f"stocks, kept apart from the live book and the agents' records.")
+        if today_rows:
+            T = pd.DataFrame(today_rows).sort_values("time")
+            T["side"] = T.side.map({1: "LONG", -1: "SHORT"})
+            st.dataframe(T[["time", "symbol", "code", "side", "entry", "stop", "target", "status", "exit_t", "r"]]
+                         .rename(columns={"code": "family", "exit_t": "exit", "r": "R"}),
+                         hide_index=True, width='stretch')
+        else:
+            st.markdown('<div class="sl note">No family has signalled on the scanned stocks yet today.</div>',
+                        unsafe_allow_html=True)
+        if not closed.empty:
+            g = closed.assign(win=closed.r > 0).groupby("code").agg(trades=("r", "size"), days=("day", "nunique"),
+                                                                     win_pct=("win", "mean"), avg_R=("r", "mean"),
+                                                                     total_R=("r", "sum"))
+            g["win_pct"] = (g.win_pct * 100).round(0)
+            st.markdown("**Record by family (closed shadow trades, last 60 days)**")
+            st.dataframe(g.sort_values("avg_R", ascending=False).round(2), width='stretch')
+
+
 def section(title, aside=""):
     st.markdown(f'<div class="sl sh">{html.escape(title)}<span>{aside}</span></div>', unsafe_allow_html=True)
 
@@ -1048,6 +1078,39 @@ with tab_i:
             unsafe_allow_html=True)
 
         sig = S[S.setup.notna()].copy()
+
+        # ------------------------------------------------ Shadow book (practice only — never a recommendation)
+        # Every family's plain signal on the scanned stocks, paper-traded and kept apart from the live book, the
+        # Coach and the panel's records: the armed strategies sit idle on most days, so this is where the day's
+        # trade options show and where a record builds quickly.
+        shadow = []
+        try:
+            _exit_t = dtime(*map(int, A.exit_time.split(":")))
+            _today = S.date.iloc[0]
+            for _sym, _rows in ce.prep_days(scan_data).items():
+                _d, _g, _pc, _avg = _rows[-1]
+                if _d != _today:
+                    continue
+                for x in rs.shadow_signals(_g, _pc, _avg, A):
+                    px, t_out, why = ce.exit_trade(_g, x, A)
+                    risk = abs(x["entry"] - x["stop"])
+                    if not risk:
+                        continue
+                    live_ = why == "close" and pd.Timestamp(t_out).time() < _exit_t
+                    r_ = (px - x["entry"]) * x["side"] / risk - A.cost_pct / 100 * x["entry"] / risk
+                    shadow.append(dict(key=f"{_d}|{_sym}|{x['fam']}|{x['side']}", day=str(_d), symbol=_sym,
+                                       code=x["code"], fam=x["fam"], side=int(x["side"]),
+                                       time=pd.Timestamp(x["time"]).strftime("%H:%M"), entry=float(x["entry"]),
+                                       stop=float(x["stop"]), target=float(x["target"]),
+                                       status="OPEN" if live_ else {"close": "TIME"}.get(why, why.upper()),
+                                       exit_t=None if live_ else pd.Timestamp(t_out).strftime("%H:%M"),
+                                       r=round(float(r_), 3)))
+            if shadow:
+                STORE.memory_upsert("shadow", "v1", [dict(key=r_["key"], day=r_["day"], symbol=r_["symbol"],
+                                                          data=r_) for r_ in shadow])
+        except Exception as e:          # the shadow book must never break the live panel
+            shadow = []
+            STORE.log("Shadow", "error", f"Shadow book skipped: {e}", dkey=f"shadow-err|{now:%Y-%m-%d %H}")
         sig["is_open"] = sig.status == "OPEN"
         sig = sig.sort_values(["is_open", "signal_time"], ascending=[False, False])
 
@@ -1275,6 +1338,18 @@ with tab_i:
             if a["sentinel"] == "HIGH":
                 _alert(f"sent|{r.symbol}", "HIGH", f"Sentinel: {r.symbol} is high-risk today — {a['sent']['reasons'][0]}",
                        r.symbol, "⚠️")
+        for x in shadow:
+            side_t = "LONG" if x["side"] == 1 else "SHORT"
+            if not ss.get("alerts_init") and x["status"] != "OPEN":
+                ss.seen[f"shadow|{x['key']}"] = x["status"]     # first load: no backlog of finished practice trades
+                continue
+            if x["status"] == "OPEN":
+                _alert(f"shadow|{x['key']}", "OPEN", f"Shadow · {x['code']} {side_t} {x['symbol']} at {x['time']} — entry "
+                       f"{inr(x['entry'])}, stop {inr(x['stop'])}, target {inr(x['target'])} (practice, not a "
+                       f"recommendation)", x["symbol"], "🧪")
+            else:
+                _alert(f"shadow|{x['key']}", x["status"], f"Shadow · {x['symbol']} {x['code']} {side_t}: {x['status']} "
+                       f"({x['r']:+.2f}R, practice)", x["symbol"], "🧪")
         ss.alerts = (fresh[::-1] + ss.alerts)[:60]
         if not ss.get("alerts_init"):
             ss.alerts_init = True
@@ -1300,6 +1375,7 @@ with tab_i:
                         unsafe_allow_html=True)
             st.caption("Alerts show while this page is open. Everything is also kept in the Audit log tab for 7 days.")
         ss.alerts_shown = True
+        shadow_view(shadow)
         adv, dec = int((S.chg_pct > 0).sum()), int((S.chg_pct < 0).sum())
         kpis([("Session", f'{pd.Timestamp(S.date.iloc[0]):%d %b %Y}', f"{len(S)} stocks scanned"),
               ("Breadth", f'<span class="up">▲{adv}</span> <span class="down">▼{dec}</span>', "up vs down on the day"),

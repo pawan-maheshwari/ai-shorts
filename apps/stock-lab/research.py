@@ -637,6 +637,36 @@ def race_signals(g, prev_close, avg_or_vol, p):
     return out, info
 
 
+# ====================================================================== shadow book
+# Every family's plain signal, paper-traded for practice and learning only — never a recommendation and
+# never counted in the panel's records. Armed strategies stack filters on 10 heavyweights and sit idle on most
+# days (30 of 37 in the 19 Nov study), so on its own the live book teaches the agents very slowly; the shadow
+# book shows every day's trade options and builds a record ~10x faster.
+SHADOW_MINSTOP = 0.3      # tighter stops than this cost more than ~0.33R a round trip
+SHADOW_RR = 1.5
+SHADOW_LAST = "14:40"     # no new shadow entries after this
+
+
+def shadow_specs():
+    """One plain spec per family: its first variant, both sides, no market / volume filter."""
+    return [dict(fam=f, prm=v[2][0], side="both", nifty="any", relvol=0.0, minstop=SHADOW_MINSTOP, rr=SHADOW_RR)
+            for f, v in FAMILIES.items()]
+
+
+def shadow_signals(g, prev_close, avg_or_vol, p):
+    """The first signal of each family on this stock today: [dict(signal..., fam, code)]."""
+    import argparse
+    out = []
+    last = dtime(*map(int, SHADOW_LAST.split(":")))
+    for spec in shadow_specs():
+        q = argparse.Namespace(**{**vars(p), "race": None, "strategy": spec})
+        sg, _ = day_signals(g, prev_close, avg_or_vol, q)
+        sg = [x for x in sg if pd.Timestamp(x["time"]).time() <= last]
+        if sg:
+            out.append(dict(sg[0], fam=spec["fam"], code=FAMILIES[spec["fam"]][0]))
+    return out
+
+
 def study_spec(spec):
     """A looser version of a strategy for the models' practice set: both sides, no volume / stop / market filter."""
     return dict(spec, side="both", nifty="any", relvol=0.0, minstop=0.0)
