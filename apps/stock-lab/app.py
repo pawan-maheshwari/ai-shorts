@@ -2262,7 +2262,7 @@ with tab_r:
             st.markdown("".join(f'<div class="sl" style="font-size:13px;margin:4px 0"><b>{code}</b> — '
                                 f'{html.escape(desc.split(":")[0])}</div>'
                                 for code, desc, _ in rs.FAMILIES.values()), unsafe_allow_html=True)
-            st.caption("Each family is crossed with: longs / shorts / both · with Nifty or not · opening volume ≥ 0, 1.2 "
+            st.caption("Each family is crossed with: longs / shorts / both · market filter: none, with Nifty, or strong Nifty trend (opening move ≥ 0.4% the same way) · opening volume ≥ 0, 1.2 "
                        "or 1.5× · minimum stop 0, 0.4 or 0.8% (a wider stop keeps costs small relative to risk) · target "
                        "1, 1.5, 2 or 3× risk.")
         st.caption("Why the unseen-days check matters: with thousands of strategies, some always look great on past data "

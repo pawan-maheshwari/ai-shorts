@@ -10,8 +10,14 @@ name: Stock Lab market hours
 # NSE holidays: the app shows "Market closed" and simply finds nothing — harmless.
 on:
   schedule:
-    - cron: "35 3 * * 1-5"
-    - cron: "45 6 * * 1-5"
+    # GitHub often starts scheduled runs late and sometimes skips them (on 19 Nov no schedule in this repo
+    # fired between 00:43 and 05:00 UTC). So each window has back-up starts; a back-up that finds its
+    # window already being watched waits in the concurrency queue and exits at once when it gets its turn.
+    - cron: "35 3 * * 1-5"    # morning window, 09:05 IST
+    - cron: "5 4 * * 1-5"     # back-up, 09:35 IST
+    - cron: "40 4 * * 1-5"    # back-up, 10:10 IST
+    - cron: "45 6 * * 1-5"    # afternoon window, 12:15 IST
+    - cron: "20 7 * * 1-5"    # back-up, 12:50 IST
   workflow_dispatch:
     inputs:
       until:
@@ -22,8 +28,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: stocklab-market-${{ github.event.schedule || 'manual' }}
-  cancel-in-progress: true
+  group: stocklab-market-${{ github.event_name == 'workflow_dispatch' && 'manual' || (contains(fromJSON('["35 3 * * 1-5","5 4 * * 1-5","40 4 * * 1-5"]'), github.event.schedule) && 'am' || 'pm') }}
+  cancel-in-progress: false
 
 jobs:
   watch:
@@ -43,7 +49,7 @@ jobs:
 
       - name: Watch Stock Lab through the session
         env:
-          STOCKLAB_UNTIL: ${{ github.event.inputs.until || (github.event.schedule == '35 3 * * 1-5' && '12:20') || '15:35' }}
+          STOCKLAB_UNTIL: ${{ github.event.inputs.until || (contains(fromJSON('["35 3 * * 1-5","5 4 * * 1-5","40 4 * * 1-5"]'), github.event.schedule) && '12:20') || '15:35' }}
         run: python tools/stocklab_watch.py
 
       - name: Keep the screenshot if it failed
