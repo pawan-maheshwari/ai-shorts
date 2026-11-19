@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-19",
+      "title": "The Job Forecast",
+      "headline": "\"All Humans Will Become Unemployable\": Anthropic Researcher's Warning",
+      "source": "NDTV",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQTmt2aHYyTVZDdDZLMWF0bHVJcEl1OVVNcVZTaV9XY2xkVzFXYnZfX1JCTzZPSGR2cGgxeTBvWndwV2ZhekJ6Tk9tb0JhR2k1Ulh3Wnl5c3hIMG1YNDBVLWR2OVFDZ19ZclFCNC1PR256dExzdFdOM3YtYW9DRkR2MDVkcjFWV2dtR3oxNEhMMlAzelBIWEd2U2dTZnU5WF95cnhTVHdTRWVCRDJKZnBZcGYxSGpCZ2xLRTlZ0gHDAUFVX3lxTFBubTlsTTBEc3djZVZZcFNZVnMyWXJQYXZrQllyNWVGZVlqdUFmZlF2czRSYjhhOTdzUkItWHN5T3EwVVdiVjhEdElTM2xtbGM0NXlDb1BGdkdTNExiekFYaG9ZU2l2a3QtTVhyOW9tOVEtUWNFa2xpZ1YteHdZRFFsSGNtQ1V3WEp1T1NBYWRMMVRQM0wwMEhrWUl4OG0wQUhfN054azBlZHBSNkhqRUJja21LQk85SnhmV0tWOEdrU29ORQ?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "jobs",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI will replace all jobs next year!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "Including mine. I already quit."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that prediction."
+        }
+      ]
+    },
+    {
       "date": "2026-11-18",
       "title": "The Bug Slayer",
       "headline": "Critical flaw found in vital internet platform Java through AI",
