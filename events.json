@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-19T07:55:46.630Z",
+ "updated": "2026-11-20T07:44:04.954Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -20,74 +20,6 @@
    "cc": "DE",
    "lat": 52.52,
    "lon": 13.4
-  },
-  {
-   "title": "Bengaluru Tech Summit 2026: AI & Beyond",
-   "type": "Summit & expo",
-   "start": "2026-11-17",
-   "end": "2026-11-19",
-   "url": "https://bengalurutechsummit.com",
-   "source": "Government of Karnataka announcement, via Deccan Herald",
-   "city": "Bengaluru",
-   "country": "India",
-   "cc": "IN",
-   "lat": 12.97,
-   "lon": 77.59,
-   "venue": "Bangalore International Exhibition Centre (BIEC)"
-  },
-  {
-   "title": "The AI Summit Cape Town at Africa Tech Festival",
-   "type": "Summit & expo",
-   "start": "2026-11-17",
-   "end": "2026-11-19",
-   "url": "https://africatechfestival.com/ai-summit/what-to-expect",
-   "source": "Africa Tech Festival",
-   "city": "Cape Town",
-   "country": "South Africa",
-   "cc": "ZA",
-   "lat": -33.92,
-   "lon": 18.42,
-   "venue": "Cape Town International Convention Centre (CTICC)"
-  },
-  {
-   "title": "AI Engineering Summit Manila",
-   "type": "Summit",
-   "start": "2026-11-19",
-   "end": "2026-11-19",
-   "url": "https://www.testingmind.com/event/aiengineeringsummit-Manila/",
-   "source": "Global AI Community",
-   "city": "Manila",
-   "country": "Philippines",
-   "cc": "PH",
-   "lat": 14.6,
-   "lon": 120.98
-  },
-  {
-   "title": "AIM GCC CXO Exchange",
-   "type": "Executive roundtable",
-   "start": "2026-11-19",
-   "end": "2026-11-19",
-   "url": "https://aim.media/discover-events/aim-the-gcc-leaders-table-hyd",
-   "source": "AIM Media House",
-   "city": "Hyderabad",
-   "country": "India",
-   "cc": "IN",
-   "lat": 17.39,
-   "lon": 78.49,
-   "venue": "Le Meridien Hyderabad"
-  },
-  {
-   "title": "November GlobalAI KC",
-   "type": "Meetup",
-   "start": "2026-11-19",
-   "end": "2026-11-19",
-   "url": "https://globalai.community/e/h3f7vhza",
-   "source": "Global AI Community",
-   "city": "Kansas City",
-   "country": "United States",
-   "cc": "US",
-   "lat": 39.1,
-   "lon": -94.58
   },
   {
    "title": "Agentic Engineering Days Zurich",
