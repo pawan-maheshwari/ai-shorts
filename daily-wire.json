@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-20",
+      "title": "The Trillion-Dollar Tuesday",
+      "headline": "Bond Sales Hit €2 Trillion Europe Record as AI Surge Takes Hold",
+      "source": "Bloomberg.com",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPand6WXl4NmpONmlVSzN4ZEJyT1RvYnVJY21WNGFwQlFRam1HMXFRa3h4bW1ucG9fcHVQZlpaclVwaE1odUZTeHFQa3U5VjRETkJham9OZWNsd3Y1ZElSeUE2MEdLa0lGaTF6Um9wdjg5VGNzQklHWFFuSm1sZ0RYNXAxSFprNkxSZ0ZrYjdKd0tzdjQ1V2tMRzdBV1hzV19ZeC1yQ3lDY2t1aElXeEhqbC1lVQ?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "valuation",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "They just raised more money than the moon costs!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "The pitch deck was one slide. It said “AI”."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that round without a business model."
+        }
+      ]
+    },
+    {
       "date": "2026-11-19",
       "title": "The Job Forecast",
       "headline": "\"All Humans Will Become Unemployable\": Anthropic Researcher's Warning",
