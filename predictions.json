@@ -1,261 +1,262 @@
 {
-  "generated": "2026-11-20T00:12:58.844Z",
-  "forDate": "2026-11-21",
+  "generated": "2026-11-20T23:36:29.390Z",
+  "forDate": "2026-11-22",
   "window": {
-    "from": "2026-11-19T00:12:58.844Z",
-    "to": "2026-11-20T00:12:58.844Z"
+    "from": "2026-11-19T23:36:29.390Z",
+    "to": "2026-11-20T23:36:29.390Z"
   },
   "scanned": {
-    "stories": 943,
-    "outlets": 430,
+    "stories": 847,
+    "outlets": 387,
     "regions": [
       "Global desks",
-      "North America",
       "Community",
-      "Asia-Pacific",
-      "Europe",
+      "North America",
+      "South Asia",
       "Africa",
-      "South Asia"
+      "Asia-Pacific",
+      "Europe"
     ],
-    "storylines": 611
+    "storylines": 544
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.9561,
+      "score": 0.8021,
       "probability": 0.92,
       "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Anthropic IPO Live Updates: Company Value Surges in Stock Market Debut",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "entity": "US Government",
+      "theme": "Chips & compute",
+      "headline": "Trump threatens ban on US firms building AI data centres overseas",
+      "outlook": "Supply, pricing and export angles on US Government should keep this in the headlines.",
       "signals": {
-        "outlets": 54,
+        "outlets": 25,
         "regions": [
-          "Global desks",
           "North America",
-          "Europe",
-          "Africa",
-          "Asia-Pacific"
+          "Asia-Pacific",
+          "Global desks"
         ],
-        "stories": 117,
-        "momentum": 5.64,
-        "recent6h": 78,
-        "authority": 24.9,
-        "hnPoints": 130,
-        "nextStepCues": 5,
-        "arcDays": 3,
+        "stories": 25,
+        "momentum": 26,
+        "recent6h": 25,
+        "authority": 10.6,
+        "hnPoints": 7,
+        "nextStepCues": 7,
+        "arcDays": 1,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
-        "breadth": 0.83,
+        "reach": 0.95,
+        "breadth": 0.5,
         "momentum": 1,
         "authority": 1,
-        "community": 0.71,
+        "community": 0.3,
         "nextStep": 1,
-        "arc": 1
+        "arc": 0.33
       },
       "sig": [
-        "anthropic",
-        "ipo",
-        "stock",
-        "debut",
-        "anthropics",
-        "market",
-        "record",
-        "share"
+        "trump",
+        "data",
+        "center",
+        "build",
+        "other",
+        "countrie",
+        "plan",
+        "penalize"
       ],
       "evidence": [
         {
-          "title": "Anthropic’s Mega IPO Lives Up to Wall Street Hype but Fails to Revive AI Trade",
-          "source": "WSJ",
-          "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE82dmNNTGZ4OGRheE9CWDlFVW01c1dGLVVLNHBFX04yX0ZVcmF0V2hoTlRKRmF3T3F5MGJiYlBBaFVvUFd6eTNud2YzSzdsVFM1TWRlUmhYUE1mWklkUWlrbURFNEpobEhENVB3YWZCUGVMbDYtSnRB?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Video: How Anthropic Employees Really Feel About The I.P.O.",
-          "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOQjFJWVoxbUkwVVAzQldQeGxtanFfdHpiWWNyQkttcUdDXzZoalhlNUhLV1AzWGZYSVVxS3JBMEN5cWp1WjZaMTBCZVdFazlqNDRJLVJwcU92WGdOVXluR3pNUktZdjgxWURvR2xET0lBdmYyalB4VHBMVFNwWTVqMGpzOXZkYU9iSXR5a08tOTdDSEpvQkhRWWhsQjB2d1U3Yk5XWXB4ZnFPOWc0ZUxQUVNlakRxNzZHYjdn?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "How did Anthropic's stock market debut unfold?",
-          "source": "BBC",
-          "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFAxRG9pMVFfT2NvcUhXYkhlYTdGYnQtQV91Q0xEZHE0dHBQVnpnNlAwckxEQWJiMzR4WXZxMGM2S3dlNXE0THN1a1FYeEZ5R196U3RuSjVLaFE?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic shares soar in stock market debut",
+          "title": "Trump seeks to penalize US companies that build AI data centers abroad, even as they face backlash",
           "source": "The Washington Post",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPZ3FFS2w1YzZjSk1fZmxUaW1rYktUczg1UWJzVnR0MHlHMzBHVml4NkdkcDB1UDhyZzI1OENvamE2RkdTOTZ4dTd2dndmVlZrWGwwMVc4SG1vNzJzTzZFanJQLXM3T045cFFJVmNnN2NQZGxjUW5CWU9GWVBWeDh3ODR4dDRZQ044clNndFNWcXN1Z29JSzdZMzZZdWVOZTQyQzVzdFdSczl2RlN4dF9weEdHNUp6dw?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxPaXVJaktzUll1dHcwbTVtdnJjTjBDZjNVcFNic1hUbEFreS1fZ2lSLTlta2VVdEpwRFViVVhuUEVFcDBaTnNKbG0zeVBvaTc0dWNtTm1kRTNzcGMzemhWdmdWZ0FseWpLUUY3REFSLU1BWjF2cDNyVEFwMElpMmZobjFGcFgtY0pwaEFTdC1KcnpUWHBMR045SmFjeldEZWxHMEF4NUNwWGltcDc3SS1WMUJLekVjVFBZZ1FPZHVWZzQ0NnVqeG5UeEJNWXd4ZDRUYy1DLUlUa1A?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Trump ‘not allowing’ data centres outside U.S.",
+          "source": "BNN Bloomberg",
+          "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxQeFpEUlZydUFPZGhiYzRRYjlMb29vb0ZOYjQyc0M5bElFbEprU3JpWVYtMG40Tm9JRGJ5V052di1DcGFkTkRoZXpETng1VXR5UjdzN251R2hBUkNSNkd3Z2Q2ZElxU3pkSU9hdzdpQ1ZSTl90UEdHVlh5RTRwVnE1RFhqZEFUVWwtM1RNeVh6NEZpSlRILXJ3aGZ0WUFObWktNHFNVXV2SnlvZkdtRlhWRTBGc3dndjJEOEd2c3BtdlE4SVpjNjQzMzc5VnlsVkV5YXJQeTlfWDBmYzJfOGxuN1lhcGhDWE1lSWh3SXlPZ2I?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Trump threatens ban on US firms building AI data centres overseas",
+          "source": "BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1LazU5dmNQT2FtWmdoMTJVYWdnNWJHUm9OdmxOSk5DVG96VXMtdGMwelB1eWtiZzU1Zk1sNXE2NURBNS1lcTBaRXlMY2hkXzhLWnB4ZHl2aTJKelk?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "U.S. tech companies that build AI data centers in other countries will be penalized, Trump says",
+          "source": "NBC 5 Dallas-Fort Worth",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxPUVl6MmE2NWdYZkttNUpuZUhsLUNpSUY2N1dHZE5ra3BDTmQyb1d2TGwyRjlBNGlzc1lZT3k3WHRGRmd2YXNHNGEzSkJKdVZkY0hUa1NicHIyek9DTVNQdjlkTDhlcGdvZW1ERVpIQklrTEgxN0V1c2lfQTdqNTRlaV9Nd3laVHBlc05obkhKRm56X2VRMnVPWGJQbUl3ak1aVk9SXy1NZ1FKQWRNQjNhQ0VCODV1ZW4ySkpTNGtBWWJUUmdmMnfSAc4BQVVfeXFMT0xfa2w3NWdmTVVUbVNScUNqU0d6dnBpUndqZ1JPWl9wa1FWM2JrbG14UkNsSTkxb0xtSlhJcTVXOW9hVDVjMXV6dEw3SUpRVjBpTjdERHhSSF84X1ZzUzNSeVpaTDNPQVpzQWVyMTE3ZmQ1d3BRWWZOZnNVX1JjUm5DbWlqbGJyMVc1N0xFZHlickU5ekxBcGRlYk4xWFZWOFpnQ0JEd1NkR2dKRmZNZ0tVMXdPMElQNFVkV0pvdFFiazNSUnNyN3lxX3pBNGc?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.7361,
-      "probability": 0.92,
+      "score": 0.717,
+      "probability": 0.91,
       "confidence": "High",
-      "entity": "China",
-      "theme": "Chips & compute",
-      "headline": "US signed off on sales of nearly 900,000 AI chips to China in six months, House committee says",
-      "outlook": "Supply, pricing and export angles on China should keep this in the headlines.",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "Anthropic Share Slump Nearly Erases IPO Pop as AI Trade Unravels",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 54,
+        "outlets": 16,
         "regions": [
+          "Global desks",
           "North America",
           "Asia-Pacific"
         ],
-        "stories": 61,
-        "momentum": 3.96,
-        "recent6h": 36,
-        "authority": 17.9,
-        "hnPoints": 0,
-        "nextStepCues": 1,
+        "stories": 23,
+        "momentum": 3.75,
+        "recent6h": 14,
+        "authority": 6.5,
+        "hnPoints": 192,
+        "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
-        "breadth": 0.33,
-        "momentum": 1,
+        "reach": 0.83,
+        "breadth": 0.5,
+        "momentum": 0.97,
         "authority": 1,
-        "community": 0,
-        "nextStep": 0.33,
+        "community": 0.76,
+        "nextStep": 0,
         "arc": 1
       },
       "sig": [
-        "chip",
-        "china",
-        "nvidia",
-        "amd",
-        "nearly",
-        "export",
-        "sale",
-        "month"
+        "ipo",
+        "anthropic",
+        "anthropics",
+        "gain",
+        "nasdaq",
+        "trade",
+        "$156b",
+        "charity"
       ],
       "evidence": [
         {
-          "title": "California probing whether China improperly got Nvidia technology",
-          "source": "BBC",
-          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9LcjVzcGZXYnU1NGFZcXhHTkpaeHVCbkFtZ2JWd2VidTVYSTdrZVl5VGRCMzE5WldSU0xLajIyN1ljYWdmWWtmbWw5OXpBYnIwNUVuU0xGX1k5WFE?oc=5",
+          "title": "Anthropic Share Slump Nearly Erases IPO Pop as AI Trade Unravels",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQSWx3SUw5VXNrMldJUzZ3UnQ4SGxJWXBHNTEwcWViWlJhMC1GaVJQZ3ZWNXdmajdFR3N6SHJaYlU2c0ZJcTFaOGpRdndOU0d0enNJdzdMY1NYdWt3Vk1QMnNSTFZUcHp4dXJCOUItQzJFck5GZDlkNXppT2lCRmJhcGl0bW80cEs2VVhTd240Q0pWRFFEUUxFTHo0VVVjaDVCc3hqVnJMSnp5Mm9UOHVObk9EakYxdw?oc=5",
           "region": "North America"
         },
         {
-          "title": "US signed off on sales of nearly 900,000 AI chips to China in six months, House committee says",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPOFRrWXhLbGJZcHVKYzUycHNKbTdKZUE2clNGYUp5WFFBOTdaWndZbVdDZW0xSTQzUi1EZlRsRElldE00bktXMUFMaG1Sclo4eGdCVnZab1JUbWJwZHQ4cGFSTzgyNkZSZmF0WHAzR0hTa1B3eUQ5cmJRTGRfd1ZBdkFiSzNpU1RDeF8wU0pmbXBqWXYxeFNuaWdmV01QLWk0MWdrclJDV2ZYNVFFN0puWU9B?oc=5",
+          "title": "Here’s who’s getting the richest from Anthropic’s $81 billion IPO",
+          "source": "Fortune",
+          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNMWd2VzBFUVRkbWFBSDdCTkZMUERPYzZnQV9TMmI1MEtRYl91OW5NNGg2aFBNRnJxX1NSeEJqT2E3LWlFdk1KTGJHU0JmNmdWdmdUQkxXVUxmSU0za05sQnFrcW1KaVNpbmFXNGs0LWxiOTZXUVBnOFlPVEhrSGhRSkVsN1Z6YlBKMHYwODBlXzFoZFU4WHZVd2lHZ2FjZWZ0TnA5SHVkNHZVRGZFcUZNSVJSZ0t5RzB5eDQtT0NHTzFEdnBBcHAxd2Y1ejM4ajZfM0E?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia Asked to Sell Chips to Companies Tied to Chinese Military and Megaspeed",
-          "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPUVRIQ2VxbEYxSjhPenZGVUItLXdSQzJhMzdMQjVSaDB2aXlsMUdhVk44aTRRZzY1bllnTGJRdmVXLVZsaG5KZW5EclNCUjNHT0FiRDEtZ2Nqb05BaG9Nc2hvR0xneFpWUzNJNk5CQ3IyU1ZMTGMwMWNWM3RsNGlLenpaS1Z4ZUkwYk5yVl9ialFDRzk1?oc=5",
+          "title": "Anthropic value drops after record-breaking IPO",
+          "source": "ABC News & Headlines – Australian Broadcasting Corporation",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQQUVLNFRkMm16c0xPNldrT0M3RzFNcGNzVWtJV3ZpRFdsQ0hNSUlPelcwb1Q5eDFKUWlWbGNaemROZEhSUk5fVEczQ3k4QzY2XzZFV0xfNE0xUTdmVDRBR0h1NVVQamNLa2o5Q2ZqWGd5ekJZUElrbjFPY3VOVkVLOVg0VXdPTmNEcllvaFdnV1hNSi13d2tERGU4aW8xakJfcHFKNUd4bE9Mdw?oc=5",
           "region": "North America"
         },
         {
-          "title": "China’s Moonshot AI Scraps $150 Million Deal to Access Nvidia Chips in Indonesia",
-          "source": "The Information",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOdE5MUDNQNXlvMGk2ZmF5ellRVVpSekxPd0NmZnI2cWJkbGJVdTFUZkl6Z1o3d1NjeDVoQUtUUHhDQjhfNjQ3RUM3R3lmXzZYRkVydTBjeE1MVzFjQXpVX3FNTG1Qb3p3UV9veTlCMEVISnpxcXFERUlERnNrNWJWcTRZNXRoZmVQbjM4YkItQlZxQzNDMDJtWGYxaHRjeFZEWnZvOHJmSFgxQ19XWC0zNjhR?oc=5",
+          "title": "Anthropic IPO Nears Its IPO Price as SpaceX Offers a Warning",
+          "source": "Forbes",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQSHptemlxYVlCQVhidlpfdEpERG5OR1dXWTdSeE1YeGR3UFQycE9uZlBLNnlqeVp3c3g5SmpGMnUxc3JlTzE3cnZ3MUJraFh1MXg1RUN1Skt0aDFsR2VGSjBUUnp4SEVMYzlNNHBkc1NZdUhtRkw1OTFpRmJFLUtWcjBtWHdlOXpXNEc4cG9aaTR4MFRObHFWR0NfV2FzNTkzaktmSzZQUTdpNHA5NXVKZWVNTENkNDd4aVE?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.642,
-      "probability": 0.85,
+      "score": 0.6295,
+      "probability": 0.83,
       "confidence": "High",
-      "entity": "US Government",
-      "theme": "Regulation & policy",
-      "headline": "Trump, Xi agree on need for AI safety rules, US-China cooperation on regulations",
-      "outlook": "Expect reactions from industry, lawmakers and civil society as the US Government policy story moves to its next step.",
+      "entity": "Anthropic",
+      "theme": "General AI",
+      "headline": "Anthropic Mathematician Claims to Have Solved Math’s Most Famous Problem",
+      "outlook": "Follow-up coverage of the Anthropic story is likely to continue.",
       "signals": {
-        "outlets": 16,
+        "outlets": 18,
         "regions": [
           "North America",
-          "Asia-Pacific"
+          "Global desks",
+          "South Asia",
+          "Europe"
         ],
-        "stories": 16,
-        "momentum": 1.29,
-        "recent6h": 5,
-        "authority": 4.7,
-        "hnPoints": 0,
-        "nextStepCues": 5,
-        "arcDays": 1,
+        "stories": 21,
+        "momentum": 4.5,
+        "recent6h": 14,
+        "authority": 9,
+        "hnPoints": 19,
+        "nextStepCues": 0,
+        "arcDays": 0,
         "calendar": null
       },
       "factors": {
-        "reach": 0.83,
-        "breadth": 0.33,
-        "momentum": 0.45,
-        "authority": 0.94,
-        "community": 0,
-        "nextStep": 1,
-        "arc": 0.33
+        "reach": 0.86,
+        "breadth": 0.67,
+        "momentum": 1,
+        "authority": 1,
+        "community": 0.43,
+        "nextStep": 0,
+        "arc": 0
       },
       "sig": [
-        "trump",
-        "regulation",
-        "oppose",
-        "globalist",
-        "apec",
-        "summit",
-        "during",
-        "china"
+        "anthropic",
+        "claim",
+        "mathematician",
+        "riemann",
+        "hypothesis",
+        "math",
+        "solved",
+        "claude"
       ],
       "evidence": [
         {
-          "title": "Trump, Xi agree on need for AI safety rules, US-China cooperation on regulations",
-          "source": "The Times of India",
-          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxOQy1nQTRfQWZaT19XVDZXRFp5TFoxamRiaTIzdVlIY1d6LUZzc2dadHVvMDhrMS04NEQ4VHAzSWJlZVFFWWlwQTl5YkV1Zk9HY09GdG85VEg4b2FIMTA2dmNPa3ZBZXhYQldDM0lsMTd2TnNnN05GbXIwQnFHTnhGcnE2YW5MTFduTDd1N0N1Q0t6NnNhcGdVaGhxZGFpYVA4dDZJUlFYVlplSUNVOTJXbWZMbE9lRkkwNjhkQm1YVUJTUzl1YVgxVTZfWTktbC1XSHo2b3pWamIxSTFlbjhqcnhqNA?oc=5",
+          "title": "Using AI, mathematician claims to have solved one of math’s great mysteries",
+          "source": "The Washington Post",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQWnR2Ny1uWG1YVUdRQmI2QlEyUkFoalhFZFp3Rng1ZWVlRVR4SHVzaHFnRnZuNWFfRmM5YkpVNFJCSmNHWFk2WDJia1lfOG1mYVY5MHZjY2F1d05XMlhHRUVlVklvc2RiWUR4aURGLWh4MGJMZWFsOW1Obm0taDVHek54Tk1GckZpYl80QXRncVNIbmxLdHlWUkZqMGJfSktFQ0hFV1VJWVQzZDZjbHN6Z3I0LS1aVGNJTElMZ2QzWHo2QQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Watch: Trump says he opposes ‘globalist’ AI regulation, looks forward to Xi, Putin meeting",
-          "source": "The Hindu",
-          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPa2IyMjV0X3JZckpWLU5YSEc4VHBUVkh6T3czZmlZclBJUXhBQkVVajhRZTRfeVZLMUVYdUoyX1N1ajdTM0NVaUxfa0tuVUtST092MjVoSDVMY3ZhWFBHUGczaF9zNktxaTJQZEZiVkRwQ2VPNmlta2pnQ0tQTFZGeHpqNWhEVzBPYms0Q3ZpQmR0WnVRZXR3UkdxcE1vMVBJWi1yZG5iS19YNVl0SVZmeGp4MEtOX0x1TXBQODYxNXFlZDNQZE5YRDFMa05zTUx2ZWZsTTBOVkowU0xw?oc=5",
+          "title": "Anthropic may have solved major maths problem Reimann hypothesis",
+          "source": "BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFB5cjczNDdOUWdoOUlOSUFsbUc2dXF2UGFJaGZPelVGeEw0YnN6T0UzaVRRbXVCUXZCMzBPNnNfTEtueXVxay1BM0dmcEVJX0dBbXE3azNIQ1lXV00?oc=5",
           "region": "North America"
         },
         {
-          "title": "Trump says he and Xi want moderate AI rules",
-          "source": "Korea JoongAng Daily",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOM0hsU3hHRzRiWWlKaU1kX1U5alZqM21INGFOaTZ4OGx1S3pybTgyaHZkeDcwNDdBVURJcDJLYzhQd2xGRnNYMWppNHJFbmpRMjFJUUZQV2NLUzFyeEVZQ0Z4VWNSdmNrcWpBNnNIcW5FTmptN2dlcV9ZRWlCS1F3clE1aG5ZcUtHMXpmd0ZpTE51b2RrVWdNNQ?oc=5",
+          "title": "Anthropic Mathematician Claims to Have Solved Math’s Most Famous Problem",
+          "source": "The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQMU96R3pxbVo0NDIzSUl5Szd6T0VkZzRUY1F3RE9NUnRPWU1tbnBRZkVPOWNDclpHX3hUTXo1QndXdENHb2Q1cFU2WnVwLWp0eG00dDFWcTBNR042Y3NFdUdtZGY4ODZUSnRTMFZGUnNFNFYyRGdvaHJCdVNra2k0T2NTeDZnbTdHcE83WQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Trump says Xi wants AI safety rules, pledges US-China cooperation on regulations",
-          "source": "Moneycontrol.com",
-          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNSTlhRGJSNFJZRUphYmVXZEdtZHY1SUJZNHlocmJwa1hSeG5uYW1ydTBub01pYzI1V2tZMzJkT0JmSnlRS0dLeEYtQng5R0xmcHlOdS1BZEF4TENzLU5nTXhYd3FRRTAydXZMRHd5NzNmTnFnb2hhdXhIY1hyalJ4UllMLWdRWEFicmladm1aSm9oQUhqU3dCU0pLWWNHdVpCYnJUMkI2X0xaOEFCbWpPV0V0cEZyNFAwRFNxLUpCaW1obE1ITEVSTV82T2J3UmtMTWfSAdcBQVVfeXFMTU1SZ3d0blRhMk56czVHWEl2dF9TYmRHRUp2N0pfbFh3ZmJvM0xIVnJ6ZnZQdmpZQnNtaGd4WWwyVkpBQ2pLWGM1MDRxdkJVSUNpUVRwc2xKMEx4dFhHZllfbjY2QlJfYjgtc1lIcnU1Y2VNTFQ1UlRtaWZHSENPdFN6SXd1TC1CWF9kd2JZYUZZRzJlR0gwaFRXclpuVjZPOGpCaDRsdWlEQTl5LVV0My1LUGgyTmdXY1ZkdTVqRlRwM1NLeVpYdHc4eDNScC1tU1NBaVNmTEE?oc=5",
-          "region": "North America"
+          "title": "Anthropic staffer claims solution to mathematics’ Riemann hypothesis",
+          "source": "Financial Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNeGZvLWpjMG9KbERUUllfWlQ5TG9nak8yVGFkSjFVOG5WbnFaOTFzWVlRMUlmQUZZbGJVUjhCbnp6TXJScndZR2dLdGxJa0RlVm1aVEMzZS11ekx4R3ZrZE5EOTJpU180LXhWUFRpTWwtWFhkU2VBNGt3cHVDaVRPZGRfSy0?oc=5",
+          "region": "Europe"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-20",
+    "date": "2026-11-21",
     "calls": [
       {
         "rank": 1,
-        "headline": "Anthropic prices blockbuster IPO at $83 a share",
+        "headline": "Anthropic IPO Live Updates: Company Value Surges in Stock Market Debut",
         "probability": 0.92,
         "hit": true,
-        "matched": "Anthropic IPO Live Updates: Company Value Surges in Stock Market Debut"
+        "matched": "Anthropic shares fall a day after blockbuster IPO"
       },
       {
         "rank": 2,
-        "headline": "Nvidia stops shipping US-approved AI chips to China",
+        "headline": "US signed off on sales of nearly 900,000 AI chips to China in six months, House committee says",
         "probability": 0.92,
         "hit": true,
-        "matched": "US signed off on sales of nearly 900,000 AI chips to China in six months, House committee says"
+        "matched": "US approved sale of Nvidia and AMD chips to Chinese companies"
       },
       {
         "rank": 3,
-        "headline": "How important are Nvidia and Jensen Huang to the US economy?",
-        "probability": 0.83,
+        "headline": "Trump, Xi agree on need for AI safety rules, US-China cooperation on regulations",
+        "probability": 0.85,
         "hit": false,
         "matched": null
       }
@@ -263,9 +264,9 @@
     "hits": 2
   },
   "track": {
-    "days": 20,
-    "calls": 60,
-    "hits": 52,
+    "days": 21,
+    "calls": 63,
+    "hits": 54,
     "log": [
       {
         "date": "2026-11-01",
@@ -366,9 +367,14 @@
         "date": "2026-11-20",
         "hits": 2,
         "calls": 3
+      },
+      {
+        "date": "2026-11-21",
+        "hits": 2,
+        "calls": 3
       }
     ],
-    "hitRate": 0.87
+    "hitRate": 0.86
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
