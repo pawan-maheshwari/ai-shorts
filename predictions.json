@@ -1,272 +1,271 @@
 {
-  "generated": "2026-11-18T23:48:58.114Z",
-  "forDate": "2026-11-20",
+  "generated": "2026-11-20T00:12:58.844Z",
+  "forDate": "2026-11-21",
   "window": {
-    "from": "2026-11-17T23:48:58.114Z",
-    "to": "2026-11-18T23:48:58.114Z"
+    "from": "2026-11-19T00:12:58.844Z",
+    "to": "2026-11-20T00:12:58.844Z"
   },
   "scanned": {
-    "stories": 907,
-    "outlets": 391,
+    "stories": 943,
+    "outlets": 430,
     "regions": [
       "Global desks",
-      "Community",
       "North America",
+      "Community",
       "Asia-Pacific",
       "Europe",
       "Africa",
       "South Asia"
     ],
-    "storylines": 606
+    "storylines": 611
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.8941,
+      "score": 0.9561,
       "probability": 0.92,
       "confidence": "High",
       "entity": "Anthropic",
       "theme": "Funding & markets",
-      "headline": "Anthropic prices blockbuster IPO at $83 a share",
+      "headline": "Anthropic IPO Live Updates: Company Value Surges in Stock Market Debut",
       "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 35,
+        "outlets": 54,
         "regions": [
+          "Global desks",
           "North America",
+          "Europe",
           "Africa",
           "Asia-Pacific"
         ],
-        "stories": 46,
-        "momentum": 27,
-        "recent6h": 44,
-        "authority": 17.3,
-        "hnPoints": 28,
-        "nextStepCues": 3,
+        "stories": 117,
+        "momentum": 5.64,
+        "recent6h": 78,
+        "authority": 24.9,
+        "hnPoints": 130,
+        "nextStepCues": 5,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
         "reach": 1,
-        "breadth": 0.5,
+        "breadth": 0.83,
         "momentum": 1,
         "authority": 1,
-        "community": 0.49,
+        "community": 0.71,
         "nextStep": 1,
         "arc": 1
       },
       "sig": [
         "anthropic",
         "ipo",
-        "share",
-        "price",
-        "$83",
-        "range",
-        "trillion",
-        "above"
+        "stock",
+        "debut",
+        "anthropics",
+        "market",
+        "record",
+        "share"
       ],
       "evidence": [
         {
-          "title": "Anthropic Sets IPO Price at $83 Per Share in Milestone for the AI Industry",
-          "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1nQ3JieUUxQkdyelMxelhaUUdmaTFlSTFva2pnR2FHY08wbXdmT01JVk56aUVHRGtQRUFhc1J2SFR0cEp4THBGc3M3aGhlalE3MUlEb3dQbElfREZhYlVjemROWDRVRm51QXVIakZKM2pmZi03by1hUi1FN04?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Anthropic reportedly prices its IPO at $83 per share, valuing the AI giant at $1.5 trillion",
-          "source": "AP News",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNeVVmSzl3dVBhbDdFbTMtTUl2LWVHU1FRb2hvYzJZNWdFU0ZDTmU3NFBVNDVWQXNXQlk2QmkzblN4MUplLWVGc1NheHNRZVpZTHZ1eG9OME53SUNtOExJQzNFSTJpLUw0cWxnSjR4VWlXLWZhZUZsc0dna1J6bmxZTTNBb0l2LUpq?oc=5",
-          "region": "Africa"
-        },
-        {
-          "title": "Watch How Anthropic Can Capture $30 Trillion",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPYS1UZFRNM244S0FfQy1OUXFlT25GbzlDVldnRFJJTDZOTlV6N1FVZ24zSkVGZm51eFRvcDQzVHJ6VjFEWVBPVXlNYXk4SWMtQkJTdTV2bGkySjc3QjBZRmtWbzJvbEtwRUJZT2J2R0U0bFZpek02bGVzOG1Qdjc2OUFEWUU2TmlpeDNzRDM3a05UTmNyTUdyUFJ0bUcxQWc5MkE?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "U.S. Stocks Mixed, Nvidia Down Again Ahead of Anthropic IPO",
+          "title": "Anthropic’s Mega IPO Lives Up to Wall Street Hype but Fails to Revive AI Trade",
           "source": "WSJ",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOZXo2WlZpcTltVUpERGFLMVFlbzk3NkhYcVJsSGFCRk1ZeEV3eTBTa2ZhbEx5dHVpZTAxTFFXc1o1Mzc2WHJ1cHFFZWFGVS1GUGxyaGJfOU9KdHF3ZWxaQmZHTWh6bDB0N0JUOVNpbzdpTDZRWGZnY2p0d3lEcXVJcERPZEVwM01QdUdLRWkwN0M2YnNzMk1QbjdlckU?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE82dmNNTGZ4OGRheE9CWDlFVW01c1dGLVVLNHBFX04yX0ZVcmF0V2hoTlRKRmF3T3F5MGJiYlBBaFVvUFd6eTNud2YzSzdsVFM1TWRlUmhYUE1mWklkUWlrbURFNEpobEhENVB3YWZCUGVMbDYtSnRB?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Video: How Anthropic Employees Really Feel About The I.P.O.",
+          "source": "The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOQjFJWVoxbUkwVVAzQldQeGxtanFfdHpiWWNyQkttcUdDXzZoalhlNUhLV1AzWGZYSVVxS3JBMEN5cWp1WjZaMTBCZVdFazlqNDRJLVJwcU92WGdOVXluR3pNUktZdjgxWURvR2xET0lBdmYyalB4VHBMVFNwWTVqMGpzOXZkYU9iSXR5a08tOTdDSEpvQkhRWWhsQjB2d1U3Yk5XWXB4ZnFPOWc0ZUxQUVNlakRxNzZHYjdn?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "How did Anthropic's stock market debut unfold?",
+          "source": "BBC",
+          "url": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFAxRG9pMVFfT2NvcUhXYkhlYTdGYnQtQV91Q0xEZHE0dHBQVnpnNlAwckxEQWJiMzR4WXZxMGM2S3dlNXE0THN1a1FYeEZ5R196U3RuSjVLaFE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Anthropic shares soar in stock market debut",
+          "source": "The Washington Post",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPZ3FFS2w1YzZjSk1fZmxUaW1rYktUczg1UWJzVnR0MHlHMzBHVml4NkdkcDB1UDhyZzI1OENvamE2RkdTOTZ4dTd2dndmVlZrWGwwMVc4SG1vNzJzTzZFanJQLXM3T045cFFJVmNnN2NQZGxjUW5CWU9GWVBWeDh3ODR4dDRZQ044clNndFNWcXN1Z29JSzdZMzZZdWVOZTQyQzVzdFdSczl2RlN4dF9weEdHNUp6dw?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.7908,
+      "score": 0.7361,
       "probability": 0.92,
       "confidence": "High",
-      "entity": "Nvidia",
+      "entity": "China",
       "theme": "Chips & compute",
-      "headline": "Nvidia stops shipping US-approved AI chips to China",
-      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
+      "headline": "US signed off on sales of nearly 900,000 AI chips to China in six months, House committee says",
+      "outlook": "Supply, pricing and export angles on China should keep this in the headlines.",
       "signals": {
-        "outlets": 50,
+        "outlets": 54,
         "regions": [
           "North America",
-          "Asia-Pacific",
-          "Africa",
-          "Global desks"
+          "Asia-Pacific"
         ],
-        "stories": 62,
-        "momentum": 0.67,
-        "recent6h": 11,
-        "authority": 17.7,
-        "hnPoints": 15,
-        "nextStepCues": 3,
+        "stories": 61,
+        "momentum": 3.96,
+        "recent6h": 36,
+        "authority": 17.9,
+        "hnPoints": 0,
+        "nextStepCues": 1,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
         "reach": 1,
-        "breadth": 0.67,
-        "momentum": 0.14,
+        "breadth": 0.33,
+        "momentum": 1,
         "authority": 1,
-        "community": 0.4,
-        "nextStep": 1,
+        "community": 0,
+        "nextStep": 0.33,
         "arc": 1
       },
       "sig": [
-        "nvidia",
         "chip",
         "china",
-        "stop",
-        "shipping",
-        "halt",
-        "despite",
-        "shipment"
+        "nvidia",
+        "amd",
+        "nearly",
+        "export",
+        "sale",
+        "month"
       ],
       "evidence": [
         {
-          "title": "AI chip export controls targeting China gain bipartisan momentum after Nvidia scandal",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQb0hidGtCbWh0N1VCYWh1Q2NRQmlPTE1JaTdnWHVxYWpwU093SmJZazM2a1Q0RmJBTDlMQWZrUzl5dkdlYmZVTTY0MC1JaDd6aGU3anpXY0VWVUFwdlZDal9jNjBZd2F2SVYtWVl1eXl4NzRLQlZHdnNScHhnd3lxekV5V3JnY1UzX2p3WGxfamJSVmVvME55cXRscXJiRWFxdndqR3NJbkVQMlBLdW5GZnZB?oc=5",
+          "title": "California probing whether China improperly got Nvidia technology",
+          "source": "BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9LcjVzcGZXYnU1NGFZcXhHTkpaeHVCbkFtZ2JWd2VidTVYSTdrZVl5VGRCMzE5WldSU0xLajIyN1ljYWdmWWtmbWw5OXpBYnIwNUVuU0xGX1k5WFE?oc=5",
           "region": "North America"
         },
         {
-          "title": "China seeks advanced Nvidia chips for AI weapons despite US curbs, report says",
+          "title": "US signed off on sales of nearly 900,000 AI chips to China in six months, House committee says",
           "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNN0Vsd0FkMFJLZl8zbklveDFFQW9XSEc3Q3dHMEZ6NjJFZ0dyYUIzOVdkam50a0lSYy00NEt5OGpCaG8wQTZ4RDlyTGVvaU1VMTlGNjk3aTdiZHVXcnloamEyTUZqbEhJWTlHbFJqTHNDWmVGN2JBT2FYTG44bWRIVXFfQ1E3LVdmeGRlczZETDFIUXlUSy04RXk0bDBlTHlIVm1ld2V3TnltenZZSXdBTm1ZV3NxUFVnTTRZWWRn?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPOFRrWXhLbGJZcHVKYzUycHNKbTdKZUE2clNGYUp5WFFBOTdaWndZbVdDZW0xSTQzUi1EZlRsRElldE00bktXMUFMaG1Sclo4eGdCVnZab1JUbWJwZHQ4cGFSTzgyNkZSZmF0WHAzR0hTa1B3eUQ5cmJRTGRfd1ZBdkFiSzNpU1RDeF8wU0pmbXBqWXYxeFNuaWdmV01QLWk0MWdrclJDV2ZYNVFFN0puWU9B?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia Stops Selling AI Chips to China Despite US Approval",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxQVk5ZV2dpR3EyVEtJcVdSZTBCVGl6UE1qZ1gzNWdiaHJ3WGR1S3NUd2VRcWVzUWhjanFicXVzNi1zRWZNel9EdlVOaC1uMUFCckRXMkRGWkRZeHdZUnE4VTdtUkZ2N0dITkRYa040X29HanoxODdGVXV3NzEyOGhnR1VOb2VwcFNIcHFJQlFrNXM3T1hqQlN5WnB0MHJTU0R2cTZOUnBNbV9Ubm81clFKM0x5cHRxdw?oc=5",
+          "title": "Nvidia Asked to Sell Chips to Companies Tied to Chinese Military and Megaspeed",
+          "source": "The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPUVRIQ2VxbEYxSjhPenZGVUItLXdSQzJhMzdMQjVSaDB2aXlsMUdhVk44aTRRZzY1bllnTGJRdmVXLVZsaG5KZW5EclNCUjNHT0FiRDEtZ2Nqb05BaG9Nc2hvR0xneFpWUzNJNk5CQ3IyU1ZMTGMwMWNWM3RsNGlLenpaS1Z4ZUkwYk5yVl9ialFDRzk1?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia Stops Selling AI Chips to China Despite US Approval (1)",
-          "source": "Bloomberg Government News",
-          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNejM4bUFRX2tWeUN1OGJfSXJ1TWtZb3RxSEU0TDlGYW9SRFJXUHRhcGxNamF5YTktMElfalJsdy1PcXA5T3Q4aGprNkxDcnBQWGhJaWY3OS1pcTZkVXJFNi1PY1J1dFc2X2ZKbElhR2RRWk8tLTVZM3kxeTZIM1g0bjktbW9XcjZQSGVkcGZqeWQtUDVVYllFajAtS2pIWGpOckJjSWlpRzNOUQ?oc=5",
+          "title": "China’s Moonshot AI Scraps $150 Million Deal to Access Nvidia Chips in Indonesia",
+          "source": "The Information",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOdE5MUDNQNXlvMGk2ZmF5ellRVVpSekxPd0NmZnI2cWJkbGJVdTFUZkl6Z1o3d1NjeDVoQUtUUHhDQjhfNjQ3RUM3R3lmXzZYRkVydTBjeE1MVzFjQXpVX3FNTG1Qb3p3UV9veTlCMEVISnpxcXFERUlERnNrNWJWcTRZNXRoZmVQbjM4YkItQlZxQzNDMDJtWGYxaHRjeFZEWnZvOHJmSFgxQ19XWC0zNjhR?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.6283,
-      "probability": 0.83,
+      "score": 0.642,
+      "probability": 0.85,
       "confidence": "High",
-      "entity": "Nvidia",
-      "theme": "Funding & markets",
-      "headline": "How important are Nvidia and Jensen Huang to the US economy?",
-      "outlook": "Market reaction, analyst notes and deal details around Nvidia are the likely next chapter.",
+      "entity": "US Government",
+      "theme": "Regulation & policy",
+      "headline": "Trump, Xi agree on need for AI safety rules, US-China cooperation on regulations",
+      "outlook": "Expect reactions from industry, lawmakers and civil society as the US Government policy story moves to its next step.",
       "signals": {
-        "outlets": 15,
+        "outlets": 16,
         "regions": [
-          "Global desks",
           "North America",
-          "Europe"
+          "Asia-Pacific"
         ],
-        "stories": 18,
-        "momentum": 0.88,
-        "recent6h": 4,
-        "authority": 7.8,
-        "hnPoints": 4,
-        "nextStepCues": 1,
-        "arcDays": 3,
+        "stories": 16,
+        "momentum": 1.29,
+        "recent6h": 5,
+        "authority": 4.7,
+        "hnPoints": 0,
+        "nextStepCues": 5,
+        "arcDays": 1,
         "calendar": null
       },
       "factors": {
-        "reach": 0.81,
-        "breadth": 0.5,
-        "momentum": 0.27,
-        "authority": 1,
-        "community": 0.23,
-        "nextStep": 0.33,
-        "arc": 1
+        "reach": 0.83,
+        "breadth": 0.33,
+        "momentum": 0.45,
+        "authority": 0.94,
+        "community": 0,
+        "nextStep": 1,
+        "arc": 0.33
       },
       "sig": [
-        "nvidia",
-        "huang",
-        "jensen",
-        "exit",
-        "china",
-        "board",
-        "remain",
-        "ceo"
+        "trump",
+        "regulation",
+        "oppose",
+        "globalist",
+        "apec",
+        "summit",
+        "during",
+        "china"
       ],
       "evidence": [
         {
-          "title": "‘Business as usual’: Nvidia’s Kress passes first test as board slams door on Huang",
-          "source": "BNN Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxQN3d0aFMzQWxEQkFYcFB3VTNBSDk2NXlJV2xTbFI2WWg3eUZXTGd5SVBiMXRjck1VMW5WdDVYMGpnWWVVQWlZNGRDVVVVdGRRNjRIYXR2QlBVMUw4MDU1VnNUTWR5ZFBwenozcWFaQWpjVnc0OE1ORUpCY0sxSVcwUWxrbENLZDhOWi0xdzE2WEt5eWU3a3NFMF9yLXlvU2tuR2ItWDQ0dXQ0R1NDZUIxMHdJVHhST0hUR0xkdzAxTGJpdVNxU2dFd0o5X1F1SnkzT2tGVHVUaVBqN0VQSjVhRldIY1dDZw?oc=5",
+          "title": "Trump, Xi agree on need for AI safety rules, US-China cooperation on regulations",
+          "source": "The Times of India",
+          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxOQy1nQTRfQWZaT19XVDZXRFp5TFoxamRiaTIzdVlIY1d6LUZzc2dadHVvMDhrMS04NEQ4VHAzSWJlZVFFWWlwQTl5YkV1Zk9HY09GdG85VEg4b2FIMTA2dmNPa3ZBZXhYQldDM0lsMTd2TnNnN05GbXIwQnFHTnhGcnE2YW5MTFduTDd1N0N1Q0t6NnNhcGdVaGhxZGFpYVA4dDZJUlFYVlplSUNVOTJXbWZMbE9lRkkwNjhkQm1YVUJTUzl1YVgxVTZfWTktbC1XSHo2b3pWamIxSTFlbjhqcnhqNA?oc=5",
           "region": "North America"
         },
         {
-          "title": "Jensen Huang agrees to face Congress over Nvidia scandal",
-          "source": "Axios",
-          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPb0Z3LUduTFdSVDJpb0hOREx2RkFtYUdtekZiUHdUWHNONGNySExrYlUxUGVRVTl3em5UUHN2LVZPVFBUX1RKTjFSS3VWb3dYVXlfdTVGX21JbEpCbEpicTBwcFA0T3VpcEhyOFZRZ0padWt0dnd2VHo1QXFwVDh6Rw?oc=5",
+          "title": "Watch: Trump says he opposes ‘globalist’ AI regulation, looks forward to Xi, Putin meeting",
+          "source": "The Hindu",
+          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPa2IyMjV0X3JZckpWLU5YSEc4VHBUVkh6T3czZmlZclBJUXhBQkVVajhRZTRfeVZLMUVYdUoyX1N1ajdTM0NVaUxfa0tuVUtST092MjVoSDVMY3ZhWFBHUGczaF9zNktxaTJQZEZiVkRwQ2VPNmlta2pnQ0tQTFZGeHpqNWhEVzBPYms0Q3ZpQmR0WnVRZXR3UkdxcE1vMVBJWi1yZG5iS19YNVl0SVZmeGp4MEtOX0x1TXBQODYxNXFlZDNQZE5YRDFMa05zTUx2ZWZsTTBOVkowU0xw?oc=5",
           "region": "North America"
         },
         {
-          "title": "How important are Nvidia and Jensen Huang to the US economy?",
-          "source": "BBC",
-          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE50Q0hCQWtPOXlJaUtKb3FiNG1MYjZLNUdkTjg3SDRzTnRyNzZNdGZmWXNHMEp3MlZmS2VVWWdDSnVHTGlpV1ZYYnhNTWN6V2tCYlRjZV9ydThjczA?oc=5",
-          "region": "Europe"
+          "title": "Trump says he and Xi want moderate AI rules",
+          "source": "Korea JoongAng Daily",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOM0hsU3hHRzRiWWlKaU1kX1U5alZqM21INGFOaTZ4OGx1S3pybTgyaHZkeDcwNDdBVURJcDJLYzhQd2xGRnNYMWppNHJFbmpRMjFJUUZQV2NLUzFyeEVZQ0Z4VWNSdmNrcWpBNnNIcW5FTmptN2dlcV9ZRWlCS1F3clE1aG5ZcUtHMXpmd0ZpTE51b2RrVWdNNQ?oc=5",
+          "region": "North America"
         },
         {
-          "title": "Nvidia doubles revenue as board says it does not intend to reinstate Jensen Huang",
-          "source": "The Guardian",
-          "url": "https://www.theguardian.com/technology/2026/nov/17/nvidia-third-quarter-revenue-jensen-huang",
-          "region": "Global desks"
+          "title": "Trump says Xi wants AI safety rules, pledges US-China cooperation on regulations",
+          "source": "Moneycontrol.com",
+          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNSTlhRGJSNFJZRUphYmVXZEdtZHY1SUJZNHlocmJwa1hSeG5uYW1ydTBub01pYzI1V2tZMzJkT0JmSnlRS0dLeEYtQng5R0xmcHlOdS1BZEF4TENzLU5nTXhYd3FRRTAydXZMRHd5NzNmTnFnb2hhdXhIY1hyalJ4UllMLWdRWEFicmladm1aSm9oQUhqU3dCU0pLWWNHdVpCYnJUMkI2X0xaOEFCbWpPV0V0cEZyNFAwRFNxLUpCaW1obE1ITEVSTV82T2J3UmtMTWfSAdcBQVVfeXFMTU1SZ3d0blRhMk56czVHWEl2dF9TYmRHRUp2N0pfbFh3ZmJvM0xIVnJ6ZnZQdmpZQnNtaGd4WWwyVkpBQ2pLWGM1MDRxdkJVSUNpUVRwc2xKMEx4dFhHZllfbjY2QlJfYjgtc1lIcnU1Y2VNTFQ1UlRtaWZHSENPdFN6SXd1TC1CWF9kd2JZYUZZRzJlR0gwaFRXclpuVjZPOGpCaDRsdWlEQTl5LVV0My1LUGgyTmdXY1ZkdTVqRlRwM1NLeVpYdHc4eDNScC1tU1NBaVNmTEE?oc=5",
+          "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-19",
+    "date": "2026-11-20",
     "calls": [
       {
         "rank": 1,
-        "headline": "Jensen Huang says he would be ‘honored’ to return to Nvidia as CEO",
+        "headline": "Anthropic prices blockbuster IPO at $83 a share",
         "probability": 0.92,
         "hit": true,
-        "matched": "How important are Nvidia and Jensen Huang to the US economy?"
+        "matched": "Anthropic IPO Live Updates: Company Value Surges in Stock Market Debut"
       },
       {
         "rank": 2,
-        "headline": "Watch US Moves to Curb China's Remote Access to Nvidia's AI Chips",
+        "headline": "Nvidia stops shipping US-approved AI chips to China",
         "probability": 0.92,
         "hit": true,
-        "matched": "Nvidia stops shipping US-approved AI chips to China"
+        "matched": "US signed off on sales of nearly 900,000 AI chips to China in six months, House committee says"
       },
       {
         "rank": 3,
-        "headline": "Anthropic forges ahead with its IPO even as AI fears mount and markets wobble",
-        "probability": 0.92,
-        "hit": true,
-        "matched": "Anthropic prices blockbuster IPO at $83 a share"
+        "headline": "How important are Nvidia and Jensen Huang to the US economy?",
+        "probability": 0.83,
+        "hit": false,
+        "matched": null
       }
     ],
-    "hits": 3
+    "hits": 2
   },
   "track": {
-    "days": 19,
-    "calls": 57,
-    "hits": 50,
+    "days": 20,
+    "calls": 60,
+    "hits": 52,
     "log": [
       {
         "date": "2026-11-01",
@@ -362,9 +361,14 @@
         "date": "2026-11-19",
         "hits": 3,
         "calls": 3
+      },
+      {
+        "date": "2026-11-20",
+        "hits": 2,
+        "calls": 3
       }
     ],
-    "hitRate": 0.88
+    "hitRate": 0.87
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
