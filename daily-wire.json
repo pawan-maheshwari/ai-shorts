@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-21",
+      "title": "100x Before Breakfast",
+      "headline": "Not Nvidia. Not Broadcom. This Artificial Intelligence (AI) Chip Stock Could Be the Biggest Winner of 2027",
+      "source": "The Motley Fool",
+      "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNb01wT3RIcE5NSVBiamFSWHE0OXZya2NfTGdyRHFsR3JXa2pkVU5CWS0zUURURTBIbkpwMFdfSDQxMXBTdUw1aDNvYVJkN2tyUW1EckdqbDhacHV4VDI3VURseWQ5Rmh3SVBERmRlUGREb2ZZNkNkWDFZYUR3X0s4WnJjRXhUVWYtcXZWdjl3Y0tqQ0gxZmc3NmNMY25paVpvLVN1STE5UjZHNWdoSkhRTmtSZjRxbUFwejZzTThNV1hHbDZsOVYzZ2puWmFfZHBndzNzSkhWdXI3ZzRKd2c?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "speed",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI is 100x faster than last month."
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "And it costs nothing. Trust me."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that number without a benchmark."
+        }
+      ]
+    },
+    {
       "date": "2026-11-20",
       "title": "The Trillion-Dollar Tuesday",
       "headline": "Bond Sales Hit €2 Trillion Europe Record as AI Surge Takes Hold",
