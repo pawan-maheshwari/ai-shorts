@@ -10,19 +10,19 @@
  *
  * YEARLY UPKEEP: festivals that follow a lunar calendar have exact dates in
  * MOVABLE below. Add the next year's dates before it starts (dates loaded
- * through 2028). Fixed-date festivals and Thanksgiving are computed.
+ * 2026–2028; the console warns when this year or next is missing). Fixed-date festivals and Thanksgiving are computed.
  */
 (function () {
   'use strict';
   var BEFORE = 3, AFTER = 2;
 
   var MOVABLE = {
-    lunar:     { 2027: '2027-02-06', 2028: '2028-01-26' },
-    holi:      { 2027: '2027-03-22', 2028: '2028-03-11' },
-    vesak:     { 2027: '2027-05-20', 2028: '2028-05-08' },
-    rakhi:     { 2027: '2027-08-17', 2028: '2028-08-05' },
-    midautumn: { 2027: '2027-09-15', 2028: '2028-10-03' },
-    diwali:    { 2027: '2027-10-29', 2028: '2028-10-17' }
+    lunar:     { 2026: '2026-02-17', 2027: '2027-02-06', 2028: '2028-01-26' },
+    holi:      { 2026: '2026-03-04', 2027: '2027-03-22', 2028: '2028-03-11' },
+    vesak:     { 2026: '2026-05-01', 2027: '2027-05-20', 2028: '2028-05-08' },
+    rakhi:     { 2026: '2026-08-28', 2027: '2027-08-17', 2028: '2028-08-05' },
+    midautumn: { 2026: '2026-09-25', 2027: '2027-09-15', 2028: '2028-10-03' },
+    diwali:    { 2026: '2026-11-08', 2027: '2027-10-29', 2028: '2028-10-17' }
   };
   var ZODIAC = { 2027: 'Goat', 2028: 'Monkey' };
 
@@ -328,6 +328,14 @@
 
   // Exposed for testing only.
   window.AISHORTS_FESTIVE = { active: active, dateFor: dateFor, list: FESTIVALS };
+
+  // Upkeep guard: say so in the console when a moon-based festival has no date
+  // for this year or next, so a missing year is caught before its window.
+  (function () {
+    var y = new Date().getFullYear(), miss = [];
+    for (var id in MOVABLE) for (var k = y; k <= y + 1; k++) if (!MOVABLE[id][k]) miss.push(id + ' ' + k);
+    if (miss.length && window.console) console.warn('[festive.js] add dates to MOVABLE for: ' + miss.join(', '));
+  })();
 
   var hit = pick();
   if (!hit) return;
