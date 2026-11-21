@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-20T07:44:04.954Z",
+ "updated": "2026-11-21T07:41:41.324Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -8,45 +8,6 @@
   "confs.tech open conference list"
  ],
  "events": [
-  {
-   "title": "AI Engineering Summit",
-   "type": "Conference",
-   "start": "2026-11-16",
-   "end": "2026-11-20",
-   "url": "https://ai-engineering-summit.de",
-   "source": "confs.tech",
-   "city": "Berlin",
-   "country": "Germany",
-   "cc": "DE",
-   "lat": 52.52,
-   "lon": 13.4
-  },
-  {
-   "title": "Agentic Engineering Days Zurich",
-   "type": "Conference",
-   "start": "2026-11-20",
-   "end": "2026-11-20",
-   "url": "https://www.agenticdays.com",
-   "source": "confs.tech",
-   "city": "Zurich",
-   "country": "Switzerland",
-   "cc": "CH",
-   "lat": 47.38,
-   "lon": 8.54
-  },
-  {
-   "title": "AIM CXO Unplugged (Mumbai)",
-   "type": "Executive roundtable",
-   "start": "2026-11-20",
-   "end": "2026-11-20",
-   "url": "https://aim.media/discover-events/aim-cxo-unplugged-mumbai-nov2026",
-   "source": "AIM Media House",
-   "city": "Mumbai",
-   "country": "India",
-   "cc": "IN",
-   "lat": 19.08,
-   "lon": 72.88
-  },
   {
    "title": "Global AI Nights: Coimbatore",
    "type": "Meetup",
