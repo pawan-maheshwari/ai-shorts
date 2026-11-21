@@ -10,40 +10,46 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 |---|---|---|---|
 | `AI_Odyssey_BookSigning_AnimatedCover.html` | 4.4 MB | 48 | 3 |
 | `ai-odyssey.html` | 4.0 MB | 929 | 7 |
-| `index.html` | 360 KB | 5287 | 1 |
-| `apps/stock-lab/app.py` | 189 KB | 2850 |  |
+| `index.html` | 360 KB | 5289 | 1 |
+| `apps/stock-lab/app.py` | 195 KB | 2931 |  |
 | `vitalmetrics.html` | 169 KB | 3149 |  |
 | `ai-library.html` | 142 KB | 1307 | 2 |
-| `apps/stock-lab/agents.py` | 107 KB | 1901 |  |
-| `apps/stock-lab/cheetah_engine.py` | 43 KB | 928 |  |
+| `apps/stock-lab/agents.py` | 109 KB | 1921 |  |
+| `apps/stock-lab/research.py` | 49 KB | 956 |  |
+| `apps/stock-lab/cheetah_engine.py` | 43 KB | 930 |  |
 | `ai-anchor.html` | 41 KB | 926 |  |
 | `tools/weekly-brief.mjs` | 41 KB | 581 |  |
-| `apps/stock-lab/research.py` | 40 KB | 807 |  |
 | `apps/stock-lab/store.py` | 33 KB | 700 |  |
-| `briefs/2026-W46.html` | 24 KB | 217 |  |
+| `briefs/2026-W46.html` | 25 KB | 217 |  |
 | `tools/build-edition.mjs` | 24 KB | 563 |  |
 | `tools/predict.mjs` | 22 KB | 389 |  |
 | `apps/stock-lab/learning.py` | 18 KB | 372 |  |
-| `apps/stock-lab/desk.py` | 18 KB | 330 |  |
+| `apps/stock-lab/desk.py` | 18 KB | 332 |  |
 | `stock-lab.html` | 14 KB | 264 |  |
 | `tools/daily-wire.mjs` | 12 KB | 214 |  |
 | `standards.html` | 11 KB | 222 |  |
 | `tools/local-desk.mjs` | 10 KB | 201 |  |
 | `apps/stock-lab/models.py` | 7 KB | 163 |  |
 | `privacy.html` | 7 KB | 74 |  |
+| `tools/claude/codemap.py` | 5 KB | 129 |  |
 | `news-anchor.html` | 5 KB | 97 |  |
 | `.github/workflows/daily-news.yaml` | 5 KB | 106 |  |
 | `apps/stock-lab/morning.py` | 4 KB | 88 |  |
 | `news_anchor.html` | 4 KB | 84 |  |
+| `tools/stocklab_watch.py` | 4 KB | 129 |  |
 | `about.html` | 4 KB | 54 |  |
 | `contact.html` | 3 KB | 54 |  |
 | `tools/stocklab_inspect.py` | 2 KB | 69 |  |
+| `tools/claude/check_html.py` | 2 KB | 65 |  |
 | `.github/workflows/weekly-brief.yml` | 2 KB | 73 |  |
+| `.github/workflows/stocklab-market-hours.yml` | 2 KB | 61 |  |
 | `tools/stocklab_keepalive.py` | 2 KB | 63 |  |
+| `tools/stocklab_export.py` | 1 KB | 50 |  |
 | `.github/workflows/stocklab-keepalive.yml` | 1 KB | 51 |  |
 | `.github/workflows/daily-wire.yml` | 1 KB | 52 |  |
 | `.github/workflows/local-desk.yml` | 1 KB | 48 |  |
 | `.github/workflows/ai-prediction.yml` | 1 KB | 39 |  |
+| `.github/workflows/stocklab-study.yml` | 985 B | 26 |  |
 | `.github/workflows/stocklab-inspect.yml` | 855 B | 22 |  |
 
 ## Backup / snapshot files — IGNORE (never read or edit)
@@ -132,7 +138,7 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L5201 script
 - functions (226): get@54, meta@2236, $@2242, esc@2247, safeURL@2252, filtered@2260, fmtDate@2270, buildChips@2281, cardKey@2292, card@2295, render@2336, normImgUrl@2359, matchMeta@2370, fetchStoryImage@2388, hashStr@2425, shade@2430, coverSVG@2439, findPlateByKey@2469, applyCardImage@2476, loadCardImages@2508, updateRail@2525, updateBreaking@2535, goTo@2550, next@2557, syncReading@2582, queueReading@2595, setStatus@2617, normCat@2625, normRegion@2634, fetchT@2644, extractItems@2651, mapItems@2668, callClaude@2679, stripTags@2709, clipWords@2710, normDate@2711, freshOnly@2712, dedupeSummary@2728, guessCat@2746, fetchWorker@2760, lsGet@2777, lsSet@2778, readCache@2779, writeCache@2780, pickImg@2784, mapRSS@2792, parseFeedXML@2809, fetchRSS@2824, fetchHN@2847, fetchEdition@2879, fetchFresh@2895, refresh@2906, initFeed@2933, hitCounter@2946, countVisit@2952, setWireHeight@2969, introSeen@2985, markIntroSeen@2986, svgFor@2991, setText@3002, feature@3003, applyImage@3013, endIntro@3035, keyskip@3036, topNews@3048, summarize@3049, entity@3053, whatHappened@3059, compare@3065, search@3072, route@3080, push@3088, ask@3089, fill@3093, dashFill@3096, topText@3104, stopVoice@3105, openP@3113, closeP@3114, anchorScript@3119, pauseAnchor@3134, $@3164, openM@3165, closeM@3166, upiLink@3178, refreshPay@3184, note@3205, valid@3206, subscribe@3207, ymd@3278, abaHit@3284, abaGet@3285, esc2@3286, renderQuiz@3289, answerQuiz@3316, showQuizStats@3322, renderPoll@3331, votePoll@3351, showPollResults@3364, renderPrevPoll@3378, fmtMarketCap@3396, getTodayStr@3403, fetchMarketCaps@3405, loadPrevMarket@3477, savePrevMarket@3483, renderMarket@3487, initMarket@3563, setMarketOpen@3603, fmtPx@3662, chgOf@3663, itemHTML@3671, copyHTML@3679, render@3682, flash@3684, paint@3691, step@3707, fetchLive@3717, move@3772, open@3799, shut@3807, onKey@3813, clipsRead@3840, clipsWrite@3845, isClipped@3849, findStory@3857, badge@3863, toggleClip@3870, renderClips@3893, syncButtons@3938, shareCutting@3979, layout@3998, wrap@4001, save@4124, applyTheme@4126, applySize@4133, mark@4137, observe@4201, revoke@4255, close@4258, fileOf@4265, canShareFile@4268, links@4273, el@4341, pct@4342, fmtDate@4343, safeUrl@4344, showBand@4346, rotate@4353, card@4361, chip@4372, render@4406, open@4447, remember@4464, hide@4473, introGone@4477, el@4513, lsGet@4514, lsSet@4515, safeUrl@4516, getJSON@4517, pad@4522, todayISO@4523, parts@4526, dayNum@4527, fmtDate@4528, fmtRange@4529, num@4535, T@4539, wind@4540, dist@4541, sky@4544, okLoc@4569, saveLoc@4570, storedLoc@4571, fromIP@4580, geocode@4588, fromTZ@4594, findLoc@4602, placeLine@4607, loadWx@4610, km@4630, upcoming@4636, tiers@4644, whenChip@4655, ics@4664, d@4665, esc@4666, nextStart@4681, offers@4691, ranked@4692, paintBand@4695, setHead@4723, cityBox@4725, pick@4735, search@4736, viewWeather@4767, fact@4787, eventRow@4841, section@4859, viewEvents@4864, courseCard@4901, cell@4913, viewCourses@4932, render@4964, open@4972, fromHash@4992, h@5033, safeUrl@5034, safeImg@5035, fmt@5036, today@5040, load@5042, cast@5063, figFor@5078, render@5084, open@5152, shut@5160, onKey@5168, markSeen@5170, el@5211, mb@5212, fname@5213, count@5214, render@5223, open@5256, fromHash@5271
 ### `apps/stock-lab/app.py`
-- functions (59): _fresh_local_modules@23, intraday_args@176, fetch_intraday@185, load_daily@192, _secret@200, _make_store@220, _store_schema@233, get_store@240, fetch_index_cached@250, sentinel_batch@255, sentinel_rows@260, _memo@275, scan_jobs@284, ensure_daily_scan@288, narrate_cached@342, intraday_history@348, history_cached@357, train_coach@382, coach_trades@414, study_cached@419, _study_key@436, _study@441, raw_cached@447, panel_cached@454, panel_for@478, scout_cached@485, scout_for@504, model_preds_cached@511, brain_cached@519, scorecard_cached@530, now_ist@543, distill_audit@548, store_memory_stats@561, score_for@565, load_cfg@573, save_cfg@590, cfg_diff@615, inr@623, arrow@627, arrow_txt@637, market_state@645, fmt_interval@655, kpis@661, section@667, intraday_chart@671, signal_card@703, agent_strip@763, _warm_days@826, admin_gate@884, practice_status@930, paper_frame@1430, _hm@1454, desk_history@1741, _desk_attempts@1766, _desk_log@1770, _desk_calls@1777, _nanfree@1789, score_card_html@2037, sys_line@2082
+- functions (60): _fresh_local_modules@23, intraday_args@176, fetch_intraday@185, load_daily@192, _secret@200, _make_store@220, _store_schema@233, get_store@240, fetch_index_cached@250, sentinel_batch@255, sentinel_rows@260, _memo@275, scan_jobs@284, ensure_daily_scan@288, narrate_cached@342, intraday_history@348, history_cached@357, train_coach@382, coach_trades@414, study_cached@419, _study_key@436, _study@441, raw_cached@447, panel_cached@454, panel_for@478, scout_cached@485, scout_for@504, model_preds_cached@511, brain_cached@519, scorecard_cached@530, now_ist@543, distill_audit@548, store_memory_stats@561, score_for@565, load_cfg@573, save_cfg@590, cfg_diff@615, inr@623, arrow@627, arrow_txt@637, market_state@645, fmt_interval@655, kpis@661, shadow_view@667, section@697, intraday_chart@701, signal_card@733, agent_strip@793, _warm_days@856, admin_gate@914, practice_status@960, paper_frame@1511, _hm@1535, desk_history@1822, _desk_attempts@1847, _desk_log@1851, _desk_calls@1858, _nanfree@1870, score_card_html@2118, sys_line@2163
 ### `vitalmetrics.html`
 - L24 style
 - L213 h2 `VitalMetrics`
@@ -163,10 +169,12 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - functions (18): $@888, shade@891, openBook@1017, renderCover@1028, buildTOC@1071, renderChapter@1082, loadVoices@1118, fill@1126, speakParagraph@1145, stopTTS@1176, resetChat@1194, addMsg@1202, offlineAnswer@1208, summary@1210, askClaude@1226, sendChat@1249, scrollY@1281, updateToTop@1284
 ### `apps/stock-lab/agents.py`
 - L246 class `NSE`
-- L1007 class `Coach`
-- functions (59): configure_llm@55, llm_name@60, llm_model@64, llm_call@68, ask_claude@101, fetch_index@107, index_day@138, pulse@150, company_name@230, aliases@234, fo_ban_list@333, google_news@344, yahoo_news@375, read_filing@448, read_item@478, read_with_claude@506, gather@533, assess@552, _demo_sentinel@636, sentinel@652, sentinel_many@659, day_stats@671, sentinel_evidence@693, signal_features@736, _slope@764, model_features@774, trade_key@819, simulate_exit@836, exit_status@885, corr_pairs@892, risk_check@909, replay@959, _feats@1003, engine_args@1143, engine_key@1156, plan_key@1162, merged@1168, _welch@1179, _paired@1187, evidence@1194, _metrics@1205, _prep@1221, study_args@1242, _xyr@1256, model_predictions@1260, fit_brain@1289, score_signal@1303, model_lab@1323, walk_forward@1368, _apply@1382, scorecard@1412, proposals@1602, paper_trade@1688, review_factors@1728, driver_table@1781, analyst_summary@1798, narrate@1834, cost_burden@1866, cost_proposal@1883
+- L1009 class `Coach`
+- functions (60): configure_llm@55, llm_name@60, llm_model@64, llm_call@68, ask_claude@101, fetch_index@107, index_day@138, pulse@150, company_name@230, aliases@234, fo_ban_list@333, google_news@344, yahoo_news@375, read_filing@448, read_item@478, read_with_claude@506, gather@533, assess@552, _demo_sentinel@636, sentinel@652, sentinel_many@659, day_stats@671, sentinel_evidence@693, signal_features@736, _slope@764, model_features@774, trade_key@819, simulate_exit@836, exit_status@885, corr_pairs@892, risk_check@909, replay@959, _feats@1005, engine_args@1145, engine_key@1162, learning_key@1168, plan_key@1182, merged@1188, _welch@1199, _paired@1207, evidence@1214, _metrics@1225, _prep@1241, study_args@1262, _xyr@1276, model_predictions@1280, fit_brain@1309, score_signal@1323, model_lab@1343, walk_forward@1388, _apply@1402, scorecard@1432, proposals@1622, paper_trade@1708, review_factors@1748, driver_table@1801, analyst_summary@1818, narrate@1854, cost_burden@1886, cost_proposal@1903
+### `apps/stock-lab/research.py`
+- functions (32): _hm@81, describe@85, label@107, spec_id@125, _arrays@130, _first@166, _entry_ok@171, market_flags@178, market_ok@193, market_mask@200, breadth_by_day@211, generate@231, simulate@345, _sessions@382, raw_signals@387, _m@423, _score@432, run@445, adopt_change@540, proposal@545, day_signals@575, focus_symbols@614, race_signals@624, shadow_specs@650, shadow_signals@656, study_spec@670, z_select@700, _lcb@707, panel@717, race_trusted@933, panel_trusted@938, panel_proposal@943
 ### `apps/stock-lab/cheetah_engine.py`
-- functions (31): read_fundamentals@89, yahoo_daily@111, daily_price_features@125, _is_fin@142, apply_rules@185, failed_rules@196, add_score@214, run_screen@232, cmd_screen@259, build_panel@293, portfolio@317, perf@335, ml_picks@346, cmd_backtest_swing@379, yahoo_intraday@478, read_intraday_csv@511, session_days@521, day_signals@526, exit_trade@607, size@628, prep_days@634, run_intraday_backtest@649, cmd_backtest_intraday@699, load_watchlist@726, bars_needed@732, session_progress@737, run_scan@753, cmd_scan@791, demo_swing@815, demo_intraday@845, main@871
+- functions (31): read_fundamentals@89, yahoo_daily@111, daily_price_features@125, _is_fin@142, apply_rules@185, failed_rules@196, add_score@214, run_screen@232, cmd_screen@259, build_panel@293, portfolio@317, perf@335, ml_picks@346, cmd_backtest_swing@379, yahoo_intraday@478, read_intraday_csv@511, session_days@521, day_signals@526, exit_trade@609, size@630, prep_days@636, run_intraday_backtest@651, cmd_backtest_intraday@701, load_watchlist@728, bars_needed@734, session_progress@739, run_scan@755, cmd_scan@793, demo_swing@817, demo_intraday@847, main@873
 ### `ai-anchor.html`
 - L11 style
 - L214 script
@@ -206,15 +214,13 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L246 data `PULSE`
 - L248 data `CSS`
 - functions (30): iso@89, utc@90, addD@91, decode@93, tidy@97, esc@98, norm@99, readJ@100, isoWeek@103, pickMonday@113, rangeLabel@121, m@122, realSummary@142, score@144, loadPool@166, backfill@187, lead@207, curate@211, twin@224, sentence@242, coverPage@364, storyPage@378, buildHtml@404, chrome@434, render@439, keyKind@452, toSupabase@463, call@469, main@492, f@547
-### `apps/stock-lab/research.py`
-- functions (25): _hm@69, describe@73, label@91, spec_id@109, _arrays@114, _first@142, _entry_ok@147, generate@154, simulate@268, _sessions@305, raw_signals@310, _m@344, _score@353, run@366, adopt_change@459, proposal@464, day_signals@494, focus_symbols@534, race_signals@544, study_spec@560, _lcb@577, panel@587, race_trusted@784, panel_trusted@789, panel_proposal@794
 ### `apps/stock-lab/store.py`
 - L101 class `StoreError`
 - L150 class `Store`
 - functions (5): _now@105, _iso@109, _clean@121, _jsonable@129, key_kind@133
 ### `briefs/2026-W46.html`
 - L8 style
-- L153 h2 `Introducing`
+- L153 h2 `Introducing Claude Fable 5.2 and Claude Mythos 5.2`
 - L195 h2 `EU leaders seek to tackle challenges at first ever AI summit`
 - L205 script
 ### `tools/build-edition.mjs`
@@ -258,7 +264,7 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 ### `apps/stock-lab/learning.py`
 - functions (20): eng_id@28, _feats@32, _as_date@36, archive_rows@43, restore_rows@50, merge_history@65, remember_replay@78, remember_corr@93, remember_day_stats@103, tag_engine@124, backfill_news@131, distill_events@163, audit_trends@190, reviewed@228, hitl_scores@235, tag_table@264, reviewer_notes@279, reviewer_proposals@291, rejection_window_days@364, record_rejection@369
 ### `apps/stock-lab/desk.py`
-- functions (16): prep@35, brief@53, macro@75, rule_view@101, rule_pm@127, _call@161, _json@166, _fmt@176, llm_views@180, llm_pm@225, score@258, summary@271, record_text@281, lessons@288, as_filter@297, rule_history@315
+- functions (16): prep@35, brief@55, macro@77, rule_view@103, rule_pm@129, _call@163, _json@168, _fmt@178, llm_views@182, llm_pm@227, score@260, summary@273, record_text@283, lessons@290, as_filter@299, rule_history@317
 ### `stock-lab.html`
 - L9 script
 - L16 style
@@ -319,6 +325,8 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L60 h2 `Children's privacy`
 - L63 h2 `Changes to this policy`
 - L66 h2 `Contact`
+### `tools/claude/codemap.py`
+- functions (4): tracked_files@47, human@59, scan@63, main@82
 ### `news-anchor.html`
 - L7 style
 - L40 script
@@ -329,6 +337,8 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L7 style
 - L40 script
 - functions (2): esc@44, setTicker@52
+### `tools/stocklab_watch.py`
+- functions (7): now_ist@30, deadline@34, app_frame@39, wake_if_asleep@49, open_app@63, status@74, main@94
 ### `about.html`
 - L9 style
 - L28 h2 `About AIShorts`
@@ -345,5 +355,9 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L46 h2 `Advertising`
 ### `tools/stocklab_inspect.py`
 - functions (1): app_frame@10
+### `tools/claude/check_html.py`
+- functions (1): check@16
 ### `tools/stocklab_keepalive.py`
 - functions (2): find_in_frames@21, main@31
+### `tools/stocklab_export.py`
+- functions (1): main@23
