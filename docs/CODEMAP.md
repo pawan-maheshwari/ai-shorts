@@ -19,11 +19,11 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 | `apps/stock-lab/cheetah_engine.py` | 43 KB | 930 |  |
 | `ai-anchor.html` | 41 KB | 926 |  |
 | `tools/weekly-brief.mjs` | 41 KB | 581 |  |
+| `festive.js` | 36 KB | 336 |  |
 | `apps/stock-lab/store.py` | 33 KB | 700 |  |
 | `briefs/2026-W46.html` | 25 KB | 217 |  |
 | `tools/build-edition.mjs` | 24 KB | 563 |  |
 | `tools/predict.mjs` | 22 KB | 389 |  |
-| `festive.js` | 20 KB | 258 |  |
 | `apps/stock-lab/learning.py` | 18 KB | 372 |  |
 | `apps/stock-lab/desk.py` | 18 KB | 332 |  |
 | `stock-lab.html` | 14 KB | 264 |  |
@@ -215,6 +215,18 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L246 data `PULSE`
 - L248 data `CSS`
 - functions (30): iso@89, utc@90, addD@91, decode@93, tidy@97, esc@98, norm@99, readJ@100, isoWeek@103, pickMonday@113, rangeLabel@121, m@122, realSummary@142, score@144, loadPool@166, backfill@187, lead@207, curate@211, twin@224, sentence@242, coverPage@364, storyPage@378, buildHtml@404, chrome@434, render@439, keyKind@452, toSupabase@463, call@469, main@492, f@547
+### `festive.js`
+- L17 data `BEFORE`
+- L19 data `MOVABLE`
+- L27 data `ZODIAC`
+- L30 data `FESTIVALS`
+- L46 data `MOTIF`
+- L105 data `GOLD`
+- L106 data `THEMES`
+- L124 data `SVG`
+- L179 data `CSS`
+- L260 data `CAP`
+- functions (14): ymd@61, addDays@62, parse@63, nthWeekday@64, dateFor@69, active@75, byId@85, pick@87, rnd@121, fx@122, decorate@142, isGrad@265, plate@267, apply@296
 ### `apps/stock-lab/store.py`
 - L101 class `StoreError`
 - L150 class `Store`
@@ -262,16 +274,6 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L199 data `AUTH1`
 - L200 data `AUTH2`
 - functions (20): arg@42, istDate@47, gn@55, get@85, decode@100, tag@106, parseFeed@108, gather@124, tokens@150, tier@201, jac@203, clamp@204, enrich@209, cluster@229, topTokens@247, mode@252, loadJSON@257, score@259, outlookFn@303, grade@323
-### `festive.js`
-- L17 data `BEFORE`
-- L19 data `MOVABLE`
-- L27 data `ZODIAC`
-- L30 data `FESTIVALS`
-- L46 data `MOTIF`
-- L114 data `CSS`
-- L163 data `BLOT`
-- L164 data `CAP`
-- functions (12): ymd@80, addDays@81, parse@82, nthWeekday@83, dateFor@88, active@94, byId@104, pick@106, rnd@169, el@170, motion@172, apply@218
 ### `apps/stock-lab/learning.py`
 - functions (20): eng_id@28, _feats@32, _as_date@36, archive_rows@43, restore_rows@50, merge_history@65, remember_replay@78, remember_corr@93, remember_day_stats@103, tag_engine@124, backfill_news@131, distill_events@163, audit_trends@190, reviewed@228, hitl_scores@235, tag_table@264, reviewer_notes@279, reviewer_proposals@291, rejection_window_days@364, record_rejection@369
 ### `apps/stock-lab/desk.py`
