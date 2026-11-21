@@ -1,6 +1,56 @@
 {
- "updated": "2026-11-14T13:39:58.276Z",
+ "updated": "2026-11-21T14:44:15.892Z",
  "issues": [
+  {
+   "week": "2026-W47",
+   "number": 47,
+   "title": "AI Briefs — Week 47, 16–20 November 2026",
+   "range": "16–20 November 2026",
+   "start": "2026-11-16",
+   "end": "2026-11-20",
+   "pages": 6,
+   "bytes": 325830,
+   "pdf": "briefs/2026-W47.pdf",
+   "html": "briefs/2026-W47.html",
+   "cover": "briefs/2026-W47.png",
+   "stories": [
+    {
+     "day": "Monday",
+     "date": "2026-11-16",
+     "category": "Safety",
+     "headline": "California Sues OpenAI Over A.I. Safety Issues",
+     "source": "The New York Times"
+    },
+    {
+     "day": "Tuesday",
+     "date": "2026-11-17",
+     "category": "Infrastructure",
+     "headline": "Study estimates magnitude of US data center pollution as climate talks unveil clean AI pledge",
+     "source": "AP News"
+    },
+    {
+     "day": "Wednesday",
+     "date": "2026-11-18",
+     "category": "Models",
+     "headline": "Introducing Gemini 4 Neon",
+     "source": "blog.google"
+    },
+    {
+     "day": "Thursday",
+     "date": "2026-11-19",
+     "category": "Business",
+     "headline": "The world embraced the AI boom. Now many are having regrets.",
+     "source": "The Washington Post"
+    },
+    {
+     "day": "Friday",
+     "date": "2026-11-20",
+     "category": "Business",
+     "headline": "Exclusive | Nestle Teams Up With Microsoft, Boston Dynamics on AI in Factories and Products",
+     "source": "WSJ"
+    }
+   ]
+  },
   {
    "week": "2026-W46",
    "number": 46,
