@@ -17,6 +17,11 @@ changes (proposals()) and a human approves them — the approved settings live i
 All agents work rule-based with no API key. With an LLM key in Streamlit secrets (ANTHROPIC_API_KEY for Claude,
 or the free GROQ_API_KEY / GEMINI_API_KEY — see configure_llm), Sentinel, Narrator, Analyst and the Analyst desk
 also use the LLM for richer reading of headlines and explanations.
+
+Exchange data: Sentinel, Pulse and the Analyst desk also read NSE's own MCP servers (NSE Bhavcopy + NSE Live, see
+nse_mcp.py) — live quote, volume vs average, 52-week range and ex-dates per stock; market breadth, India VIX and live
+Nifty for the mood. The NSE research sub-agent lets the LLM call those tools itself. All of it degrades to the
+existing sources when NSE's servers cannot be reached.
 The Coach never changes the engine's rules on its own: it re-scores confidence and flags signals,
 and every lesson it draws is written to the audit log for you to review.
 """
@@ -31,6 +36,7 @@ import requests
 
 import cheetah_engine as ce
 import models as ml
+import nse_mcp as nm
 import research as rs
 
 MODEL = "claude-haiku-5-5"
@@ -204,6 +210,27 @@ def pulse(idx, day=None, asof=None, mults=None):
         regime = "Choppy"
     return dict(regime=regime, mult=float(mults.get(regime, 1.0)), bias=bias, reasons=reasons, nifty_chg=nifty_chg,
                 vix=v, vix_chg=vchg, trend=trend, day=str(day) if day else None)
+
+
+def pulse_exchange(mood, facts, mults=None):
+    """Add NSE's own market read (MCP) to a live Pulse: breadth across all ~3,000 mainboard stocks, index breadth,
+    India VIX and live Nifty. Descriptive only — the regime changes in one case: when Yahoo's VIX is missing,
+    the live India VIX from NSE fills it, so the 'Volatile' guard still works. Returns the mood (updated in place)."""
+    if not facts or facts.get("status") != "ok":
+        mood.setdefault("exchange", [])
+        return mood
+    mood["exchange"] = nm.market_lines(facts)
+    mood["reasons"] += mood["exchange"]
+    if facts.get("stock_up_pct") is not None:
+        mood["nse_breadth"] = facts["stock_up_pct"] / 100
+    v = facts.get("vix_live") or {}
+    if (mood.get("vix") is None or not np.isfinite(mood["vix"])) and v.get("last") is not None:
+        mood["vix"], mood["vix_chg"] = v["last"], v.get("chg_pct")
+        mood["vix_source"] = "NSE Live"
+        if v["last"] >= 20 or (v.get("chg_pct") or 0) >= 8:
+            mood.update(regime="Volatile", bias=0, mult=float((mults or DEFAULT_MULTS).get("Volatile", 0.5)))
+            mood["reasons"].append("Fear gauge elevated (India VIX from NSE Live)")
+    return mood
 
 
 # ============================================================================ SENTINEL — news & events
@@ -472,7 +499,7 @@ TYPE_TEXT = {"regulatory": "Regulatory or legal action", "credit": "Credit or pl
              "dividend": "Dividend", "board_meeting": "Board meeting", "investor_meet": "Investor meeting",
              "results_day": "Results day (exchange calendar)", "fo_ban": "F&O ban", "other": "Other news",
              "clarification": "News clarification with the exchange", "material_event": "Material event disclosed",
-             "routine": "Routine filing"}
+             "routine": "Routine filing", "big_move": "Big move last session (NSE Bhavcopy)"}
 
 
 def read_item(item, alias_set, now=None, fresh_hours=48):
@@ -530,23 +557,33 @@ def read_with_claude(items, symbol, name, api_key):
         return {}
 
 
-def gather(symbol, nse=None, use_yahoo=True):
-    """Collect everything known about one stock. Returns dict(items, meetings, actions, name, sources)."""
-    sources, items, meetings, acts, name = {}, [], [], [], None
+def gather(symbol, nse=None, use_yahoo=True, mcp=True):
+    """Collect everything known about one stock. Returns dict(items, meetings, actions, name, sources, exchange)."""
+    sources, items, meetings, acts, name, fx = {}, [], [], [], None, None
     if nse is not None:
-        st_, it_, nm = nse.announcements(symbol)
-        sources["NSE filings"] = st_; items += it_; name = nm
+        st_, it_, nm_ = nse.announcements(symbol)
+        sources["NSE filings"] = st_; items += it_; name = nm_
         st_, meetings = nse.board_meetings(symbol)
         sources["Results calendar"] = st_
         st_, acts = nse.actions(symbol)
         sources["Corporate actions"] = st_
+    if mcp and nm.CFG["enabled"]:
+        # NSE's MCP servers: live quote, volume, 52-week range and ex-dates. They also answer from cloud servers,
+        # where nseindia.com's web API often refuses — so they back up the corporate-action check.
+        fx = nm.stock_facts(symbol)
+        sources["NSE MCP"] = fx["status"]
+        if fx.get("actions_status") == "ok":
+            # the two sources word the same action differently, so match on the ex-date alone
+            have = {a_["date"] for a_ in acts}
+            acts = acts + [a_ for a_ in fx["actions"] if a_["date"] not in have]
+            sources["Corporate actions"] = "ok"
     name = company_name(symbol, re.sub(r"\s+(Limited|Ltd\.?)$", "", name) if name else None)
     st_, it_ = google_news(name)
     sources["Google News"] = st_; items += it_
     if use_yahoo and st_ != "ok":
         st_, it_ = yahoo_news(symbol)
         sources["Yahoo News"] = st_; items += it_
-    return dict(items=items, meetings=meetings, actions=acts, name=name, sources=sources)
+    return dict(items=items, meetings=meetings, actions=acts, name=name, sources=sources, exchange=fx)
 
 
 def assess(symbol, g, ban=("unavailable", set()), api_key=None, today=None):
@@ -598,6 +635,12 @@ def assess(symbol, g, ban=("unavailable", set()), api_key=None, today=None):
         if 0 <= (a_["date"] - today).days <= 1:
             bump("WATCH"); types.append("corporate_action")
             reasons.append(f"Ex-date {a_['date']:%d %b}: {a_['subject']} — price adjusts")
+    fx = g.get("exchange") or {}
+    mv = fx.get("last_session_move")
+    if mv is not None and abs(mv) >= 6 and fx.get("last_session") and str(fx["last_session"]) < str(today):
+        bump("WATCH"); types.append("big_move")
+        reasons.append(f"Moved {mv:+.1f}% in the last session ({fx['last_session']}) on volume "
+                       f"{fx.get('last_vol_vs_avg') or 0:+.0f}% vs its 20-day average — gap or follow-through risk (NSE Bhavcopy)")
     for e in events[:6]:
         if e["materiality"] >= 3 and e["direction"] <= 0:
             bump("HIGH")
@@ -610,9 +653,11 @@ def assess(symbol, g, ban=("unavailable", set()), api_key=None, today=None):
     ok = [k for k, v in sources.items() if v == "ok"]
     bad = [k for k, v in sources.items() if v != "ok"]
     news_ok = any(sources.get(k) == "ok" for k in ("NSE filings", "Google News", "Yahoo News"))
-    if not ok:
+    # "NSE MCP" on its own means a price quote arrived — not that any news or event source was checked
+    if not [k for k in ok if k != "NSE MCP"]:
         level, checked = "UNCHECKED", False
-        reasons = ["Could not reach any news or exchange source — treat as not checked"]
+        reasons = (["Could not reach any news or exchange-event source — treat as not checked"]
+                   + [r for r in reasons if r.endswith("(NSE Bhavcopy)")])
     else:
         checked = True
         if level == "CLEAR":
@@ -623,6 +668,8 @@ def assess(symbol, g, ban=("unavailable", set()), api_key=None, today=None):
         coverage += " · Unavailable: " + ", ".join(bad)
     return dict(symbol=symbol, name=name, level=level, tone=tone, reasons=reasons, types=sorted(set(types)),
                 llm=(f"Headlines read by {llm_name()}" if llm_used else None), checked=checked, sources=sources, coverage=coverage,
+                exchange=nm.stock_lines(fx),
+                market={k: fx.get(k) for k in ("ltp", "chg_pct", "quote_time", "last_vol_vs_avg", "pos_52w", "chg_30d")} if fx.get("status") == "ok" else None,
                 past_results=sorted({str(m["date"]) for m in res_days if m["date"] < today}),
                 events=[dict(title=e["title"][:160], publisher=e["publisher"], link=e.get("link", ""), type=e["type"],
                              materiality=e["materiality"], direction=e["direction"], by=e["by"],
@@ -662,6 +709,7 @@ def sentinel_many(symbols, demo, api_key=None, day=None, workers=4):
     if demo:
         return {s: _demo_sentinel(s, day) for s in symbols}
     nse, ban = NSE(), fo_ban_list()
+    nm.reset()                         # a fresh MCP session per scan; a server that failed last time gets another try
     with ThreadPoolExecutor(max_workers=workers) as ex:
         res = list(ex.map(lambda s: (s, sentinel(s, False, api_key, ban, day, nse)), symbols))
     return dict(res)
