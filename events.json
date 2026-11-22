@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T07:41:41.324Z",
+ "updated": "2026-11-22T07:26:06.870Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -8,20 +8,6 @@
   "confs.tech open conference list"
  ],
  "events": [
-  {
-   "title": "Global AI Nights: Coimbatore",
-   "type": "Meetup",
-   "start": "2026-11-21",
-   "end": "2026-11-21",
-   "url": "https://globalai.community/e/jzp01klc",
-   "source": "Global AI Community",
-   "city": "Coimbatore",
-   "country": "India",
-   "cc": "IN",
-   "lat": 11.02,
-   "lon": 76.96,
-   "hybrid": true
-  },
   {
    "title": "From Data Platforms to AI Agents",
    "type": "Online session",
