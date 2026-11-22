@@ -1,194 +1,123 @@
 {
-  "generated": "2026-11-21T22:42:58.111Z",
-  "forDate": "2026-11-23",
+  "generated": "2026-11-22T23:08:16.870Z",
+  "forDate": "2026-11-24",
   "window": {
-    "from": "2026-11-20T22:42:58.111Z",
-    "to": "2026-11-21T22:42:58.111Z"
+    "from": "2026-11-21T23:08:16.870Z",
+    "to": "2026-11-22T23:08:16.870Z"
   },
   "scanned": {
-    "stories": 789,
-    "outlets": 378,
+    "stories": 705,
+    "outlets": 324,
     "regions": [
       "Global desks",
-      "Asia-Pacific",
-      "Community",
       "North America",
-      "Europe",
+      "Community",
       "South Asia",
-      "Africa"
+      "Asia-Pacific",
+      "Africa",
+      "Europe"
     ],
-    "storylines": 605
+    "storylines": 531
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.5861,
-      "probability": 0.79,
+      "score": 0.7013,
+      "probability": 0.9,
       "confidence": "High",
       "entity": "Anthropic",
-      "theme": "Model launch",
-      "headline": "Anthropic Mathematician Claims to Solve Riemann Hypothesis With Help From Claude",
-      "outlook": "Hands-on reviews, benchmark claims and rival responses to Anthropic are likely to lead tomorrow.",
+      "theme": "Funding & markets",
+      "headline": "Anthropic’s Record-Breaking IPO",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 14,
+        "outlets": 20,
         "regions": [
-          "North America"
+          "North America",
+          "Asia-Pacific"
         ],
-        "stories": 14,
-        "momentum": 3.75,
-        "recent6h": 9,
-        "authority": 5.4,
-        "hnPoints": 2,
-        "nextStepCues": 0,
-        "arcDays": 2,
+        "stories": 21,
+        "momentum": 1.69,
+        "recent6h": 8,
+        "authority": 6.5,
+        "hnPoints": 0,
+        "nextStepCues": 2,
+        "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.79,
-        "breadth": 0.17,
-        "momentum": 0.97,
+        "reach": 0.89,
+        "breadth": 0.33,
+        "momentum": 0.58,
         "authority": 1,
-        "community": 0.16,
-        "nextStep": 0,
-        "arc": 0.67
+        "community": 0,
+        "nextStep": 0.67,
+        "arc": 1
       },
       "sig": [
+        "ipo",
+        "anthropics",
+        "record",
         "anthropic",
-        "riemann",
-        "hypothesis",
-        "mathematician",
-        "claim",
-        "claude",
-        "proof",
-        "helped"
+        "trillion",
+        "test",
+        "value",
+        "fail"
       ],
       "evidence": [
         {
-          "title": "Anthropic Mathematician Claims to Solve Riemann Hypothesis With Help From Claude",
-          "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQMU96R3pxbVo0NDIzSUl5Szd6T0VkZzRUY1F3RE9NUnRPWU1tbnBRZkVPOWNDclpHX3hUTXo1QndXdENHb2Q1cFU2WnVwLWp0eG00dDFWcTBNR042Y3NFdUdtZGY4ODZUSnRTMFZGUnNFNFYyRGdvaHJCdVNra2k0T2NTeDZnbTdHcE83WQ?oc=5",
+          "title": "What Comes Next After Anthropic’s Historic IPO",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPMGhQYy1TNTdJcnJDbUg5RFFZRl91OE1OZHNvdTFfYm81NTFTR1JGLXRsR1RFTnhnajZMT1ZjNEFIMjlJX2pfS092R2JGLUFZb2ZhVE5fRU5DUHhub1ZKb3VQUkJUSUpuX2wwZ2ZpdmR1M1BNcTVYb0pBQXlZMVFmNkNVbElaUEg0a2c?oc=5",
           "region": "North America"
         },
         {
-          "title": "Two groups verify mathematician’s claim that Claude helped prove mathematics problem",
-          "source": "The Guardian",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNZjl5ODZTYXRNU2pfRmhEdnR0ckVzdE9iVVhrX3ZmZzZTMl9acTJENHAyUUFJazdRNGw1a2pES2pjWEpuTG1qTmtfNjBCd1NTQkxXb0c0X2pwSzZtNDJpWS1HbUR6aU5PUC1Gc1N0cXNEZEV5cTd2ZnYtWk9oWU95d3lERkRUOHdSQXRFSTY2OUllVktJenpTODQzU2g?oc=5",
+          "title": "Will Anthropic’s IPO buck the tech sell-off?",
+          "source": "Financial Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNOVVFNmptMzZsNnBaaGdXX19UcXlYOWZQWXBOV2NFRVNfbnR3MUlIZjBYUjhPSWRUUFR3NTdLeDJXUHdrc2ZDT3V3a2Q2MFEyR0s3djN4T2hlLW9Bb2ZCa21ua2hvR2kwSmdXMjZGRE54SnhHbnJ2bGJwM1FNblJmbEFTMGk?oc=5",
           "region": "North America"
         },
         {
-          "title": "Lean groups certify Claude-assisted Riemann hypothesis proof from Anthropic",
-          "source": "Startup Fortune",
-          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxONlA3YmE1SENKMHdqY2MwSEVFRFQ3eW9URjRhTW83QjNCN0U3SUhweC1vTGhfYml6SG9Sc19wVHVhY1VobG9NLVM4V29Ca2QzMnByUjh0clFFOGhFSE9XcVVfNUxlVTdnRTE3ak5oYzd0alQ4QkV3NUYydFIxYXBOWEhtblhQM25NRDY4czBDMHE5VUQxc1B6N3Q3eXNoazk0TE9PbG13?oc=5",
-          "region": "North America"
+          "title": "Australian shares to open lower as Anthropic debut fails to revive AI trade",
+          "source": "Capital Brief",
+          "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxONnpVaFc1bFAtb253dDdYVVdCaDVUUVdvTDgteHBIbHZKRjZDRVdxRGpUWXU4cEFkaFNWREtSem5hQlg1eVdDajF5WG9OMmdvaTNIMXVsMllVaTJwVFdEd016YUxNU3BiZnFpTDU0VXl5SkViOXBYUzhfTGNMNXVBUmNCLXVNcE9sS1JKTWtSVnJEajl0ajF3NXAzZGU1alp4b0RhWmVPZnFMR0tjWFlERzhfNVl3R1doeS1XTk5aOXZRNDFfTGFKcUxXVlZ1SmNjYXlDdWFET29Qa0xyQnd6ZUtOaVhIUQ?oc=5",
+          "region": "Asia-Pacific"
         },
         {
-          "title": "Anthropic mathematician claims to prove Riemann hypothesis",
-          "source": "Hacker News",
-          "url": "https://www.scientificamerican.com/article/anthropic-mathematician-claims-to-prove-riemann-hypothesis-most-famous-problem-in-all-of-math/",
-          "region": "Community"
+          "title": "Record Anthropic IPO set to trigger global cash crunch",
+          "source": "Financial Newswire",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPMG1qYnNxV1pXcjJyMGZxdTNXVEpUaVNCNEt5QlJfX1hmbC1EOFJzY1NGTmRXWkpYTkNKQUhhQmMyZU5MZDdyZ2twNjN2Y3ZCN0lWemFMN2x4RXZiek5obGRZelBaQlZuejY2M1BzeTlEYndGSVVCeVRFVzJicHphbVpSZGt6VE1xUlhFZ0dETWNhLWFKN1FHcElCRkFmQ2dj?oc=5",
+          "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.5857,
+      "score": 0.5811,
       "probability": 0.78,
-      "confidence": "High",
-      "entity": "Anthropic",
-      "theme": "Funding & markets",
-      "headline": "Watch Anthropic Fails to Calm AI Jitters, Ditching the Kitchen for Thanksgiving",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
-      "signals": {
-        "outlets": 18,
-        "regions": [
-          "North America",
-          "Europe",
-          "Global desks"
-        ],
-        "stories": 23,
-        "momentum": 1.05,
-        "recent6h": 6,
-        "authority": 6,
-        "hnPoints": 0,
-        "nextStepCues": 0,
-        "arcDays": 3,
-        "calendar": null
-      },
-      "factors": {
-        "reach": 0.86,
-        "breadth": 0.5,
-        "momentum": 0.36,
-        "authority": 1,
-        "community": 0,
-        "nextStep": 0,
-        "arc": 1
-      },
-      "sig": [
-        "anthropic",
-        "ipo",
-        "stock",
-        "fail",
-        "calm",
-        "buy",
-        "history",
-        "offer"
-      ],
-      "evidence": [
-        {
-          "title": "Watch Anthropic Fails to Calm AI Jitters, Ditching the Kitchen for Thanksgiving",
-          "source": "Bloomberg.com",
-          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOWjNwWTF0NG0yY3lRZGg5dFhIUXZJTGRvTWN2U2dnWnc1NGdDMm5iTGtuQjNHTEFCdzZJb05TUkdfZjRlZDh4S3JqUmVZUXctUUtsbGUyMk9wT21wN3pxczFLNmRSTHpqV01wNjF4SmthdThIU1J5NHpwZlc5R0ZCX1NQc3FjZTd0T2lmNVVxX3hWZw?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "After Blockbuster Anthropic IPO, Dario Amodei Heads To Puglia",
-          "source": "Forbes",
-          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPMDhCN093ZTBxUmJKdExUcWo3TldsOGN6T0tKa0s2UmVNN2pUNTNrTzEtSkhHUW1aRGwxMjYyUGRDYVdRcmV3VVlWV3Z5dnZaWkhqNFZIWVlDa3kwZW1LOF9nVElPQW9wY3pnVDNnMlJ3Mks2dEQ3ang1dzZlUDNLSVBOdzJsREtiSnJQTGVHdkd0MExRMktscnFpN3lkd0pLZFg2RlhuaF9zZG56SUtwMGRYZVVoTmhs?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Can Anthropic afford to put safety first?",
-          "source": "The Verge",
-          "url": "https://www.theverge.com/podcast/1038701/anthropic-ipo-ai-safety-openai-nvidia-structure",
-          "region": "Global desks"
-        },
-        {
-          "title": "Better Recent IPO: SpaceX or Anthropic?",
-          "source": "The Globe and Mail",
-          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNdnlwVDZHN3Nla0ZIZGxTdFFMdjhLbDRhOW9JN3I4bFVQYmRBaW05NFgzVWlUQWwyTnBmZmE5bkcwLXp2ZmN4SUg2X2Q0RkRFVmpUd2R4VHJ3STJKbktYZDRsLWNJV3ZuWERYOWdqMkdGc3otR1dlNDc2VWVzS1k3VHkwMmlkdmtfemV0c3F1VDEwNTFmcjBkMlQwaFA1YUV5bjU0MkpQaThPWlVvcFhwR2huSlZuZEU?oc=5",
-          "region": "North America"
-        }
-      ]
-    },
-    {
-      "rank": 3,
-      "score": 0.5288,
-      "probability": 0.7,
       "confidence": "High",
       "entity": "Nvidia",
       "theme": "Chips & compute",
-      "headline": "Officials approved the sale of 580,000 Nvidia chips to Chinese companies",
+      "headline": "Exclusive | The Alice Huang Associate Accused of Funneling Nvidia Chips to China",
       "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 23,
+        "outlets": 32,
         "regions": [
-          "North America",
-          "Africa"
+          "North America"
         ],
-        "stories": 23,
-        "momentum": 0.38,
-        "recent6h": 2,
-        "authority": 7.3,
+        "stories": 35,
+        "momentum": 1.18,
+        "recent6h": 10,
+        "authority": 9.1,
         "hnPoints": 0,
         "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.93,
-        "breadth": 0.33,
-        "momentum": 0,
+        "reach": 1,
+        "breadth": 0.17,
+        "momentum": 0.41,
         "authority": 1,
         "community": 0,
         "nextStep": 0,
@@ -197,72 +126,142 @@
       "sig": [
         "chip",
         "nvidia",
+        "huang",
         "china",
-        "approved",
-        "chinese",
-        "export",
-        "sale",
-        "show"
+        "alice",
+        "network",
+        "husband",
+        "ming"
       ],
       "evidence": [
         {
-          "title": "Alice Huang, Accused of Spying on Nvidia’s CEO, Is Linked to Firms With Ties to China’s Military",
-          "source": "The New York Times",
-          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNVjhXZ2xYTDVHWE9xVzhIZVdLOVF3XzB2WEcxNnRlUFNCZzNvSDFtZG81UFZRTnJyLWJzTXdKbER1MExJcVhlUy11ckx1X1hnQjM0Z3NLNm1RMHlBSmdacjdOMHlfSDBSSUVHeVQ2bDQ1SWFVTUlHb2g5aVZWTGluWGt4TUtkMU5nSXc?oc=5",
+          "title": "Exclusive | The Alice Huang Associate Accused of Funneling Nvidia Chips to China",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE94MVRKSkVSTXVkZmRDTWYtakd3VFYtQ0VIWUhWRjVzTmlEUE9HbHh5QTZZU1pQMHRaNEpacHRjZWxad1c4VlJOdktDcFQ1c1lqRmdBR2hkZmFFVlAwNXdOamUtYVVmS3pJeFdpbVBKb05BZnYtLXktamVR?oc=5",
           "region": "North America"
         },
         {
-          "title": "Officials approved the sale of 580,000 Nvidia chips to Chinese companies",
-          "source": "The Washington Post",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPYTNWdm5ZVVFLUDV0SDQtRy1KMzV3dlVUVDg5aTJaMXNZTXpxRmY4Z3VKUFA2dVhKclpKbml2MjQxZmdLdEgyMGE2dkRzdnJnSzRkU0ItdVNuSnpVMHhSeHdzZXM3Y2ZJaGZsVzJ2cVRWTFNZWGlmckVxcUk1eTNSdzVZZ0hnNDE0cHlsblcxVGJuNnYtTUMwNFpISUktUGNyMWZlTGRwWlV0QW5kN3ZWV0wxNnRYQQ?oc=5",
+          "title": "US intelligence chief seemingly confirms China accessed restricted America-made AI chips",
+          "source": "Hindustan Times",
+          "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxNNTloNXpST1pMVEdPV3RSSVlyZFE3X0VtcnVFdnNaSFI4aUtLR2ladUQtMmp5QU1WNXpmTVlqQ2YtMmRPbThpaFpQX05pZW5pVkpGT004c1RCT2lQTjg5S0dEU3hrTk9objhzMkRQRFNibjc1M0M4NTc1Qk1BMkY3dzV1MlVsOHpZM3pqRDFIV2xObHBfVWkxNDN1RVdQMmhkaE1PNG1LVFdxS3RWSDh0UFNEZjI4NU1Td3pnTHd1dTBjMGJvWmZ4akk0X0lUMklYS0p1bk50cUtqeTRSZFVKQWRTV0tJajFkQ1g0T0RWWVU?oc=5",
           "region": "North America"
         },
         {
-          "title": "Influencers were paid to back Donald Trump's Nvidia AI chip export to China",
-          "source": "TechRadar",
-          "url": "https://news.google.com/rss/articles/CBMihAJBVV95cUxPSWF5SjJBTldSTmc1VlVQQm9OQmN4SEF5dmYzN29rZTAzTkd0TzZtMHJ2Y2MtY2R4Z3ZBSVdfeV9OaHJ4Z3BGOUE5a2Z3Tk5DaVJlU09raklaS3FRNEJIanoxQndOcUtrSHJlY1k4d2VTRVF2cTZPNGtnT1pIaHpaaW8wcVdoVVZQQzNQUFZMcnRjWmJFc3RERWV5M212akRGVTBpU2tkdndOSXRhTlp2QXZkTWwxYkhxbkk5Q294dzRrT3M5NFJlWTJiMFJrSi1qWWRDbktCR1ExWEZsTEdGeENnNjJaR2t3amdXMlRteFNUclpJYTlEN0kzeG5mOXd6VVp3RA?oc=5",
+          "title": "Nvidia Chip Smuggling: Li Ming Allegedly Ran Network That Diverted AI Chips to China",
+          "source": "theopenpress.in",
+          "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQVXdQblJoSVRyNWpUZC0tLXk2MXFiUUJ6Q2VlQmNZUEYwbkc3WllxaHk0X1VtZWNsVHMwcXBXb2JkUVpXVFRfSngzR3J2cXhIM3pCQjZYR0hkOUxUaDRvcWo2Y2NxYUhvR2J3akxrRHZPNUNjR0lIRnpwZlktWjdlZ2ZlQQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Marvell Just Dropped 22% in a Week as Nvidia’s Turmoil Hit AI Chips. Sell, or Load Up Before Dec. 1?",
-          "source": "Yahoo Finance",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPSVhaSC1TYjB4aTNLWlNPWXdrVkx3OHQ4WEhNd1VENERXY05fNDEzWXNHNGwxaWMzbWRoa0c3ZmFlN1lwLTVEa09Ud1FqVDQ0em1nMUx5YUM0UFFPdk9WZGtTSWw4aEN1cEpMdWNRUEZybTRQX2I3b2tvTVRhMjFNY1Qtd1pDeHo5ODdlaGN4RUpvbUhoYVF0RQ?oc=5",
+          "title": "Kennedy Questions Officials on China AI Chip Exports",
+          "source": "Wisevoter",
+          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQUDVSVy1jQnZnR2lLZXc0emxiVTVYcWZMR1ROaDE2U0NkeWo4WTAwN2hweDFkejlEd2E1UHV4U2N1eFJPbzFNOHhMNFNYTVlONktzRlJrUjNFMUI0aW42MW5Mc0lLeVVJLXB1SlFtNHlfeERCZVk0QlVPYVotUTJUSUhndzBMX2JtcGhHbzQxMG9hekhwSnc?oc=5",
+          "region": "North America"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "score": 0.5664,
+      "probability": 0.76,
+      "confidence": "High",
+      "entity": "China",
+      "theme": "Chips & compute",
+      "headline": "US seeks answers on Nvidia's sale of chips to China, Bessent says",
+      "outlook": "Supply, pricing and export angles on China should keep this in the headlines.",
+      "signals": {
+        "outlets": 11,
+        "regions": [
+          "South Asia",
+          "North America"
+        ],
+        "stories": 11,
+        "momentum": 2.62,
+        "recent6h": 6,
+        "authority": 4.2,
+        "hnPoints": 0,
+        "nextStepCues": 0,
+        "arcDays": 3,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.72,
+        "breadth": 0.33,
+        "momentum": 0.8,
+        "authority": 0.84,
+        "community": 0,
+        "nextStep": 0,
+        "arc": 1
+      },
+      "sig": [
+        "china",
+        "chip",
+        "nvidia",
+        "bessent",
+        "sale",
+        "answer",
+        "spy",
+        "agency"
+      ],
+      "evidence": [
+        {
+          "title": "US seeks answers on Nvidia's sale of chips to China, Bessent says",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQcm1fbVJENmFGZU81bGR4WXVfeDMwdWdaY0xNbmVBN3hmaXVVeVBLelJxT3dubnROYnVkM2NCRXRfcFFvMGNtZ0FlM3c5LWt1WUVGclQzY1ZJTVBCR2d2dXozSXRqN0VIM1NsV0d2YVJLRjJpRnlIcVRNSlZqeURwLWhKa1V4dUNvWDdlZmNoMnQxQ1d6WlVGalNpdjVSZm9PMXRzUA?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Bessent says Nvidia yet to answer US probe into alleged restricted AI chip sales to China | Hindustan Times",
+          "source": "Hindustan Times",
+          "url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxNTUdrdFhacEpGS1JFNWY2eDcxaHVaVFdDSzcySHpFSlZPdmFtZjNBLUZrLXQ2Qmpoa19YVzVTckdVSWQxSW53MVNGczBRbjRGdkhBeFBrMzJfb0JaX1QyXzJPeUZSOFVoZm1oS1djVl9WVGhKUUg4ZDEzYUJTbnVIYU9hR0QtdFVxQkpLYzhlWHk0VktfU3NiejRNTlhEYjJsRFVBNlVrb1NoWWNyLUxsSDlfdnpQY05CUlprbnlibVhqRE53ek0zaUhkLXRSaW4wemlBS255N01QMkw4bDVTOW0wLVc5dlJ4Zk5sMjR2LUZYd9IB9wFBVV95cUxOS3E2ZUNCU1hEMDJtb1ZNdExzOTd1T1ozMW40Qk01RllhSmUxa214eUZUeTdxTF9ncUpOQU56T0Y5V0U5Nk1XVWZoajg3Z3RaeGFsemVzRzRvR3NCYVRUSlloQ25CdG9rRnAyYXVCUkZRZ0g0dXlVQXhVelJOUFA0YlNUVkxSSTdka1FCT2lrSjRqU1kyZUdrR0tmbkV3MUlRWTNvVHFaTlF2YklWN2xXWXh5U1ZJN0hSOTY4V1YxTjMza1VoTTRrZm9PSHdLWUVMSWZsM1lyc2J2T3VTaGZGTUhVSWVOMDJVbmU4YWswTElkcmJhbmp3?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Intel Chief confirms China got access to US advanced AI chips",
+          "source": "CNN",
+          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNNTVPbGVLM3lXWERwcThxRUxieDdKck1UQXdpREVJVkpoam5MaDNFVWd2ejZ3ZFFwZkFtSjU0bnFMQ3BCLTF1SXdIWGR0dHR2c3ZYdTVTamdoZ3RLZUtRZ3JUV29MYkgxa1YxdjFobWt5Q2FBY1BRZ1ZHckxoY0s4Qi1ibkZiYmJzbk1HS2lOYzM5SHZacVpwcXQ3UFR4M094TGxFT1RXSTFvejQ?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "- U.S. Seeks Answers From Nvidia Over China AI Chip Sales",
+          "source": "iTMunch",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE14UHRReGhkR2tHUlNpaDRrT1FqT3NWR3hJSVVwanU2Q2dsS29PbFBncmdscEpmTFlFXzJ1N3h1bUMxemdmY3pYVzZubEhkT3d3NVVSeVRrdW9rTEJpeWdralROdVVPQ1dKYTByVmtLOGdEZw?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-22",
+    "date": "2026-11-23",
     "calls": [
       {
         "rank": 1,
-        "headline": "Trump threatens ban on US firms building AI data centres overseas",
-        "probability": 0.92,
-        "hit": true,
-        "matched": "Data centers full of U.S. chips are serving Chinese AI models–undermining Trump’s tech ambitions"
+        "headline": "Anthropic Mathematician Claims to Solve Riemann Hypothesis With Help From Claude",
+        "probability": 0.79,
+        "hit": false,
+        "matched": null
       },
       {
         "rank": 2,
-        "headline": "Anthropic Share Slump Nearly Erases IPO Pop as AI Trade Unravels",
-        "probability": 0.91,
+        "headline": "Watch Anthropic Fails to Calm AI Jitters, Ditching the Kitchen for Thanksgiving",
+        "probability": 0.78,
         "hit": true,
-        "matched": "Watch Anthropic Fails to Calm AI Jitters, Ditching the Kitchen for Thanksgiving"
+        "matched": "Anthropic’s Record-Breaking IPO"
       },
       {
         "rank": 3,
-        "headline": "Anthropic Mathematician Claims to Have Solved Math’s Most Famous Problem",
-        "probability": 0.83,
+        "headline": "Officials approved the sale of 580,000 Nvidia chips to Chinese companies",
+        "probability": 0.7,
         "hit": true,
-        "matched": "Anthropic Mathematician Claims to Solve Riemann Hypothesis With Help From Claude"
+        "matched": "Exclusive | The Alice Huang Associate Accused of Funneling Nvidia Chips to China"
       }
     ],
-    "hits": 3
+    "hits": 2
   },
   "track": {
-    "days": 22,
-    "calls": 66,
-    "hits": 57,
+    "days": 23,
+    "calls": 69,
+    "hits": 59,
     "log": [
       {
         "date": "2026-11-01",
@@ -372,6 +371,11 @@
       {
         "date": "2026-11-22",
         "hits": 3,
+        "calls": 3
+      },
+      {
+        "date": "2026-11-23",
+        "hits": 2,
         "calls": 3
       }
     ],
