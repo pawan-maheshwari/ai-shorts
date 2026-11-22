@@ -1461,7 +1461,7 @@ with tab_i:
                                  f'<br>· {html.escape(h["title"])}' for h in sv["headlines"][:4])
                     st.markdown(f'<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Sentinel — '
                                 f'{sv["level"].title() if sv["level"] != "UNCHECKED" else "Not checked"}</b><br>'
-                                + "<br>".join(html.escape(x) for x in sv["reasons"]) +
+                                + "<br>".join(html.escape(x) for x in sv["reasons"])
                                 + ("".join(f'<br><span class="note">NSE · {html.escape(x)}</span>' for x in sv.get("exchange") or []))
                                 + f'<br><span class="note">{html.escape(sv.get("coverage", ""))}'
                                 + (f' · {html.escape(sv["llm"])}' if sv.get("llm") else " · read by rules") + '</span>' +
@@ -2084,7 +2084,9 @@ with tab_d:
             else:
                 lines_ = nm.research_fallback(sym_.strip().upper())
                 if not API_KEY and q_.strip():
-                    st.caption(f"No LLM key, so here is the rule-based NSE snapshot instead — {LLM_SETUP}.")
+                    st.caption(f"No LLM key, so here is the rule-based NSE snapshot instead — {LLM_SETUP}."
+                               + ("" if sym_.strip() else " Add a stock symbol to include that stock; "
+                                  "without one the snapshot covers the market only."))
                 st.markdown("\n".join(f"- {x}" for x in lines_) or "NSE's MCP servers did not answer.")
         st.caption(nm.DISCLAIMER)
 

@@ -573,8 +573,9 @@ def gather(symbol, nse=None, use_yahoo=True, mcp=True):
         fx = nm.stock_facts(symbol)
         sources["NSE MCP"] = fx["status"]
         if fx.get("actions_status") == "ok":
-            have = {(a_["date"], a_["subject"][:20].lower()) for a_ in acts}
-            acts = acts + [a_ for a_ in fx["actions"] if (a_["date"], a_["subject"][:20].lower()) not in have]
+            # the two sources word the same action differently, so match on the ex-date alone
+            have = {a_["date"] for a_ in acts}
+            acts = acts + [a_ for a_ in fx["actions"] if a_["date"] not in have]
             sources["Corporate actions"] = "ok"
     name = company_name(symbol, re.sub(r"\s+(Limited|Ltd\.?)$", "", name) if name else None)
     st_, it_ = google_news(name)
@@ -652,9 +653,11 @@ def assess(symbol, g, ban=("unavailable", set()), api_key=None, today=None):
     ok = [k for k, v in sources.items() if v == "ok"]
     bad = [k for k, v in sources.items() if v != "ok"]
     news_ok = any(sources.get(k) == "ok" for k in ("NSE filings", "Google News", "Yahoo News"))
-    if not ok:
+    # "NSE MCP" on its own means a price quote arrived — not that any news or event source was checked
+    if not [k for k in ok if k != "NSE MCP"]:
         level, checked = "UNCHECKED", False
-        reasons = ["Could not reach any news or exchange source — treat as not checked"]
+        reasons = (["Could not reach any news or exchange-event source — treat as not checked"]
+                   + [r for r in reasons if r.endswith("(NSE Bhavcopy)")])
     else:
         checked = True
         if level == "CLEAR":
