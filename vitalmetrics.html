@@ -675,6 +675,14 @@
                                 </div>
                             </div>
 
+                            <div class="mt-2 flex items-baseline gap-x-1.5 text-sky-700" title="Estimated from the breathing rhythm in your pulse signal — experimental">
+                                <i class="fa-solid fa-lungs text-xs"></i>
+                                <span class="text-xs font-semibold">Breathing</span>
+                                <span id="ppg-rr" class="text-lg font-bold tabular-nums">--</span>
+                                <span class="text-[10px] font-semibold">/min</span>
+                                <span class="text-[9px] uppercase tracking-wider bg-sky-100 text-sky-700 rounded-full px-1.5 py-0.5">Experimental</span>
+                            </div>
+
                             <div id="ppg-status" class="mt-3 text-xs font-medium text-slate-500 text-center min-h-[16px]">Sensor idle — tap Start Pulse Scan</div>
                             <div id="ppg-quality" class="mt-1 text-[10px] text-slate-400"></div>
                         </div>
@@ -684,7 +692,7 @@
                             <ol class="text-sm text-slate-600 space-y-2.5">
                                 <li class="flex gap-x-2.5"><span class="w-5 h-5 shrink-0 bg-rose-100 text-rose-600 rounded-full text-[10px] font-bold flex items-center justify-center">1</span> Tap <strong>Start Pulse Scan</strong> and allow camera access.</li>
                                 <li class="flex gap-x-2.5"><span class="w-5 h-5 shrink-0 bg-rose-100 text-rose-600 rounded-full text-[10px] font-bold flex items-center justify-center">2</span> Gently cover the <strong>rear camera + flash</strong> with either index fingertip. The screen waveform turns red-pink when contact is good.</li>
-                                <li class="flex gap-x-2.5"><span class="w-5 h-5 shrink-0 bg-rose-100 text-rose-600 rounded-full text-[10px] font-bold flex items-center justify-center">3</span> Hold still for <strong>~20 seconds</strong>. Your BPM and vitals appear automatically and merge with your BMI metrics below.</li>
+                                <li class="flex gap-x-2.5"><span class="w-5 h-5 shrink-0 bg-rose-100 text-rose-600 rounded-full text-[10px] font-bold flex items-center justify-center">3</span> Hold still and breathe normally for <strong>~30 seconds</strong>. Your BPM, breathing rate and vitals appear automatically and merge with your BMI metrics below.</li>
                             </ol>
 
                             <div class="flex gap-x-3 mt-5">
@@ -713,7 +721,7 @@
                             <span class="text-[10px] px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-3xl font-semibold">SYNCED</span>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="vitals-grid"></div>
-                        <p class="text-[10px] text-slate-400 mt-3"><strong>Note:</strong> The optical sensor measures heart rate. BMI, BMR and calorie vitals are computed from your entered height/weight — no camera can measure body mass, so keep those inputs accurate. Experimental feature; not a medical device.</p>
+                        <p class="text-[10px] text-slate-400 mt-3"><strong>Note:</strong> The optical sensor measures heart rate; breathing rate is an experimental estimate from the same signal. BMI, BMR and calorie vitals are computed from your entered height/weight — no camera can measure body mass, so keep those inputs accurate. Experimental feature; not a medical device.</p>
                     </div>
 
                     <!-- Hidden sensor elements -->
@@ -758,7 +766,7 @@
                                 <span>COPY URL TEMPLATE</span>
                             </button>
                             <p class="text-[10px] text-slate-400 mt-3">
-                                Supported parameters: <code class="text-slate-500">weight</code>, <code class="text-slate-500">height</code>, <code class="text-slate-500">hr</code>, <code class="text-slate-500">age</code>, <code class="text-slate-500">gender</code> (male/female), <code class="text-slate-500">unit</code> (metric/imperial). Weight from a smart scale synced to Apple Health flows through automatically. Data stays on-device — the URL is processed locally in your browser.
+                                Supported parameters: <code class="text-slate-500">weight</code>, <code class="text-slate-500">height</code>, <code class="text-slate-500">hr</code>, <code class="text-slate-500">rr</code> (breaths/min), <code class="text-slate-500">age</code>, <code class="text-slate-500">gender</code> (male/female), <code class="text-slate-500">unit</code> (metric/imperial). Weight from a smart scale synced to Apple Health flows through automatically. Data stays on-device — the URL is processed locally in your browser.
                             </p>
                         </div>
                     </div>
@@ -1615,6 +1623,7 @@
                 hipCm: hip ? +hip.toFixed(1) : null,
                 activityMultiplier: currentActivityMultiplier,
                 heartRate: lastPulseResult ? lastPulseResult.bpm : null,
+                breathRate: lastPulseResult && lastPulseResult.rr ? lastPulseResult.rr.rate : null,
                 photos: { ...currentCaptures }
             };
             
@@ -1943,6 +1952,7 @@
                                         <div class="flex justify-between"><span>TDEE</span> <span class="font-semibold tabular-nums">${entry.tdee} kcal</span></div>
                                         <div class="flex justify-between"><span>Activity Factor</span> <span class="font-semibold">${entry.activityMultiplier}</span></div>
                                         <div class="flex justify-between"><span>Heart Rate</span> <span class="font-semibold tabular-nums">${entry.heartRate ? entry.heartRate + ' bpm' : '—'}</span></div>
+                                        <div class="flex justify-between"><span>Breathing Rate</span> <span class="font-semibold tabular-nums">${entry.breathRate ? entry.breathRate + ' /min' : '—'}</span></div>
                                     </div>
                                 </div>
                                 
@@ -2197,7 +2207,7 @@
         const PPG = {
             stream: null, raf: null, running: false, torch: false,
             samples: [], times: [], fingerSince: null,
-            SCAN_SECONDS: 20, HARD_LIMIT: 32, lastResult: null,
+            SCAN_SECONDS: 30, HARD_LIMIT: 42, // 30s gives breathing enough cycles to measure lastResult: null,
             devices: [], deviceIndex: -1
         };
         let lastPulseResult = null; // exposed for save + bot
@@ -2286,6 +2296,7 @@
                 document.getElementById('stop-pulse-btn').classList.remove('hidden');
                 document.getElementById('pulse-live-dot').classList.remove('hidden');
                 document.getElementById('ppg-bpm').textContent = '--';
+                document.getElementById('ppg-rr').textContent = '--';
                 document.getElementById('ppg-progress').style.width = '0%';
 
                 refreshPulseDevices(); // labels are populated after permission is granted
@@ -2468,7 +2479,84 @@
 
             if (!bpm || bpm < 37 || bpm > 185) return { bpm: null };
             const quality = cv < 0.08 ? 'Excellent' : cv < 0.15 ? 'Good' : cv < 0.25 ? 'Fair' : 'Weak';
-            return { bpm, quality, cv, beats };
+            return { bpm, quality, cv, beats, peaks, sig };
+        }
+
+        /* ---- Breathing rate (experimental) ------------------------------------
+           Breathing modulates the pulse signal three ways: the baseline drifts
+           (RIIV), beat height changes (RIAV) and beat spacing changes (RIFV —
+           heart speeds up on the in-breath). Each gives one value per beat; we
+           resample to 4 Hz, find the dominant 6–30 breaths/min rhythm by
+           autocorrelation, and only report when the methods agree. */
+        function breathPeriod(t, v, durS) {
+            const FS = 4, n = Math.floor(durS * FS);
+            if (n < 40) return null;
+            const u = new Array(n);
+            for (let i = 0, k = 0; i < n; i++) {             // linear resample
+                const ti = t[0] + i / FS;
+                while (k < t.length - 2 && t[k + 1] < ti) k++;
+                const f = Math.min(1, Math.max(0, (ti - t[k]) / ((t[k + 1] - t[k]) || 1)));
+                u[i] = v[k] + f * (v[k + 1] - v[k]);
+            }
+            // High-pass: subtract a 15 s moving average so slow finger-pressure drift
+            // can't masquerade as a very slow breath
+            const W = Math.round(7.5 * FS), hp = new Array(n);
+            for (let i = 0; i < n; i++) {
+                let sum = 0, c = 0;
+                for (let j = Math.max(0, i - W); j <= Math.min(n - 1, i + W); j++) { sum += u[j]; c++; }
+                hp[i] = u[i] - sum / c;
+            }
+            for (let i = 0; i < n; i++) u[i] = hp[i];
+            let r0 = 0; for (let i = 0; i < n; i++) r0 += u[i] * u[i];
+            if (r0 <= 0) return null;
+            const minLag = 2 * FS, maxLag = Math.min(10 * FS, Math.floor(n / 2.5)); // 30 → 6 /min
+            const r = [];
+            for (let lag = minLag - 1; lag <= maxLag + 1; lag++) {
+                let acc = 0; for (let i = 0; i < n - lag; i++) acc += u[i] * u[i + lag];
+                r.push(acc / r0 * n / (n - lag));
+            }
+            // Local maxima of the autocorrelation. Multiples of the true period also
+            // peak, so take the SHORTEST lag that is nearly as strong as the best.
+            const peaks = [];
+            for (let j = 1; j < r.length - 1; j++) if (r[j] > r[j - 1] && r[j] >= r[j + 1] && r[j] > 0.25) peaks.push(j);
+            if (!peaks.length) return null;
+            const top = Math.max(...peaks.map(j => r[j]));
+            const best = peaks.find(j => r[j] >= 0.75 * top);
+            const d = (r[best - 1] - r[best + 1]) / (2 * (r[best - 1] - 2 * r[best] + r[best + 1]) || 1); // sub-sample peak
+            return { sec: (minLag - 1 + best + (isFinite(d) ? Math.max(-0.5, Math.min(0.5, d)) : 0)) / FS, r: r[best] };
+        }
+
+        function computeBreathing(res) {
+            if (!res || !res.peaks || res.peaks.length < 12) return null;
+            const P = res.peaks, sig = res.sig, T = PPG.times, raw = PPG.samples;
+            const t = [], ibi = [], amp = [], base = [];
+            for (let k = 1; k < P.length; k++) {
+                const a = P[k - 1], b = P[k], d = T[b] - T[a];
+                if (d < 330 || d > 1600) continue;            // skip missed / doubled beats
+                let lo = Infinity, s = 0;
+                for (let i = a; i <= b; i++) { if (sig[i] < lo) lo = sig[i]; s += raw[i]; }
+                t.push(T[b] / 1000); ibi.push(d); amp.push(sig[b] - lo); base.push(s / (b - a + 1));
+            }
+            if (t.length < 10) return null;
+            const dur = t[t.length - 1] - t[0];
+            if (dur < 18) return null;
+            const est = [base, amp, ibi].map(v => breathPeriod(t, v, dur)).filter(Boolean)
+                .map(f => ({ rate: 60 / f.sec, r: f.r }));
+            if (!est.length) return null;
+            // Take the best-supported group of estimates that agree within 3 /min
+            let group = [], score = 0;
+            est.forEach(a => {
+                const g = est.filter(b => Math.abs(a.rate - b.rate) <= 3);
+                const sc = g.length + g.reduce((x, b) => x + b.r, 0) / g.length;
+                if (sc > score) { score = sc; group = g; }
+            });
+            // Pure sensor noise reaches r≈0.5 by chance, so: two or more agreeing
+            // methods need mean r ≥ 0.4; a lone method needs r ≥ 0.6. Else stay silent.
+            const meanR = group.reduce((x, b) => x + b.r, 0) / group.length;
+            if (meanR < (group.length >= 2 ? 0.4 : 0.6)) return null;
+            const rate = Math.round(group.reduce((x, b) => x + b.rate, 0) / group.length);
+            if (rate < 6 || rate > 30) return null;
+            return { rate, quality: group.length === 3 ? 'Good' : group.length === 2 ? 'Fair' : 'Low confidence', methods: group.length };
         }
 
         function autocorrBPM(sig) {
@@ -2529,12 +2617,23 @@
                 return;
             }
 
-            lastPulseResult = { ...result, at: new Date().toISOString() };
+            const rr = computeBreathing(result);
+            const { peaks, sig, ...summary } = result;           // don't keep raw arrays around
+            lastPulseResult = { ...summary, rr, at: new Date().toISOString() };
+            document.getElementById('ppg-rr').textContent = rr ? rr.rate : '--';
             document.getElementById('ppg-bpm').textContent = result.bpm;
             document.getElementById('ppg-quality').textContent = `Signal quality: ${result.quality} • ${result.beats} beats captured`;
             setPpgStatus('Scan complete — vitals synced below.', 'good');
-            showToast(`Pulse locked: ${result.bpm} BPM (${result.quality} signal).`, 'success');
+            showToast(`Pulse locked: ${result.bpm} BPM (${result.quality} signal)${rr ? ` • breathing ~${rr.rate}/min` : ''}.`, 'success');
             renderVitalsSummary(result.bpm);
+        }
+
+        function breathCell() {
+            const rr = lastPulseResult && lastPulseResult.rr;
+            if (!rr) return { label: 'BREATHING RATE · EXPERIMENTAL', value: '--', unit: '/min', note: 'Not detected — hold still ~30s, breathe normally', noteClass: 'text-slate-400' };
+            const n = rr.rate < 12 ? ['Below typical resting', 'text-blue-600'] : rr.rate <= 20 ? ['Typical resting 12–20', 'text-emerald-600'] : ['Above typical — rest & rescan', 'text-amber-600'];
+            const src = rr.source ? ` · ${rr.source}` : (rr.quality === 'Good' ? '' : ` · ${rr.quality.toLowerCase()} confidence`.replace('low confidence confidence', 'low confidence'));
+            return { label: 'BREATHING RATE · EXPERIMENTAL', value: `${rr.rate}`, unit: '/min', note: n[0] + src, noteClass: n[1] };
         }
 
         function renderVitalsSummary(bpm) {
@@ -2551,6 +2650,7 @@
 
             const cells = [
                 { label: 'HEART RATE (IoT)', value: `${bpm}`, unit: 'bpm', note: hrStatus, noteClass: hrColor },
+                breathCell(),
                 { label: 'EST. MAX HEART RATE', value: `${hrMax}`, unit: 'bpm', note: `220 − age ${age}` },
                 { label: 'CARDIO TARGET ZONE', value: `${zoneLo}–${zoneHi}`, unit: 'bpm', note: '50–85% of max' },
                 { label: 'BMI', value: bmi, unit: 'kg/m²', note: document.getElementById('bmi-category-large').textContent },
@@ -2674,8 +2774,14 @@
             if (q.includes('apple') || q.includes('watch') || q.includes('shortcut') || (q.includes('health') && q.includes('sync')) || q.includes('smart scale'))
                 return `Scroll to <strong>Body Scan → Apple Health &amp; Watch Sync</strong>. Build the one-time iOS Shortcut (two <em>Find Health Samples</em> actions + <em>Open URLs</em> with the copied template) and each run opens VitalMetrics with your latest <strong>weight</strong> and <strong>Watch heart rate</strong> pre-filled — smart-scale readings in Apple Health flow through too. Everything is processed locally in your browser.`;
 
+            if (q.includes('breath') || q.includes('respirat') || q.includes('lung')) {
+                const rr = lastPulseResult && lastPulseResult.rr;
+                if (rr) return `Your estimated breathing rate is <strong>${rr.rate} breaths/min</strong>${rr.source ? ` (${rr.source})` : rr.quality === 'Good' ? '' : ` (${rr.quality === 'Fair' ? 'fair' : 'low'} confidence)`}. A typical adult at rest breathes 12–20 times a minute. This is an <em>experimental</em> estimate read from the rhythm breathing leaves in your pulse signal.${disclaimer}`;
+                return `Run the <strong>IoT Finger Pulse Scan</strong> on the Body Scan tab and hold still, breathing normally, for ~30 seconds. Breathing gently rocks your pulse signal, and I estimate your breathing rate from that rhythm (experimental).`;
+            }
+
             if (q.includes('pulse') || q.includes('heart') || q.includes('bpm') || q.includes('flash') || q.includes('iot')) {
-                if (lastPulseResult)
+                if (lastPulseResult && lastPulseResult.bpm)
                     return `Your last IoT pulse reading was <strong>${lastPulseResult.bpm} BPM</strong> (${lastPulseResult.quality} signal). A typical adult resting rate is 60–100 BPM. To rescan: Body Scan tab → <em>Start Pulse Scan</em> → cover the rear camera + flash with a fingertip for ~20s.${disclaimer}`;
                 return `Go to the <strong>Body Scan</strong> tab → <em>IoT Finger Pulse Scan</em>. Tap Start, then gently cover the <strong>rear camera and flash</strong> with your fingertip. The flash lights your fingertip and the camera reads blood-flow pulses (PPG) to measure your heart rate in ~20 seconds.`;
             }
@@ -2936,9 +3042,10 @@
         function aiSystemPrompt() {
             const c = botCtx();
             const hr = lastPulseResult ? `${lastPulseResult.bpm} bpm (source: ${lastPulseResult.quality})` : 'not measured yet';
+            const rr = lastPulseResult && lastPulseResult.rr ? `${lastPulseResult.rr.rate} breaths/min (experimental estimate)` : 'not measured';
             return 'You are BMI Bot, the friendly AI health assistant inside the VitalMetrics web app (BMI, body composition and vitals tracker). '
                 + `The user's LIVE metrics right now: age ${c.age}, gender ${currentGender}, height ${c.hCm.toFixed(0)} cm, weight ${c.wKg.toFixed(1)} kg, `
-                + `BMI ${c.bmi} kg/m2 (category: ${c.bmiCat}), BMR ${c.bmr} kcal, TDEE ${c.tdee} kcal/day, ideal weight range ${c.ideal}, heart rate ${hr}. `
+                + `BMI ${c.bmi} kg/m2 (category: ${c.bmiCat}), BMR ${c.bmr} kcal, TDEE ${c.tdee} kcal/day, ideal weight range ${c.ideal}, heart rate ${hr}, breathing rate ${rr}. `
                 + 'Rules: give educational fitness and nutrition guidance personalised to these metrics. You are NOT a doctor — never diagnose; for medical concerns advise consulting a healthcare professional. '
                 + 'Be warm and concise: under 120 words. Plain text only (no markdown headers or bullets with #). Use metric units.';
         }
@@ -3105,12 +3212,24 @@
             if (params.has('hr')) {
                 const hr = Math.round(parseFloat(String(params.get('hr')).replace(',', '.')));
                 if (!isNaN(hr) && hr >= 30 && hr <= 220) {
-                    lastPulseResult = { bpm: hr, quality: 'Apple Health', beats: null, at: new Date().toISOString() };
+                    lastPulseResult = { bpm: hr, quality: 'Apple Health', beats: null, rr: null, at: new Date().toISOString() };
                     document.getElementById('ppg-bpm').textContent = hr;
                     document.getElementById('ppg-quality').textContent = 'Source: Apple Health / Watch sync';
                     setPpgStatus('Heart rate synced from Apple Health.', 'good');
                     renderVitalsSummary(hr);
                     applied.push(`heart rate ${hr} bpm`);
+                }
+            }
+
+            // Respiratory rate (Apple Watch records it during sleep)
+            if (params.has('rr')) {
+                const rr = Math.round(parseFloat(String(params.get('rr')).replace(',', '.')));
+                if (!isNaN(rr) && rr >= 4 && rr <= 60) {
+                    if (!lastPulseResult) lastPulseResult = { bpm: null, quality: 'Apple Health', beats: null, at: new Date().toISOString() };
+                    lastPulseResult.rr = { rate: rr, quality: 'Good', source: 'Apple Health' };
+                    document.getElementById('ppg-rr').textContent = rr;
+                    if (lastPulseResult.bpm) renderVitalsSummary(lastPulseResult.bpm);
+                    applied.push(`breathing ${rr}/min`);
                 }
             }
 
