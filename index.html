@@ -1932,6 +1932,7 @@
     <button class="eng-btn" id="openQuiz" aria-label="Open the AI quiz of the day"><span class="ear-k">AI Quiz</span><span class="ear-s">of the day</span></button>
     <button class="eng-btn" id="openPoll" aria-label="Open the AI poll of the day"><span class="ear-k">AI Poll</span><span class="ear-s">of the day</span></button>
     <a class="eng-btn" href="vitalmetrics.html" target="_blank" rel="noopener" title="Open AI Vitals — AI-enabled BMI &amp; body tracker in a new tab">AI Vitals &mdash; BMI tracker<span class="ext">&#8599;</span></a>
+    <a class="eng-btn" href="tarot/" target="_blank" rel="noopener" title="Open Arcana Parlour — a guided tarot reading with the classic 1909 deck, in a new tab">AI Tarot &mdash; a reading with Mira<span class="ext">&#8599;</span></a>
   </div>
 
   <!-- Top 5 AI Companies by Market Cap with daily rank-change tracking -->
@@ -3782,7 +3783,8 @@ initFeed();
      link stays in the sheet where there is room for its longer label */
   move('#openQuiz', document.getElementById('earQuiz'));
   move('#openPoll', document.getElementById('earPoll'));
-  move('.engage a.eng-btn', tools);
+  Array.prototype.slice.call(document.querySelectorAll('.engage a.eng-btn'))
+    .forEach(function(a){ move(a, tools); });
 
   /* account actions */
   move('#openSub', acct);
