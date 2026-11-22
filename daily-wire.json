@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-22",
+      "title": "The Bug Slayer",
+      "headline": "Recent Cyberattacks Could Signal the Awakening of Artificial Intelligence",
+      "source": "The Times of Israel",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOemlGZ2FoaWljUkNZU0xCcEpManRBZUNBck1wOFlQcXA1b2dNNC1IX21wUGlUVU92ZWxZbHFyXzhiN21FMFA5Z2R0ZkNWOHBRektRMnNHOERuckI3OXd3WnVHZTNOU1c5aHdtUFk2bGRta1MxY3NVUGlFeHozYUJ5SVI0QzVPSGFHQ2FRWXFqaG5XTUlJcmIwdGhOWE1TSEE5TTlZWEZqNUlkZw?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "security",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI makes every system unhackable!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "It even changed my password to “password”. Twice."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that promise without an audit."
+        }
+      ]
+    },
+    {
       "date": "2026-11-21",
       "title": "100x Before Breakfast",
       "headline": "Not Nvidia. Not Broadcom. This Artificial Intelligence (AI) Chip Stock Could Be the Biggest Winner of 2027",
