@@ -4,7 +4,8 @@ Analyst desk — agents that work like a research desk: they form testable views
 Roles (each runs on the configured LLM — Claude, or free Groq / Gemini — with a rule-based analyst as the fallback and benchmark):
   • Equity research analysts — one view per focus stock for the rest of the session: long / short / no view,
     confidence, thesis, what would prove it wrong, the setup that fits.
-  • Macro strategist — the day's regime from Nifty, breadth and VIX.
+  • Macro strategist — the day's regime from Nifty, breadth and VIX (plus NSE's own previous-session breadth and
+    VIX percentile, and each stock's 1-month return vs Nifty, from the NSE Bhavcopy MCP server when reachable).
   • Portfolio manager — turns the views, the regime and the armed specialists into a plan: stance, up to three
     focus trades with size, setup families to favour and avoid.
 
@@ -179,7 +180,8 @@ def _fmt(x, nd=2, pct=True):
     return "n/a" if x is None or not np.isfinite(x) else f"{x:+.{nd}f}{'%' if pct else ''}"
 
 
-def llm_views(symbols, briefs, m, sentinel, record_txt, lessons, api_key, cost):
+def llm_views(symbols, briefs, m, sentinel, record_txt, lessons, api_key, cost, exch=None):
+    """`exch`: {symbol: text} from nse_mcp.desk_context() — the previous session only, so no look-ahead."""
     lines = []
     for s in symbols:
         b = briefs.get(s)
@@ -190,6 +192,7 @@ def llm_views(symbols, briefs, m, sentinel, record_txt, lessons, api_key, cost):
         lines.append(f"- {s}: gap {_fmt(b['gap'])}, first 15 min {_fmt(b['m15'])} on {b['relvol15'] if np.isfinite(b['relvol15']) else float('nan'):.1f}× usual "
                      f"volume, 5-day {_fmt(b['ret5'], 1)}, 20-day {_fmt(b['ret20'], 1)}, at {b['pos20'] * 100:.0f}% of its "
                      f"20-day range, daily range ≈{b['atr']:.1f}%, price ₹{b['price']}"
+                     + (f". NSE: {exch[s]}" if exch and exch.get(s) else "")
                      + (f". Sentinel ({sn.get('level')}): \"{news}\"" if news else ""))
     if not lines:
         return None, "no data"
@@ -197,7 +200,9 @@ def llm_views(symbols, briefs, m, sentinel, record_txt, lessons, api_key, cost):
     prompt = (f"MACRO at 09:30: Nifty gap {_fmt(m['n_gap'])}, first 15 min {_fmt(m['n_m15'])}, 5-day {_fmt(m['n_ret5'], 1)}; "
               f"breadth {m['breadth'] * 100 if np.isfinite(m['breadth']) else float('nan'):.0f}% of stocks up; "
               f"India VIX {vix_txt} ({_fmt(m['vix_chg'], 1)} vs yesterday). "
-              f"Rule-based regime read: {REGIME_TXT[m['regime']]}.\n\nSTOCKS:\n" + "\n".join(lines)
+              f"Rule-based regime read: {REGIME_TXT[m['regime']]}."
+              + (f"\nEXCHANGE (NSE, previous session): {m['exchange']}" if m.get("exchange") else "")
+              + "\n\nSTOCKS:\n" + "\n".join(lines)
               + f"\n\nYOUR RECORD: {record_txt}\nLESSONS FROM YOUR RECENT CALLS:\n{lessons or '- none yet'}\n\n"
               'Return {"views":[{"symbol":"...","view":"long|short|none","confidence":0.5-0.9,'
               '"thesis":"<=25 words, cite the numbers","invalidation":"<=12 words, a price or condition",'
@@ -230,7 +235,9 @@ def llm_pm(views, m, armed, desk_record_txt, api_key, cost):
                    f"{a.get('trail_n', 0)} trades)" for a in (armed or [])) or "- none armed"
     prompt = (f"MACRO: Nifty gap {_fmt(m['n_gap'])}, first 15 min {_fmt(m['n_m15'])}, 5-day {_fmt(m['n_ret5'], 1)}, "
               f"breadth {m['breadth'] * 100 if np.isfinite(m['breadth']) else float('nan'):.0f}%, VIX change {_fmt(m['vix_chg'], 1)}. "
-              f"Rule regime: {m['regime']}.\nANALYST VIEWS:\n{vs or '- all no view'}\nANALYSTS' RECORD: {desk_record_txt}\n"
+              f"Rule regime: {m['regime']}."
+              + (f"\nEXCHANGE (NSE, previous session): {m['exchange']}" if m.get("exchange") else "")
+              + f"\nANALYST VIEWS:\n{vs or '- all no view'}\nANALYSTS' RECORD: {desk_record_txt}\n"
               f"ARMED STRATEGY SPECIALISTS:\n{ar}\n\n"
               'Return {"regime":"trend_up|trend_down|range|risk_off","stance":"normal|cautious|stand_aside",'
               '"focus":[{"symbol":"...","side":"long|short","size":0.5-1.5,"why":"<=20 words"}] (at most 3),'

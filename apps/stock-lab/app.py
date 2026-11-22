@@ -24,7 +24,7 @@ def _fresh_local_modules():
     """Streamlit Cloud keeps imported helper modules in memory across redeploys, so an update can run new
     app.py against old store/agents code. Reload any local module whose file changed since it was loaded."""
     here = os.path.dirname(os.path.abspath(__file__))
-    for name in ("cheetah_engine", "store", "models", "research", "learning", "agents", "desk"):          # dependency order
+    for name in ("cheetah_engine", "store", "models", "research", "learning", "nse_mcp", "agents", "desk"):          # dependency order
         mod = sys.modules.get(name)
         path = os.path.join(here, name + ".py")
         if mod is None or not os.path.exists(path):
@@ -39,6 +39,7 @@ _fresh_local_modules()
 import agents as ag
 import research as rs  # noqa: E402
 import desk as dk  # noqa: E402
+import nse_mcp as nm  # noqa: E402
 import morning
 import cheetah_engine as ce  # noqa: E402
 import learning as ln  # noqa: E402
@@ -212,6 +213,9 @@ if LLM_PROVIDER not in _KEYS:
 ag.configure_llm(LLM_PROVIDER, _secret("LLM_MODEL_FAST"), _secret("LLM_MODEL_SMART"))
 API_KEY = _KEYS[LLM_PROVIDER]
 LLM_NAME = ag.llm_name()
+# NSE's MCP servers (NSE Bhavcopy + NSE Live): public, no key. NSE_MCP = "off" in Secrets turns them off.
+nm.configure(enabled=str(_secret("NSE_MCP") or "on").strip().lower() not in ("off", "0", "false", "no"),
+             bhavcopy_url=_secret("NSE_BHAVCOPY_MCP_URL"), live_url=_secret("NSE_LIVE_MCP_URL"))
 LLM_SETUP = ("add a free GROQ_API_KEY (console.groq.com) or GEMINI_API_KEY (aistudio.google.com), "
              "or ANTHROPIC_API_KEY for Claude, in Settings → Secrets")
 
@@ -249,6 +253,18 @@ def get_store(demo):
 @st.cache_data(ttl=3600, show_spinner=False, max_entries=6)
 def fetch_index_cached(demo, token):
     return ag.fetch_index(demo, ce.demo_intraday(days=15) if demo else None)
+
+
+@st.cache_data(ttl=120, show_spinner=False, max_entries=4)
+def nse_market_cached(token):
+    """NSE market mood + live Nifty / India VIX from the MCP servers (refreshed every 2 minutes at most)."""
+    return nm.market_facts()
+
+
+@st.cache_data(ttl=3600, show_spinner=False, max_entries=6)
+def nse_desk_cached(syms, day):
+    """Previous-session exchange context for the 09:30 desk (NSE Bhavcopy, point in time)."""
+    return nm.desk_context(list(syms), day)
 
 
 @st.cache_data(ttl=1800, show_spinner=False, max_entries=40)
@@ -1126,6 +1142,8 @@ with tab_i:
                            "It retries on the next refresh.")
         idx = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}")
         mood = ag.pulse(idx, day, mults=CFG["mults"])
+        if not demo and str(day) == str(now_ist().date()):  # NSE's own read of the market, live sessions only
+            ag.pulse_exchange(mood, nse_market_cached(int(time.time() // 120)), CFG["mults"])
         _br = (A.breadth or {}).get(day)
         if _br is not None and len(_br[1]):
             mood["breadth"] = float(_br[1][-1])
@@ -1444,7 +1462,8 @@ with tab_i:
                     st.markdown(f'<div class="sl" style="font-size:13.5px;margin-top:10px"><b>Sentinel — '
                                 f'{sv["level"].title() if sv["level"] != "UNCHECKED" else "Not checked"}</b><br>'
                                 + "<br>".join(html.escape(x) for x in sv["reasons"]) +
-                                f'<br><span class="note">{html.escape(sv.get("coverage", ""))}'
+                                + ("".join(f'<br><span class="note">NSE · {html.escape(x)}</span>' for x in sv.get("exchange") or []))
+                                + f'<br><span class="note">{html.escape(sv.get("coverage", ""))}'
                                 + (f' · {html.escape(sv["llm"])}' if sv.get("llm") else " · read by rules") + '</span>' +
                                 (f'<br><span class="note">Recent headlines about the company</span>{hl}' if hl else "") + '</div>',
                                 unsafe_allow_html=True)
@@ -1930,7 +1949,11 @@ with tab_d:
         att[str(d_live)] = time.time()
         armed_ = PANEL.get("armed") if PANEL else None
         with st.spinner(f"The analyst desk is writing today's notes ({LLM_NAME})…"):
-            vws, err1 = dk.llm_views(focus_, briefs, mac, sent_today, dk.record_text(sC), dk.lessons(C_), API_KEY, cost_)
+            xc_ = nse_desk_cached(tuple(focus_), str(d_live)) if nm.CFG["enabled"] else {}
+            if xc_.get("macro"):
+                mac = dict(mac, exchange=xc_["macro"])
+            vws, err1 = dk.llm_views(focus_, briefs, mac, sent_today, dk.record_text(sC), dk.lessons(C_), API_KEY, cost_,
+                                     exch=xc_.get("stocks"))
             pm_, err2 = dk.llm_pm(vws, mac, armed_, dk.record_text(sC), API_KEY, cost_) if vws else (None, err1)
         if vws:
             entry = dict(day=str(d_live), ts=now_ist().isoformat(), provider=LLM_PROVIDER,
@@ -2031,6 +2054,39 @@ with tab_d:
     if not src_.empty:
         with st.expander("Lessons the desk keeps (costliest recent calls)"):
             st.text(dk.lessons(src_, 8) or "No losing calls yet.")
+
+    # ---- NSE research sub-agent: the LLM calls NSE's MCP tools (Bhavcopy + Live) itself to answer one question
+    section("NSE research agent", "ask about any NSE stock or index — answered from NSE's own MCP data")
+    if not nm.CFG["enabled"]:
+        st.caption("NSE MCP is switched off (NSE_MCP = \"off\" in Secrets).")
+    elif demo:
+        st.caption("Switch Demo mode off to use the NSE research agent — it reads the real exchange data.")
+    else:
+        with st.form("nse_research"):
+            q_ = st.text_input("Question", placeholder="e.g. How has TCS done against Nifty IT over 6 months, and any ex-dates coming up?")
+            sym_ = st.text_input("Stock symbol (optional — used for the snapshot when no LLM key is set)", max_chars=20)
+            go_ = st.form_submit_button("Ask the NSE agent")
+        if go_ and (q_.strip() or sym_.strip()):
+            if API_KEY and q_.strip():
+                with st.spinner(f"{LLM_NAME} is calling NSE's tools…"):
+                    res_ = nm.research(q_.strip() + (f" (symbol: {sym_.strip().upper()})" if sym_.strip() else ""), API_KEY)
+                if res_["answer"]:
+                    st.markdown(res_["answer"])
+                else:
+                    st.warning(f"The NSE agent could not answer ({res_['error']}).")
+                if res_["steps"]:
+                    st.caption("Tools called: " + " → ".join(
+                        f"{s_['tool']}({', '.join(f'{k}={v}' for k, v in (s_['args'] or {}).items())})"
+                        + ("" if s_["ok"] else " ✗") for s_ in res_["steps"]))
+                STORE.log("Research", "question", f"{LLM_NAME} NSE agent: {q_.strip()[:120]} — "
+                          f"{len(res_['steps'])} tool call(s)" + (f", error {res_['error']}" if res_["error"] else ""),
+                          dkey=f"nse-research|{time.time():.0f}")
+            else:
+                lines_ = nm.research_fallback(sym_.strip().upper())
+                if not API_KEY and q_.strip():
+                    st.caption(f"No LLM key, so here is the rule-based NSE snapshot instead — {LLM_SETUP}.")
+                st.markdown("\n".join(f"- {x}" for x in lines_) or "NSE's MCP servers did not answer.")
+        st.caption(nm.DISCLAIMER)
 
 # ============================================================================ backtest
 with tab_b:
@@ -2752,10 +2808,21 @@ with tab_a:
                         "GROQ_API_KEY = \"<free, console.groq.com>\"\n"
                         "# GEMINI_API_KEY = \"<free, aistudio.google.com>\"\n"
                         "# ANTHROPIC_API_KEY = \"<Claude, paid>\"\n"
-                        "# LLM_PROVIDER = \"groq\"   # only needed when more than one key is set\n```\n"
+                        "# LLM_PROVIDER = \"groq\"   # only needed when more than one key is set\n"
+                        "# NSE_MCP = \"off\"   # NSE Bhavcopy + NSE Live MCP servers are on by default (public, no key)\n```\n"
                         "3. Save. The app restarts and the Audit log becomes permanent (events kept 7 days, "
                         "trade journal 90 days).")
             st.code(SUPABASE_SQL, language="sql")
+    with st.expander("📡 NSE data check (MCP: NSE Bhavcopy + NSE Live)"):
+        if not nm.CFG["enabled"]:
+            st.caption("Switched off — remove NSE_MCP = \"off\" from Secrets to turn it on.")
+        elif st.button("Check NSE's MCP servers", key="nse_mcp_check"):
+            for k_, c_ in nm.check().items():
+                (st.success if c_["ok"] else st.error)(
+                    f"{c_['name']} — {'OK, ' + str(len(c_['tools'])) + ' tools' if c_['ok'] else 'not reachable: ' + str(c_['error'])}"
+                    f" · {c_['url']}")
+        st.caption("Used by Sentinel (quote, volume, 52-week range, ex-dates), Pulse (NSE breadth, India VIX, live Nifty), "
+                   "the Analyst desk (previous-session context) and the NSE research agent. " + nm.DISCLAIMER)
     with st.expander("🔌 Storage check" + ("" if HL["ok"] else " · needs attention"), expanded=not HL["ok"] and not demo):
         if store.remote:
             st.markdown(f"Key: **{HL['key_kind']}** · URL: `{store.url}`")
