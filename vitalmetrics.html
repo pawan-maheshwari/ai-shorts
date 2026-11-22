@@ -1028,18 +1028,18 @@
                 if (heightInput.value) {
                     const inches = (parseFloat(heightInput.value) * 0.393701).toFixed(1);
                     heightInput.value = inches;
-                    heightRange.value = inches;
                     heightRange.min = 48;
                     heightRange.max = 86;
                     heightRange.step = 0.1;
+                    heightRange.value = inches;
                 }
                 if (weightInput.value) {
                     const lbs = (parseFloat(weightInput.value) * 2.20462).toFixed(1);
                     weightInput.value = lbs;
-                    weightRange.value = lbs;
                     weightRange.min = 80;
                     weightRange.max = 400;
                     weightRange.step = 0.1;
+                    weightRange.value = lbs;
                 }
                 if (waistInput.value) waistInput.value = (parseFloat(waistInput.value) * 0.393701).toFixed(1);
                 if (neckInput.value) neckInput.value = (parseFloat(neckInput.value) * 0.393701).toFixed(1);
@@ -1050,18 +1050,18 @@
                 if (heightInput.value) {
                     const cm = (parseFloat(heightInput.value) / 0.393701).toFixed(1);
                     heightInput.value = cm;
-                    heightRange.value = cm;
                     heightRange.min = 120;
                     heightRange.max = 220;
                     heightRange.step = 0.5;
+                    heightRange.value = cm;
                 }
                 if (weightInput.value) {
                     const kg = (parseFloat(weightInput.value) / 2.20462).toFixed(1);
                     weightInput.value = kg;
-                    weightRange.value = kg;
                     weightRange.min = 35;
                     weightRange.max = 180;
                     weightRange.step = 0.1;
+                    weightRange.value = kg;
                 }
                 if (waistInput.value) waistInput.value = (parseFloat(waistInput.value) / 0.393701).toFixed(1);
                 if (neckInput.value) neckInput.value = (parseFloat(neckInput.value) / 0.393701).toFixed(1);
@@ -1149,21 +1149,29 @@
         }
         
         // Main Calculation Engine
+        // Reads every input once, converted to metric. Out-of-range values are
+        // flagged instead of producing negative / absurd BMI, BMR and body fat.
+        function readMetrics() {
+            const val = id => parseFloat(document.getElementById(id).value);
+            const toCm = currentUnit === 'imperial' ? 1 / 0.393701 : 1;
+            const toKg = currentUnit === 'imperial' ? 1 / 2.20462 : 1;
+            const h = val('height-input') * toCm, w = val('weight-input') * toKg, a = parseInt(document.getElementById('age-input').value);
+            const okH = h >= 50 && h <= 272, okW = w >= 10 && w <= 650, okA = a >= 2 && a <= 120;
+            [['height-input', okH], ['weight-input', okW], ['age-input', okA]].forEach(([id, ok]) =>
+                document.getElementById(id).classList.toggle('!border-red-500', !ok && document.getElementById(id).value !== ''));
+            const m = id => { const v = val(id) * toCm; return v > 0 && v < 400 ? v : 0; };
+            return {
+                valid: okH && okW,
+                heightCm: okH ? h : 172, weightKg: okW ? w : 72, age: okA ? a : 32,
+                waistCm: m('waist-input'), neckCm: m('neck-input'), hipCm: m('hip-input')
+            };
+        }
+
         function calculateAll() {
-            // Get values (always convert to metric for calculations)
-            let height = parseFloat(document.getElementById('height-input').value) || 172;
-            let weight = parseFloat(document.getElementById('weight-input').value) || 72;
-            const age = parseInt(document.getElementById('age-input').value) || 32;
-            const waist = parseFloat(document.getElementById('waist-input').value) || 0;
-            const neck = parseFloat(document.getElementById('neck-input').value) || 0;
-            let hip = parseFloat(document.getElementById('hip-input').value) || 0;
-            
-            // Convert to metric if needed
-            if (currentUnit === 'imperial') {
-                height = height / 0.393701; // inches to cm
-                weight = weight / 2.20462;  // lbs to kg
-                // waist, neck, hip already handled in body fat calc
-            }
+            const M = readMetrics();
+            if (!M.valid) return; // keep the last valid result on screen; bad field is outlined red
+            const height = M.heightCm, weight = M.weightKg, age = M.age;
+            const waist = M.waistCm, neck = M.neckCm, hip = M.hipCm;
             
             // BMI Calculation
             const heightM = height / 100;
@@ -1180,6 +1188,11 @@
             
             // Update ranges
             updateIdealWeightRange(height);
+
+            // Keep the Vitals panel in sync with edited metrics after a pulse reading
+            if (lastPulseResult && !document.getElementById('vitals-summary').classList.contains('hidden')) {
+                renderVitalsSummary(lastPulseResult.bpm);
+            }
         }
         
         function updateLivePreview(bmi, weightKg, heightCm) {
@@ -1334,6 +1347,7 @@
             
             if (currentGender === 'male') {
                 // US Navy inches formula
+                if (waist - neck <= 0) { card.classList.add('hidden'); return; }
                 bodyFat = 86.010 * Math.log10(waist - neck) - 70.041 * Math.log10(heightInches) + 36.76;
             } else {
                 if (!hipCmInput || hipCmInput <= 0) {
@@ -1341,6 +1355,7 @@
                     card.classList.add('hidden');
                     return;
                 }
+                if (waist + hip - neck <= 0) { card.classList.add('hidden'); return; }
                 bodyFat = 163.205 * Math.log10(waist + hip - neck) - 97.684 * Math.log10(heightInches) - 78.387;
             }
             
@@ -1468,13 +1483,15 @@
             }
             
             const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
+            const vw = video.videoWidth || 640, vh = video.videoHeight || 480;
+            const scale = Math.min(1, 640 / Math.max(vw, vh)); // cap long edge at 640px
+            canvas.width = Math.round(vw * scale);
+            canvas.height = Math.round(vh * scale);
             
             const ctx = canvas.getContext('2d', { alpha: false });
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.72);
             
             currentCaptures[viewType] = {
                 dataUrl: dataUrl,
@@ -1543,23 +1560,14 @@
         
         // Save current state to progress history
         function saveCurrentToProgress() {
-            const weightInput = parseFloat(document.getElementById('weight-input').value);
-            const heightInput = parseFloat(document.getElementById('height-input').value);
-            const age = parseInt(document.getElementById('age-input').value);
-            
-            if (!weightInput || !heightInput) {
-                showToast('Please enter weight and height first.', 'error');
+            const M = readMetrics();
+            if (!M.valid) {
+                showToast('Please enter a valid weight and height first.', 'error');
                 return;
             }
             
             // Always store internally in metric
-            let heightCm = heightInput;
-            let weightKg = weightInput;
-            
-            if (currentUnit === 'imperial') {
-                heightCm = heightInput / 0.393701;
-                weightKg = weightInput / 2.20462;
-            }
+            const heightCm = M.heightCm, weightKg = M.weightKg, age = M.age;
             
             const heightM = heightCm / 100;
             const bmi = weightKg / (heightM * heightM);
@@ -1575,11 +1583,9 @@
             
             // Body fat if available
             let bodyFat = null;
-            const waist = parseFloat(document.getElementById('waist-input').value) || 0;
-            const neck = parseFloat(document.getElementById('neck-input').value) || 0;
-            const hip = parseFloat(document.getElementById('hip-input').value) || 0;
+            const waist = M.waistCm, neck = M.neckCm, hip = M.hipCm;
             
-            if (waist > 0 && neck > 0) {
+            if (waist > neck && neck > 0) {
                 let wIn = waist * 0.393701;
                 let nIn = neck * 0.393701;
                 let hIn = heightCm * 0.393701;
@@ -1590,7 +1596,7 @@
                 } else if (hpIn > 0) {
                     bodyFat = 163.205 * Math.log10(wIn + hpIn - nIn) - 97.684 * Math.log10(hIn) - 78.387;
                 }
-                if (bodyFat) bodyFat = Math.max(3, Math.min(50, bodyFat));
+                if (bodyFat && isFinite(bodyFat)) bodyFat = Math.max(3, Math.min(50, bodyFat)); else bodyFat = null;
             }
             
             const entry = {
@@ -1604,9 +1610,9 @@
                 bmr: Math.round(bmr),
                 tdee: tdee,
                 bodyFat: bodyFat ? parseFloat(bodyFat.toFixed(1)) : null,
-                waistCm: waist || null,
-                neckCm: neck || null,
-                hipCm: hip || null,
+                waistCm: waist ? +waist.toFixed(1) : null,
+                neckCm: neck ? +neck.toFixed(1) : null,
+                hipCm: hip ? +hip.toFixed(1) : null,
                 activityMultiplier: currentActivityMultiplier,
                 heartRate: lastPulseResult ? lastPulseResult.bpm : null,
                 photos: { ...currentCaptures }
@@ -1618,8 +1624,8 @@
             // Keep only last 25 entries
             if (historyData.length > 25) historyData = historyData.slice(0, 25);
             
-            // Persist
-            localStorage.setItem('vitalmetrics_history', JSON.stringify(historyData));
+            // Persist (photos are trimmed from oldest entries if storage is full)
+            persistHistory();
             
             // Clear current captures after saving
             currentCaptures = { front: null, side: null };
@@ -1636,6 +1642,27 @@
             }, 1200);
         }
         
+        // localStorage holds ~5 MB. Photos are the bulk, so when full we drop photos
+        // from the oldest entries (metrics are always kept) instead of throwing.
+        function persistHistory() {
+            const write = () => localStorage.setItem('vitalmetrics_history', JSON.stringify(historyData));
+            try { write(); return true; } catch (e) { /* quota — trim below */ }
+            let trimmed = 0;
+            for (let i = historyData.length - 1; i >= 0; i--) {
+                const p = historyData[i].photos;
+                if (!p || (!p.front && !p.side)) continue;
+                historyData[i].photos = { front: null, side: null };
+                trimmed++;
+                try {
+                    write();
+                    showToast(`Storage full — removed photos from ${trimmed} older entr${trimmed === 1 ? 'y' : 'ies'} (metrics kept).`, 'error');
+                    return true;
+                } catch (e) { /* keep trimming */ }
+            }
+            showToast('Browser storage is full — this entry could not be saved permanently. Export your data.', 'error');
+            return false;
+        }
+
         // Render Progress Tab
         function renderProgressTab() {
             const summaryContainer = document.getElementById('progress-summary');
@@ -1915,6 +1942,7 @@
                                         <div class="flex justify-between"><span>BMR</span> <span class="font-semibold tabular-nums">${entry.bmr} kcal</span></div>
                                         <div class="flex justify-between"><span>TDEE</span> <span class="font-semibold tabular-nums">${entry.tdee} kcal</span></div>
                                         <div class="flex justify-between"><span>Activity Factor</span> <span class="font-semibold">${entry.activityMultiplier}</span></div>
+                                        <div class="flex justify-between"><span>Heart Rate</span> <span class="font-semibold tabular-nums">${entry.heartRate ? entry.heartRate + ' bpm' : '—'}</span></div>
                                     </div>
                                 </div>
                                 
@@ -1951,7 +1979,7 @@
                         
                         <div class="px-6 py-4 bg-slate-50 border-t flex justify-end gap-x-3">
                             <button onclick="closeModal()" class="px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-white transition rounded-2xl border">Close</button>
-                            <button onclick="deleteHistoryEntry(${entry.id}, null, true); closeModal()" 
+                            <button onclick="deleteHistoryEntry(${entry.id}, null, true)" 
                                     class="px-5 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition rounded-2xl border border-red-100 flex items-center gap-x-2">
                                 <i class="fa-solid fa-trash-can"></i>
                                 <span>Delete Entry</span>
@@ -1975,7 +2003,7 @@
             if (!confirm('Delete this progress entry permanently?')) return;
             
             historyData = historyData.filter(e => e.id !== id);
-            localStorage.setItem('vitalmetrics_history', JSON.stringify(historyData));
+            persistHistory();
             
             if (fromModal) {
                 closeModal();
@@ -2038,6 +2066,11 @@
         
         // Tab switching
         function switchTab(tab) {
+            // Leaving Body Scan: release the camera / flash
+            if (tab !== 'scan') {
+                if (PPG.running) stopPulseScan(true);
+                if (currentStream) stopCamera();
+            }
             // Hide all contents
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             
@@ -2081,7 +2114,10 @@
             const saved = localStorage.getItem('vitalmetrics_history');
             if (saved) {
                 try {
-                    historyData = JSON.parse(saved);
+                    const parsed = JSON.parse(saved);
+                    historyData = Array.isArray(parsed)
+                        ? parsed.filter(e => e && typeof e === 'object' && isFinite(e.weightKg) && isFinite(e.bmi) && e.date)
+                        : [];
                 } catch (e) {
                     historyData = [];
                 }
@@ -2231,7 +2267,8 @@
         }
 
         async function startPulseScan() {
-            if (PPG.running) return;
+            if (PPG.running || PPG.starting) return; // double-tap would open a second, leaked camera stream
+            PPG.starting = true;
             try {
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                     throw new Error('unsupported');
@@ -2267,6 +2304,8 @@
                     ? 'Camera API not available in this browser.'
                     : 'Camera access denied. Allow camera permission (HTTPS required) and retry.', 'error');
                 showToast('Pulse scan needs camera access to work.', 'error');
+            } finally {
+                PPG.starting = false;
             }
         }
 
@@ -2499,7 +2538,7 @@
         }
 
         function renderVitalsSummary(bpm) {
-            const age = parseInt(document.getElementById('age-input').value) || 30;
+            const age = readMetrics().age;
             const bmi = document.getElementById('bmi-value').textContent;
             const bmr = document.getElementById('bmr-value').textContent;
             const tdee = document.getElementById('tdee-value').textContent;
@@ -3034,7 +3073,7 @@
             }
 
             const fill = (id, rangeId, raw, lo, hi, label, unitLabel) => {
-                const v = parseFloat(raw);
+                const v = parseFloat(String(raw).replace(',', '.'));
                 if (isNaN(v) || v <= 0) return;
                 const val = clamp(v, lo, hi);
                 const input = document.getElementById(id);
@@ -3064,7 +3103,7 @@
 
             // Heart rate from Apple Watch → feeds the same vitals pipeline as the PPG scan
             if (params.has('hr')) {
-                const hr = Math.round(parseFloat(params.get('hr')));
+                const hr = Math.round(parseFloat(String(params.get('hr')).replace(',', '.')));
                 if (!isNaN(hr) && hr >= 30 && hr <= 220) {
                     lastPulseResult = { bpm: hr, quality: 'Apple Health', beats: null, at: new Date().toISOString() };
                     document.getElementById('ppg-bpm').textContent = hr;
@@ -3135,6 +3174,7 @@
             // Stop camera/torch cleanly when tab is hidden or page unloads
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden && PPG.running) stopPulseScan(true);
+                if (document.hidden && currentStream) stopCamera();
             });
             window.addEventListener('beforeunload', () => stopPulseScan());
         }
