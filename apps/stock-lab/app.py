@@ -39,7 +39,7 @@ _fresh_local_modules()
 import agents as ag
 import research as rs  # noqa: E402
 import desk as dk  # noqa: E402
-import nse_mcp as nm  # noqa: E402
+import nse_mcp as nsemcp  # noqa: E402  (not "nm": app.py loops use nm as a variable)
 import morning
 import cheetah_engine as ce  # noqa: E402
 import learning as ln  # noqa: E402
@@ -214,7 +214,7 @@ ag.configure_llm(LLM_PROVIDER, _secret("LLM_MODEL_FAST"), _secret("LLM_MODEL_SMA
 API_KEY = _KEYS[LLM_PROVIDER]
 LLM_NAME = ag.llm_name()
 # NSE's MCP servers (NSE Bhavcopy + NSE Live): public, no key. NSE_MCP = "off" in Secrets turns them off.
-nm.configure(enabled=str(_secret("NSE_MCP") or "on").strip().lower() not in ("off", "0", "false", "no"),
+nsemcp.configure(enabled=str(_secret("NSE_MCP") or "on").strip().lower() not in ("off", "0", "false", "no"),
              bhavcopy_url=_secret("NSE_BHAVCOPY_MCP_URL"), live_url=_secret("NSE_LIVE_MCP_URL"))
 LLM_SETUP = ("add a free GROQ_API_KEY (console.groq.com) or GEMINI_API_KEY (aistudio.google.com), "
              "or ANTHROPIC_API_KEY for Claude, in Settings → Secrets")
@@ -258,13 +258,13 @@ def fetch_index_cached(demo, token):
 @st.cache_data(ttl=120, show_spinner=False, max_entries=4)
 def nse_market_cached(token):
     """NSE market mood + live Nifty / India VIX from the MCP servers (refreshed every 2 minutes at most)."""
-    return nm.market_facts()
+    return nsemcp.market_facts()
 
 
 @st.cache_data(ttl=3600, show_spinner=False, max_entries=6)
 def nse_desk_cached(syms, day):
     """Previous-session exchange context for the 09:30 desk (NSE Bhavcopy, point in time)."""
-    return nm.desk_context(list(syms), day)
+    return nsemcp.desk_context(list(syms), day)
 
 
 @st.cache_data(ttl=1800, show_spinner=False, max_entries=40)
@@ -1949,7 +1949,7 @@ with tab_d:
         att[str(d_live)] = time.time()
         armed_ = PANEL.get("armed") if PANEL else None
         with st.spinner(f"The analyst desk is writing today's notes ({LLM_NAME})…"):
-            xc_ = nse_desk_cached(tuple(focus_), str(d_live)) if nm.CFG["enabled"] else {}
+            xc_ = nse_desk_cached(tuple(focus_), str(d_live)) if nsemcp.CFG["enabled"] else {}
             if xc_.get("macro"):
                 mac = dict(mac, exchange=xc_["macro"])
             vws, err1 = dk.llm_views(focus_, briefs, mac, sent_today, dk.record_text(sC), dk.lessons(C_), API_KEY, cost_,
@@ -2057,7 +2057,7 @@ with tab_d:
 
     # ---- NSE research sub-agent: the LLM calls NSE's MCP tools (Bhavcopy + Live) itself to answer one question
     section("NSE research agent", "ask about any NSE stock or index — answered from NSE's own MCP data")
-    if not nm.CFG["enabled"]:
+    if not nsemcp.CFG["enabled"]:
         st.caption("NSE MCP is switched off (NSE_MCP = \"off\" in Secrets).")
     elif demo:
         st.caption("Switch Demo mode off to use the NSE research agent — it reads the real exchange data.")
@@ -2069,7 +2069,7 @@ with tab_d:
         if go_ and (q_.strip() or sym_.strip()):
             if API_KEY and q_.strip():
                 with st.spinner(f"{LLM_NAME} is calling NSE's tools…"):
-                    res_ = nm.research(q_.strip() + (f" (symbol: {sym_.strip().upper()})" if sym_.strip() else ""), API_KEY)
+                    res_ = nsemcp.research(q_.strip() + (f" (symbol: {sym_.strip().upper()})" if sym_.strip() else ""), API_KEY)
                 if res_["answer"]:
                     st.markdown(res_["answer"])
                 else:
@@ -2082,13 +2082,13 @@ with tab_d:
                           f"{len(res_['steps'])} tool call(s)" + (f", error {res_['error']}" if res_["error"] else ""),
                           dkey=f"nse-research|{time.time():.0f}")
             else:
-                lines_ = nm.research_fallback(sym_.strip().upper())
+                lines_ = nsemcp.research_fallback(sym_.strip().upper())
                 if not API_KEY and q_.strip():
                     st.caption(f"No LLM key, so here is the rule-based NSE snapshot instead — {LLM_SETUP}."
                                + ("" if sym_.strip() else " Add a stock symbol to include that stock; "
                                   "without one the snapshot covers the market only."))
                 st.markdown("\n".join(f"- {x}" for x in lines_) or "NSE's MCP servers did not answer.")
-        st.caption(nm.DISCLAIMER)
+        st.caption(nsemcp.DISCLAIMER)
 
 # ============================================================================ backtest
 with tab_b:
@@ -2816,15 +2816,15 @@ with tab_a:
                         "trade journal 90 days).")
             st.code(SUPABASE_SQL, language="sql")
     with st.expander("📡 NSE data check (MCP: NSE Bhavcopy + NSE Live)"):
-        if not nm.CFG["enabled"]:
+        if not nsemcp.CFG["enabled"]:
             st.caption("Switched off — remove NSE_MCP = \"off\" from Secrets to turn it on.")
         elif st.button("Check NSE's MCP servers", key="nse_mcp_check"):
-            for k_, c_ in nm.check().items():
+            for k_, c_ in nsemcp.check().items():
                 (st.success if c_["ok"] else st.error)(
                     f"{c_['name']} — {'OK, ' + str(len(c_['tools'])) + ' tools' if c_['ok'] else 'not reachable: ' + str(c_['error'])}"
                     f" · {c_['url']}")
         st.caption("Used by Sentinel (quote, volume, 52-week range, ex-dates), Pulse (NSE breadth, India VIX, live Nifty), "
-                   "the Analyst desk (previous-session context) and the NSE research agent. " + nm.DISCLAIMER)
+                   "the Analyst desk (previous-session context) and the NSE research agent. " + nsemcp.DISCLAIMER)
     with st.expander("🔌 Storage check" + ("" if HL["ok"] else " · needs attention"), expanded=not HL["ok"] and not demo):
         if store.remote:
             st.markdown(f"Key: **{HL['key_kind']}** · URL: `{store.url}`")
