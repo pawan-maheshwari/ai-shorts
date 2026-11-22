@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arcana Parlour Tarot · AIShorts</title>
+<meta name="description" content="A guided tarot reading with Mira using the classic 1909 Smith-Waite deck: shuffle, cut, draw and turn the cards. For reflection and entertainment.">
+<link rel="canonical" href="https://aishorts.biz/tarot/">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+/* VOICE: ceremonial and hushed, a heritage deck opened by a reader at her table
+   IDEA: a velvet reading cloth edged in gold thread; the 1909 deck in foil-edged frames
+   PICTURE: the table itself, always in view: deck, piles, fan, then the spread
+   COLOUR and TYPE: burgundy velvet, deep navy, antique gold, cream; Cormorant, EB Garamond, IM Fell SC
+   LAYOUT: one screen. Table left, reader right; on phones table above, conversation below */
+:root{color-scheme:dark;--navy:#0d1626;--navy2:#16233b;--char:#1b1a1f;--bur:#5a1428;--cream:#f3ead6;--ink:#efe6d4;--mute:#b9ad9a;--gold:#c9a45a;--gold2:#e8d29a;--line:rgba(201,164,90,.35);--foil:linear-gradient(100deg,#8c6a2c 0%,#e9d39a 38%,#b8913f 60%,#f1e0ad 80%,#9a7633 100%)}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0}
+body{background:radial-gradient(ellipse 90% 70% at 30% 0%,#1d2a45 0%,var(--navy) 55%,#080d17 100%) fixed;color:var(--ink);font:17px/1.55 "EB Garamond",Georgia,serif;overflow-x:clip}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
+.app{height:100vh;height:100dvh;min-height:560px;display:grid;grid-template-rows:auto minmax(0,1fr)}
+.top{width:100%;max-width:1320px;margin:0 auto;padding:14px max(3vw,14px) 10px;display:flex;align-items:center;gap:14px}
+.mark{width:40px;height:40px;flex:none}
+.brand{flex:1}
+h1{margin:0;font:700 clamp(24px,3.2vw,36px)/1.05 "Cormorant Garamond",serif;background:var(--foil);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin:2px 0 0;color:var(--mute);font-style:italic;font-size:15px}
+.tb{min-height:44px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(201,164,90,.06);cursor:pointer;font-size:15px}
+.tb{display:inline-flex;align-items:center;gap:6px}.tb[hidden]{display:none}.tb svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#snd[aria-pressed=false] .w{display:none}
+.tb[aria-pressed=true]{background:var(--foil);color:#2a1c06;border-color:transparent}
+.room{width:100%;max-width:1320px;margin:0 auto;padding:0 max(3vw,14px) 14px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(330px,1fr);gap:20px;min-height:0}
+/* table */
+.stage{position:relative;min-height:0;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse 75% 55% at 50% 30%,#86243b 0%,#5a1428 42%,#2c0914 100%);box-shadow:inset 0 0 0 1px rgba(232,210,154,.55),inset 0 0 0 8px #2c0914,inset 0 0 0 9px rgba(201,164,90,.4),inset 0 0 140px rgba(0,0,0,.65),0 24px 60px rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px}
+.stage::before{content:"";position:absolute;inset:0;opacity:.32;mix-blend-mode:overlay;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
+.orn{position:absolute;width:54px;height:54px;color:var(--gold);opacity:.75;pointer-events:none}
+.orn.tl{top:14px;left:14px}.orn.tr{top:14px;right:14px;transform:scaleX(-1)}.orn.bl{bottom:14px;left:14px;transform:scaleY(-1)}.orn.br{bottom:14px;right:14px;transform:scale(-1)}
+.medal{position:absolute;inset:0;margin:auto;width:min(70%,70vh,420px);aspect-ratio:1;opacity:.12;pointer-events:none;color:var(--gold2)}
+#spread{display:none;gap:12px;justify-content:center;align-content:center;position:relative;z-index:1}
+#spread.on{display:grid}
+#spread.row{grid-auto-flow:column}
+#spread.s5{grid-template-areas:". e f" "c a b" ". d g"}
+#spread.mini{grid-auto-flow:column;gap:8px;margin-bottom:10px}
+#spread.mini .slot{grid-area:auto!important}
+#spread.mini .slot>span{display:none}
+.slot{display:flex;flex-direction:column;align-items:center;gap:5px}
+.slot>span{font:15px/1.15 "Cormorant Garamond",serif;font-weight:600;color:var(--gold2);text-align:center;max-width:calc(var(--cw) + 34px);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ph{width:var(--cw);aspect-ratio:100/162;border:1px dashed rgba(232,210,154,.45);border-radius:7px;display:grid;place-items:center;font:600 18px "Cormorant Garamond",serif;color:rgba(232,210,154,.6);background:rgba(0,0,0,.12)}
+#zone{position:relative;z-index:1;display:flex;justify-content:center;align-items:center;width:100%}
+#zone:empty{display:none}
+/* cards */
+.card{width:var(--cw,84px);aspect-ratio:100/162;perspective:1000px;flex:none}
+.inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.2,.7,.2,1)}
+.flipped .inner{transform:rotateY(180deg)}
+.back,.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:6px;padding:3.5%;background:linear-gradient(160deg,#faf3e2,#e9dcc0);border:1.5px solid #b48f45;box-shadow:0 10px 22px rgba(0,0,0,.55),inset 0 0 0 2px #f8f0dc,inset 0 0 0 2.6px rgba(180,143,69,.6);overflow:hidden}
+.back img,.face img{display:block;width:100%;height:100%;object-fit:cover;border-radius:3px;box-shadow:0 0 0 .5px rgba(40,20,10,.4)}
+.face{transform:rotateY(180deg)}
+.face.rev{transform:rotateY(180deg) rotate(180deg)}
+.face::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,240,200,.55) 50%,transparent 65%);transform:translateX(-120%);pointer-events:none}
+.flipped .face::after{animation:sheen 1.4s .5s ease-out}
+@keyframes sheen{to{transform:translateX(120%)}}
+.slot.ready .card{cursor:pointer;animation:glow 1.8s ease-in-out infinite}
+.slot.done .card{cursor:zoom-in}
+@keyframes glow{50%{filter:drop-shadow(0 0 14px rgba(232,210,154,.85))}}
+.card.new{animation:drop .5s ease-out}
+@keyframes drop{from{transform:translateY(40px) scale(.85);opacity:0}}
+.deck{position:relative;width:var(--cw);aspect-ratio:100/162}
+.deck .card{position:absolute;left:0;top:0}
+.deck.sh .card:nth-child(odd){animation:shL .75s ease}
+.deck.sh .card:nth-child(even){animation:shR .75s ease}
+@keyframes shL{50%{transform:translateX(-60%) rotate(-9deg)}}
+@keyframes shR{50%{transform:translateX(60%) rotate(9deg)}}
+.piles{display:flex;gap:clamp(12px,4vw,40px)}
+.pile{background:none;border:0;padding:6px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:8px;font:600 16px "Cormorant Garamond",serif;color:var(--gold2)}
+.pile .deck{transition:transform .2s}.pile:hover .deck,.pile:focus-visible .deck{transform:translateY(-8px)}
+.fan{position:relative;width:100%}
+.fan .card{position:absolute;left:50%;bottom:0;margin-left:calc(var(--cw)/-2);transform-origin:50% 330%;transform:rotate(var(--a)) translateY(var(--l,0px));transition:transform .22s,opacity .3s;cursor:pointer}
+.fan .card:hover,.fan .card:focus-visible{--l:-14%}
+.fan .taken{opacity:0;pointer-events:none}
+.cue{position:absolute;z-index:2;pointer-events:none;bottom:16px;left:50%;transform:translateX(-50%);font:italic 500 16px "Cormorant Garamond",serif;color:var(--gold2);background:rgba(20,6,12,.55);padding:4px 14px;border-radius:999px;white-space:nowrap}
+.cue:empty{display:none}
+.stage.spreadmode .cue{display:none}
+.stage.cuemode{padding-bottom:56px}
+#spread.nolab .slot>span{display:none}
+#spread.grid{grid-auto-flow:row}
+#spread.row .slot,#spread.grid .slot{grid-area:auto!important}
+/* reader */
+.reader{display:flex;flex-direction:column;min-height:0;border-radius:22px;background:linear-gradient(180deg,rgba(22,35,59,.85),rgba(13,22,38,.92));box-shadow:inset 0 0 0 1px var(--line);padding:14px 14px 10px}
+#chat{flex:1;min-height:0;overflow-y:auto;padding:4px 6px 6px;scroll-behavior:smooth}
+.msg{margin:0 0 12px;animation:in .35s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.mira{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:start}
+.av{width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#7a1f33,#3a0c19);box-shadow:0 0 0 1px var(--gold);display:grid;place-items:center}
+.av svg{width:20px;height:20px}
+.bub{background:rgba(243,234,214,.06);border:1px solid rgba(201,164,90,.28);border-radius:4px 16px 16px 16px;padding:10px 14px}
+.who{font:italic 600 15px "Cormorant Garamond",serif;color:var(--gold)}
+.you{margin-left:auto;width:fit-content;max-width:85%;background:#22365a;border:1px solid rgba(232,210,154,.2);border-radius:16px 4px 16px 16px;padding:9px 14px}
+.chead{display:flex;gap:12px;align-items:center;margin:4px 0 8px}
+.chead img{width:42px;border-radius:3px;box-shadow:0 0 0 1px #b48f45,0 3px 8px rgba(0,0,0,.5);cursor:zoom-in}
+.chead img.rv{transform:rotate(180deg)}
+.ct{font:20px/1.15 "IM Fell English SC",serif;color:var(--gold2)}
+.cp{font-size:15px;color:var(--mute)}
+.tx{white-space:pre-wrap}
+.dots i{display:inline-block;width:7px;height:7px;margin-right:5px;border-radius:50%;background:var(--gold);animation:bl 1.2s infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+@keyframes bl{50%{opacity:.25}}
+#dock{display:flex;flex-wrap:wrap;gap:8px;padding-top:10px;border-top:1px solid rgba(201,164,90,.18);min-height:58px;align-content:center}
+.chip{min-height:44px;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(201,164,90,.07);cursor:pointer;text-align:left;line-height:1.2}
+.chip:hover{background:rgba(201,164,90,.18)}
+.chip small{display:block;font-size:14px;color:var(--mute)}
+.chip.tall{border-radius:14px}
+.chip.main{background:var(--foil);color:#2a1c06;border-color:transparent;font-weight:500}
+.ask{display:flex;gap:8px;width:100%}
+.ask input{flex:1;min-height:46px;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:rgba(8,13,23,.6);color:var(--ink);font:16px "EB Garamond",serif}
+.hint{color:var(--mute);font-style:italic}
+/* overlay */
+.ov{position:fixed;inset:0;z-index:20;background:rgba(5,8,14,.82);backdrop-filter:blur(4px);display:grid;place-items:center;padding:20px}
+.ov[hidden]{display:none}
+.panel{position:relative;max-width:820px;width:100%;max-height:92dvh;overflow:auto;background:linear-gradient(180deg,#1a2843,#0e1728);border-radius:18px;box-shadow:inset 0 0 0 1px var(--line),0 30px 80px rgba(0,0,0,.6);padding:24px;display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:24px;align-items:start}
+.panel.text{grid-template-columns:minmax(0,1fr);max-width:620px}
+.panel .card{--cw:100%;width:100%}
+.panel h2{margin:0 0 4px;font:26px/1.1 "IM Fell English SC",serif;color:var(--gold2)}
+.panel h3{margin:16px 0 4px;font:600 18px "Cormorant Garamond",serif;color:var(--gold)}
+.panel p{margin:0 0 8px}
+.panel ul{margin:0;padding-left:18px}
+.x{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(0,0,0,.3);cursor:pointer;font-size:22px;line-height:1}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--foil);color:#2a1c06;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none;z-index:30}
+#toast.on{opacity:1}
+@media(max-width:820px){
+ .top{padding:10px 14px 8px;gap:8px}
+ .tb{min-width:44px;justify-content:center;padding:6px 10px}.tb span{display:none}.sub{display:none}.mark{width:32px;height:32px}h1{font-size:24px}.tb{padding:6px 12px;font-size:14px}
+ .room{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,50fr) minmax(0,50fr);gap:10px;padding:0 10px 10px}
+ .stage{padding:16px 10px;border-radius:18px}.orn{width:34px;height:34px}
+ .reader{padding:10px 8px 8px;border-radius:18px}
+ .slot>span{font-size:13px;line-height:1.1}
+ .panel{grid-template-columns:minmax(0,1fr);padding:20px}.panel .card{width:min(60vw,240px);margin:0 auto}
+ .chip small{display:none}
+}
+@media(max-height:520px){.app{min-height:0}.top{padding:6px 14px}.sub{display:none}h1{font-size:22px}.mark{width:28px;height:28px}.room{gap:10px;padding-bottom:8px}.stage{padding:12px}.reader{padding:8px}}
+@media(max-width:360px){h1{font-size:21px;white-space:nowrap}.mark{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="orn" viewBox="0 0 60 60"><g fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M4 56V18Q4 4 18 4h38"/><path d="M10 50V22q0-12 12-12h28"/><path d="M14 30c6 0 10-4 10-10 0 6 4 10 10 10-6 0-10 4-10 10 0-6-4-10-10-10z" fill="currentColor" opacity=".7"/><circle cx="40" cy="10" r="2" fill="currentColor"/><circle cx="10" cy="40" r="2" fill="currentColor"/></g></symbol>
+ <symbol id="moon" viewBox="0 0 40 40"><path d="M24 6a14 14 0 1 0 0 28a11 11 0 1 1 0-28z" fill="#e8d29a"/><path d="M30 12l1.2 3.3 3.3 1.2-3.3 1.2L30 21l-1.2-3.3-3.3-1.2 3.3-1.2z" fill="#e8d29a"/></symbol>
+</svg>
+<div class="app">
+ <header class="top">
+  <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19" fill="#5a1428" stroke="#c9a45a"/><use href="#moon" x="6" y="6" width="28" height="28"/></svg>
+  <div class="brand"><h1>Arcana Parlour</h1><p class="sub">A private reading with Mira · the classic Smith-Waite deck of 1909</p></div>
+  <button class="tb" id="voice" hidden aria-pressed="false" aria-label="Mira's voice"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM6 11a6 6 0 0 0 12 0M12 17v4"/></svg><span>Voice off</span></button>
+  <button class="tb" id="snd" aria-pressed="true" aria-label="Table sounds"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg><span>Sound on</span></button>
+  <a class="tb" href="../" aria-label="Back to AIShorts" style="text-decoration:none"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>AIShorts</span></a>
+  <button class="tb" id="jbtn" aria-label="Journal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/></svg><span>Journal</span></button>
+ </header>
+ <main class="room">
+  <section class="stage" id="stage" aria-label="Reading table">
+   <svg class="orn tl"><use href="#orn"/></svg><svg class="orn tr"><use href="#orn"/></svg><svg class="orn bl"><use href="#orn"/></svg><svg class="orn br"><use href="#orn"/></svg>
+   <svg class="medal" viewBox="0 0 200 200" aria-hidden="true"><g fill="none" stroke="currentColor"><circle cx="100" cy="100" r="96"/><circle cx="100" cy="100" r="88" stroke-dasharray="1 5"/><circle cx="100" cy="100" r="62"/><path d="M100 4l14 82 82 14-82 14-14 82-14-82-82-14 82-14z"/><path d="M32 32l58 58M168 32l-58 58M32 168l58-58M168 168l-58-58" stroke-dasharray="2 4"/></g></svg>
+   <div id="spread"></div>
+   <div id="zone"></div>
+   <div class="cue" id="cue"></div>
+  </section>
+  <section class="reader" aria-label="Conversation with Mira">
+   <div id="chat" aria-live="polite"></div>
+   <div id="dock"></div>
+  </section>
+ </main>
+</div>
+<div class="ov" id="ov" hidden><div class="panel" id="panel" role="dialog" aria-modal="true"></div></div>
+<div id="toast" role="status"></div>
+
+<script>
+{
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep=ms=>new Promise(r=>setTimeout(r,reduce?Math.min(ms,60):ms));
+const rnd=n=>{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]%n};
+const pick=a=>a[rnd(a.length)];
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+const ROMAN=['0','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII','XIII','XIV','XV','XVI','XVII','XVIII','XIX','XX','XXI'];
+const MAJ=[
+['The Fool','new beginnings, spontaneity, a leap of faith','recklessness, hesitation, fear of the unknown','cliff','A young traveller steps toward the cliff edge, eyes on the sky, a small dog at their heels.'],
+['The Magician','willpower, skill, the power to manifest','scattered focus, untapped talent, manipulation','inf','The Magician stands with one hand raised to the heavens and one to the earth, every tool laid before him.'],
+['The High Priestess','intuition, mystery, inner knowing','secrets, ignored intuition, withdrawal','prs','The High Priestess sits between two pillars, the moon at her feet and a scroll half hidden in her lap.'],
+['The Empress','abundance, nurture, creativity','creative block, dependence, neglect of self','ven','The Empress rests among ripening wheat, crowned with stars, the river running beside her.'],
+['The Emperor','structure, authority, stability','rigidity, control, lack of discipline','emp','The Emperor sits on a stone throne carved with rams, mountains rising behind him.'],
+['The Hierophant','tradition, teaching, shared belief','rebellion, dogma, finding your own way','keys','The Hierophant raises his hand in blessing, the crossed keys at his feet.'],
+['The Lovers','union, alignment, a meaningful choice','misalignment, imbalance, indecision','lov','Two figures stand beneath a radiant angel, a garden on either side of them.'],
+['The Chariot','determination, momentum, victory','loss of direction, scattered will','char','The charioteer drives forward under a canopy of stars, two sphinxes pulling in opposite directions.'],
+['Strength','courage, gentle power, patience','self-doubt, raw emotion, low energy','str','A woman calmly closes the jaws of a lion, the sign of infinity above her head.'],
+['The Hermit','solitude, reflection, inner guidance','isolation, loneliness, withdrawal','herm','The Hermit stands alone on a snowy peak, holding up a lantern with a star inside.'],
+['Wheel of Fortune','cycles, change, a turning point','resistance to change, bad timing','wheel','The great wheel turns in the clouds, creatures rising on one side and sinking on the other.'],
+['Justice','fairness, truth, cause and effect','unfairness, avoided accountability','scl','Justice holds the scales in one hand and an upright sword in the other.'],
+['The Hanged Man','pause, surrender, a new perspective','stalling, needless sacrifice','hang','A man hangs serenely upside down from a living tree, a halo glowing around his head.'],
+['Death','endings, transformation, release','resisting change, stagnation','set','A rider in black armour passes by, and beyond him the sun rises between two towers.'],
+['Temperance','balance, moderation, patience','excess, imbalance, haste','tem','An angel pours water between two cups, one foot on land and one in the stream.'],
+['The Devil','attachment, temptation, the shadow self','breaking free, reclaiming your power','dev','Two figures stand loosely chained before the Devil, the chains wide enough to slip off.'],
+['The Tower','sudden upheaval, revelation, breakthrough','fear of change, a disaster narrowly avoided','tow','Lightning strikes the tower, its crown blown off, figures falling through the night.'],
+['The Star','hope, renewal, serenity','despair, lost faith, disconnection','star','A woman kneels by a pool under a sky of stars, pouring water onto the land and into the water.'],
+['The Moon','illusion, dreams, the subconscious','clarity returning, fear released','moon','The moon glows between two towers while a dog and a wolf howl and a crayfish crawls from the water.'],
+['The Sun','joy, success, vitality','temporary clouds, muted happiness','sun','A child rides a white horse beneath a blazing sun, sunflowers behind the wall.'],
+['Judgement','awakening, reckoning, a calling','self-doubt, ignoring the call','judg','An angel sounds the trumpet and figures rise from their graves, arms open to the sky.'],
+['The World','completion, wholeness, achievement','unfinished business, delays','wld','A dancer moves within a laurel wreath, the four creatures watching from each corner.']];
+const SUITS={
+ wands:{label:'Wands',theme:'drive, creativity and will',color:'#b2452a',img:'living wood, still sprouting green leaves'},
+ cups:{label:'Cups',theme:'feelings, relationships and intuition',color:'#2c6a9b',img:'cups brimming with water'},
+ swords:{label:'Swords',theme:'thought, truth and conflict',color:'#4a5c70',img:'bright blades drawn in the air'},
+ pentacles:{label:'Pentacles',theme:'work, money, body and home',color:'#8d6b16',img:'golden coins etched with stars'}};
+const RANKS=['Ace','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Page','Knight','Queen','King'];
+const MIN={
+wands:'inspiration, a spark, a new venture|delays, lack of direction;planning, future vision, decisions|fear of the unknown, poor planning;expansion, foresight, progress|obstacles, frustrated plans;celebration, home, harmony|instability, transition;competition, friction, conflict|avoiding conflict, tension easing;recognition, victory, confidence|ego, a fall from grace;standing your ground, defence|overwhelm, giving up;swift action, news, momentum|delays, frustration;resilience, persistence, a last stand|exhaustion, guardedness;burden, responsibility, overload|release, delegating;enthusiasm, exploration, a bold idea|scattered energy, false starts;adventure, passion, impulsive drive|haste, recklessness;confidence, warmth, determination|jealousy, insecurity;vision, leadership, boldness|impulsiveness, being overbearing',
+cups:'new love, emotional opening, compassion|blocked feelings, emptiness;partnership, mutual attraction, union|imbalance, a broken connection;friendship, celebration, community|overindulgence, isolation;apathy, contemplation, missed offers|renewed interest, awareness;grief, regret, focusing on loss|acceptance, moving on;nostalgia, innocence, memories|being stuck in the past;choices, fantasy, wishful thinking|clarity, a firm decision;walking away, seeking deeper meaning|fear of leaving, aimless drifting;contentment, wishes granted|dissatisfaction, smugness;harmony, family, lasting happiness|disconnection, misaligned values;intuition, a tender message, creativity|emotional immaturity, blocks;romance, an invitation, following the heart|moodiness, unrealistic ideals;compassion, emotional security, intuition|codependence, insecurity;emotional balance, diplomacy, calm|manipulation, moodiness',
+swords:'clarity, breakthrough, truth|confusion, misjudgement;stalemate, a difficult decision|indecision, information overload;heartbreak, sorrow, painful truth|healing, forgiveness;rest, recovery, contemplation|restlessness, burnout;conflict, hollow victory, tension|reconciliation, making amends;transition, moving on, calmer waters|resistance, unfinished business;strategy, secrecy, going it alone|coming clean, rethinking your approach;feeling trapped, self-limiting beliefs|release, a new perspective;anxiety, worry, sleepless nights|hope, reaching out;a painful ending, rock bottom|recovery, regeneration;curiosity, new ideas, vigilance|gossip, hasty words;ambition, fast thinking, drive|impulsiveness, burnout;clear boundaries, independence, honesty|coldness, bitterness;intellect, authority, truth|misuse of power, manipulation',
+pentacles:'a new opportunity, prosperity, manifestation|a missed opportunity, poor planning;balance, adaptability, juggling|overcommitment, disorganisation;teamwork, craft, collaboration|misalignment, poor teamwork;security, saving, control|greed, possessiveness;hardship, insecurity, feeling left out|recovery, help arriving;generosity, giving and receiving|strings attached, imbalance;patience, a long-term view, investment|impatience, poor returns;skill, diligence, mastery|perfectionism, lack of focus;independence, self-sufficiency, reward|overwork, dependence;legacy, wealth, family foundations|instability, loss;ambition, study, a practical opportunity|procrastination, slow progress;hard work, routine, reliability|stagnation, boredom;nurturing, practicality, abundance|neglected self-care, work-home imbalance;wealth, discipline, security|greed, stubbornness'};
+const ALL=[];
+MAJ.forEach((m,i)=>ALL.push({arc:'major',num:i,name:m[0],up:m[1],rv:m[2],motif:m[3],img:m[4]}));
+for(const s in MIN)MIN[s].split(';').forEach((p,i)=>{const[u,r]=p.split('|');ALL.push({arc:'minor',suit:s,rank:i+1,name:`${RANKS[i]} of ${SUITS[s].label}`,up:u,rv:r})});
+
+const SPREADS={
+ one:{name:'Single card',cls:'s1',pos:[['The heart of it','what most needs your attention now']]},
+ three:{name:'Past, present, emerging',cls:'s3',pos:[['Past','what has shaped this'],['Present','where you stand now'],['Emerging','what is taking shape next']]},
+ five:{name:'The Crossroads',cls:'s5',areas:['a','b','d','c','e'],pos:[['Where you stand','the heart of your situation'],['What crosses you','the challenge or tension in play'],['What lies beneath','the hidden root you may not see'],['Counsel','the advice the cards offer'],['Likely outcome','where this leads if nothing changes']]}};
+const TOPICS=[['love','Love & relationships','your relationships'],['career','Career & work','your work'],['money','Money & security','your sense of security'],['growth','Personal growth','your inner life'],['decision','A decision','this decision'],['open','Open reading','your life right now']];
+const CLAR=['Clarifier','a further light on what you asked'];
+
+const MFILE=['00_Fool','01_Magician','02_High_Priestess','03_Empress','04_Emperor','05_Hierophant','06_Lovers','07_Chariot','08_Strength','09_Hermit','10_Wheel_of_Fortune','11_Justice','12_Hanged_Man','13_Death','14_Temperance','15_Devil','16_Tower','17_Star','18_Moon','19_Sun','20_Judgement','21_World'];
+const SFILE={wands:'Wands',cups:'Cups',swords:'Swords',pentacles:'Pents'};
+const IMG=c=>`cards/${c.arc==='major'?MFILE[c.num]:SFILE[c.suit]+String(c.rank).padStart(2,'0')}.webp`;
+const BACK='cards/Cover_Rare.webp';
+const backHTML=`<div class="inner"><div class="back"><img src="${BACK}" alt="" draggable="false"></div></div>`;
+const cardHTML=c=>`<div class="inner"><div class="back"><img src="${BACK}" alt="" draggable="false"></div><div class="face${c.rev?' rev':''}"><img src="${IMG(c)}" alt="${c.name}${c.rev?', reversed':''}" draggable="false"></div></div>`;
+const preload=c=>{const i=new Image();i.src=IMG(c)};
+
+
+/* ---------- sound: synthesised table sounds (Web Audio, no files) ---------- */
+const Snd=(()=>{
+ let ctx=null,master=null,noise=null,ambNodes=null,crackT=null,on=store.get('arcana.sound');if(on===null)on=true;
+ const R=()=>Math.random();
+ function impulse(sec){const n=Math.floor(ctx.sampleRate*sec),b=ctx.createBuffer(2,n,ctx.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(R()*2-1)*Math.pow(1-i/n,3)}return b}
+ function init(){
+  if(ctx||!on)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+  try{ctx=new AC()}catch(e){ctx=null;return}
+  master=ctx.createGain();master.gain.value=.75;master.connect(ctx.destination);
+  const conv=ctx.createConvolver();conv.buffer=impulse(1.6);const wet=ctx.createGain();wet.gain.value=.16;master.connect(conv);conv.connect(wet);wet.connect(ctx.destination);
+  noise=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate);const d=noise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=R()*2-1;
+  startAmb();
+ }
+ const live=()=>ctx&&on&&ctx.state!=='closed';
+ function burst({t=0,dur=.03,type='bandpass',f=3000,f2=0,q=1,g=.2,a=.002}){
+  const T=ctx.currentTime+t,s=ctx.createBufferSource(),fl=ctx.createBiquadFilter(),e=ctx.createGain();
+  s.buffer=noise;fl.type=type;fl.frequency.setValueAtTime(f,T);if(f2)fl.frequency.exponentialRampToValueAtTime(f2,T+dur);fl.Q.value=q;
+  e.gain.setValueAtTime(0,T);e.gain.linearRampToValueAtTime(g,T+a);e.gain.exponentialRampToValueAtTime(.0001,T+dur);
+  s.connect(fl);fl.connect(e);e.connect(master);s.start(T,R()*1.5);s.stop(T+dur+.05);
+ }
+ function tone({t=0,f=440,dur=1,g=.1,type='sine',a=.005}){
+  const T=ctx.currentTime+t,o=ctx.createOscillator(),e=ctx.createGain();o.type=type;o.frequency.setValueAtTime(f,T);
+  e.gain.setValueAtTime(0,T);e.gain.linearRampToValueAtTime(g,T+a);e.gain.exponentialRampToValueAtTime(.0001,T+dur);
+  o.connect(e);e.connect(master);o.start(T);o.stop(T+dur+.05);
+ }
+ const bell=(t,f,g)=>[[1,1,3],[2.76,.45,2],[5.4,.22,1.2],[8.93,.1,.6]].forEach(([m,k,d])=>tone({t,f:f*m,dur:d,g:g*k,a:.004}));
+ const FX={
+  riffle(){let t=0;burst({dur:.3,type:'lowpass',f:700,f2:2600,g:.07,a:.06});
+   const n=44;for(let i=0;i<n;i++){const x=i/n;burst({t,dur:.016+R()*.014,f:2000+R()*2800,q:2.4,g:.09+R()*.09});t+=.011+.014*Math.abs(x-.5)*2+R()*.006}
+   burst({t:t+.04,dur:.38,type:'lowpass',f:800,f2:4200,g:.11,a:.09});FX.thud(t+.46)},
+  thud(t=0){tone({t,f:105,dur:.13,g:.22});burst({t,dur:.07,type:'lowpass',f:500,g:.18})},
+  slide(t=0){burst({t,dur:.24,type:'bandpass',f:1100,f2:2700,q:.7,g:.15,a:.035});burst({t:t+.22,dur:.014,f:3600,q:3,g:.07})},
+  cut(){FX.slide(0);FX.slide(.17);FX.slide(.34)},
+  fan(){FX.slide(0);for(let i=0;i<16;i++)burst({t:.05+i*.034,dur:.045,f:1800+i*110,q:1.4,g:.06})},
+  flip(){burst({dur:.17,type:'highpass',f:1500,f2:5200,g:.13,a:.045});burst({t:.16,dur:.022,f:2500,q:4,g:.2});tone({t:.16,f:150,dur:.07,g:.08})},
+  chime(){bell(.05,392,.07);bell(.32,587.3,.06)},
+  close(){bell(0,523.3,.06);bell(.25,659.3,.05);bell(.5,784,.045)}
+ };
+ function startAmb(){
+  if(!ctx||ambNodes)return;
+  const n=ctx.sampleRate*4,b=ctx.createBuffer(1,n,ctx.sampleRate),d=b.getChannelData(0);let last=0;
+  for(let i=0;i<n;i++){last=(last+.02*(R()*2-1))/1.02;d[i]=last*3.2}
+  const s=ctx.createBufferSource(),lp=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=b;s.loop=true;lp.type='lowpass';lp.frequency.value=420;g.gain.value=.05;
+  s.connect(lp);lp.connect(g);g.connect(master);s.start();ambNodes={s,g};
+  const crackle=()=>{crackT=setTimeout(crackle,600+R()*3200);if(!live()||ctx.state!=='running'||document.hidden)return;
+   burst({dur:.008+R()*.02,type:'highpass',f:1800+R()*4500,g:.015+R()*.035});if(R()<.3)burst({t:.04+R()*.08,dur:.01,type:'highpass',f:3000,g:.02})};
+  crackle();
+ }
+ return{
+  init,isOn:()=>on,
+  play(name,...a){if(!on)return;init();if(!ctx)return;if(ctx.state==='suspended')ctx.resume().catch(()=>{});try{FX[name](...a)}catch(e){}},
+  toggle(){on=!on;store.set('arcana.sound',on);if(on){init();ctx&&ctx.resume().catch(()=>{})}else if(ctx)ctx.suspend().catch(()=>{});return on}
+ };
+})();
+addEventListener('pointerdown',()=>Snd.init(),{passive:true});addEventListener('keydown',()=>Snd.init());
+
+/* ---------- state ---------- */
+const S={name:store.get('arcana.name')||'',topic:null,q:'',sp:null,deck:[],drawn:[],log:[],shuffles:0,clars:0,synth:'',mode:'deck',fanN:21};
+let AI=null,T=null,voiceOn=false;
+const chat=$('#chat'),zone=$('#zone'),spread=$('#spread'),stage=$('#stage'),cue=$('#cue');
+let skipType=false;chat.addEventListener('click',()=>{skipType=true});
+
+/* ---------- table layout ---------- */
+function layout(){
+ stage.classList.toggle('cuemode',S.mode==='cut'||S.mode==='pick'||S.mode==='deck');
+ const cs=getComputedStyle(stage),W=stage.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight)-8,H=stage.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom)-8;if(W<=0||H<=0)return;
+ const R=1.62,narrow=innerWidth<=820,lab=narrow?32:24,gap=12;
+ if(S.mode==='deck'||S.mode==='cut'){
+  const n=S.mode==='cut'?3:1,cw=Math.max(48,Math.min(S.mode==='cut'?(W-80)/3.4:150,(H-60)/R*.8));
+  zone.style.setProperty('--cw',cw+'px');
+ }
+ if(S.mode==='pick'){
+  const n=spread.children.length||1,mini=Math.max(26,Math.min(46,(W-(n-1)*8)/n,H*.13/R));
+  spread.style.setProperty('--cw',mini+'px');
+  const fh=H-mini*R-24,cw=Math.max(30,Math.min(84,W/6.6,fh/2.4));
+  const fan=zone.querySelector('.fan');if(fan){fan.style.setProperty('--cw',cw+'px');fan.style.height=(cw*R*1.5+10)+'px'}
+ }
+ stage.classList.toggle('spreadmode',S.mode==='spread');
+ if(S.mode==='spread'&&S.sp){
+  const n=S.sp.pos.length+S.clars,max=n===1?220:170,lineH=narrow?14.5:17.5,cands=[];
+  if(S.sp.cls==='s5')cands.push({k:'s5',cols:3,rows:3});
+  cands.push({k:'row',cols:n,rows:1});
+  if(n>=4)cands.push({k:'grid',cols:Math.ceil(n/2),rows:2});
+  const fit=(c,lab)=>Math.min(max,(W-(c.cols-1)*gap)/c.cols,(H-c.rows*lab-(c.rows-1)*gap)/(c.rows*R));
+  let best=null;
+  for(const lab of [lineH*2+6,0]){
+   best=null;
+   for(const c of cands){const cw=fit(c,lab),sc=cw+(c.k==='s5'?8:0);if(!best||sc>best.sc)best={...c,cw,lab,sc}}
+   if(best.cw>=58)break;
+  }
+  spread.className='on '+best.k+(best.lab?'':' nolab');
+  spread.style.gridTemplateColumns=best.k==='grid'?`repeat(${best.cols},auto)`:'';
+  spread.style.setProperty('--cw',Math.max(26,best.cw)+'px');
+ }
+}
+new ResizeObserver(layout).observe(stage);
+function setMode(m){S.mode=m;layout()}
+
+/* ---------- chat ---------- */
+function scroll(){chat.scrollTop=chat.scrollHeight}
+const AV=`<div class="av"><svg viewBox="0 0 40 40"><use href="#moon"/></svg></div>`;
+function bubble(cls,head){const d=document.createElement('div');d.className='msg '+cls;
+ d.innerHTML=cls==='mira'?`${AV}<div class="bub"><div class="who">Mira</div>${head||''}<div class="tx"></div></div>`:'<div class="tx"></div>';
+ chat.appendChild(d);while(chat.children.length>160)chat.firstElementChild.remove();if(S.log.length>80)S.log.splice(0,S.log.length-80);scroll();return d}
+const DOTS='<span class="dots" aria-label="Mira is speaking"><i></i><i></i><i></i></span>';
+async function typeOut(p,text){
+ if(reduce){p.textContent=text;return}
+ skipType=false;const step=Math.max(1,Math.ceil(text.length/110));
+ for(let i=0;i<=text.length;i+=step){if(skipType)break;p.textContent=text.slice(0,i);if(i%(step*6)===0)scroll();await new Promise(r=>setTimeout(r,18))}
+ p.textContent=text;
+}
+async function mira(text,head){
+ const el=bubble('mira',head),p=el.querySelector('.tx');p.innerHTML=DOTS;
+ await sleep(450+Math.min(900,text.length*3));await typeOut(p,text);scroll();
+ S.log.push('Mira: '+text);speak(text);return text;
+}
+function you(text){const el=bubble('you');el.querySelector('.tx').textContent=text;S.log.push(S.name+': '+text);scroll()}
+function speak(text){if(T&&voiceOn)T.add([{text:text.slice(0,1900),voice:'airy',rate:.95}]).catch(e=>{if(e&&e.code==='not_granted'){T=null;$('#voice').hidden=true}})}
+async function aiSay(prompt,head){
+ if(!AI)return null;
+ const el=bubble('mira',head),p=el.querySelector('.tx');p.innerHTML=DOTS;
+ try{
+  const r=await AI(prompt,{cache:false,onText:({text})=>{if(text&&!/^Thinking/.test(text)){p.textContent=text;scroll()}}});
+  const t=(r&&r.text||'').trim();if(!t)throw{};p.textContent=t;scroll();S.log.push('Mira: '+t);speak(t);return t;
+ }catch(e){if(e&&e.code==='not_granted')AI=null;el.remove();return null}
+}
+
+/* ---------- dock ---------- */
+const dockEl=$('#dock');
+const dock=h=>{dockEl.innerHTML=h;dockEl.onclick=null;return dockEl};
+function chips(list,echo=true){return new Promise(res=>{
+ dock(list.map(([v,l,s])=>`<button class="chip${s?' tall':''}${v==='go'||v==='sh'?' main':''}" data-v="${v}">${esc(l)}${s?`<small>${esc(s)}</small>`:''}</button>`).join(''));
+ dockEl.onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;const it=list.find(x=>x[0]===b.dataset.v);dock('');if(echo)you(it[1]);res(it[0])};
+})}
+function ask(ph,skip,extra=[]){return new Promise(res=>{
+ dock(`<form class="ask"><input id="q" autocomplete="off" maxlength="300" placeholder="${esc(ph)}" aria-label="${esc(ph)}"><button class="chip main" type="submit">Send</button></form>${skip?`<button class="chip" type="button" data-v="skip">${esc(skip)}</button>`:''}${extra.map(([v,l])=>`<button class="chip" type="button" data-v="${v}">${esc(l)}</button>`).join('')}`);
+ const i=$('#q');if(innerWidth>820)setTimeout(()=>i.focus({preventScroll:true}),60);
+ dockEl.querySelector('form').onsubmit=e=>{e.preventDefault();const v=i.value.trim();if(!v)return;i.blur();dock('');you(v);res({t:'text',v})};
+ dockEl.onclick=e=>{const b=e.target.closest('button[data-v]');if(!b)return;dock('');if(b.dataset.v==='skip'){you(skip);res({t:'skip'})}else res({t:'chip',v:b.dataset.v})};
+})}
+const hint=t=>dock(`<span class="hint">${t}</span>`);
+const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),1800)};
+
+/* ---------- table ---------- */
+const deckHTML=n=>`<div class="deck">${Array.from({length:n},(_,i)=>`<div class="card" style="transform:translate(${i*.8}px,${-i*1.2}px)">${backHTML}</div>`).join('')}</div>`;
+function showDeck(){spread.className='';spread.innerHTML='';zone.innerHTML=deckHTML(7);cue.textContent='';setMode('deck')}
+function shuffleDeck(){const a=ALL.map(c=>({...c,rev:rnd(100)<30}));for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}S.deck=a}
+function renderSlots(){
+ const sp=S.sp;
+ spread.innerHTML=sp.pos.map((p,i)=>`<div class="slot" data-i="${i}" style="${sp.areas?`grid-area:${sp.areas[i]}`:''}"><div class="ph">${i+1}</div><span>${p[0]}</span></div>`).join('');
+}
+function spreadClass(mini){spread.className='on '+(mini?'mini':S.sp.cls==='s5'?'s5':'row');spread.style.gridTemplateColumns=''}
+function place(i,c){const s=spread.querySelector(`.slot[data-i="${i}"]`);const ph=s.querySelector('.ph');const d=document.createElement('div');d.className='card new';d.innerHTML=cardHTML(c);ph.replaceWith(d)}
+const flip=i=>{spread.querySelector(`.slot[data-i="${i}"] .card`).classList.add('flipped');Snd.play('flip');const d=S.drawn[i];if(d&&d.c.arc==='major')setTimeout(()=>Snd.play('chime'),reduce?0:450)};
+
+/* ---------- overlay ---------- */
+const ov=$('#ov'),panel=$('#panel');let lastFocus=null;
+function openPanel(html,text){lastFocus=document.activeElement;panel.className='panel'+(text?' text':'');panel.innerHTML=`<button class="x" aria-label="Close">×</button>`+html;ov.hidden=false;panel.querySelector('.x').focus()}
+function closePanel(){ov.hidden=true;panel.innerHTML='';if(lastFocus)lastFocus.focus()}
+ov.addEventListener('click',e=>{if(e.target===ov||e.target.closest('.x'))closePanel()});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!ov.hidden)closePanel()});
+function showCard(i){
+ const d=S.drawn[i];if(!d||!d.shown)return;const c=d.c;
+ const realm=c.arc==='major'?'Major Arcana':`${SUITS[c.suit].label} · ${SUITS[c.suit].theme}`;
+ openPanel(`<div class="card flipped">${cardHTML(c)}</div><div><h2>${c.name}</h2><p class="cp">${realm}${c.rev?' · drawn reversed':''}</p><h3>In your reading</h3><p>${esc(d.pos[0])}: ${esc(d.pos[1])}.</p><h3>Upright</h3><p>${c.up}.</p><h3>Reversed</h3><p>${c.rv}.</p>${d.text?`<h3>What Mira said</h3><p>${esc(d.text)}</p>`:''}</div>`);
+}
+spread.addEventListener('click',e=>{const s=e.target.closest('.slot.done');if(s)showCard(+s.dataset.i)});
+chat.addEventListener('click',e=>{const im=e.target.closest('.chead img');if(im)showCard(+im.dataset.i)});
+$('#jbtn').onclick=()=>{
+ const j=store.get('arcana.journal')||[];
+ openPanel(`<div><h2>Your journal</h2>${j.length?`<ul>${j.map(e=>`<li><b>${esc(e.d)}</b> · ${esc(e.q)}<br><span class="cp">${esc(e.c.join(', '))}</span></li>`).join('')}</ul>`:'<p>Your past readings will appear here.</p>'}<h3>About the deck</h3><p>Card art by Pamela Colman Smith, first published in 1909 and now in the public domain. Scans of an early printing, restored by Steve P. (steve-p.org). The card back is the original 1909 “Roses &amp; Lilies” design.</p><p class="cp">Tarot here is for reflection and entertainment. It isn't a substitute for medical, legal or financial advice.</p></div>`,true);
+};
+
+/* ---------- readings ---------- */
+const kw=c=>c.rev?c.rv:c.up;
+const k1=c=>kw(c).split(',')[0].trim();
+const topicNoun=()=>S.topic?S.topic[2]:'your life right now';
+const posOf=i=>i<S.sp.pos.length?S.sp.pos[i]:CLAR;
+function localCard(c,pos){
+ const open=c.arc==='major'?c.img:`I see ${SUITS[c.suit].img}.`;
+ const mean=c.rev?`It has come to you reversed, so its energy is held back or turned inward. Here it speaks of ${kw(c)}.`:`It speaks of ${kw(c)}.`;
+ const realm=c.arc==='major'?`As one of the Major Arcana, it marks a larger chapter in your story, not a passing mood.`:`As a card of ${SUITS[c.suit].label}, it lives in the realm of ${SUITS[c.suit].theme}.`;
+ const where=`In the place of “${pos[0]}”, ${pos[1]}, it asks you to notice where ${k1(c)} is showing up in ${topicNoun()}.`;
+ const q=pick([`Where do you already feel this?`,`What would change if you met this with curiosity rather than worry?`,`What part of you already knows this?`,`Who or what comes to mind as you look at it?`]);
+ return`${open} ${mean} ${realm}\n\n${where} ${q}`;
+}
+function localSynth(){
+ const cs=S.drawn.map(d=>d.c),n=cs.length,maj=cs.filter(c=>c.arc==='major').length,rv=cs.filter(c=>c.rev).length;
+ const cnt={};cs.forEach(c=>{if(c.suit)cnt[c.suit]=(cnt[c.suit]||0)+1});
+ const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+ const out=[n===1?`One card, and it has chosen its words carefully.`:`Let me look at them together now, as one story.`];
+ if(n>1&&maj>=Math.ceil(n/2))out.push(`So many Major Arcana: this is a meaningful chapter, and larger forces are moving through it.`);
+ else if(n>1&&maj===0)out.push(`No Major Arcana have come, which tells me this is in your hands. It's about everyday choices more than fate.`);
+ if(top&&top[1]>=2)out.push(`The ${SUITS[top[0]].label} lead the reading, so ${SUITS[top[0]].theme} sit at the centre of it.`);
+ if(rv&&rv>=Math.ceil(n/2))out.push(`Several cards are reversed. Energy here feels blocked or delayed, and it's asking to be worked with inwardly before it moves outward.`);
+ const last=cs[n-1];
+ out.push(n===1?`${last.name} asks you to sit with ${kw(last)}.`:`The last card, ${last.name}, shows where this is heading if nothing changes: ${kw(last)}.`);
+ const counsel=S.drawn.find(d=>d.pos[0]==='Counsel');
+ if(counsel)out.push(`And the counsel is clear enough: lean into ${k1(counsel.c)}.`);
+ out.push(`A small step for this week: write down one thing ${n===1?'this card':'these cards'} stirred in you, and act on it in some small way. Take what resonates, and leave the rest on the table.`);
+ return out.join(' ');
+}
+const PERSONA=()=>`You are Mira, a warm, perceptive tarot reader at a candlelit table, reading in person for ${S.name} with the classic 1909 Smith-Waite deck. Speak directly to them as "you", calm and intimate, like a gifted human reader: describe what is actually pictured on the card, its traditional meaning and its position, and connect it to their question. Never claim certainty about the future; speak of tendencies, energies and choices. Do not give medical, legal or financial instructions; if the question touches those, gently suggest a qualified professional alongside the reflection. Plain prose only: no markdown, headings, lists or emoji.`;
+const CTX=()=>`Topic: ${S.topic[1]}. Their question: ${S.q?`"${S.q}"`:'unspoken (an open reading)'}. Spread: ${S.sp.name}.\nCards turned so far:\n${S.drawn.filter(d=>d.shown).map((d,i)=>`${i+1}. ${d.pos[0]} (${d.pos[1]}): ${d.c.name}${d.c.rev?' reversed':''}`).join('\n')||'none yet'}`;
+async function interpret(i){
+ const d=S.drawn[i],c=d.c;d.shown=true;
+ spread.querySelector(`.slot[data-i="${i}"]`).classList.add('done');
+ const head=`<div class="chead"><img src="${IMG(c)}" data-i="${i}" class="${c.rev?'rv':''}" alt="Enlarge ${c.name}"><div><div class="ct">${c.name}</div><div class="cp">${c.rev?'Reversed · ':''}${esc(d.pos[0])}</div></div></div>`;
+ const p=`${PERSONA()}\n\n${CTX()}\n\nYou have just turned ${c.name}${c.rev?' (reversed)':''} in the position "${d.pos[0]}" (${d.pos[1]}). Traditional keywords: ${kw(c)}. Read it aloud for them in 70 to 110 words: one evocative sentence on what you see pictured on the card, then what it means in this position for their question${i>0?', linking briefly to earlier cards where it matters':''}, and close with one gentle reflective question.`;
+ d.text=await aiSay(p,head)||await mira(localCard(c,d.pos),head);
+}
+
+/* ---------- flow ---------- */
+async function begin(){
+ await mira(`Come in, come in. Sit wherever feels right. The candles are lit, and the old deck is waiting on the cloth.`);
+ if(S.name){
+  await mira(`Welcome back, ${S.name}. It's good to see you at my table again.`);
+  if(await chips([['y','Yes, it’s me'],['n','I’m someone else']])==='n')S.name='';
+ }
+ if(!S.name){
+  await mira(`I'm Mira. Before we begin, what shall I call you?`);
+  const r=await ask('Your name');S.name=r.v.slice(0,40);store.set('arcana.name',S.name);
+  await mira(`${S.name}. A lovely name to read for.`);
+ }
+ reading();
+}
+async function reading(){
+ S.drawn=[];S.clars=0;S.shuffles=0;S.q='';S.synth='';showDeck();
+ await mira(`Tell me, what is weighing on your heart today? Or what are you curious about?`);
+ const t=await chips(TOPICS.map(x=>[x[0],x[1]]));S.topic=TOPICS.find(x=>x[0]===t);
+ await mira(`If you can, put it into a question. Open questions work best, like “What do I need to understand about…”, rather than a simple yes or no. Or keep it unspoken and let the cards choose what to say.`);
+ const r=await ask('Type your question…','Let the cards speak');
+ if(r.t==='text'){S.q=r.v;
+  if(/^(will|should|is|am|are|do|does|did|can|could|would)\b/i.test(S.q))await mira(`I'll hold that question close. The cards rarely give a flat yes or no. Instead they show the forces around it, so we'll listen for those.`);
+  else await mira(`Yes… I can feel the weight of that one. Let's see what the cards have to say.`);
+ }else await mira(`Keep it close, then. The cards will know.`);
+ await mira(`How deep shall we go?`);
+ const sp=await chips([['one','Single card','One clear message'],['three','Three cards','Past, present and what’s emerging'],['five','The Crossroads','Five cards for a deeper look']]);
+ S.sp=SPREADS[sp];
+ await shuffleStage();
+}
+async function shuffleStage(){
+ shuffleDeck();
+ await mira(`Here is the deck. Take it in your hands. Shuffle as long as you like, and hold ${S.q?'your question':'whatever is on your mind'} as you do.`);
+ const lines=[`Good… slowly. Let the cards feel you.`,`There. I can feel the deck warming to you.`,`Once more, if your hands want to.`,`Mm. They're settling now.`];
+ for(;;){
+  cue.textContent=S.shuffles?'':'The deck is waiting';
+  const v=await chips(S.shuffles?[['sh','Shuffle again'],['go','I’m ready']]:[['sh','Shuffle the deck']],false);
+  if(v==='go'){you('I’m ready.');break}
+  S.shuffles++;shuffleDeck();cue.textContent='';const dk=zone.querySelector('.deck');dk.classList.remove('sh');void dk.offsetWidth;dk.classList.add('sh');Snd.play('riffle');
+  hint('Shuffling…');await sleep(1150);
+  if(S.shuffles<=4&&(S.shuffles===1||rnd(2)))await mira(lines[Math.min(S.shuffles-1,3)]);
+ }
+ await cutStage();
+}
+async function cutStage(){
+ zone.innerHTML=`<div class="piles">${['Left','Middle','Right'].map((l,i)=>`<button class="pile" data-p="${i}" aria-label="${l} pile">${deckHTML(4)}<span>${l}</span></button>`).join('')}</div>`;
+ setMode('cut');cue.textContent='Tap a pile';Snd.play('cut');
+ const chosen=new Promise(res=>zone.onclick=e=>{const b=e.target.closest('.pile');if(b){zone.onclick=null;res(+b.dataset.p)}});
+ hint('Tap a pile on the table');
+ await mira(`I've cut the deck into three. Choose the pile that calls to you. Use your left hand, if you're superstitious like me.`);
+ const p=await chosen;
+ Snd.play('thud');dock('');cue.textContent='';you(`The ${['left','middle','right'][p]} pile.`);
+ const a=S.deck,t=Math.floor(a.length/3),parts=[a.slice(0,t),a.slice(t,2*t),a.slice(2*t)];
+ S.deck=[...parts[p],...parts.filter((_,i)=>i!==p).flat()];
+ zone.innerHTML=deckHTML(7);setMode('deck');
+ await mira(pick([`Good. That one has been waiting for you.`,`Interesting choice. Yes, that feels right.`,`Ah, I thought you might choose that one.`]));
+ await pickStage();
+}
+async function pickStage(){
+ const n=S.sp.pos.length,F=S.fanN;
+ renderSlots();spreadClass(true);
+ zone.innerHTML=`<div class="fan">${Array.from({length:F},(_,i)=>`<div class="card" role="button" tabindex="0" aria-label="Face-down card ${i+1}" data-k="${i}" style="--a:${(-30+i*60/(F-1)).toFixed(1)}deg">${backHTML}</div>`).join('')}</div>`;
+ setMode('pick');Snd.play('fan');
+ const used=[];const left=()=>`Choose ${n-used.length} more · ${used.length} of ${n}`;
+ cue.textContent=n===1?'Tap one card':`Tap ${n} cards`;
+ const done=new Promise(res=>{
+  const take=el=>{if(!el||el.classList.contains('taken')||used.length>=n)return;el.classList.add('taken');const k=+el.dataset.k;used.push(k);
+   const c=S.deck[k],i=used.length-1;preload(c);Snd.play('slide');S.drawn.push({c,pos:posOf(i)});place(i,c);cue.textContent=used.length<n?left():'';hint(left());
+   if(used.length===n){zone.onclick=zone.onkeydown=null;res()}};
+  zone.onclick=e=>take(e.target.closest('.fan .card'));
+  zone.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();take(e.target.closest('.fan .card'))}};
+ });
+ hint(left());
+ await mira(n===1?`I've fanned the deck across the cloth. Draw one card. Don't think too hard; take the one your hand drifts toward.`:`I've fanned the deck across the cloth. Draw ${n} cards, one at a time. Don't think too hard; take the ones your hand drifts toward.`);
+ if(used.length<n)hint(left());
+ await done;
+ S.rest=S.deck.filter((_,k)=>!used.includes(k));
+ await sleep(450);zone.innerHTML='';spreadClass(false);setMode('spread');dock('');Snd.play('slide');
+ await mira(n===1?`Good. Let's see what it holds for you.`:`Good. I've laid them in their places. Let us turn them, one at a time.`);
+ await revealStage();
+}
+async function revealStage(){
+ for(let i=0;i<S.drawn.length;i++){
+  const slot=spread.querySelector(`.slot[data-i="${i}"]`);slot.classList.add('ready');
+  cue.textContent=S.drawn.length===1?'Tap the card to turn it':`Tap card ${i+1} to turn it`;
+  const lbl=S.drawn.length===1?'Turn the card':`Turn card ${i+1} · ${S.drawn[i].pos[0]}`;
+  await new Promise(res=>{chips([['go',lbl]],false).then(res);slot.onclick=()=>{dock('');res()}});
+  slot.onclick=null;slot.classList.remove('ready');cue.textContent='';flip(i);await sleep(1000);
+  await interpret(i);
+ }
+ cue.textContent='';
+ await closing();
+}
+async function closing(){
+ const p=`${PERSONA()}\n\n${CTX()}\n\nAll the cards are now turned. Give the closing reading in 110 to 160 words: weave the cards into one story, name any pattern you notice (Major Arcana, a dominant suit, reversals), answer their question as honestly as the cards allow, and finish with one small, practical step they could take this week.`;
+ Snd.play('close');
+ S.synth=await aiSay(p)||await mira(localSynth());
+ const j=store.get('arcana.journal')||[];
+ j.unshift({d:new Date().toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}),q:S.q||S.topic[1],c:S.drawn.map(d=>d.c.name+(d.c.rev?' (rev.)':''))});
+ store.set('arcana.journal',j.slice(0,10));
+ await mira(`Tap any card on the table to see it up close. Is there anything you'd like to ask me about what came up? I'm happy to sit with it a while longer.`);
+ followups();
+}
+function readingText(){
+ return`Tarot reading for ${S.name} with Mira · ${new Date().toLocaleDateString()}\nQuestion: ${S.q||'(unspoken) '+S.topic[1]}\nSpread: ${S.sp.name}\n\n`+S.drawn.map(d=>`${d.pos[0]}: ${d.c.name}${d.c.rev?' (reversed)':''}\n${d.text||''}`).join('\n\n')+`\n\nSummary\n${S.synth}`;
+}
+async function followups(){
+ for(;;){
+  const extra=[['new','New reading'],['copy','Copy reading']];if(S.clars<2)extra.unshift(['clar','Draw a clarifier']);
+  const r=await ask('Ask Mira about your reading…',null,extra);
+  if(r.t==='chip'&&r.v==='copy'){try{await navigator.clipboard.writeText(readingText());toast('Reading copied')}catch(e){toast('Copying isn’t allowed here')}continue}
+  if(r.t==='chip'&&r.v==='new'){you('I’d like a new reading.');await mira(`Of course. Let me gather the cards back in…`);return reading()}
+  if(r.t==='chip'&&r.v==='clar'){you('Could I draw a clarifier?');await clarifier();continue}
+  const t=r.v;
+  const fp=`${PERSONA()}\n\n${CTX()}\n\nYour closing summary was: ${S.synth}\n\nRecent conversation:\n${S.log.slice(-10).join('\n')}\n\n${S.name} now says: "${t}". Reply as Mira in under 110 words. Stay grounded in the cards drawn. If they want more cards, tell them they can tap “Draw a clarifier”. If the question strays from the reading, answer briefly and kindly steer back.`;
+  if(await aiSay(fp))continue;
+  const hit=S.drawn.find(d=>t.toLowerCase().includes(d.c.name.toLowerCase().replace(/^the /,'')));
+  if(hit)await mira(`${hit.c.name} sits in the place of “${hit.pos[0]}”. Its message is ${kw(hit.c)}. Sit with where ${k1(hit.c)} touches ${topicNoun()}. That's usually where the card is pointing.`);
+  else await mira(pick([`I hear you. The cards have said what they came to say, but if it feels unfinished, draw a clarifier and we'll see what it adds.`,`That's worth sitting with. Look again at the card that stirred you most. Often that's where your answer is hiding. A clarifier can help, too.`,`Mm. I'd trust your first feeling there. If you want more light on it, draw one more card.`]));
+ }
+}
+async function clarifier(){
+ if(!S.rest||!S.rest.length)return;
+ const c=S.rest.shift(),i=S.drawn.length;S.clars++;preload(c);
+ const s=document.createElement('div');s.className='slot';s.dataset.i=i;if(S.sp.cls==='s5')s.style.gridArea=S.clars===1?'f':'g';
+ s.innerHTML=`<div class="ph">+</div><span>Clarifier</span>`;spread.appendChild(s);layout();
+ S.drawn.push({c,pos:CLAR});
+ await mira(`Let me draw one more from the top of your pile…`);
+ place(i,c);Snd.play('slide');await sleep(700);flip(i);await sleep(1000);
+ await interpret(i);
+ S.synth+=`\nClarifier: ${c.name}${c.rev?' (reversed)':''}`;
+}
+$('#voice').onclick=()=>{voiceOn=!voiceOn;const b=$('#voice');b.setAttribute('aria-pressed',voiceOn);b.querySelector('span').textContent=voiceOn?'Voice on':'Voice off';if(!voiceOn&&T)try{T.stop()}catch(e){}};
+(async()=>{try{if(window.claude&&claude.use){const[a,t]=await Promise.all([claude.use('sample'),claude.use('tts')]);AI=a;T=t;if(T)$('#voice').hidden=false}}catch(e){}})();
+const bi=new Image();bi.src=BACK;
+const sb=$('#snd'),syncSnd=()=>{const o=Snd.isOn();sb.setAttribute('aria-pressed',o);sb.querySelector('span').textContent=o?'Sound on':'Sound off'};syncSnd();
+sb.onclick=()=>{Snd.toggle();syncSnd()};
+showDeck();begin();
+}
+</script>
+</body></html>
