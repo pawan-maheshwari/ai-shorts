@@ -42,12 +42,35 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Preferred: run the agent cycle headlessly here (no browser, no Streamlit Cloud session). Needs the app's
+      # secrets as repository secrets — at least SUPABASE_URL and SUPABASE_KEY, plus the LLM key the desk uses.
+      # Without them the cycle exits with code 3 and the browser watch below takes over, as before.
+      - name: Install app dependencies
+        run: pip install -r apps/stock-lab/requirements.txt
+
+      - name: Run the agent cycle headlessly
+        id: cycle
+        continue-on-error: true
+        env:
+          STOCKLAB_UNTIL: ${{ github.event.inputs.until || (contains(fromJSON('["35 3 * * 1-5","5 4 * * 1-5","40 4 * * 1-5"]'), github.event.schedule) && '12:20') || '15:35' }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          LLM_PROVIDER: ${{ secrets.LLM_PROVIDER }}
+          LLM_MODEL_FAST: ${{ secrets.LLM_MODEL_FAST }}
+          LLM_MODEL_SMART: ${{ secrets.LLM_MODEL_SMART }}
+        run: python tools/stocklab_cycle.py
+
       - name: Install headless browser
+        if: steps.cycle.outcome == 'failure'
         run: |
           pip install playwright==1.48.0
           python -m playwright install --with-deps chromium
 
-      - name: Watch Stock Lab through the session
+      - name: Watch Stock Lab through the session (fallback)
+        if: steps.cycle.outcome == 'failure'
         env:
           STOCKLAB_UNTIL: ${{ github.event.inputs.until || (contains(fromJSON('["35 3 * * 1-5","5 4 * * 1-5","40 4 * * 1-5"]'), github.event.schedule) && '12:20') || '15:35' }}
         run: python tools/stocklab_watch.py

@@ -11,13 +11,13 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 | `AI_Odyssey_BookSigning_AnimatedCover.html` | 4.4 MB | 48 | 3 |
 | `ai-odyssey.html` | 4.0 MB | 929 | 7 |
 | `index.html` | 360 KB | 5291 | 1 |
-| `apps/stock-lab/app.py` | 200 KB | 2998 |  |
+| `apps/stock-lab/app.py` | 203 KB | 3043 |  |
 | `vitalmetrics.html` | 181 KB | 3308 |  |
 | `ai-library.html` | 142 KB | 1307 | 2 |
-| `apps/stock-lab/agents.py` | 112 KB | 1966 |  |
+| `apps/stock-lab/agents.py` | 118 KB | 2052 |  |
 | `tarot/index.html` | 53 KB | 589 |  |
 | `apps/stock-lab/research.py` | 49 KB | 956 |  |
-| `apps/stock-lab/cheetah_engine.py` | 43 KB | 930 |  |
+| `apps/stock-lab/cheetah_engine.py` | 46 KB | 966 |  |
 | `ai-anchor.html` | 41 KB | 926 |  |
 | `tools/weekly-brief.mjs` | 41 KB | 581 |  |
 | `festive.js` | 36 KB | 344 |  |
@@ -25,6 +25,7 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 | `briefs/2026-W47.html` | 26 KB | 217 |  |
 | `briefs/2026-W46.html` | 25 KB | 217 |  |
 | `tools/build-edition.mjs` | 24 KB | 563 |  |
+| `apps/stock-lab/nse_mcp.py` | 23 KB | 467 |  |
 | `tools/predict.mjs` | 22 KB | 389 |  |
 | `apps/stock-lab/desk.py` | 18 KB | 339 |  |
 | `apps/stock-lab/learning.py` | 18 KB | 372 |  |
@@ -41,11 +42,11 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 | `news_anchor.html` | 4 KB | 84 |  |
 | `tools/stocklab_watch.py` | 4 KB | 129 |  |
 | `about.html` | 4 KB | 54 |  |
+| `.github/workflows/stocklab-market-hours.yml` | 3 KB | 84 |  |
 | `contact.html` | 3 KB | 54 |  |
 | `tools/stocklab_inspect.py` | 2 KB | 69 |  |
 | `tools/claude/check_html.py` | 2 KB | 65 |  |
 | `.github/workflows/weekly-brief.yml` | 2 KB | 73 |  |
-| `.github/workflows/stocklab-market-hours.yml` | 2 KB | 61 |  |
 | `tools/stocklab_keepalive.py` | 2 KB | 63 |  |
 | `tools/stocklab_export.py` | 1 KB | 50 |  |
 | `.github/workflows/stocklab-keepalive.yml` | 1 KB | 51 |  |
@@ -141,7 +142,7 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L5203 script
 - functions (226): get@54, meta@2237, $@2243, esc@2248, safeURL@2253, filtered@2261, fmtDate@2271, buildChips@2282, cardKey@2293, card@2296, render@2337, normImgUrl@2360, matchMeta@2371, fetchStoryImage@2389, hashStr@2426, shade@2431, coverSVG@2440, findPlateByKey@2470, applyCardImage@2477, loadCardImages@2509, updateRail@2526, updateBreaking@2536, goTo@2551, next@2558, syncReading@2583, queueReading@2596, setStatus@2618, normCat@2626, normRegion@2635, fetchT@2645, extractItems@2652, mapItems@2669, callClaude@2680, stripTags@2710, clipWords@2711, normDate@2712, freshOnly@2713, dedupeSummary@2729, guessCat@2747, fetchWorker@2761, lsGet@2778, lsSet@2779, readCache@2780, writeCache@2781, pickImg@2785, mapRSS@2793, parseFeedXML@2810, fetchRSS@2825, fetchHN@2848, fetchEdition@2880, fetchFresh@2896, refresh@2907, initFeed@2934, hitCounter@2947, countVisit@2953, setWireHeight@2970, introSeen@2986, markIntroSeen@2987, svgFor@2992, setText@3003, feature@3004, applyImage@3014, endIntro@3036, keyskip@3037, topNews@3049, summarize@3050, entity@3054, whatHappened@3060, compare@3066, search@3073, route@3081, push@3089, ask@3090, fill@3094, dashFill@3097, topText@3105, stopVoice@3106, openP@3114, closeP@3115, anchorScript@3120, pauseAnchor@3135, $@3165, openM@3166, closeM@3167, upiLink@3179, refreshPay@3185, note@3206, valid@3207, subscribe@3208, ymd@3279, abaHit@3285, abaGet@3286, esc2@3287, renderQuiz@3290, answerQuiz@3317, showQuizStats@3323, renderPoll@3332, votePoll@3352, showPollResults@3365, renderPrevPoll@3379, fmtMarketCap@3397, getTodayStr@3404, fetchMarketCaps@3406, loadPrevMarket@3478, savePrevMarket@3484, renderMarket@3488, initMarket@3564, setMarketOpen@3604, fmtPx@3663, chgOf@3664, itemHTML@3672, copyHTML@3680, render@3683, flash@3685, paint@3692, step@3708, fetchLive@3718, move@3773, open@3801, shut@3809, onKey@3815, clipsRead@3842, clipsWrite@3847, isClipped@3851, findStory@3859, badge@3865, toggleClip@3872, renderClips@3895, syncButtons@3940, shareCutting@3981, layout@4000, wrap@4003, save@4126, applyTheme@4128, applySize@4135, mark@4139, observe@4203, revoke@4257, close@4260, fileOf@4267, canShareFile@4270, links@4275, el@4343, pct@4344, fmtDate@4345, safeUrl@4346, showBand@4348, rotate@4355, card@4363, chip@4374, render@4408, open@4449, remember@4466, hide@4475, introGone@4479, el@4515, lsGet@4516, lsSet@4517, safeUrl@4518, getJSON@4519, pad@4524, todayISO@4525, parts@4528, dayNum@4529, fmtDate@4530, fmtRange@4531, num@4537, T@4541, wind@4542, dist@4543, sky@4546, okLoc@4571, saveLoc@4572, storedLoc@4573, fromIP@4582, geocode@4590, fromTZ@4596, findLoc@4604, placeLine@4609, loadWx@4612, km@4632, upcoming@4638, tiers@4646, whenChip@4657, ics@4666, d@4667, esc@4668, nextStart@4683, offers@4693, ranked@4694, paintBand@4697, setHead@4725, cityBox@4727, pick@4737, search@4738, viewWeather@4769, fact@4789, eventRow@4843, section@4861, viewEvents@4866, courseCard@4903, cell@4915, viewCourses@4934, render@4966, open@4974, fromHash@4994, h@5035, safeUrl@5036, safeImg@5037, fmt@5038, today@5042, load@5044, cast@5065, figFor@5080, render@5086, open@5154, shut@5162, onKey@5170, markSeen@5172, el@5213, mb@5214, fname@5215, count@5216, render@5225, open@5258, fromHash@5273
 ### `apps/stock-lab/app.py`
-- functions (62): _fresh_local_modules@23, intraday_args@177, fetch_intraday@186, load_daily@193, _secret@201, _make_store@224, _store_schema@237, get_store@244, fetch_index_cached@254, nse_market_cached@259, nse_desk_cached@265, sentinel_batch@271, sentinel_rows@276, _memo@291, scan_jobs@300, ensure_daily_scan@304, narrate_cached@358, intraday_history@364, history_cached@373, train_coach@398, coach_trades@430, study_cached@435, _study_key@452, _study@457, raw_cached@463, panel_cached@470, panel_for@494, scout_cached@501, scout_for@520, model_preds_cached@527, brain_cached@535, scorecard_cached@546, now_ist@559, distill_audit@564, store_memory_stats@577, score_for@581, load_cfg@589, save_cfg@606, cfg_diff@631, inr@639, arrow@643, arrow_txt@653, market_state@661, fmt_interval@671, kpis@677, shadow_view@683, section@713, intraday_chart@717, signal_card@749, agent_strip@809, _warm_days@872, admin_gate@930, practice_status@976, paper_frame@1530, _hm@1554, desk_history@1841, _desk_attempts@1866, _desk_log@1870, _desk_calls@1877, _nanfree@1889, score_card_html@2174, sys_line@2219
+- functions (62): _fresh_local_modules@23, intraday_args@177, fetch_intraday@186, load_daily@193, _secret@201, _make_store@224, _store_schema@237, get_store@244, fetch_index_cached@254, nse_market_cached@259, nse_desk_cached@265, sentinel_batch@271, sentinel_rows@276, _memo@291, scan_jobs@300, ensure_daily_scan@304, narrate_cached@358, intraday_history@364, history_cached@373, train_coach@398, coach_trades@430, study_cached@435, _study_key@452, _study@457, raw_cached@463, panel_cached@470, panel_for@494, scout_cached@501, scout_for@520, model_preds_cached@527, brain_cached@535, scorecard_cached@546, now_ist@559, distill_audit@564, store_memory_stats@577, score_for@581, load_cfg@589, save_cfg@606, cfg_diff@631, inr@639, arrow@643, arrow_txt@653, market_state@661, fmt_interval@671, kpis@677, shadow_view@683, section@713, intraday_chart@717, signal_card@749, agent_strip@809, _warm_days@872, admin_gate@930, practice_status@976, paper_frame@1567, _hm@1591, desk_history@1878, _desk_attempts@1903, _desk_log@1907, _desk_calls@1914, _nanfree@1926, score_card_html@2213, sys_line@2258
 ### `vitalmetrics.html`
 - L24 style
 - L213 h2 `VitalMetrics`
@@ -172,8 +173,8 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - functions (18): $@888, shade@891, openBook@1017, renderCover@1028, buildTOC@1071, renderChapter@1082, loadVoices@1118, fill@1126, speakParagraph@1145, stopTTS@1176, resetChat@1194, addMsg@1202, offlineAnswer@1208, summary@1210, askClaude@1226, sendChat@1249, scrollY@1281, updateToTop@1284
 ### `apps/stock-lab/agents.py`
 - L273 class `NSE`
-- L1054 class `Coach`
-- functions (61): configure_llm@61, llm_name@66, llm_model@70, llm_call@74, ask_claude@107, fetch_index@113, index_day@144, pulse@156, pulse_exchange@215, company_name@257, aliases@261, fo_ban_list@360, google_news@371, yahoo_news@402, read_filing@475, read_item@505, read_with_claude@533, gather@560, assess@588, _demo_sentinel@680, sentinel@696, sentinel_many@703, day_stats@716, sentinel_evidence@738, signal_features@781, _slope@809, model_features@819, trade_key@864, simulate_exit@881, exit_status@930, corr_pairs@937, risk_check@954, replay@1004, _feats@1050, engine_args@1190, engine_key@1207, learning_key@1213, plan_key@1227, merged@1233, _welch@1244, _paired@1252, evidence@1259, _metrics@1270, _prep@1286, study_args@1307, _xyr@1321, model_predictions@1325, fit_brain@1354, score_signal@1368, model_lab@1388, walk_forward@1433, _apply@1447, scorecard@1477, proposals@1667, paper_trade@1753, review_factors@1793, driver_table@1846, analyst_summary@1863, narrate@1899, cost_burden@1931, cost_proposal@1948
+- L1131 class `Coach`
+- functions (65): configure_llm@61, llm_name@66, llm_model@70, llm_call@74, ask_claude@107, fetch_index@113, index_day@144, pulse@156, pulse_exchange@215, company_name@257, aliases@261, fo_ban_list@360, google_news@371, yahoo_news@402, event_type@459, read_filing@493, read_item@523, read_with_claude@548, gather@577, assess@606, _demo_sentinel@700, sentinel@716, sentinel_many@723, day_stats@736, sentinel_evidence@758, signal_features@801, _slope@829, model_features@839, trade_key@884, simulate_exit@901, exit_status@950, corr_pairs@957, risk_check@974, desk_today@1028, arbiter@1036, arbiter_plan@1062, replay@1081, _feats@1127, engine_args@1269, engine_key@1286, learning_key@1292, plan_key@1306, merged@1312, _welch@1323, _paired@1331, evidence@1338, _metrics@1349, _prep@1365, study_args@1386, _xyr@1400, model_predictions@1404, fit_brain@1433, score_signal@1447, model_lab@1467, walk_forward@1512, _apply@1526, scorecard@1556, proposals@1750, paper_trade@1839, review_factors@1879, driver_table@1932, analyst_summary@1949, narrate@1985, cost_burden@2017, cost_proposal@2034
 ### `tarot/index.html`
 - L9 style
 - L150 h2 `Arcana Parlour`
@@ -199,7 +200,7 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 ### `apps/stock-lab/research.py`
 - functions (32): _hm@81, describe@85, label@107, spec_id@125, _arrays@130, _first@166, _entry_ok@171, market_flags@178, market_ok@193, market_mask@200, breadth_by_day@211, generate@231, simulate@345, _sessions@382, raw_signals@387, _m@423, _score@432, run@445, adopt_change@540, proposal@545, day_signals@575, focus_symbols@614, race_signals@624, shadow_specs@650, shadow_signals@656, study_spec@670, z_select@700, _lcb@707, panel@717, race_trusted@933, panel_trusted@938, panel_proposal@943
 ### `apps/stock-lab/cheetah_engine.py`
-- functions (31): read_fundamentals@89, yahoo_daily@111, daily_price_features@125, _is_fin@142, apply_rules@185, failed_rules@196, add_score@214, run_screen@232, cmd_screen@259, build_panel@293, portfolio@317, perf@335, ml_picks@346, cmd_backtest_swing@379, yahoo_intraday@478, read_intraday_csv@511, session_days@521, day_signals@526, exit_trade@609, size@630, prep_days@636, run_intraday_backtest@651, cmd_backtest_intraday@701, load_watchlist@728, bars_needed@734, session_progress@739, run_scan@755, cmd_scan@793, demo_swing@817, demo_intraday@847, main@873
+- functions (32): read_fundamentals@89, yahoo_daily@111, daily_price_features@125, _is_fin@142, apply_rules@185, failed_rules@196, add_score@214, run_screen@232, cmd_screen@259, build_panel@293, portfolio@317, perf@335, ml_picks@346, cmd_backtest_swing@379, patch_live_bars@478, yahoo_intraday@514, read_intraday_csv@547, session_days@557, day_signals@562, exit_trade@645, size@666, prep_days@672, run_intraday_backtest@687, cmd_backtest_intraday@737, load_watchlist@764, bars_needed@770, session_progress@775, run_scan@791, cmd_scan@829, demo_swing@853, demo_intraday@883, main@909
 ### `ai-anchor.html`
 - L11 style
 - L214 script
@@ -283,6 +284,9 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L297 data `BRIEF_GAP_MS`
 - L299 data `BRIEF_SYSTEM`
 - functions (29): gnews@44, get@62, decode@86, strip@91, tag@93, dedupeSummary@102, flat@105, guessCat@121, clipWords@132, parseItems@137, iso@158, idFor@159, toEdition@163, sleep@195, fetchText@197, decodeGoogleNews@208, metaTag@239, extractArticle@247, pool@264, gather@273, words@312, numbersIn@313, checkBrief@317, clean@319, writeBriefs@333, reuseBriefs@401, xesc@414, atom@418, main@455
+### `apps/stock-lab/nse_mcp.py`
+- L50 class `Client`
+- functions (18): configure@34, server_for@45, client@164, call@171, reset@176, check@182, _num@193, _parallel@200, stock_facts@207, live_quotes@255, stock_lines@275, market_facts@292, market_lines@319, desk_context@335, research_tools@378, _clip@391, research@396, research_fallback@463
 ### `tools/predict.mjs`
 - L36 data `ROOT`
 - L37 data `OUT`
