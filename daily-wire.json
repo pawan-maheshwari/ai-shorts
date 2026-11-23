@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-23",
+      "title": "AGI Achieved (Again)",
+      "headline": "Artificial superintelligence ‘arriving’, warns top Meta executive",
+      "source": "Al Jazeera",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOZnRiM0ZpVzFaTkZaZ2lUc2dtYjY2U2tqZnFGQlNCb2JRWjlCdkxNQWU2WENIYnVsb0hXVjNtNS1XQ1JzdmtBaU1qRDE2aDd5T2c1Z1lTY2VsaXE4NHJUNjhwdGl6Tm1DRlNVa01DOFlPa294amRMSl9uQlFTczN1dVlhSmRBVWJETV84VkxFcG5EUDVxSC14bUpoREdBZGM50gGmAUFVX3lxTFBESHNmbkFBdXN2ZGc2b3FMT3JiVlNQWHNjRnZYUV83dV9NRVJaWXd0ZWVjbU82Qy1yYVNoXzVtT2VzbzQtQ05WTHI5X1MtZTEyRjdKN0M1UUtJdk5UNTYtdHhQbHlBdE9fZ29ZMnV4VzZhNnF1QTd2QnViYlhyOVNBQVM4V2FFV0otaGN5WkhqSTZMNWtvUUxBZG9ZUmEzQUYxWkpwbkE?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "agi",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "We have achieved AGI."
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "It can do everything. I am AGI."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that title without proof."
+        }
+      ]
+    },
+    {
       "date": "2026-11-22",
       "title": "The Bug Slayer",
       "headline": "Recent Cyberattacks Could Signal the Awakening of Artificial Intelligence",
