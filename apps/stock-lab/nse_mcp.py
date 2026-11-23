@@ -252,6 +252,26 @@ def stock_facts(symbol, today=None):
     return f
 
 
+def live_quotes(symbols):
+    """Latest NSE Live quote per symbol: {sym: dict(ltp, day_high, day_low, volume, t)} (missing symbols left out)."""
+    if not CFG["enabled"] or not symbols:
+        return {}
+    got = _parallel({s.upper(): ("cm_get_stock_quote", dict(symbol=s.upper())) for s in symbols})
+    out = {}
+    for s, (d, e) in got.items():
+        q = (d or {}).get("stock") if isinstance(d, dict) else None
+        if not q or _num(q.get("lastTradedPrice")) is None:
+            continue
+        try:
+            t = pd.Timestamp(q.get("latestTimestamp"))
+            t = (t.tz_convert("Asia/Kolkata") if t.tzinfo else t).tz_localize(None)
+        except Exception:
+            t = pd.Timestamp.now(tz="Asia/Kolkata").tz_localize(None)
+        out[s] = dict(ltp=_num(q.get("lastTradedPrice")), day_high=_num(q.get("highPrice")),
+                      day_low=_num(q.get("lowPrice")), volume=_num(q.get("volume")), t=t)
+    return out
+
+
 def stock_lines(f):
     """Plain-English lines for a stock_facts() dict."""
     if not f or f.get("status") != "ok":

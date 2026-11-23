@@ -1055,6 +1055,23 @@ with tab_i:
         if not data:
             st.error("No data returned. Check the symbols or tap Refresh in a minute.")
             return
+        if CFG.get("nse_live_bars") and not demo and is_open and nsemcp.CFG["enabled"]:
+            # NSE Live snapshots each cycle → approximate bars for the minutes Yahoo has not delivered yet
+            try:
+                snaps = ss.get("nse_snaps") or {}
+                today_ = now.tz_localize(None).normalize()
+                for s_, q_ in nsemcp.live_quotes(list(data)).items():
+                    lst_ = [x for x in snaps.get(s_, []) if x["t"] >= today_]
+                    if not lst_ or q_["t"] > lst_[-1]["t"]:
+                        lst_.append(q_)
+                    snaps[s_] = lst_[-200:]
+                ss.nse_snaps = snaps
+                data, n_live = ce.patch_live_bars(data, snaps, now.tz_localize(None))
+                if n_live:
+                    st.caption(f"📡 NSE Live filled {n_live} five-minute bar(s) Yahoo had not delivered yet (approximate; "
+                               "replaced by Yahoo's bars when they arrive).")
+            except Exception as e_:
+                st.caption(f"📡 NSE Live bars skipped this refresh ({type(e_).__name__}).")
         if A.strategy or A.race:    # strategies with a Nifty filter need today's index bars
             A.idx_bars = fetch_index_cached(demo, 0 if demo else f"{ss.tok}-{int(ss.tok_t // 60)}").get("intraday")
         A.breadth = rs.breadth_by_day(data)    # whole watchlist, before the focus cut: market breadth
@@ -1149,6 +1166,15 @@ with tab_i:
             mood["breadth"] = float(_br[1][-1])
             mood["reasons"].append(f"Breadth {mood['breadth'] * 100:+.0f}% (watchlist stocks above their open minus below)")
         size_mult = mood["mult"] if CFG["pulse_sizing"] else 1.0
+        try:
+            PM_TODAY = ag.desk_today(store.kv_get("desk_llm_log", []) or [], day)
+        except Exception:
+            PM_TODAY = None
+        ARMED_NAMES = [x.get("name") for x in ((PANEL or {}).get("armed") or [])]
+        ARB_PLAN = ag.arbiter_plan(ARMED_NAMES, mood["regime"], PM_TODAY, CFG.get("arbiter", "on"))
+        if PM_TODAY and CFG.get("arbiter", "on") != "off":
+            store.log("Arbiter", "plan", ARB_PLAN, detail=dict(pulse=mood["regime"], desk=PM_TODAY.get("regime"),
+                      armed=ARMED_NAMES, avoid=PM_TODAY.get("avoid")), dkey=f"arb-plan|{day_s}|{mood['regime']}")
         store.log("Pulse", "regime", f"{mood['regime']} — position size ×{size_mult:g}. " + "; ".join(mood["reasons"]),
                   detail=mood, dkey=f"pulse|{day_s}|{mood['regime']}")
         ct_ = coach_trades(demo, ss.tok)
@@ -1246,10 +1272,18 @@ with tab_i:
         for ix, r in sig.sort_values("signal_time").iterrows():
             a = agt[r.key]
             sm = a["m_at"]["mult"] if CFG["pulse_sizing"] else 1.0      # mood at the moment the signal fired
+            # 09:30 arbiter — one decision when Pulse and the Analyst desk both oppose the trade
+            av, am, awhy = ag.arbiter(int(r.side), r.symbol, r.setup, a["m_at"]["regime"], PM_TODAY, CFG.get("arbiter", "on"))
+            a.update(arb_verdict=av, arb_why=awhy)
+            if av != "ALLOW":
+                store.log("Arbiter", av.lower(), f"{av} {r.symbol} {r.setup}: {awhy}", symbol=r.symbol, dkey=f"arb|{r.key}|{av}")
+            sm *= am
             base_q = 0 if pd.isna(r.qty_base) else int(r.qty_base)
             value_x = base_q * sm * float(r.entry) / A.capital          # position value in multiples of capital
             caution = CFG["coach_filter"] and a["coach"].get("verdict") == "Caution"
-            if caution:
+            if av == "BLOCK":
+                verdict, rmul, why = "BLOCK", 0.0, ["Arbiter: " + awhy]
+            elif caution:
                 verdict, rmul, why = "BLOCK", 0.0, ["Coach filter: " + (a["coach"].get("caution_why") or "weak signal")]
             else:
                 verdict, rmul, why = ag.risk_check(dict(symbol=r.symbol, side=int(r.side), setup=r.setup,
@@ -1289,7 +1323,8 @@ with tab_i:
                         coach_verdict=sc.get("verdict"), coach_model=sc.get("model"),
                         drivers=[dict(edge=d[0], text=d[1], n=d[2]) for d in (sc.get("drivers") or [])][:6],
                         risk_verdict=a["risk_verdict"], risk_why=a["risk_why"], features=a["feats"], narr=a["narr"],
-                        size_mult=a["size_mult"], risk_mult=a["risk_mult"])
+                        size_mult=a["size_mult"], risk_mult=a["risk_mult"],
+                        arbiter=a.get("arb_verdict"), arbiter_why=a.get("arb_why"))
             rec = dict(pt, symbol=r.symbol, setup=r.setup, strategy=r.strategy, side=int(r.side), entry=float(r.entry), stop=float(r.stop),
                        target=float(r.target), qty=qty, window_min=WIN, policy=policy, snapshot=snap, status=status,
                        skip_reason=a["risk_why"][0] if skipped else None, cfg_version=CFG_STATE["version"])
@@ -1383,6 +1418,8 @@ with tab_i:
                     f'<span>Nifty {arrow(mood["nifty_chg"])}</span>'
                     f'<span>{" · ".join(html.escape(x) for x in mood["reasons"][:4])}</span></div>',
                     unsafe_allow_html=True)
+        if CFG.get("arbiter", "on") != "off":
+            st.markdown(f'<div class="sl note">⚖️ <b>09:30 arbiter</b> · {html.escape(ARB_PLAN)}</div>', unsafe_allow_html=True)
         with st.expander(f"🔔 Alerts · {len(ss.alerts)}" + (f" · {len(fresh)} new" if fresh else ""),
                          expanded=bool(fresh) and ss.get("alerts_shown", False)):
             if not ss.alerts:
@@ -2162,7 +2199,7 @@ with tab_b:
                "run it from the command line: python cheetah_engine.py backtest-swing --fundamentals history.csv --ml")
 
 # ============================================================================ agent scores + human-in-the-loop
-AG_ICON = {"Desk": "🧠", "Selector": "🏛️", "Reviewer": "👤", "Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Sentinel": "🛡️", "Narrator": "🗣️",
+AG_ICON = {"Desk": "🧠", "Selector": "🏛️", "Reviewer": "👤", "Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Arbiter": "🤝", "Sentinel": "🛡️", "Narrator": "🗣️",
            "Trader": "📝", "Analyst": "🔎"}
 AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak ones",
            "Pulse": "Reads market mood and shrinks positions on weak days",
@@ -2697,7 +2734,13 @@ with tab_g:
                 f_es = r7.toggle("Edge-based sizing", CFG["edge_sizing"], help="Size up/down (0.5–1.5×) by Coach's expected R")
                 f_ek = r8.slider("Edge sizing strength", 0.5, 3.0, float(CFG["edge_k"]), 0.25)
                 f_sb = r9.toggle("Block Sentinel HIGH", CFG["sentinel_block"])
-                r10, r11 = st.columns(2)
+                r10, r11, r12 = st.columns(3)
+                f_nl = r11.toggle("📡 Fill late bars from NSE Live (approximate)", bool(CFG.get("nse_live_bars")),
+                                  help="Builds the 5-minute bars Yahoo has not delivered yet from NSE Live quotes taken each "
+                                       "refresh. Faster signals, but those bars are approximate until Yahoo's arrive.")
+                f_ar = r12.selectbox("09:30 arbiter", ["on", "strict", "off"], ["on", "strict", "off"].index(CFG.get("arbiter", "on")),
+                                     format_func={"on": "On — half size when Pulse and desk both oppose",
+                                                  "strict": "Strict — skip those trades", "off": "Off"}.get)
                 f_mx = r10.slider("Total exposure cap (× capital)", 1.0, 15.0, float(CFG["max_exposure_x"]), 0.5,
                                   help="All open positions together may not exceed this multiple of capital.")
                 f_lev = r11.slider("Max single position (× capital)", 1.0, 5.0, float(CFG["leverage"]), 0.5)
@@ -2730,7 +2773,7 @@ with tab_g:
                                               coach_min_win=f_mw / 100, pulse_sizing=f_ps,
                                               mults=f_m, exit_policy=f_ex, risk_enabled=f_re, daily_loss_R=f_dl,
                                               max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, paused_setups=f_ps2,
-                                              edge_sizing=f_es, edge_k=f_ek, sentinel_block=f_sb,
+                                              edge_sizing=f_es, edge_k=f_ek, sentinel_block=f_sb, arbiter=f_ar, nse_live_bars=f_nl,
                                               paper_window_min=int(f_win), max_exposure_x=f_mx, leverage=f_lev,
                                               capital=float(f_cap), risk_pct=f_rp, cost_pct=f_cost, setup=f_setup,
                                               rr=f_rr, min_relvol=f_rv, shorts=f_sh,

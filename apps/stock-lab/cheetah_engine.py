@@ -475,6 +475,42 @@ def cmd_backtest_swing(a):
 # =============================================================================
 #  INTRADAY ENGINE
 # =============================================================================
+def patch_live_bars(data, snaps, now, bar_min=5):
+    """Fill completed 5-minute bars that Yahoo has not delivered yet, from NSE Live quote snapshots.
+    snaps: {sym: [dict(t, ltp, day_high, day_low, volume), ...]} taken every cycle (IST, naive). A bar is built only
+    when there is a snapshot before it starts and at least one inside it; Open = the snapshot before, Close = the last
+    inside, High/Low from the sampled prices (and the day high/low if a new one was set), Volume from the cumulative
+    count. These bars are approximate — Yahoo's real bar replaces them on the next download. Returns (data, filled)."""
+    step = pd.Timedelta(minutes=bar_min)
+    done_until = pd.Timestamp(now).floor(f"{bar_min}min")     # bars that start before this have closed
+    out, filled = dict(data), 0
+    for sym, df in data.items():
+        ss_ = sorted(snaps.get(sym, []), key=lambda x: x["t"])
+        if df is None or not len(df) or len(ss_) < 2:
+            continue
+        b, rows = df.index[-1] + step, []
+        while b + step <= done_until:
+            ref = [x for x in ss_ if x["t"] <= b]
+            ins = [x for x in ss_ if b < x["t"] <= b + step]
+            if not ref or not ins or ref[-1]["t"].date() != b.date():
+                break
+            r0, pts = ref[-1], [x["ltp"] for x in ins]
+            hi, lo = max(pts + [r0["ltp"]]), min(pts + [r0["ltp"]])
+            if r0.get("day_high") and ins[-1].get("day_high") and ins[-1]["day_high"] > r0["day_high"]:
+                hi = max(hi, ins[-1]["day_high"])
+            if r0.get("day_low") and ins[-1].get("day_low") and ins[-1]["day_low"] < r0["day_low"]:
+                lo = min(lo, ins[-1]["day_low"])
+            vol = max(0.0, (ins[-1].get("volume") or 0) - (r0.get("volume") or 0))
+            rows.append((b, dict(Open=r0["ltp"], High=hi, Low=lo, Close=pts[-1], Volume=vol)))
+            b += step
+        if rows:
+            add = pd.DataFrame([r for _, r in rows], index=pd.DatetimeIndex([t for t, _ in rows]))
+            out[sym] = pd.concat([df, add[df.columns.intersection(add.columns)]])
+            out[sym].attrs["nse_live_bars"] = len(rows)
+            filled += len(rows)
+    return out, filled
+
+
 def yahoo_intraday(symbols, days):
     import yfinance as yf
     out = {}

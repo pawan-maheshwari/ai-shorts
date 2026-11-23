@@ -448,6 +448,24 @@ EVENT_TYPES = [   # (type, pattern, materiality 0-3, direction −1/0/+1) — fi
     ("investor_meet", r"analysts?/institutional investor|investor meet|con\. ?call|earnings call|investor presentation", 0, 0),
 ]
 _EVENT_RX = [(t, re.compile(p, re.I), m, d) for t, p, m, d in EVENT_TYPES]
+# "fraud"/"scam" also appear in customer-safety campaigns ("fraud awareness week", "beware of scam calls") — those
+# are not legal action against the company. Such a headline is a regulatory event only if it also names an action.
+BENIGN_FRAUD = re.compile(r"awareness|campaign|initiative|educat|\bsafe(ty)? banking|\bagainst (digital |cyber |online )?(fraud|scam)|"
+                          r"\bprevent|\bbeware|\bcautions?\b|\balerts? (customers|users)|\btips\b|\bprotect (customers|yourself)", re.I)
+LEGAL_ACTION = re.compile(r"\bsebi\b|\b(cbi|ed|sfio)\b|\bprobe|\braid|\bsummon|\bcharge[sd]?\b|\baccused|\balleg|\barrest|\bfir\b|"
+                          r"\bcase (against|filed)|\bpenalt|\bfine[sd]?\b|\border(s|ed)?\b|\bnotice\b|\bdetected|\bunearth|\bbusted|\binvolv", re.I)
+
+
+def event_type(text, only=None):
+    """First matching (type, materiality, direction) for a headline, skipping fraud-awareness false positives."""
+    for t, rx, m, d in _EVENT_RX:
+        if only is not None and t not in only:
+            continue
+        if rx.search(text):
+            if t == "regulatory" and BENIGN_FRAUD.search(text) and not LEGAL_ACTION.search(text):
+                continue
+            return t, m, d
+    return None
 
 # Exchange filings are classified by their official category first — most are routine paperwork, and their free
 # text often mentions words like "financial results" without being a results event (e.g. a call transcript).
@@ -488,9 +506,9 @@ def read_filing(category, text):
         return "routine", 0, 0
     # generic categories (Updates, Press Release, material event…): trust the text only for serious event types,
     # and at most WATCH level — the company's own wording is too ambiguous for rules to call it HIGH
-    for t, rx, m, d in _EVENT_RX:
-        if t in SEVERE_IN_TEXT and rx.search(text):
-            return t, min(m, 2), d
+    ev = event_type(text, SEVERE_IN_TEXT)
+    if ev:
+        return ev[0], min(ev[1], 2), ev[2]
     return hit or ("other", 0, 0)
 TYPE_TEXT = {"regulatory": "Regulatory or legal action", "credit": "Credit or pledge trouble", "results_bad": "Weak results",
              "results_good": "Strong results", "results": "Results event", "management": "Management change",
@@ -520,10 +538,7 @@ def read_item(item, alias_set, now=None, fresh_hours=48):
         if etype == "results" and age_h is not None and age_h > 30:
             mat = 1                                   # results already out for more than a session
     else:
-        for t, rx, m, d in _EVENT_RX:
-            if rx.search(low):
-                etype, mat, direction = t, m, d
-                break
+        etype, mat, direction = event_type(low) or ("other", 0, 0)
     if noise or not about or stale:
         mat = 0
     return dict(item, about=about, noise=noise, stale=stale, age_h=age_h, type=etype, materiality=mat, direction=direction,
@@ -536,6 +551,8 @@ def read_with_claude(items, symbol, name, api_key):
                       for i, it in enumerate(items))
     prompt = (f"Stock: {name} (NSE: {symbol}). For an INTRADAY trader today, read each item below.\n{lines}\n\n"
               "Items marked 'NSE filing' are official exchange filings, shown as 'category: text'; most are routine.\n"
+              "'regulatory' means action or allegations AGAINST this company (probe, penalty, fraud found in its books); "
+              "a company's own fraud-awareness or customer-safety campaign is 'other' with materiality 0.\n"
               "Reply with JSON only, a list with one object per item in the same order:\n"
               '[{"i":0,"about":true|false (is this specifically about this company, not a passing mention or a list),'
               '"stale":true|false (old story or already-known information resurfacing),'
@@ -1003,6 +1020,63 @@ def risk_check(c, book, cfg, corr):
     return ("REDUCE" if mult < 0.999 else "ALLOW"), mult, reasons
 
 
+# ============================================================================ ARBITER (one decision from many agents)
+PULSE_DIR = {"Risk-on": 1, "Mildly positive": 1, "Mildly negative": -1, "Risk-off": -1}   # Choppy / Volatile: no direction
+DESK_DIR = {"trend_up": 1, "trend_down": -1, "risk_off": -1, "range": 0}
+
+
+def desk_today(log, day):
+    """Today's portfolio-manager plan from the desk log (None before the 09:30 meeting)."""
+    for e in reversed(log or []):
+        if str(e.get("day")) == str(day):
+            return e.get("pm") or None
+    return None
+
+
+def arbiter(side, symbol, setup, pulse_regime, pm, mode="on"):
+    """Reconcile the Selector's signal with Pulse (market mood, proven sizer) and the Analyst desk (09:30 plan).
+    The desk alone never changes a trade — it is still in shadow mode. When Pulse AND the desk both point against the
+    trade's side, the trade is cut to half size ('on') or skipped ('strict'). Returns (verdict, multiplier, reason)."""
+    if mode == "off":
+        return "ALLOW", 1.0, "Arbiter off"
+    p_dir = PULSE_DIR.get(pulse_regime, 0)
+    if not pm:
+        return "ALLOW", 1.0, f"No desk plan yet; Pulse {pulse_regime}"
+    d_dir = DESK_DIR.get(pm.get("regime"), 0)
+    call = next((f for f in pm.get("focus") or [] if f.get("symbol") == symbol), None)
+    c_dir = {"long": 1, "short": -1}.get((call or {}).get("side"), 0)
+    desk_against = c_dir == -side or (c_dir == 0 and d_dir == -side)
+    avoid = setup in (pm.get("avoid") or [])
+    side_w = "long" if side == 1 else "short"
+    if p_dir == -side and desk_against:
+        why = (f"Pulse ({pulse_regime}) and the desk ({'calls ' + symbol + ' ' + call['side'] if c_dir else pm.get('regime', '').replace('_', ' ')}"
+               f"{', avoids ' + setup if avoid else ''}) both oppose this {side_w}")
+        return ("BLOCK", 0.0, why + " — skipped (strict)") if mode == "strict" else ("REDUCE", 0.5, why + " — half size")
+    if c_dir == side and p_dir != -side:
+        return "ALLOW", 1.0, f"Desk agrees ({symbol} {call['side']}); Pulse {pulse_regime}"
+    if desk_against or avoid:
+        return "ALLOW", 1.0, f"Desk disagrees but Pulse ({pulse_regime}) does not — desk is shadow only, trade kept"
+    return "ALLOW", 1.0, f"No conflict; Pulse {pulse_regime}"
+
+
+def arbiter_plan(armed, pulse_regime, pm, mode="on"):
+    """One line for 09:30: where the Selector's armed specialists, Pulse and the desk agree or clash."""
+    if not pm:
+        return "Waiting for the 09:30 desk meeting — until then Pulse sizing and the Risk agent decide alone."
+    p_dir, d_dir = PULSE_DIR.get(pulse_regime, 0), DESK_DIR.get(pm.get("regime"), 0)
+    clash = [a for a in (armed or []) if a in (pm.get("avoid") or [])]
+    if p_dir and d_dir and p_dir == d_dir:
+        bias = "longs" if p_dir == -1 else "shorts"
+        msg = f"Pulse ({pulse_regime}) and the desk ({pm.get('regime', '').replace('_', ' ')}) agree: new {bias} are {'skipped' if mode == 'strict' else 'cut to half size'}."
+    elif d_dir and p_dir and p_dir != d_dir:
+        msg = f"Pulse ({pulse_regime}) and the desk ({pm.get('regime', '').replace('_', ' ')}) disagree — no extra cut; Risk caps apply."
+    else:
+        msg = f"Pulse ({pulse_regime}) has no clear direction — the desk's view is recorded but changes nothing."
+    if clash:
+        msg += f" The desk would avoid armed {', '.join(clash)}."
+    return msg
+
+
 # ============================================================================ REPLAY (point-in-time history)
 def replay(data, idx, a, mults=None):
     """Every recent signal with features known at signal time and the result under every exit policy."""
@@ -1172,6 +1246,8 @@ DEFAULT_CONFIG = dict(
     exit_policy="fixed",
     risk_enabled=True, daily_loss_R=2.0, max_open=3, max_trades=3, corr_limit=0.7,
     edge_sizing=False, edge_k=1.0, sentinel_block=False, paused_setups=[],
+    nse_live_bars=False,    # fill bars Yahoo has not delivered yet from NSE Live snapshots (approximate; opt-in)
+    arbiter="on",           # 09:30 arbiter: off · on (half size when Pulse and the desk both oppose a trade) · strict (skip it)
     paper_window_min=15,
     scout_objective="win",  # what Scout optimises: win (highest win rate that is still profitable), exp, month
     strategy=None,          # None = classic ORB + VWAP engine; otherwise a Scout strategy approved by a reviewer
@@ -1577,7 +1653,11 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
     m_r = _metrics(r_r, w_r, ts)
     daily = pd.DataFrame({"day": T.day.values, "with": r_r * w_r, "without": T.r_fixed.values}).groupby("day").sum()
     blocked = pd.Series(why_r, index=T.index)
-    cap_hits = T.r_fixed[blocked.str.startswith("Already")]
+    cap_hits = T.r_fixed[blocked.str.contains(r"^Already \d+ trades today", regex=True)]   # trade cap only, not one-per-stock
+    # what raising the cap by one would really change (a 4th trade per day, not every blocked trade)
+    r_c, w_c, _ = _apply(T, dict(cfg, max_trades=cfg["max_trades"] + 1), corr_by_day, False, False, "fixed", True)
+    m_cap = _metrics(r_c, w_c, ts)
+    cap_gain, cap_dd = m_cap["total"] - m_r["total"], m_cap["maxdd"] - m_r["maxdd"]
     agents["Risk"] = dict(evidence(_paired(daily["with"] - daily["without"]), len(daily) * 3), on=cfg["risk_enabled"],
                           setting=f"{'ON' if cfg['risk_enabled'] else 'OFF'} · loss cap −{cfg['daily_loss_R']:g}R · "
                                   f"max {cfg['max_trades']} trades, {cfg['max_open']} open · one position per stock · "
@@ -1587,7 +1667,7 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
                           detail=f"Max drawdown {base['maxdd']:+.1f}R → {m_r['maxdd']:+.1f}R. Blocked "
                                  f"{int((blocked != '').sum())} trades; those blocked by the trade cap averaged "
                                  f"{cap_hits.mean() if len(cap_hits) else float('nan'):+.2f}R.",
-                          cap_hits=cap_hits.values.tolist())
+                          cap_hits=cap_hits.values.tolist(), cap_gain=float(cap_gain), cap_dd=float(cap_dd))
     # Sentinel — only measurable on live trades (historical headlines aren't available)
     lv = pd.DataFrame(live) if live is not None and len(live) else pd.DataFrame()
     if not lv.empty:
@@ -1728,9 +1808,12 @@ def proposals(sc, cfg):
             f"(z={pu['z']:.1f}); shrinking them would protect profit.", {"pulse_sizing": True})
     ri = sc["agents"]["Risk"]
     caps = np.asarray(ri.get("cap_hits", []), float)
-    if cfg["risk_enabled"] and len(caps) >= 15 and caps.mean() > 0.1 and _paired(caps) >= 1.5:
+    gain, ddc = ri.get("cap_gain", 0.0), ri.get("cap_dd", 0.0)
+    if (cfg["risk_enabled"] and len(caps) >= 15 and caps.mean() > 0.1 and _paired(caps) >= 1.5
+            and gain >= 1.0 and ddc >= -1.0):                 # the what-if must really add profit without deeper drawdown
         add("Risk", f"Raise the daily trade cap to {cfg['max_trades'] + 1}",
-            f"{len(caps)} trades blocked by the cap averaged {caps.mean():+.2f}R (z={_paired(caps):.1f}).",
+            f"{len(caps)} trades blocked by the cap averaged {caps.mean():+.2f}R (z={_paired(caps):.1f}); "
+            f"one more trade a day adds {gain:+.1f}R over the test period.",
             {"max_trades": cfg["max_trades"] + 1})
     for s_, v in sc["by_setup"].items():
         if s_ not in cfg["paused_setups"] and v["n"] >= 30 and v["last20"] < -0.25 and v["z_last"] <= -1.5:
