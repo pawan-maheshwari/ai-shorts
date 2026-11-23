@@ -2281,7 +2281,11 @@ function fmtDate(d){
 
 function buildChips(){
   chipsEl.innerHTML="";
+  // Only offer tabs that have stories today, so a reader never lands on an empty section.
+  const have=new Set((news||[]).map(n=>n.category));
+  if(activeCat!=="All" && !have.has(activeCat)) activeCat="All";
   CATS.forEach(c=>{
+    if(c!=="All" && !have.has(c)) return;
     const b=document.createElement("button");
     b.className="chip"+(c===activeCat?" active":"");
     b.textContent = c==="All" ? "All" : c;
@@ -2886,7 +2890,7 @@ async function fetchEdition(){
     return {headline:it.headline,
             summary:dedupeSummary(it.headline,it.summary)||it.summary,
             source:it.source,
-            url:it.url,image:it.image||"",category:it.category,
+            url:it.url,image:it.image||"",category:normCat(it.category),
             region:it.region||"Global",date:normDate(it.date),note:it.note||"",
             why:it.why||"",watch:it.watch||"",ai:it.briefBy==="ai"};
   });

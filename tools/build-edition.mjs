@@ -47,15 +47,20 @@ const gnews = q => "https://news.google.com/rss/search?q="
 /* One targeted query per section tab on the front page. The main wire is
    sorted into sections by keyword, which on most days leaves some tabs
    empty; any section short of MIN_SEC is topped up from its own query.
-   Keys must match CATS in index.html. */
+   Keys must match CATS in index.html. Each section lists queries in order
+   of preference; later ones are broader fallbacks, tried only while the
+   tab is still short (on 2026-11-23 the single Models query came back
+   empty and the tab went blank). */
 const SECTIONS = {
-  Models:         "AI model launch OR release (OpenAI OR Anthropic OR Gemini OR Llama OR Mistral)",
-  Business:       "AI startup funding OR acquisition OR earnings OR IPO",
-  Policy:         "AI regulation OR policy OR law OR \"AI Act\"",
-  Research:       "AI research study OR paper OR benchmark OR breakthrough",
-  Safety:         "AI safety OR \"AI security\" OR deepfake OR alignment",
-  Robotics:       "AI robotics OR humanoid robot OR \"self-driving\"",
-  Infrastructure: "AI data center OR chips OR GPU OR compute"
+  Models:         ["AI model launch OR release (OpenAI OR Anthropic OR Gemini OR Llama OR Mistral)",
+                   "new AI model OR LLM OR \"language model\"",
+                   "ChatGPT OR Claude OR Gemini OR Grok OR DeepSeek OR Llama"],
+  Business:       ["AI startup funding OR acquisition OR earnings OR IPO", "AI business"],
+  Policy:         ["AI regulation OR policy OR law OR \"AI Act\"", "AI government"],
+  Research:       ["AI research study OR paper OR benchmark OR breakthrough", "AI scientists"],
+  Safety:         ["AI safety OR \"AI security\" OR deepfake OR alignment", "AI risk"],
+  Robotics:       ["AI robotics OR humanoid robot OR \"self-driving\"", "robot AI"],
+  Infrastructure: ["AI data center OR chips OR GPU OR compute", "AI chips"]
 };
 
 /* ------------------------------------------------------------- fetching */
@@ -474,23 +479,27 @@ async function main(){
 
   /* Top up any section tab the main wire left thin. A failed section query
      is logged and skipped — it must never cost us the whole edition. */
-  for(const [cat, q] of Object.entries(SECTIONS)){
-    const need = MIN_SEC - items.filter(it => it.category === cat).length;
-    if(need <= 0) continue;
-    try{
-      let more;
-      if(fixture){
-        const f = `tools/fixture-rss-${cat.toLowerCase()}.xml`;
-        more = fs.existsSync(f) ? parseItems(fs.readFileSync(f, "utf8")) : [];
-      }else{
-        more = parseItems((await get(gnews(q))).body).slice(0, need * 4);
+  for(const [cat, queries] of Object.entries(SECTIONS)){
+    const short = () => MIN_SEC - items.filter(it => it.category === cat).length;
+    if(short() <= 0) continue;
+    const list = fixture ? [null] : queries;
+    for(const q of list){
+      const need = short();
+      if(need <= 0) break;
+      try{
+        let more;
+        if(fixture){
+          const f = `tools/fixture-rss-${cat.toLowerCase()}.xml`;
+          more = fs.existsSync(f) ? parseItems(fs.readFileSync(f, "utf8")) : [];
+        }else{
+          more = parseItems((await get(gnews(q))).body).slice(0, need * 6);
+        }
+        items.push(...toEdition(more, day, {seen, limit: need, category: cat}));
+      }catch(e){
+        console.warn(`Section ${cat}: top-up query failed (${e.message}).`);
       }
-      const added = toEdition(more, day, {seen, limit: need, category: cat});
-      items.push(...added);
-      if(added.length < need) console.warn(`Section ${cat}: only ${added.length} of ${need} top-up dispatches found.`);
-    }catch(e){
-      console.warn(`Section ${cat}: top-up failed (${e.message}).`);
     }
+    if(short() > 0) console.warn(`Section ${cat}: still ${short()} short of ${MIN_SEC} after ${list.length} quer${list.length === 1 ? "y" : "ies"}.`);
   }
 
   /* Briefs. Everything here is best-effort: a failure leaves the dispatch
