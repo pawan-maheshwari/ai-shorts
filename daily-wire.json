@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-24",
+      "title": "100x Before Breakfast",
+      "headline": "Improving AI efficiency with optimization",
+      "source": "MIT Sloan",
+      "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNTVBWVmVwNXFCd2wwemkzNjVKWnFVbWZGWW1GeXZWZHF5MWlDcEhMM2NKanZOaE5pSnZENUJBamh0Wmg5aXJPV0wyVkpjUXN0cnNkdEt6eDNkSDJKRllxY0Q3aTcxeEFJNVBvejBrXzhPV0JNQklpMWRsV3VxY2diZ242OWZzWGZzWVE?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "speed",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "These new chips make AI free forever!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "The power bill just sends itself a thank-you note."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that cost without an invoice."
+        }
+      ]
+    },
+    {
       "date": "2026-11-23",
       "title": "AGI Achieved (Again)",
       "headline": "Artificial superintelligence ‘arriving’, warns top Meta executive",
