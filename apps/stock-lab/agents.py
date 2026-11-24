@@ -1335,6 +1335,35 @@ def _paired(d):
     return float(d.mean() / (d.std(ddof=1) / math.sqrt(len(d))))
 
 
+def _ret_dd(x):
+    """Total R divided by max drawdown (drawdown floored at 1R so a lucky streak can't divide by ~0)."""
+    x = np.asarray(x, float)
+    if not len(x):
+        return 0.0
+    eq = np.cumsum(x)
+    dd = float((eq - np.maximum.accumulate(np.r_[0.0, eq])[1:]).min())
+    return float(eq[-1] / max(abs(min(dd, 0.0)), 1.0))
+
+
+def _risk_z(with_, without, block=5, reps=400, seed=7):
+    """Does the Risk agent improve profit PER UNIT OF DRAWDOWN? z = observed gain in return/drawdown divided by
+    its spread under a moving-block bootstrap of trading days (same resampled days for both)."""
+    a, b = np.asarray(with_, float), np.asarray(without, float)
+    n = len(a)
+    if n < 10:
+        return 0.0
+    obs = _ret_dd(a) - _ret_dd(b)
+    rng = np.random.default_rng(seed)
+    k = int(math.ceil(n / block))
+    diffs = np.empty(reps)
+    for i in range(reps):
+        st_ = rng.integers(0, max(n - block, 0) + 1, k)
+        ix = (st_[:, None] + np.arange(block)[None, :]).ravel()[:n]
+        diffs[i] = _ret_dd(a[ix]) - _ret_dd(b[ix])
+    sd = diffs.std(ddof=1)
+    return float(obs / sd) if sd > 0 else 0.0
+
+
 def evidence(z, n, min_n=20):
     """0–100 agent score from the strength of evidence (z). 50 = no effect either way."""
     if n is None or n < min_n:
@@ -1648,6 +1677,11 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
         det = f"{alts.iloc[0].policy} beats fixed by {alts.iloc[0].vs_fixed:+.2f}R per trade — see proposals."
     agents["Exit"] = dict(ev_x, on=True, setting=f"Policy: {cfg['exit_policy']}", effect=cur.vs_fixed,
                           effect_label="per trade vs fixed exit", detail=det)
+    if cfg["exit_policy"] != "fixed" and ev_x.get("score") is not None and ev_x["score"] < 50:
+        agents["Exit"]["grade"] = (f"Fixed exit does better — {cfg['exit_policy']} costs "
+                                   f"{abs(cur.vs_fixed):.2f}R per trade; switch back to fixed")
+    agents["Exit"]["vs"] = ("the fixed exit (stop, target or 15:15) on the same trades" if cfg["exit_policy"] != "fixed"
+                            else "every other exit policy on the same trades")
     # Risk — daily P&L and drawdown with and without the rules
     r_r, w_r, why_r = _apply(T, cfg, corr_by_day, False, False, "fixed", True)
     m_r = _metrics(r_r, w_r, ts)
@@ -1658,13 +1692,21 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
     r_c, w_c, _ = _apply(T, dict(cfg, max_trades=cfg["max_trades"] + 1), corr_by_day, False, False, "fixed", True)
     m_cap = _metrics(r_c, w_c, ts)
     cap_gain, cap_dd = m_cap["total"] - m_r["total"], m_cap["maxdd"] - m_r["maxdd"]
-    agents["Risk"] = dict(evidence(_paired(daily["with"] - daily["without"]), len(daily) * 3), on=cfg["risk_enabled"],
+    z_r = _risk_z(daily["with"].values, daily["without"].values)
+    ev_r = evidence(z_r, len(daily), min_n=15)
+    if ev_r.get("score") is not None:
+        ev_r["grade"] = ("Better profit per unit of drawdown" if z_r >= 1 else
+                         "Costs profit without enough drawdown protection" if z_r <= -1 else
+                         "Trades some profit for smaller drawdowns — roughly even")
+    agents["Risk"] = dict(ev_r, on=cfg["risk_enabled"], n_label="trading days",
+                          vs="taking every signal with no caps — judged on profit ÷ max drawdown, not profit alone",
                           setting=f"{'ON' if cfg['risk_enabled'] else 'OFF'} · loss cap −{cfg['daily_loss_R']:g}R · "
                                   f"max {cfg['max_trades']} trades, {cfg['max_open']} open · one position per stock · "
                                   f"exposure ≤ {cfg['max_exposure_x']:g}× capital · corr ≥ {cfg['corr_limit']:g} halves size",
                           effect=(m_r["total"] - base["total"]) / n_days, effect_label="per day vs no risk rules",
                           dd_change=m_r["maxdd"] - base["maxdd"],
-                          detail=f"Max drawdown {base['maxdd']:+.1f}R → {m_r['maxdd']:+.1f}R. Blocked "
+                          detail=f"Profit ÷ drawdown {_ret_dd(daily['without'].values):.2f} → "
+                                 f"{_ret_dd(daily['with'].values):.2f}. Max drawdown {base['maxdd']:+.1f}R → {m_r['maxdd']:+.1f}R. Blocked "
                                  f"{int((blocked != '').sum())} trades; those blocked by the trade cap averaged "
                                  f"{cap_hits.mean() if len(cap_hits) else float('nan'):+.2f}R.",
                           cap_hits=cap_hits.values.tolist(), cap_gain=float(cap_gain), cap_dd=float(cap_dd))
@@ -1693,7 +1735,11 @@ def scorecard(rows, cfg, live=None, corr_by_day=None, risk_rs=1000.0, warmup=10,
         win_tab = pd.DataFrame(rows_w)
         hold = T["w_0"]
         dz = _paired(cur_w - hold) if W else 0.0
-        agents["Trader"] = dict(evidence(dz, len(T)) if W else dict(evidence(0.0, len(T)), grade="Holding to the plan"),
+        ev_t = evidence(dz, len(T)) if W else dict(evidence(0.0, len(T)), grade="Holding to the plan")
+        if W and ev_t.get("score") is not None and ev_t["score"] < 50:
+            ev_t["grade"] = (f"Holding to the plan does better — closing after {WINDOW_TEXT[W].lower()} cuts winners "
+                             f"by {abs((cur_w - hold).mean()):.2f}R per trade")
+        agents["Trader"] = dict(ev_t, vs="holding each trade to its stop, target or 15:15 on the same recommendations",
                                 on=True, setting=f"Execution window: {WINDOW_TEXT[W]} · exit policy {cfg['exit_policy']}",
                                 effect=(cur_w - hold).mean() if W else 0.0, effect_label="per trade vs holding to the plan",
                                 detail=f"Closing at the window averaged {cur_w.mean():+.2f}R per trade vs {hold.mean():+.2f}R "

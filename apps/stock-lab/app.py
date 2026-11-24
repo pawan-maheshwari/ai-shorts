@@ -24,7 +24,7 @@ def _fresh_local_modules():
     """Streamlit Cloud keeps imported helper modules in memory across redeploys, so an update can run new
     app.py against old store/agents code. Reload any local module whose file changed since it was loaded."""
     here = os.path.dirname(os.path.abspath(__file__))
-    for name in ("cheetah_engine", "store", "models", "research", "learning", "nse_mcp", "agents", "desk"):          # dependency order
+    for name in ("cheetah_engine", "store", "models", "research", "learning", "nse_mcp", "agents", "desk", "swing"):          # dependency order
         mod = sys.modules.get(name)
         path = os.path.join(here, name + ".py")
         if mod is None or not os.path.exists(path):
@@ -43,6 +43,7 @@ import nse_mcp as nsemcp  # noqa: E402  (not "nm": app.py loops use nm as a vari
 import morning
 import cheetah_engine as ce  # noqa: E402
 import learning as ln  # noqa: E402
+import swing as sw  # noqa: E402
 from store import SUPABASE_SQL, MIGRATION_SQL, Store, StoreError, TABLE_ROLE, TRADE_DAYS, MEMORY_DAYS, EVENT_DAYS  # noqa: E402
 
 st.set_page_config(page_title="AIShorts Stock Lab (Beta)", page_icon="📈", layout="wide",
@@ -196,6 +197,27 @@ def load_daily(symbols, demo):
         return px
     start = (pd.Timestamp.today() - pd.Timedelta(days=500)).strftime("%Y-%m-%d")
     return ce.yahoo_daily(list(symbols), start)
+
+
+@st.cache_data(ttl=6 * 3600, show_spinner="Swing agent: replaying daily setups…", max_entries=4)
+def swing_cached(symbols, demo, day, capital, risk_pct, cost_pct):
+    """Swing agent (1–2 week positional trades). `day` keys the cache so it refreshes once a session."""
+    if demo:
+        _, px, _ = ce.demo_swing(panel=False)
+        data = sw.demo_ohlcv(px)
+    else:
+        data = sw.yahoo_ohlcv(list(symbols))
+    return sw.run(data, capital=capital, risk_pct=risk_pct, cost_pct=cost_pct) if data else None
+
+
+def swing_for(cfg, demo):
+    try:
+        return swing_cached(tuple(sorted({str(x).strip().upper() for x in cfg["watchlist"] if str(x).strip()})), demo,
+                            f"{now_ist():%Y-%m-%d}", float(cfg["capital"]), float(cfg["risk_pct"]),
+                            float(cfg.get("swing_cost_pct", 0.25)))
+    except Exception as e:                                   # never let the swing scan break the rest of the app
+        st.session_state["swing_err"] = f"{type(e).__name__}: {e}"
+        return None
 
 
 def _secret(name):
@@ -1808,6 +1830,75 @@ with tab_t:
 
 # ============================================================================ swing
 with tab_s:
+    # ---------------- Swing agent: technical 1–2 week positional picks, no upload needed
+    section("🤖 Swing agent", f"positional trades held up to {sw.HOLD} sessions (≈ 2 weeks) · daily bars · long only")
+    SW = swing_for(CFG, demo)
+    if not SW:
+        st.markdown('<div class="sl empty">Daily prices could not be loaded for the swing scan'
+                    + (f' ({html.escape(st.session_state.get("swing_err", ""))})' if st.session_state.get("swing_err") else "")
+                    + '. Try again later, or switch on demo data in Settings.</div>', unsafe_allow_html=True)
+    else:
+        st_all = SW["stats"].set_index("setup").loc["All setups"]
+        pk_ = SW["picks"]
+        n_fav = int((pk_.verdict == "Favourable").sum()) if len(pk_) else 0
+        kpis([("Today's signals", str(len(pk_)), f"{n_fav} favourable · as of {SW['as_of']:%d %b} close"),
+              ("Still open", str(len(SW["active"])), "earlier signals inside their 2-week window"),
+              ("Past record", f"{st_all.exp:+.2f}R" if st_all.n else "—",
+               f"per trade · {int(st_all.n)} trades · won {st_all.win * 100:.0f}%" if st_all.n else "no completed trades"),
+              ("Nifty vs 50-day", "above ▲" if SW["market_up"] else "below ▼" if SW["market_up"] is not None else "—",
+               "with the market" if SW["market_up"] else "against the market — be selective"),
+              ("Risk per trade", f"₹{SW['risk_rs']:,.0f}", f"{float(CFG['risk_pct']):g}% of ₹{float(CFG['capital']):,.0f}")])
+        st.markdown('<div class="sl note">Scans your watchlist every day for three setups — <b>pullback</b> to the 20-day '
+                    'EMA in an uptrend, <b>breakout</b> above the 20-day high on heavy volume, and a sharp <b>RSI-2 dip</b> '
+                    'above the 200-day average. Every past signal is replayed with the same plan (buy next open, stop 2 ATR '
+                    f'below, target {sw.RR:g}R, exit after {sw.HOLD} sessions, costs {SW["cost_pct"]:g}% round trip), and '
+                    "each pick is graded by its setup's own record: <b>Favourable</b> (proven edge), <b>Unproven</b> or "
+                    '<b>Avoid</b>.</div>', unsafe_allow_html=True)
+        section("Today's swing picks", "enter at the next open · quantity sized to your risk per trade")
+        if pk_.empty:
+            st.markdown('<div class="sl empty">No swing setup triggered on the last close. Check back after today\'s '
+                        'close.</div>', unsafe_allow_html=True)
+        else:
+            t_ = pd.DataFrame({"Symbol": pk_.symbol, "Setup": pk_.setup, "Verdict": pk_.verdict,
+                               "Close ₹": pk_.close, "Stop ₹": pk_.stop, "Stop": (pk_.stop_pct * 100).map(arrow_txt),
+                               "Target ₹": pk_.target,
+                               "Upside": ((pk_.target / pk_.close - 1) * 100).map(arrow_txt),
+                               "Qty": pk_.qty, "Value ₹": (pk_.qty * pk_.close).round(0), "Why": pk_.why})
+            sty_ = t_.style.map(lambda v: (f"color:{UP};font-weight:600" if str(v).startswith("▲") or v == "Favourable" else
+                                           f"color:{DOWN};font-weight:600" if str(v).startswith("▼") or v == "Avoid" else ""),
+                                subset=["Stop", "Upside", "Verdict"]).format(
+                {"Close ₹": "{:,.1f}", "Stop ₹": "{:,.1f}", "Target ₹": "{:,.1f}", "Value ₹": "{:,.0f}"})
+            st.dataframe(sty_, hide_index=True, width="stretch")
+            st.caption("Prices are the signal-day close; the real entry is tomorrow's open, so recheck the stop distance "
+                       "if it gaps. Quantity is capped at a quarter of capital per position.")
+        if len(SW["active"]):
+            section("Open from earlier signals", "managed by the same stop / target / 10-session rule")
+            a_ = SW["active"].sort_values("day", ascending=False)
+            st.dataframe(pd.DataFrame({"Symbol": a_.symbol, "Setup": a_.setup, "Signal": a_.day.dt.strftime("%d %b"),
+                                       "Entry ₹": a_.entry.round(1), "Stop ₹": a_.stop.round(1),
+                                       "Target ₹": a_.target.round(1), "Last ₹": a_.last.round(1),
+                                       "R now": a_.r_now.round(2), "Sessions held": a_.days,
+                                       "Exit by": (sw.HOLD - a_.days).astype(int).astype(str) + " more"}),
+                         hide_index=True, width="stretch")
+        section("Setup record", f"completed replay trades {SW['period'][0]} → {SW['period'][1]} · score 50 = no edge")
+        S_ = SW["stats"]
+        st.dataframe(pd.DataFrame({"Setup": S_.setup.map(lambda x: sw.SETUPS.get(x, x)), "Trades": S_.n,
+                                   "Win %": (S_.win * 100).round(0), "R per trade": S_.exp.round(3),
+                                   "Evidence z": S_.z.round(1), "Score": S_.score,
+                                   "Hit target %": (S_.hit_target * 100).round(0), "Avg sessions": S_.days.round(1),
+                                   "R · Nifty above 50-day": S_.exp_with.round(3),
+                                   "R · Nifty below": S_.exp_against.round(3)}), hide_index=True, width="stretch")
+        eq_ = SW["equity"]
+        if len(eq_) > 5:
+            fig_ = go.Figure(go.Scatter(x=eq_.exit_day, y=eq_.cum, mode="lines", line=dict(color="#121212", width=2),
+                                        name="All swing trades"))
+            fig_.update_layout(height=220, margin=dict(l=8, r=8, t=8, b=8), template="plotly_white",
+                               yaxis_title="Cumulative R", font=dict(family="Libre Franklin, sans-serif", size=11))
+            st.plotly_chart(fig_, width="stretch", config={"displayModeBar": False})
+        st.caption("Replay on daily Yahoo prices for your watchlist (edit it in Settings). Positions are not stacked: "
+                   "a stock is not re-entered while a replayed trade in it is open. Educational — not investment advice.")
+
+    section("📊 Fundamentals screen (CHEETAH)", "weeks to months · needs a fundamentals CSV")
     st.markdown('<div class="sl note">Upload a fundamentals export (e.g. Screener.in) with at least: symbol, pe, roe, '
                 'eps, profit_growth_3y, sales_growth_3y, debt_to_equity, promoter_holding, mcap_cr. Optional columns '
                 '(roce, pledge_pct, piotroski, peg, cfo, net_profit…) switch on the enhanced rules.</div>',
@@ -2200,14 +2291,15 @@ with tab_b:
 
 # ============================================================================ agent scores + human-in-the-loop
 AG_ICON = {"Desk": "🧠", "Selector": "🏛️", "Reviewer": "👤", "Scout": "🔭", "Coach": "🎓", "Pulse": "🧭", "Exit": "🚪", "Risk": "⚖️", "Arbiter": "🤝", "Sentinel": "🛡️", "Narrator": "🗣️",
-           "Trader": "📝", "Analyst": "🔎"}
+           "Trader": "📝", "Analyst": "🔎", "Swing": "📈"}
 AG_ROLE = {"Coach": "Predicts each signal's expected profit and can filter weak ones",
            "Pulse": "Reads market mood and shrinks positions on weak days",
            "Exit": "Chooses and runs the exit policy",
            "Risk": "Daily loss cap, trade and position caps, correlation check",
            "Trader": "Paper-trades each recommendation inside its execution window",
            "Sentinel": "Reads exchange filings and news; flags results days, bans and material events",
-           "Narrator": "Explains each signal in plain English"}
+           "Narrator": "Explains each signal in plain English",
+           "Swing": "Daily-chart positional picks held 1–2 weeks (pullback, breakout, RSI-2 dip)"}
 
 
 def score_card_html(name, a):
@@ -2228,7 +2320,8 @@ def score_card_html(name, a):
             f'<div class="grade" style="color:{col}">{html.escape(a["grade"])}'
             + (f' <small>· {a["n"]} {a.get("n_label", "trades")}, z={a["z"]:+.1f}</small>' if a.get("n") and a.get("z") is not None else "")
             + f'</div>{eff_txt}<div class="det">{html.escape(a.get("detail", ""))}</div>'
-            f'<div class="set">Setting: {html.escape(a.get("setting", ""))}</div></div>')
+            + (f'<div class="set">Compared with: {html.escape(a["vs"])}</div>' if a.get("vs") else "")
+            + f'<div class="set">Setting: {html.escape(a.get("setting", ""))}</div></div>')
 
 
 st.markdown("""<style>
@@ -2484,7 +2577,11 @@ with tab_g:
         section("Agent scores", "0–100 · 50 = no measurable effect · based on strength of evidence")
         st.markdown('<div class="sgrid">' + "".join(score_card_html(n_, SC["agents"][n_]) for n_ in
                     [n_ for n_ in ["Coach", "Exit", "Trader", "Risk", "Pulse", "Sentinel", "Narrator"]
-                     if n_ in SC["agents"]]) + '</div>', unsafe_allow_html=True)
+                     if n_ in SC["agents"]]) + score_card_html("Swing", sw.agent_card(swing_for(CFG, demo)))
+                    + '</div>', unsafe_allow_html=True)
+        st.caption("Exit, Trader and Risk are scored against an alternative on the same trades (shown under each card) — "
+                   "below 50 means the alternative did better, so the card tells you which setting to switch to. "
+                   "Swing is scored on its own replayed 1–2 week trades (details in 📈 Swing picks).")
         if SC.get("windows") is not None:
             with st.expander("Execution windows compared on the same recommendations"):
                 wt = SC["windows"]
