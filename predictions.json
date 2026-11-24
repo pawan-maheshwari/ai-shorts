@@ -1,267 +1,275 @@
 {
-  "generated": "2026-11-22T23:08:16.870Z",
-  "forDate": "2026-11-24",
+  "generated": "2026-11-24T03:43:48.465Z",
+  "forDate": "2026-11-25",
   "window": {
-    "from": "2026-11-21T23:08:16.870Z",
-    "to": "2026-11-22T23:08:16.870Z"
+    "from": "2026-11-23T03:43:48.465Z",
+    "to": "2026-11-24T03:43:48.465Z"
   },
   "scanned": {
-    "stories": 705,
-    "outlets": 324,
+    "stories": 1067,
+    "outlets": 509,
     "regions": [
       "Global desks",
-      "North America",
-      "Community",
-      "South Asia",
       "Asia-Pacific",
+      "Community",
+      "North America",
+      "South Asia",
       "Africa",
-      "Europe"
+      "Europe",
+      "Middle East"
     ],
-    "storylines": 531
+    "storylines": 761
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.7013,
-      "probability": 0.9,
+      "score": 0.9022,
+      "probability": 0.92,
       "confidence": "High",
-      "entity": "Anthropic",
+      "entity": "Nvidia",
       "theme": "Funding & markets",
-      "headline": "Anthropic’s Record-Breaking IPO",
-      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
+      "headline": "How important are Nvidia and Jensen Huang to the US economy?",
+      "outlook": "Market reaction, analyst notes and deal details around Nvidia are the likely next chapter.",
       "signals": {
-        "outlets": 20,
+        "outlets": 58,
         "regions": [
           "North America",
-          "Asia-Pacific"
+          "Asia-Pacific",
+          "Global desks",
+          "Europe",
+          "Africa",
+          "Middle East",
+          "South Asia"
         ],
-        "stories": 21,
-        "momentum": 1.69,
-        "recent6h": 8,
-        "authority": 6.5,
-        "hnPoints": 0,
+        "stories": 87,
+        "momentum": 3.35,
+        "recent6h": 47,
+        "authority": 23.7,
+        "hnPoints": 28,
         "nextStepCues": 2,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.89,
-        "breadth": 0.33,
-        "momentum": 0.58,
+        "reach": 1,
+        "breadth": 1,
+        "momentum": 0.91,
         "authority": 1,
-        "community": 0,
+        "community": 0.49,
         "nextStep": 0.67,
         "arc": 1
       },
       "sig": [
-        "ipo",
-        "anthropics",
-        "record",
-        "anthropic",
-        "trillion",
-        "test",
-        "value",
-        "fail"
+        "huang",
+        "nvidia",
+        "jensen",
+        "return",
+        "ceo",
+        "stock",
+        "back",
+        "trump"
       ],
       "evidence": [
         {
-          "title": "What Comes Next After Anthropic’s Historic IPO",
-          "source": "WSJ",
-          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPMGhQYy1TNTdJcnJDbUg5RFFZRl91OE1OZHNvdTFfYm81NTFTR1JGLXRsR1RFTnhnajZMT1ZjNEFIMjlJX2pfS092R2JGLUFZb2ZhVE5fRU5DUHhub1ZKb3VQUkJUSUpuX2wwZ2ZpdmR1M1BNcTVYb0pBQXlZMVFmNkNVbElaUEg0a2c?oc=5",
+          "title": "Nvidia reinstates Jensen Huang after Trump speaks ‘directly’ to board",
+          "source": "The Washington Post",
+          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOQmNHaTN2YnhWcEZ0QVVkbkdNamZzRU5VWFRYd0JhaDVpaEpveDRzc2F6X21RS1lqZjIxbVZUaXhsYllvelpqQjdfYWtuYm0yVUV4eEdoT00xNV9aalVLSm9SNFVReTZQVXpqU2Z5WXBwNHo0RDBfY2FuaENWUy16UHNPU1E0eV9pUGN5VlByS0RzM09BS1NVQ3FlbENIMjB6WkcyQ2lOb3BRUldJZHJBdW1Ebm8yZVk?oc=5",
           "region": "North America"
         },
         {
-          "title": "Will Anthropic’s IPO buck the tech sell-off?",
-          "source": "Financial Times",
-          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNOVVFNmptMzZsNnBaaGdXX19UcXlYOWZQWXBOV2NFRVNfbnR3MUlIZjBYUjhPSWRUUFR3NTdLeDJXUHdrc2ZDT3V3a2Q2MFEyR0s3djN4T2hlLW9Bb2ZCa21ua2hvR2kwSmdXMjZGRE54SnhHbnJ2bGJwM1FNblJmbEFTMGk?oc=5",
+          "title": "Live Updates: Huang’s Return to Nvidia Sparks Stock Rally and Lawmaker Skepticism",
+          "source": "The New York Times",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNdnQ0LTNaSmJtV2pfeHlCZmVqWDM1QXU0TkZZcnYxS1JpTGozTVR2dVhfM013NUp2VWdoMmdFWjZtR0tUenJlOURYNGFtcmZwZjJrd2VnSjUxVnFoZk90bWhrV3d3NzNkTTlyNjM3NzZXaXZLUEdEWlV4ZGdEeUZQY0xZbzBnZUYz?oc=5",
           "region": "North America"
         },
         {
-          "title": "Australian shares to open lower as Anthropic debut fails to revive AI trade",
-          "source": "Capital Brief",
-          "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxONnpVaFc1bFAtb253dDdYVVdCaDVUUVdvTDgteHBIbHZKRjZDRVdxRGpUWXU4cEFkaFNWREtSem5hQlg1eVdDajF5WG9OMmdvaTNIMXVsMllVaTJwVFdEd016YUxNU3BiZnFpTDU0VXl5SkViOXBYUzhfTGNMNXVBUmNCLXVNcE9sS1JKTWtSVnJEajl0ajF3NXAzZGU1alp4b0RhWmVPZnFMR0tjWFlERzhfNVl3R1doeS1XTk5aOXZRNDFfTGFKcUxXVlZ1SmNjYXlDdWFET29Qa0xyQnd6ZUtOaVhIUQ?oc=5",
-          "region": "Asia-Pacific"
+          "title": "At AI speed, Nvidia's Jensen Huang finds exoneration",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPRlhOYUV1dThCM2pOcWh3OGZpMXdEckVSTTRWRU5jTlBNX01jcnpFSnljTU1qYWhrQS0zZzBWUHE2dmZoaFprbmN3MzYyUW9xRDhGRnZkX29PWkVTNEtLWnJnMTc1WW81T01QR1ppTUNkR3hSZGF4bm84RkF2QWd3cEFSR29IOFVLWFloLUFZbVluY1ZyUnQ2akRmMnp6Vk42cTRES2ZB?oc=5",
+          "region": "North America"
         },
         {
-          "title": "Record Anthropic IPO set to trigger global cash crunch",
-          "source": "Financial Newswire",
-          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPMG1qYnNxV1pXcjJyMGZxdTNXVEpUaVNCNEt5QlJfX1hmbC1EOFJzY1NGTmRXWkpYTkNKQUhhQmMyZU5MZDdyZ2twNjN2Y3ZCN0lWemFMN2x4RXZiek5obGRZelBaQlZuejY2M1BzeTlEYndGSVVCeVRFVzJicHphbVpSZGt6VE1xUlhFZ0dETWNhLWFKN1FHcElCRkFmQ2dj?oc=5",
+          "title": "Nvidia rejoices at Jensen Huang’s second coming as White House takes victory lap",
+          "source": "The Guardian",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNeVpiVk9va3pSQm4tWmVGck9mSWxta2poMFNfVFdFRGtsN2l4c2c0WlFLRG9nRnhXM2dXdlBmQ2toWmtWbFRwb1NLU1AwMG1FMnVNLUhpU2FwUTN4cHRmejRsRkRFdGdFc1hDTHhCWWxDdkRKNVBxb0ZHb1FzQWZCWmJEbWp2X3dV?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.5811,
-      "probability": 0.78,
+      "score": 0.6286,
+      "probability": 0.83,
       "confidence": "High",
       "entity": "Nvidia",
       "theme": "Chips & compute",
-      "headline": "Exclusive | The Alice Huang Associate Accused of Funneling Nvidia Chips to China",
+      "headline": "US blacklists Megaspeed cloud company linked to Nvidia scandal",
       "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 32,
+        "outlets": 8,
         "regions": [
-          "North America"
+          "North America",
+          "Global desks",
+          "Asia-Pacific"
         ],
-        "stories": 35,
-        "momentum": 1.18,
-        "recent6h": 10,
-        "authority": 9.1,
+        "stories": 8,
+        "momentum": 3,
+        "recent6h": 5,
+        "authority": 4.2,
         "hnPoints": 0,
-        "nextStepCues": 0,
+        "nextStepCues": 1,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
-        "breadth": 0.17,
-        "momentum": 0.41,
-        "authority": 1,
+        "reach": 0.64,
+        "breadth": 0.5,
+        "momentum": 0.86,
+        "authority": 0.84,
         "community": 0,
-        "nextStep": 0,
+        "nextStep": 0.33,
         "arc": 1
       },
       "sig": [
-        "chip",
+        "blacklist",
+        "megaspeed",
         "nvidia",
-        "huang",
-        "china",
-        "alice",
-        "network",
-        "husband",
-        "ming"
+        "scandal",
+        "linked",
+        "chip",
+        "cloud",
+        "huang"
       ],
       "evidence": [
         {
-          "title": "Exclusive | The Alice Huang Associate Accused of Funneling Nvidia Chips to China",
-          "source": "WSJ",
-          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE94MVRKSkVSTXVkZmRDTWYtakd3VFYtQ0VIWUhWRjVzTmlEUE9HbHh5QTZZU1pQMHRaNEpacHRjZWxad1c4VlJOdktDcFQ1c1lqRmdBR2hkZmFFVlAwNXdOamUtYVVmS3pJeFdpbVBKb05BZnYtLXktamVR?oc=5",
+          "title": "Trump administration blacklists Megaspeed, key firm in Nvidia scandal",
+          "source": "The Washington Post",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQdmlyVWhMSk5veUZMcWQ5dlRSRGdwenl3TnBpeER3cVVwYzVoellWQ08xX3ZfaHZUaXV1bVVaLVltVUxGZkhVTkw5cExBQVRobjZwR1dDeTZIZk52cmNQanQ3V1luc0tZN2RWa3g0QTFBV3NVaUZEWlhUSXhxZVJYMFJEdlVvenZ0QndCUm9WcXJGdGlXYlJJemhPcXFRWXdUcV9aZjNJXzg4UWpZQXA0NjFaRE44NHFnZTBr?oc=5",
           "region": "North America"
         },
         {
-          "title": "US intelligence chief seemingly confirms China accessed restricted America-made AI chips",
-          "source": "Hindustan Times",
-          "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxNNTloNXpST1pMVEdPV3RSSVlyZFE3X0VtcnVFdnNaSFI4aUtLR2ladUQtMmp5QU1WNXpmTVlqQ2YtMmRPbThpaFpQX05pZW5pVkpGT004c1RCT2lQTjg5S0dEU3hrTk9objhzMkRQRFNibjc1M0M4NTc1Qk1BMkY3dzV1MlVsOHpZM3pqRDFIV2xObHBfVWkxNDN1RVdQMmhkaE1PNG1LVFdxS3RWSDh0UFNEZjI4NU1Td3pnTHd1dTBjMGJvWmZ4akk0X0lUMklYS0p1bk50cUtqeTRSZFVKQWRTV0tJajFkQ1g0T0RWWVU?oc=5",
+          "title": "US blacklists Megaspeed cloud company linked to Nvidia scandal",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPZ3ZUR1ZCZXpLTkNjVFA5cm1ueHd6VjlHUzZSZWUtNE40NndKNFNWQVJqV3k4WHA5SU5BQTBvWmw5dlN3S1RZZHQ5WG5LRGhWMDFxUk83RjdGV0dqWUtjU3c4RlVkdkFBVlhfbXdiVm1WWW44dEtpUXY0Yjk0ZndBN2w3MURmNkVJLUlvM3ZpSmRfV3RTeUJYNHQtS29HaUFwejF2SlVtR2lpY0NqX3BYMg?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia Chip Smuggling: Li Ming Allegedly Ran Network That Diverted AI Chips to China",
-          "source": "theopenpress.in",
-          "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQVXdQblJoSVRyNWpUZC0tLXk2MXFiUUJ6Q2VlQmNZUEYwbkc3WllxaHk0X1VtZWNsVHMwcXBXb2JkUVpXVFRfSngzR3J2cXhIM3pCQjZYR0hkOUxUaDRvcWo2Y2NxYUhvR2J3akxrRHZPNUNjR0lIRnpwZlktWjdlZ2ZlQQ?oc=5",
-          "region": "North America"
+          "title": "US blacklists S’pore-based chip firm Megaspeed linked to Nvidia scandal",
+          "source": "The Straits Times",
+          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPQVJSZjNZbi1WbnEyeVN6ZUNzOTJMeml6QkhYTWM5UWlNVzhPVFRJcU5KUHhKcWxwaUhuS3J4VmZ3QzVOclBWa3BocmNocUV3Z2NFV29TNU9wM0pWSXI2WGJoak44d1FfcjdoZy14eWVuRWtWZm1qUm5xNUJqOEowakwzLUZIeHE1WWh3ZThWWjdkR0U4YW5ObFVNUllQYTdHYk9VeGZfMFlwYjQ?oc=5",
+          "region": "Asia-Pacific"
         },
         {
-          "title": "Kennedy Questions Officials on China AI Chip Exports",
-          "source": "Wisevoter",
-          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQUDVSVy1jQnZnR2lLZXc0emxiVTVYcWZMR1ROaDE2U0NkeWo4WTAwN2hweDFkejlEd2E1UHV4U2N1eFJPbzFNOHhMNFNYTVlONktzRlJrUjNFMUI0aW42MW5Mc0lLeVVJLXB1SlFtNHlfeERCZVk0QlVPYVotUTJUSUhndzBMX2JtcGhHbzQxMG9hekhwSnc?oc=5",
-          "region": "North America"
+          "title": "Megaspeed, the company at the center of the Jensen Huang scandal, appears headed for a US blacklist",
+          "source": "TechCrunch",
+          "url": "https://techcrunch.com/2026/11/23/megaspeed-the-company-at-the-center-of-the-jensen-huang-scandal-appears-headed-for-a-u-s-blacklist/",
+          "region": "Global desks"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.5664,
-      "probability": 0.76,
+      "score": 0.5956,
+      "probability": 0.8,
       "confidence": "High",
-      "entity": "China",
-      "theme": "Chips & compute",
-      "headline": "US seeks answers on Nvidia's sale of chips to China, Bessent says",
-      "outlook": "Supply, pricing and export angles on China should keep this in the headlines.",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "Anthropic’s IPO Mints New Millionaires",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 11,
+        "outlets": 16,
         "regions": [
-          "South Asia",
-          "North America"
+          "North America",
+          "Europe"
         ],
-        "stories": 11,
-        "momentum": 2.62,
-        "recent6h": 6,
-        "authority": 4.2,
-        "hnPoints": 0,
+        "stories": 21,
+        "momentum": 1.41,
+        "recent6h": 7,
+        "authority": 5.2,
+        "hnPoints": 7,
         "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.72,
+        "reach": 0.83,
         "breadth": 0.33,
-        "momentum": 0.8,
-        "authority": 0.84,
-        "community": 0,
+        "momentum": 0.5,
+        "authority": 1,
+        "community": 0.3,
         "nextStep": 0,
         "arc": 1
       },
       "sig": [
-        "china",
-        "chip",
-        "nvidia",
-        "bessent",
-        "sale",
-        "answer",
-        "spy",
-        "agency"
+        "anthropic",
+        "ipo",
+        "stock",
+        "share",
+        "record",
+        "anthropics",
+        "rally",
+        "nvidia"
       ],
       "evidence": [
         {
-          "title": "US seeks answers on Nvidia's sale of chips to China, Bessent says",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQcm1fbVJENmFGZU81bGR4WXVfeDMwdWdaY0xNbmVBN3hmaXVVeVBLelJxT3dubnROYnVkM2NCRXRfcFFvMGNtZ0FlM3c5LWt1WUVGclQzY1ZJTVBCR2d2dXozSXRqN0VIM1NsV0d2YVJLRjJpRnlIcVRNSlZqeURwLWhKa1V4dUNvWDdlZmNoMnQxQ1d6WlVGalNpdjVSZm9PMXRzUA?oc=5",
+          "title": "Anthropic’s IPO Mints New Millionaires",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPNDRramlWYXFmSjVVaFVuazdiY3NNS21PdEQ4b3ppcmF6Q21rV3hjMzRUSUtBQTJTYkJsSXpfMHR4U3hWa2k2bmRFZjV6YVlhOWVwTGo1b2pIVXZwNGM2VHZJNjVreGtyUlZyN1djOVpjUEhEYnZkTUlNRms3RnBjY0x2a3pTbHN5MWlrVw?oc=5",
           "region": "North America"
         },
         {
-          "title": "Bessent says Nvidia yet to answer US probe into alleged restricted AI chip sales to China | Hindustan Times",
-          "source": "Hindustan Times",
-          "url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxNTUdrdFhacEpGS1JFNWY2eDcxaHVaVFdDSzcySHpFSlZPdmFtZjNBLUZrLXQ2Qmpoa19YVzVTckdVSWQxSW53MVNGczBRbjRGdkhBeFBrMzJfb0JaX1QyXzJPeUZSOFVoZm1oS1djVl9WVGhKUUg4ZDEzYUJTbnVIYU9hR0QtdFVxQkpLYzhlWHk0VktfU3NiejRNTlhEYjJsRFVBNlVrb1NoWWNyLUxsSDlfdnpQY05CUlprbnlibVhqRE53ek0zaUhkLXRSaW4wemlBS255N01QMkw4bDVTOW0wLVc5dlJ4Zk5sMjR2LUZYd9IB9wFBVV95cUxOS3E2ZUNCU1hEMDJtb1ZNdExzOTd1T1ozMW40Qk01RllhSmUxa214eUZUeTdxTF9ncUpOQU56T0Y5V0U5Nk1XVWZoajg3Z3RaeGFsemVzRzRvR3NCYVRUSlloQ25CdG9rRnAyYXVCUkZRZ0g0dXlVQXhVelJOUFA0YlNUVkxSSTdka1FCT2lrSjRqU1kyZUdrR0tmbkV3MUlRWTNvVHFaTlF2YklWN2xXWXh5U1ZJN0hSOTY4V1YxTjMza1VoTTRrZm9PSHdLWUVMSWZsM1lyc2J2T3VTaGZGTUhVSWVOMDJVbmU4YWswTElkcmJhbmp3?oc=5",
+          "title": "There are now more centimillionaires at Anthropic than all of Los Angeles thanks to its IPO",
+          "source": "Fortune",
+          "url": "https://news.google.com/rss/articles/CBMi-gFBVV95cUxQRDlncUMxZnM5dTFBUlNhMFVMdGlYOFYzQjBHSUUweWlHZVpPdklUV2JYcWdlM2hpQjZfdDlHWk5VeWdOZ2NaSENYWmNUb1E3NmRyOFVhaEJYdEl2X1R1RzdhTFVQNHhaMXJHMEtNOHc1OURWZzVzcVg2al95MG5rN280NWtXam92Z3pKUnVFVU14bkNmcFlfeW5rQmQ1dXZ6S3M2UE1paTNOVmhsdGV5NG4zRTRNblkzUzBiSUYxTnlrNkZfcEtrLXlYcVQ3SkNodHAtLUluWlF6NGkybF95Zy11R0ZndmZ0U3BvWXlDOWljM0Q5ODlkaXpR?oc=5",
           "region": "North America"
         },
         {
-          "title": "Intel Chief confirms China got access to US advanced AI chips",
-          "source": "CNN",
-          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNNTVPbGVLM3lXWERwcThxRUxieDdKck1UQXdpREVJVkpoam5MaDNFVWd2ejZ3ZFFwZkFtSjU0bnFMQ3BCLTF1SXdIWGR0dHR2c3ZYdTVTamdoZ3RLZUtRZ3JUV29MYkgxa1YxdjFobWt5Q2FBY1BRZ1ZHckxoY0s4Qi1ibkZiYmJzbk1HS2lOYzM5SHZacVpwcXQ3UFR4M094TGxFT1RXSTFvejQ?oc=5",
-          "region": "North America"
+          "title": "The Anthropic IPO Concerns Me",
+          "source": "Hacker News",
+          "url": "https://calnewport.com/the-anthropic-ipo-concerns-me/",
+          "region": "Community"
         },
         {
-          "title": "- U.S. Seeks Answers From Nvidia Over China AI Chip Sales",
-          "source": "iTMunch",
-          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE14UHRReGhkR2tHUlNpaDRrT1FqT3NWR3hJSVVwanU2Q2dsS29PbFBncmdscEpmTFlFXzJ1N3h1bUMxemdmY3pYVzZubEhkT3d3NVVSeVRrdW9rTEJpeWdralROdVVPQ1dKYTByVmtLOGdEZw?oc=5",
+          "title": "Anthropic shares slide in rocky first days on Nasdaq",
+          "source": "Crypto Briefing",
+          "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE45a052N0FfWDlSQlRMQ01nb28zX2JWOUdWVjhtTC05OFFaamc3cVFKbnBrMG93RmNNTEgzamlvNlVJVXRuX0VqRUstUng3RGdsR0lBT2V4cEJyRllPUVliQkYwdXc5cGJnSG9Fd1puTFppbTg0M1NtUA?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-23",
+    "date": "2026-11-24",
     "calls": [
       {
         "rank": 1,
-        "headline": "Anthropic Mathematician Claims to Solve Riemann Hypothesis With Help From Claude",
-        "probability": 0.79,
-        "hit": false,
-        "matched": null
+        "headline": "Anthropic’s Record-Breaking IPO",
+        "probability": 0.9,
+        "hit": true,
+        "matched": "Anthropic’s IPO Mints New Millionaires"
       },
       {
         "rank": 2,
-        "headline": "Watch Anthropic Fails to Calm AI Jitters, Ditching the Kitchen for Thanksgiving",
+        "headline": "Exclusive | The Alice Huang Associate Accused of Funneling Nvidia Chips to China",
         "probability": 0.78,
         "hit": true,
-        "matched": "Anthropic’s Record-Breaking IPO"
+        "matched": "Marlowe Raises $277 Million to Bolster Alternatives to Nvidia Chips"
       },
       {
         "rank": 3,
-        "headline": "Officials approved the sale of 580,000 Nvidia chips to Chinese companies",
-        "probability": 0.7,
+        "headline": "US seeks answers on Nvidia's sale of chips to China, Bessent says",
+        "probability": 0.76,
         "hit": true,
-        "matched": "Exclusive | The Alice Huang Associate Accused of Funneling Nvidia Chips to China"
+        "matched": "Marlowe Raises $277 Million to Bolster Alternatives to Nvidia Chips"
       }
     ],
-    "hits": 2
+    "hits": 3
   },
   "track": {
-    "days": 23,
-    "calls": 69,
-    "hits": 59,
+    "days": 24,
+    "calls": 72,
+    "hits": 62,
     "log": [
       {
         "date": "2026-11-01",
@@ -376,6 +384,11 @@
       {
         "date": "2026-11-23",
         "hits": 2,
+        "calls": 3
+      },
+      {
+        "date": "2026-11-24",
+        "hits": 3,
         "calls": 3
       }
     ],
