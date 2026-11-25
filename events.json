@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-22T07:26:06.870Z",
+ "updated": "2026-11-25T09:08:18.462Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -8,15 +8,6 @@
   "confs.tech open conference list"
  ],
  "events": [
-  {
-   "title": "From Data Platforms to AI Agents",
-   "type": "Online session",
-   "start": "2026-11-24",
-   "end": "2026-11-24",
-   "url": "https://globalai.community/e/orujz8ya",
-   "source": "Global AI Community",
-   "online": true
-  },
   {
    "title": "AI Engineering Summit Auckland",
    "type": "Summit",
