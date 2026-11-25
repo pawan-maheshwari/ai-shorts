@@ -2832,6 +2832,9 @@ with tab_g:
                 f_ek = r8.slider("Edge sizing strength", 0.5, 3.0, float(CFG["edge_k"]), 0.25)
                 f_sb = r9.toggle("Block Sentinel HIGH", CFG["sentinel_block"])
                 r10, r11, r12 = st.columns(3)
+                f_sec = r9.slider("Max open per sector", 0, 3, int(CFG.get("max_per_sector", 1) or 0),
+                                  help="Open positions allowed in one sector on the same side (0 = no limit). "
+                                       "Stops one sector move — say a bank pullback — from stopping out the whole day.")
                 f_nl = r11.toggle("📡 Fill late bars from NSE Live (approximate)", bool(CFG.get("nse_live_bars")),
                                   help="Builds the 5-minute bars Yahoo has not delivered yet from NSE Live quotes taken each "
                                        "refresh. Faster signals, but those bars are approximate until Yahoo's arrive.")
@@ -2869,7 +2872,7 @@ with tab_g:
                 ss.tune_cand = ag.merged(dict(CFG, min_stop_pct=f_ms, panel=f_pn, panel_mode=f_pm, focus_n=f_fn, coach_filter=f_cf, coach_threshold=f_th, half_life=f_hl, coach_model=f_cm,
                                               coach_min_win=f_mw / 100, pulse_sizing=f_ps,
                                               mults=f_m, exit_policy=f_ex, risk_enabled=f_re, daily_loss_R=f_dl,
-                                              max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, paused_setups=f_ps2,
+                                              max_trades=f_mt, max_open=f_mo, corr_limit=f_cl, max_per_sector=f_sec, paused_setups=f_ps2,
                                               edge_sizing=f_es, edge_k=f_ek, sentinel_block=f_sb, arbiter=f_ar, nse_live_bars=f_nl,
                                               paper_window_min=int(f_win), max_exposure_x=f_mx, leverage=f_lev,
                                               capital=float(f_cap), risk_pct=f_rp, cost_pct=f_cost, setup=f_setup,

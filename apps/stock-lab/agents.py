@@ -971,6 +971,27 @@ def corr_pairs(data, symbols, before_day, lookback=10):
     return {(a_, b_): float(m.loc[a_, b_]) for a_ in m.index for b_ in m.columns if a_ != b_ and pd.notna(m.loc[a_, b_])}
 
 
+# NSE sector of each watchlist stock, so one sector move cannot stop out the whole day (25 Nov 2026: HDFCBANK,
+# ICICIBANK and AXISBANK longs were all open together and all stopped within 20 minutes — one bet taken three times).
+SECTOR = {
+    "HDFCBANK": "Banks", "ICICIBANK": "Banks", "SBIN": "Banks", "AXISBANK": "Banks", "KOTAKBANK": "Banks",
+    "INDUSINDBK": "Banks", "BANKBARODA": "Banks", "PNB": "Banks",
+    "BAJFINANCE": "Finance", "BAJAJFINSV": "Finance", "SHRIRAMFIN": "Finance", "JIOFIN": "Finance",
+    "HDFCLIFE": "Insurance", "SBILIFE": "Insurance",
+    "INFY": "IT", "TCS": "IT", "HCLTECH": "IT", "WIPRO": "IT", "TECHM": "IT", "LTIM": "IT",
+    "MARUTI": "Auto", "M&M": "Auto", "BAJAJ-AUTO": "Auto", "TATAMOTORS": "Auto", "EICHERMOT": "Auto", "HEROMOTOCO": "Auto",
+    "TATASTEEL": "Metals", "JSWSTEEL": "Metals", "HINDALCO": "Metals", "VEDL": "Metals",
+    "RELIANCE": "Energy", "ONGC": "Energy", "COALINDIA": "Energy", "BPCL": "Energy", "IOC": "Energy",
+    "NTPC": "Power", "POWERGRID": "Power", "TATAPOWER": "Power",
+    "ITC": "FMCG", "HINDUNILVR": "FMCG", "NESTLEIND": "FMCG", "BRITANNIA": "FMCG", "TATACONSUM": "FMCG",
+    "SUNPHARMA": "Pharma", "CIPLA": "Pharma", "DRREDDY": "Pharma", "DIVISLAB": "Pharma", "APOLLOHOSP": "Pharma",
+    "ULTRACEMCO": "Cement", "GRASIM": "Cement", "SHREECEM": "Cement",
+    "ADANIENT": "Adani", "ADANIPORTS": "Adani",
+    "TITAN": "Consumer", "ASIANPAINT": "Consumer", "TRENT": "Consumer",
+    "LT": "Capital goods", "BEL": "Capital goods", "BHARTIARTL": "Telecom", "DLF": "Realty",
+}
+
+
 def risk_check(c, book, cfg, corr):
     """c: candidate (symbol, side, setup, t, exp_r, sentinel, value_x). book: earlier ALLOWED trades today with
     symbol, side, t, t_exit (None while open), r and value_x. value_x = position value as a multiple of capital
@@ -994,6 +1015,11 @@ def risk_check(c, book, cfg, corr):
     same = [b for b in open_now if b["symbol"] == c["symbol"]]
     if same:
         return "BLOCK", 0.0, [f"Already holding {c['symbol']} from {same[0]['t']:%H:%M} — no second position in the same stock"]
+    sec, cap_s = SECTOR.get(c["symbol"]), int(cfg.get("max_per_sector", 0) or 0)
+    if sec and cap_s:
+        peers = [b["symbol"] for b in open_now if SECTOR.get(b["symbol"]) == sec and b["side"] == c["side"]]
+        if len(peers) >= cap_s:
+            return "BLOCK", 0.0, [f"Already holding {', '.join(peers)} in {sec} — max {cap_s} open per sector, same side"]
     twins = [(b["symbol"], corr.get((c["symbol"], b["symbol"]), 0)) for b in open_now if b["side"] == c["side"]]
     twins = [x for x in twins if x[1] >= cfg["corr_limit"]]
     if twins:
@@ -1245,6 +1271,7 @@ DEFAULT_CONFIG = dict(
     pulse_sizing=True, mults=dict(DEFAULT_MULTS),
     exit_policy="fixed",
     risk_enabled=True, daily_loss_R=2.0, max_open=3, max_trades=3, corr_limit=0.7,
+    max_per_sector=1,       # open positions per sector on the same side (0 = off); added after 25 Nov 2026
     edge_sizing=False, edge_k=1.0, sentinel_block=False, paused_setups=[],
     nse_live_bars=False,    # fill bars Yahoo has not delivered yet from NSE Live snapshots (approximate; opt-in)
     arbiter="on",           # 09:30 arbiter: off · on (half size when Pulse and the desk both oppose a trade) · strict (skip it)
