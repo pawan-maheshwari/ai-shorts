@@ -129,6 +129,13 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
   .chev{display:none}
   a{color:#000}
 }
+.btn[disabled]{color:var(--muted);cursor:default}
+.btn .spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;vertical-align:-2px;margin-right:6px;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btnnote{font-size:13px;color:var(--muted);text-align:center;margin:-2px 0 8px;min-height:18px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:rgba(30,30,32,.92);color:#fff;font:600 14px -apple-system,sans-serif;padding:10px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1);z-index:40;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media print{.toast,.btnnote{display:none!important}}
 </style>
 </head>
 <body>
@@ -154,6 +161,7 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
   <div class="count"><span id="aCount"></span><button type="button" id="aReset" hidden>Clear filters</button></div>
   <div class="card flush" id="feed"></div>
   <div class="btns"><button class="btn" id="seen" type="button">Mark all seen</button><button class="btn" id="check" type="button">Check now</button></div>
+  <div class="btnnote" id="btnNote" aria-live="polite"></div>
   <p class="foot">Newest AI policy changes worldwide from Digital Policy Alert. A blue dot marks items you haven't marked as seen. The Policy Desk refreshes this feed through the day; this page rechecks every 5 minutes while open.</p>
 </section>
 
@@ -223,6 +231,7 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
   <div class="grp"><div class="t">Print AI Policy Watch with your current filters</div><button type="button" id="pOne">This section</button><button type="button" id="pAll">All sections</button></div>
   <div class="grp"><button type="button" class="cancel" id="pCancel">Cancel</button></div>
 </div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <button class="fab" id="fab" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 
 <script>
@@ -389,14 +398,15 @@ var paintAll=function(){
 };
 paintTR();
 var load=function(){
-  return fetch('policy-watch.json?v='+Date.now(),{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
-    if(!j)return;
-    var ids=(j.alerts||[]).map(function(a){return a.event_id;});
-    if(known){fresh+=ids.filter(function(i){return known.indexOf(i)<0;}).length;}
+  return fetch('policy-watch.json?v='+Date.now(),{cache:'no-cache'}).then(function(r){if(!r.ok)throw new Error('http');return r.json();}).then(function(j){
+    if(!j)throw new Error('empty');
+    var ids=(j.alerts||[]).map(function(a){return a.event_id;}),added=0;
+    if(known){added=ids.filter(function(i){return known.indexOf(i)<0;}).length;fresh+=added;}
     known=ids.concat(known||[]);data=j;paintAll();
-  }).catch(function(){$('status').textContent='Could not load the latest policy data.';});
+    return {ok:true,added:added};
+  }).catch(function(){$('status').textContent='Could not load the latest policy data.';return {ok:false,added:0};});
 };
-load();setInterval(load,5*60*1000);
+load().then(function(){$('btnNote').textContent=feedAge()?feedAge()+'.':'';});setInterval(function(){load().then(function(r){if(r.added)toast(r.added+' new AI policy change'+(r.added>1?'s':''));$('btnNote').textContent=feedAge()?feedAge()+'.':'';});},5*60*1000);
 
 /* ---------- segmented control + back-to-top ---------- */
 var segBtns=qa('#seg button'),names=segBtns.map(function(b){return b.getAttribute('data-p');}),cur='alerts';
@@ -412,8 +422,28 @@ window.addEventListener('hashchange',function(){show((location.hash||'').slice(1
 var fab=$('fab');
 window.addEventListener('scroll',function(){fab.className='fab'+(window.scrollY>300?' show':'');},{passive:true});
 fab.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
-$('seen').addEventListener('click',function(){var r=(data&&data.alerts)||[];save(r.map(function(x){return x.event_id;}).concat(seen()));fresh=0;paintAlerts();$('status').textContent='All marked as seen.';});
-$('check').addEventListener('click',function(){$('status').textContent='Checking…';load();});
+/* ---------- buttons: visible feedback right where you tap ---------- */
+var toastT=null;
+var toast=function(msg){var t=$('toast');t.textContent=msg;t.className='toast show';clearTimeout(toastT);toastT=setTimeout(function(){t.className='toast';},2600);};
+var hm=function(d){return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);};
+var feedAge=function(){var u=data&&data.updated_at?new Date(data.updated_at):null;if(!u||isNaN(u))return '';
+  var mins=Math.round((Date.now()-u.getTime())/60000);var ago=mins<60?mins+' min ago':mins<1440?Math.round(mins/60)+' h ago':Math.round(mins/1440)+' d ago';
+  return 'Feed last updated '+u.getDate()+' '+MON[u.getMonth()]+', '+hm(u)+' ('+ago+')';};
+var syncSeenBtn=function(){var r=(data&&data.alerts)||[],s=seen(),n=r.filter(function(x){return s.indexOf(x.event_id)<0;}).length,b=$('seen');
+  b.disabled=!n;b.textContent=n?'Mark '+n+' as seen':'\u2713 All seen';};
+var _pa=paintAlerts;paintAlerts=function(){_pa();syncSeenBtn();};
+$('seen').addEventListener('click',function(){var r=(data&&data.alerts)||[],s=seen(),n=r.filter(function(x){return s.indexOf(x.event_id)<0;}).length;
+  save(r.map(function(x){return x.event_id;}).concat(s));fresh=0;paintAlerts();
+  toast(n?n+' change'+(n>1?'s':'')+' marked as seen':'Everything was already seen');});
+$('check').addEventListener('click',function(){var b=$('check');if(b.disabled)return;
+  b.disabled=true;b.innerHTML='<span class="spin" aria-hidden="true"></span>Checking\u2026';
+  var started=Date.now();
+  load().then(function(res){setTimeout(function(){
+    b.disabled=false;b.textContent='Check now';
+    if(!res.ok){toast('Couldn\u2019t reach AIShorts \u2014 check your connection');$('btnNote').textContent='Last try failed at '+hm(new Date())+'.';return;}
+    toast(res.added?res.added+' new change'+(res.added>1?'s':'')+' added':'You\u2019re up to date');
+    $('btnNote').textContent='Checked '+hm(new Date())+'. '+feedAge()+'.';
+  },Math.max(0,600-(Date.now()-started)));});});
 
 /* ---------- print ---------- */
 var sheet=$('pSheet');
