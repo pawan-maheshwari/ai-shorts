@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /ops/
 
 Sitemap: https://aishorts.biz/sitemap.xml

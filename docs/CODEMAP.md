@@ -10,7 +10,7 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 |---|---|---|---|
 | `AI_Odyssey_BookSigning_AnimatedCover.html` | 4.4 MB | 48 | 3 |
 | `ai-odyssey.html` | 4.0 MB | 929 | 7 |
-| `index.html` | 360 KB | 5295 | 1 |
+| `index.html` | 366 KB | 5362 | 1 |
 | `apps/stock-lab/app.py` | 211 KB | 3140 |  |
 | `vitalmetrics.html` | 181 KB | 3308 |  |
 | `ai-library.html` | 142 KB | 1307 | 2 |
@@ -30,6 +30,7 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 | `apps/stock-lab/desk.py` | 18 KB | 339 |  |
 | `apps/stock-lab/learning.py` | 18 KB | 372 |  |
 | `stock-lab.html` | 14 KB | 264 |  |
+| `apps/stock-lab/swing.py` | 14 KB | 286 |  |
 | `tools/daily-wire.mjs` | 12 KB | 214 |  |
 | `standards.html` | 11 KB | 222 |  |
 | `tools/local-desk.mjs` | 10 KB | 201 |  |
@@ -88,60 +89,63 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L20 script
 - L48 script
 - L65 style
-- L1823 h2 `Pinocchio`
-- L1835 h2 `Loading the wire&hellip;`
-- L1855 section `view-ask`
-- L1928 section `chips`
-- L2135 script
-- L2144 data `SEED`
-- L2226 data `CATS`
-- L2227 data `CAT_META`
-- L2324 h2 `${esc(n.headline)}`
-- L2360 data `IMG_FETCH_LIMIT`
-- L2629 data `KNOWN`
-- L2763 data `CACHE_KEY`
-- L2764 data `API_BASE`
-- L2788 data `RSS_FEED`
-- L2984 data `INTRO_SECONDS`
-- L2989 data `INTRO_KEY`
-- L3076 data `STOP`
-- L3160 script
-- L3162 data `VPA`
-- L3164 data `DELIVERY_EMAIL`
-- L3166 data `SUBSCRIBE_ENDPOINT`
-- L3215 data `API`
-- L3251 data `ABA`
-- L3253 data `QUIZ`
-- L3267 data `POLL`
-- L3282 data `DAY`
-- L3284 data `TID`
-- L3390 data `AI_COMPANIES`
-- L3399 data `MARKET_PROXY`
-- L3595 data `SEED_CAPS`
-- L3652 data `STOCKS`
-- L3665 data `MINUS`
-- L3758 script
-- L3833 script
-- L3844 data `CLIP_KEY`
-- L3999 data `PAPER`
-- L4116 script
-- L4128 data `BAR`
-- L4177 script
-- L4233 script
-- L4259 data `NAME`
-- L4338 script
-- L4365 data `FACTORS`
-- L4464 data `UNTIL`
-- L4497 script
-- L4515 data `LOC_KEY`
-- L4530 data `MON`
-- L4531 data `DAY`
-- L4568 data `TZ_CITY`
-- L4641 data `NEAR_KM`
-- L5018 script
-- L5061 data `CAST`
-- L5207 script
-- functions (226): get@54, meta@2237, $@2243, esc@2248, safeURL@2253, filtered@2261, fmtDate@2271, buildChips@2282, cardKey@2297, card@2300, render@2341, normImgUrl@2364, matchMeta@2375, fetchStoryImage@2393, hashStr@2430, shade@2435, coverSVG@2444, findPlateByKey@2474, applyCardImage@2481, loadCardImages@2513, updateRail@2530, updateBreaking@2540, goTo@2555, next@2562, syncReading@2587, queueReading@2600, setStatus@2622, normCat@2630, normRegion@2639, fetchT@2649, extractItems@2656, mapItems@2673, callClaude@2684, stripTags@2714, clipWords@2715, normDate@2716, freshOnly@2717, dedupeSummary@2733, guessCat@2751, fetchWorker@2765, lsGet@2782, lsSet@2783, readCache@2784, writeCache@2785, pickImg@2789, mapRSS@2797, parseFeedXML@2814, fetchRSS@2829, fetchHN@2852, fetchEdition@2884, fetchFresh@2900, refresh@2911, initFeed@2938, hitCounter@2951, countVisit@2957, setWireHeight@2974, introSeen@2990, markIntroSeen@2991, svgFor@2996, setText@3007, feature@3008, applyImage@3018, endIntro@3040, keyskip@3041, topNews@3053, summarize@3054, entity@3058, whatHappened@3064, compare@3070, search@3077, route@3085, push@3093, ask@3094, fill@3098, dashFill@3101, topText@3109, stopVoice@3110, openP@3118, closeP@3119, anchorScript@3124, pauseAnchor@3139, $@3169, openM@3170, closeM@3171, upiLink@3183, refreshPay@3189, note@3210, valid@3211, subscribe@3212, ymd@3283, abaHit@3289, abaGet@3290, esc2@3291, renderQuiz@3294, answerQuiz@3321, showQuizStats@3327, renderPoll@3336, votePoll@3356, showPollResults@3369, renderPrevPoll@3383, fmtMarketCap@3401, getTodayStr@3408, fetchMarketCaps@3410, loadPrevMarket@3482, savePrevMarket@3488, renderMarket@3492, initMarket@3568, setMarketOpen@3608, fmtPx@3667, chgOf@3668, itemHTML@3676, copyHTML@3684, render@3687, flash@3689, paint@3696, step@3712, fetchLive@3722, move@3777, open@3805, shut@3813, onKey@3819, clipsRead@3846, clipsWrite@3851, isClipped@3855, findStory@3863, badge@3869, toggleClip@3876, renderClips@3899, syncButtons@3944, shareCutting@3985, layout@4004, wrap@4007, save@4130, applyTheme@4132, applySize@4139, mark@4143, observe@4207, revoke@4261, close@4264, fileOf@4271, canShareFile@4274, links@4279, el@4347, pct@4348, fmtDate@4349, safeUrl@4350, showBand@4352, rotate@4359, card@4367, chip@4378, render@4412, open@4453, remember@4470, hide@4479, introGone@4483, el@4519, lsGet@4520, lsSet@4521, safeUrl@4522, getJSON@4523, pad@4528, todayISO@4529, parts@4532, dayNum@4533, fmtDate@4534, fmtRange@4535, num@4541, T@4545, wind@4546, dist@4547, sky@4550, okLoc@4575, saveLoc@4576, storedLoc@4577, fromIP@4586, geocode@4594, fromTZ@4600, findLoc@4608, placeLine@4613, loadWx@4616, km@4636, upcoming@4642, tiers@4650, whenChip@4661, ics@4670, d@4671, esc@4672, nextStart@4687, offers@4697, ranked@4698, paintBand@4701, setHead@4729, cityBox@4731, pick@4741, search@4742, viewWeather@4773, fact@4793, eventRow@4847, section@4865, viewEvents@4870, courseCard@4907, cell@4919, viewCourses@4938, render@4970, open@4978, fromHash@4998, h@5039, safeUrl@5040, safeImg@5041, fmt@5042, today@5046, load@5048, cast@5069, figFor@5084, render@5090, open@5158, shut@5166, onKey@5174, markSeen@5176, el@5217, mb@5218, fname@5219, count@5220, render@5229, open@5262, fromHash@5277
+- L1840 h2 `Pinocchio`
+- L1852 h2 `Loading the wire&hellip;`
+- L1872 section `view-ask`
+- L1948 section `chips`
+- L2155 script
+- L2164 data `SEED`
+- L2246 data `CATS`
+- L2247 data `CAT_META`
+- L2344 h2 `${esc(n.headline)}`
+- L2380 data `IMG_FETCH_LIMIT`
+- L2649 data `KNOWN`
+- L2783 data `CACHE_KEY`
+- L2784 data `API_BASE`
+- L2808 data `RSS_FEED`
+- L3004 data `INTRO_SECONDS`
+- L3009 data `INTRO_KEY`
+- L3096 data `STOP`
+- L3180 script
+- L3182 data `VPA`
+- L3184 data `DELIVERY_EMAIL`
+- L3186 data `SUBSCRIBE_ENDPOINT`
+- L3235 data `API`
+- L3271 data `ABA`
+- L3273 data `QUIZ`
+- L3287 data `POLL`
+- L3302 data `DAY`
+- L3304 data `TID`
+- L3410 data `AI_COMPANIES`
+- L3419 data `MARKET_PROXY`
+- L3615 data `SEED_CAPS`
+- L3672 data `STOCKS`
+- L3685 data `MINUS`
+- L3778 script
+- L3853 script
+- L3864 data `CLIP_KEY`
+- L4019 data `PAPER`
+- L4136 script
+- L4148 data `BAR`
+- L4197 script
+- L4253 script
+- L4279 data `NAME`
+- L4358 script
+- L4385 data `FACTORS`
+- L4484 data `UNTIL`
+- L4517 script
+- L4535 data `LOC_KEY`
+- L4550 data `MON`
+- L4551 data `DAY`
+- L4588 data `TZ_CITY`
+- L4661 data `NEAR_KM`
+- L5038 script
+- L5081 data `CAST`
+- L5227 script
+- L5319 script
+- L5325 data `KEY`
+- L5328 data `MON`
+- functions (233): get@54, meta@2257, $@2263, esc@2268, safeURL@2273, filtered@2281, fmtDate@2291, buildChips@2302, cardKey@2317, card@2320, render@2361, normImgUrl@2384, matchMeta@2395, fetchStoryImage@2413, hashStr@2450, shade@2455, coverSVG@2464, findPlateByKey@2494, applyCardImage@2501, loadCardImages@2533, updateRail@2550, updateBreaking@2560, goTo@2575, next@2582, syncReading@2607, queueReading@2620, setStatus@2642, normCat@2650, normRegion@2659, fetchT@2669, extractItems@2676, mapItems@2693, callClaude@2704, stripTags@2734, clipWords@2735, normDate@2736, freshOnly@2737, dedupeSummary@2753, guessCat@2771, fetchWorker@2785, lsGet@2802, lsSet@2803, readCache@2804, writeCache@2805, pickImg@2809, mapRSS@2817, parseFeedXML@2834, fetchRSS@2849, fetchHN@2872, fetchEdition@2904, fetchFresh@2920, refresh@2931, initFeed@2958, hitCounter@2971, countVisit@2977, setWireHeight@2994, introSeen@3010, markIntroSeen@3011, svgFor@3016, setText@3027, feature@3028, applyImage@3038, endIntro@3060, keyskip@3061, topNews@3073, summarize@3074, entity@3078, whatHappened@3084, compare@3090, search@3097, route@3105, push@3113, ask@3114, fill@3118, dashFill@3121, topText@3129, stopVoice@3130, openP@3138, closeP@3139, anchorScript@3144, pauseAnchor@3159, $@3189, openM@3190, closeM@3191, upiLink@3203, refreshPay@3209, note@3230, valid@3231, subscribe@3232, ymd@3303, abaHit@3309, abaGet@3310, esc2@3311, renderQuiz@3314, answerQuiz@3341, showQuizStats@3347, renderPoll@3356, votePoll@3376, showPollResults@3389, renderPrevPoll@3403, fmtMarketCap@3421, getTodayStr@3428, fetchMarketCaps@3430, loadPrevMarket@3502, savePrevMarket@3508, renderMarket@3512, initMarket@3588, setMarketOpen@3628, fmtPx@3687, chgOf@3688, itemHTML@3696, copyHTML@3704, render@3707, flash@3709, paint@3716, step@3732, fetchLive@3742, move@3797, open@3825, shut@3833, onKey@3839, clipsRead@3866, clipsWrite@3871, isClipped@3875, findStory@3883, badge@3889, toggleClip@3896, renderClips@3919, syncButtons@3964, shareCutting@4005, layout@4024, wrap@4027, save@4150, applyTheme@4152, applySize@4159, mark@4163, observe@4227, revoke@4281, close@4284, fileOf@4291, canShareFile@4294, links@4299, el@4367, pct@4368, fmtDate@4369, safeUrl@4370, showBand@4372, rotate@4379, card@4387, chip@4398, render@4432, open@4473, remember@4490, hide@4499, introGone@4503, el@4539, lsGet@4540, lsSet@4541, safeUrl@4542, getJSON@4543, pad@4548, todayISO@4549, parts@4552, dayNum@4553, fmtDate@4554, fmtRange@4555, num@4561, T@4565, wind@4566, dist@4567, sky@4570, okLoc@4595, saveLoc@4596, storedLoc@4597, fromIP@4606, geocode@4614, fromTZ@4620, findLoc@4628, placeLine@4633, loadWx@4636, km@4656, upcoming@4662, tiers@4670, whenChip@4681, ics@4690, d@4691, esc@4692, nextStart@4707, offers@4717, ranked@4718, paintBand@4721, setHead@4749, cityBox@4751, pick@4761, search@4762, viewWeather@4793, fact@4813, eventRow@4867, section@4885, viewEvents@4890, courseCard@4927, cell@4939, viewCourses@4958, render@4990, open@4998, fromHash@5018, h@5059, safeUrl@5060, safeImg@5061, fmt@5062, today@5066, load@5068, cast@5089, figFor@5104, render@5110, open@5178, shut@5186, onKey@5194, markSeen@5196, el@5237, mb@5238, fname@5239, count@5240, render@5249, open@5282, fromHash@5297, seen@5326, esc@5327, fd@5329, unseen@5330, paint@5338, load@5347, place@5352
 ### `apps/stock-lab/app.py`
 - functions (64): _fresh_local_modules@23, intraday_args@178, fetch_intraday@187, load_daily@194, swing_cached@203, swing_for@213, _secret@223, _make_store@246, _store_schema@259, get_store@266, fetch_index_cached@276, nse_market_cached@281, nse_desk_cached@287, sentinel_batch@293, sentinel_rows@298, _memo@313, scan_jobs@322, ensure_daily_scan@326, narrate_cached@380, intraday_history@386, history_cached@395, train_coach@420, coach_trades@452, study_cached@457, _study_key@474, _study@479, raw_cached@485, panel_cached@492, panel_for@516, scout_cached@523, scout_for@542, model_preds_cached@549, brain_cached@557, scorecard_cached@568, now_ist@581, distill_audit@586, store_memory_stats@599, score_for@603, load_cfg@611, save_cfg@628, cfg_diff@653, inr@661, arrow@665, arrow_txt@675, market_state@683, fmt_interval@693, kpis@699, shadow_view@705, section@735, intraday_chart@739, signal_card@771, agent_strip@831, _warm_days@894, admin_gate@952, practice_status@998, paper_frame@1589, _hm@1613, desk_history@1969, _desk_attempts@1994, _desk_log@1998, _desk_calls@2005, _nanfree@2017, score_card_html@2305, sys_line@2351
 ### `vitalmetrics.html`
@@ -323,6 +327,8 @@ Files with *long lines* contain inline base64/minified blobs — never print tho
 - L178 script
 - L242 data `KEY`
 - functions (6): pace@190, paintSize@199, appUrl@210, load@213, saved@243, choose@247
+### `apps/stock-lab/swing.py`
+- functions (13): yahoo_ohlcv@43, demo_ohlcv@62, _rsi@80, features@87, _setup_cols@106, market_state@110, simulate@118, replay@145, _t@182, stats@189, verdict@209, run@225, agent_card@269
 ### `tools/daily-wire.mjs`
 - L21 data `FILE`
 - L22 data `FEED`
