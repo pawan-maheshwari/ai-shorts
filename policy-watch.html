@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Policy Watch · AIShorts</title>
+<meta name="description" content="Live AI policy alerts, EU AI rules, US vs China activity and transparency rules compared — from Digital Policy Alert, on AIShorts.">
+<link rel="canonical" href="https://aishorts.biz/policy-watch.html">
+<style>
+/* VOICE: an iOS app screen — calm, native, fluid
+   IDEA: a Settings-style app: large title, segmented control, inset grouped cards
+   PICTURE: paired US/China bars and live feed rows drawn in HTML/CSS only, no images
+   COLOUR and TYPE: iOS system greys, systemBlue/Green/Pink; SF via -apple-system
+   LAYOUT: one column, frosted sticky header, floating back-to-top arrow */
+:root{--bg:#f2f2f7;--card:#fff;--ink:#000;--muted:#8a8a8e;--sep:rgba(60,60,67,.18);--blue:#007aff;--green:#34c759;--red:#ff3b30;--pink:#ff2d55;--fill:rgba(118,118,128,.12);--bar:rgba(242,242,247,.8)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#000;--card:#1c1c1e;--ink:#fff;--muted:#8d8d93;--sep:rgba(84,84,88,.6);--blue:#0a84ff;--green:#30d158;--red:#ff453a;--pink:#ff375f;--fill:rgba(118,118,128,.24);--bar:rgba(0,0,0,.75)}}
+:root[data-theme=dark]{--bg:#000;--card:#1c1c1e;--ink:#fff;--muted:#8d8d93;--sep:rgba(84,84,88,.6);--blue:#0a84ff;--green:#30d158;--red:#ff453a;--pink:#ff375f;--fill:rgba(118,118,128,.24);--bar:rgba(0,0,0,.75)}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px}
+.top{position:sticky;top:0;z-index:10;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--sep);padding:10px 0}
+.small{font-size:13px;color:var(--muted);text-align:center;font-weight:600;margin-bottom:8px}
+.seg{display:flex;background:var(--fill);border-radius:9px;padding:2px;position:relative}
+.seg button{flex:1;border:0;background:transparent;color:var(--ink);font:600 12px -apple-system,sans-serif;padding:7px 2px;white-space:nowrap;letter-spacing:-.1px;border-radius:7px;min-height:32px;position:relative;z-index:1;transition:color .2s}
+.seg .thumb{position:absolute;top:2px;bottom:2px;left:2px;border-radius:7px;background:var(--card);box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04);transition:transform .35s cubic-bezier(.2,.8,.2,1);width:calc(25% - 1px)}
+h1{font-size:34px;font-weight:700;letter-spacing:.37px;line-height:1.1;margin:18px 0 4px}
+h2{font-size:22px;font-weight:700;letter-spacing:.35px;margin:22px 0 8px}
+.sub{color:var(--muted);font-size:15px;margin:0 0 8px}
+p{margin:0 0 10px}
+.card{background:var(--card);border-radius:14px;padding:14px 16px;margin:10px 0;overflow:hidden}
+.card.flush{padding:0}
+.hdr{font-size:13px;color:var(--muted);text-transform:none;margin:20px 16px 6px;font-weight:400}
+.foot{font-size:13px;color:var(--muted);margin:6px 16px 0}
+.pane{display:none}
+.pane.on{display:block;animation:in .4s cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pane.on{animation:none}.seg .thumb{transition:none}html{scroll-behavior:auto}}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:10px 0}
+.kpi{background:var(--card);border-radius:14px;padding:12px 14px}
+.kpi .lab{font-size:13px;color:var(--muted)}
+.kpi .v{font-size:30px;font-weight:700;letter-spacing:-.3px;font-variant-numeric:tabular-nums;line-height:1.15;margin-top:2px}
+.trend{display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:600;margin-top:2px}
+.trend svg{width:12px;height:12px}
+.up{color:var(--green)}.down{color:var(--red)}
+.row{display:flex;gap:12px;padding:12px 16px;position:relative;align-items:flex-start}
+.row+.row:before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--sep)}
+.row .t{flex:1}
+.row a{color:var(--ink);text-decoration:none;font-weight:600;font-size:16px}
+.meta{font-size:13px;color:var(--muted);margin-top:2px}
+.chev{color:var(--muted);flex:none;align-self:center}
+.new{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--blue);margin-top:7px;flex:none}
+.nonew{width:9px;flex:none}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--fill);margin-top:4px}
+.date{font-size:13px;color:var(--muted);width:62px;flex:none;font-variant-numeric:tabular-nums;padding-top:2px}
+.status{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);margin:4px 0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex:none}
+.dot.on{background:var(--green)}
+@media (prefers-reduced-motion:no-preference){.dot.on{animation:p 1.6s infinite}@keyframes p{50%{opacity:.3}}}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.btn{font:600 16px -apple-system,sans-serif;min-height:44px;border:0;border-radius:12px;background:var(--card);color:var(--blue);cursor:pointer}
+.btn:active{opacity:.6}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);padding:12px 16px 0}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:0}
+.bars{padding:6px 16px 12px}
+.q{display:grid;grid-template-columns:66px minmax(0,1fr);gap:8px;align-items:center;padding:3px 0}
+.ql{font-size:12px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.bar{height:10px;border-radius:5px;margin:2px 0;transform-origin:left;animation:grow .8s cubic-bezier(.2,.8,.2,1) both}
+.bar span{display:block;font-size:11px;font-variant-numeric:tabular-nums;margin-left:calc(100% + 6px);white-space:nowrap;line-height:10px;color:var(--muted)}
+@keyframes grow{from{transform:scaleX(0)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.bar{animation:none}}
+.us{background:var(--blue)}.cn{background:var(--pink)}
+.list{padding:0}
+.lrow{display:flex;justify-content:space-between;gap:12px;padding:11px 16px;position:relative;font-size:15px}
+.lrow+.lrow:before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--sep)}
+.lrow .n{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cmp{padding:12px 16px;position:relative}
+.cmp+.cmp:before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--sep)}
+.cmp .k{font-weight:600;margin-bottom:6px}
+.cmp .two{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px}
+.cmp .lab{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+.fab{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom));width:48px;height:48px;border-radius:50%;border:0;background:var(--blue);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(16px) scale(.9);pointer-events:none;transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1);z-index:20}
+.fab.show{opacity:1;transform:none;pointer-events:auto}
+.fab svg{width:22px;height:22px}
+footer{font-size:12px;color:var(--muted);padding:24px 16px 90px;text-align:center}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div class="small"><a href="./" style="color:var(--blue);text-decoration:none;float:left">&lsaquo; AIShorts</a>AI Policy Watch · <span id="upd">…</span></div>
+  <div class="seg" role="tablist" id="seg"><span class="thumb" id="thumb"></span>
+    <button role="tab" data-p="alerts">Alerts</button><button role="tab" data-p="eu">EU</button><button role="tab" data-p="uscn">US · China</button><button role="tab" data-p="transparency">Transparency</button>
+  </div>
+</div></div>
+
+<main class="wrap">
+
+<section class="pane" id="alerts">
+  <h1>Live alerts</h1>
+  <div class="status"><span class="dot" id="dot"></span><span id="status">Showing the latest snapshot.</span></div>
+  <div class="card flush" id="feed"></div>
+  <div class="btns"><button class="btn" id="seen" type="button">Mark all seen</button><button class="btn" id="check" type="button">Check now</button></div>
+  <p class="foot">Newest AI policy changes worldwide from Digital Policy Alert. A blue dot marks items you haven't marked as seen. The Policy Desk refreshes this feed through the day; this page rechecks every 5 minutes while open.</p>
+</section>
+
+<section class="pane" id="eu">
+  <h1>EU AI rules</h1>
+  <p class="sub">Adopted or brought into force, last 12 months</p>
+  <div class="kpis">
+    <div class="kpi"><div class="lab">Measures</div><div class="v" id="eu-n"></div><div class="trend up"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l4 5H7.2v3H4.8V7H2z" fill="currentColor"/></svg>in the last 12 months</div></div>
+    <div class="kpi"><div class="lab">Adopted / in force</div><div class="v" id="eu-ai"></div><div class="trend up"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l4 5H7.2v3H4.8V7H2z" fill="currentColor"/></svg><span id="eu-win"></span></div></div>
+  </div>
+  <div class="card"><p style="margin:0">The year's centrepiece is the <b>Digital Omnibus on AI</b>, which amended the AI Act. On 2 August 2026 the Act's high-risk, transparency (Article 50) and AI Office rules became applicable, alongside a code of practice on labelling AI content and new European standards.</p></div>
+  <div class="hdr">Timeline</div>
+  <div class="card flush" id="eu-list"></div>
+  <p class="foot">EU-level measures in DPA's AI thread. Member-state measures and pending proposals (KIDS Act, Digital Fairness Act, Cloud and AI Development Act) are left out.</p>
+</section>
+
+<section class="pane" id="uscn">
+  <h1>US vs China</h1>
+  <p class="sub">AI policy events per quarter since 2023</p>
+  <div class="kpis">
+    <div class="kpi"><div class="lab">United States</div><div class="v" id="us-t"></div><div class="trend" id="us-tr"></div></div>
+    <div class="kpi"><div class="lab">China</div><div class="v" id="cn-t"></div><div class="trend" id="cn-tr"></div></div>
+  </div>
+  <div class="card flush">
+    <div class="legend"><span><i class="sw us"></i>United States</span><span><i class="sw cn"></i>China</span></div>
+    <div class="bars" id="bars" role="img" aria-label="Paired bars of AI policy events per quarter, US and China, 2023 to 2026"></div>
+  </div>
+  <p class="foot"><span id="peaks"></span> US counts include state-level activity. The latest quarter is still in progress.</p>
+</section>
+
+<section class="pane" id="transparency">
+  <h1>Transparency</h1>
+  <p class="sub">Domestic AI laws vs the OECD AI Principles</p>
+  <div class="kpis">
+    <div class="kpi"><div class="lab">Domestic provisions</div><div class="v" id="tr-d"></div><div class="trend up"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l4 5H7.2v3H4.8V7H2z" fill="currentColor"/></svg><span id="tr-j"></span> jurisdictions</div></div>
+    <div class="kpi"><div class="lab">International provisions</div><div class="v" id="tr-i"></div><div class="trend down"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10L2 5h2.8V2h2.4v3H10z" fill="currentColor"/></svg>only <span id="tr-o"></span> from OECD</div></div>
+  </div>
+  <div class="hdr">Side by side</div>
+  <div class="card flush" id="cmp"></div>
+  <div class="hdr">Domestic requirements · provisions</div>
+  <div class="card flush list" id="req"></div>
+  <div class="hdr">International frameworks · provisions</div>
+  <div class="card flush list" id="fw"></div>
+  <p class="foot">The side-by-side comparison is an editorial summary of DPA's provision texts.</p>
+</section>
+
+</main>
+<footer>Source: <a href="https://digitalpolicyalert.org" style="color:inherit">Digital Policy Alert</a>. Updated by the AIShorts Policy Desk; <span id="upd2"></span>. <a href="./" style="color:inherit">Back to AIShorts</a></footer>
+<button class="fab" id="fab" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+<script>
+{
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var fmtD=function(s){var p=String(s||'').split('-');return p.length<3?String(s||''):(+p[2])+' '+MON[+p[1]-1]+' '+p[0];};
+var num=function(n){return (n==null||isNaN(n))?'—':Number(n).toLocaleString('en-US');};
+var safe=function(u){return /^https:\/\//.test(String(u))?String(u):'#';};
+var UP='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l4 5H7.2v3H4.8V7H2z" fill="currentColor"/></svg>';
+var DN='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10L2 5h2.8V2h2.4v3H10z" fill="currentColor"/></svg>';
+var CH='<svg class="chev" width="8" height="13" viewBox="0 0 8 13" aria-hidden="true"><path d="M1.5 1.5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var SEEN_KEY='aishorts-policy-seen';
+var seen=function(){try{return JSON.parse(localStorage.getItem(SEEN_KEY)||'[]');}catch(e){return [];}};
+var save=function(a){try{localStorage.setItem(SEEN_KEY,JSON.stringify(a.slice(0,500)));}catch(e){}};
+var data=null,known=null,fresh=0;
+
+var paintAlerts=function(){
+  var rows=(data&&data.alerts)||[];
+  var s=seen();
+  if(!s.length&&rows.length){save(rows.map(function(r){return r.event_id;}));s=seen();}
+  var n=0;
+  $('feed').innerHTML=rows.length?rows.slice(0,25).map(function(r){
+    var isNew=s.indexOf(r.event_id)<0;if(isNew)n++;
+    return '<div class="row">'+(isNew?'<span class="new" aria-label="New"></span>':'<span class="nonew"></span>')+'<div class="t"><a href="'+esc(safe(r.url))+'" target="_blank" rel="noopener">'+esc(r.title)+'</a><div class="meta">'+esc(r.jurisdictions)+' · '+esc(fmtD(r.publication_date))+' · '+esc(r.action_type)+'</div></div>'+CH+'</div>';
+  }).join(''):'<div class="row"><div class="t">No changes loaded yet.</div></div>';
+  var t=new Date(),hh=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);
+  $('status').textContent=(fresh?fresh+' arrived while open. ':'')+(n?n+' new since you last marked them seen. ':'Nothing new since you last marked them seen. ')+'Checked '+hh+'.';
+  $('dot').className='dot on';
+};
+
+var paint=function(){
+  var d=data;if(!d)return;
+  var u=d.updated_at?new Date(d.updated_at):null;
+  var ut=u&&!isNaN(u)?(u.getDate()+' '+MON[u.getMonth()]+', '+('0'+u.getHours()).slice(-2)+':'+('0'+u.getMinutes()).slice(-2)):'';
+  $('upd').textContent=ut;$('upd2').textContent='last update '+ut;
+  paintAlerts();
+  /* EU */
+  var eu=d.eu||{items:[]};
+  $('eu-n').textContent=num(eu.items.length);
+  $('eu-ai').textContent=num(eu.adopted)+' / '+num(eu.in_force);
+  $('eu-win').textContent=eu.window_start?'since '+fmtD(eu.window_start):'';
+  $('eu-list').innerHTML=eu.items.map(function(r){var p=fmtD(r.date).split(' ');var id=(r.event_ids&&r.event_ids[0])||'';
+    return '<div class="row"><div class="date">'+esc(p[0]+' '+(p[1]||''))+'<br>'+esc(p[2]||'')+'</div><div class="t">'+(id?'<a href="https://digitalpolicyalert.org/event/'+encodeURIComponent(id)+'" target="_blank" rel="noopener">'+esc(r.title)+'</a>':esc(r.title))+'<br><span class="pill">'+esc(r.step)+'</span>'+(r.provisions>1?' <span class="meta">'+r.provisions+' provisions</span>':'')+'</div></div>';}).join('');
+  /* US vs China */
+  var uc=d.uscn;
+  if(uc&&uc.quarters&&uc.quarters.length){
+    var Q=uc.quarters,mx=1;Q.forEach(function(x){mx=Math.max(mx,x.us,x.cn);});
+    $('us-t').textContent=num(uc.us_total);$('cn-t').textContent=num(uc.cn_total);
+    var full=Q.filter(function(x){return !x.partial;}),last=full[full.length-1];
+    var yoy=function(k){if(!last)return null;var y=(+last.q.slice(0,4)-1)+last.q.slice(4);var p=null;Q.forEach(function(x){if(x.q===y)p=x;});return p&&p[k]?(last[k]-p[k])/p[k]*100:null;};
+    [['us','us-tr'],['cn','cn-tr']].forEach(function(a){var c=yoy(a[0]),el=$(a[1]);
+      if(c==null){el.textContent='';return;}el.className='trend '+(c>=0?'up':'down');
+      el.innerHTML=(c>=0?UP:DN)+Math.abs(Math.round(c))+'% · '+esc(last.q.slice(5))+' vs '+esc(last.q.slice(5))+' '+(+last.q.slice(0,4)-1);});
+    var pk=function(k){return Q.reduce(function(a,b){return b[k]>a[k]?b:a;});};
+    var pu=pk('us'),pc=pk('cn');
+    $('peaks').textContent='US peaked in '+pu.q+' ('+pu.us+'); China in '+pc.q+' ('+pc.cn+').';
+    $('bars').innerHTML=Q.map(function(x,i){var w=function(v){return (v/mx*82).toFixed(1);};
+      return '<div class="q"><div class="ql">'+esc(x.q)+(x.partial?'*':'')+'</div><div><div class="bar us" style="width:'+w(x.us)+'%;animation-delay:'+(i*30)+'ms"><span>'+x.us+'</span></div><div class="bar cn" style="width:'+w(x.cn)+'%;animation-delay:'+(i*30)+'ms"><span>'+x.cn+'</span></div></div></div>';}).join('');
+  }
+  /* Transparency */
+  var t=d.transparency;
+  if(t){
+    $('tr-d').textContent=num(t.domestic_provisions);$('tr-j').textContent=num(t.jurisdictions);$('tr-i').textContent=num(t.international_provisions);
+    var oecd=(t.frameworks||[]).filter(function(f){return /^OECD/.test(f.name);})[0];$('tr-o').textContent=oecd?oecd.provisions:'—';
+    $('req').innerHTML=(t.requirements||[]).map(function(r){return '<div class="lrow"><span>'+esc(r.title)+'<div class="meta">'+num(r.laws)+' laws · '+num(r.jurisdictions)+' jurisdictions</div></span><span class="n">'+num(r.provisions)+'</span></div>';}).join('');
+    var short=function(n){return n.replace(/^UN General Assembly Resolution A\/RES\/78\/265.*$/,'UN GA Resolution 78/265').replace(/^Council of Europe Framework Convention.*$/,'Council of Europe AI Convention').replace(/^G7: Hiroshima Process International Guiding Principles.*$/,'G7 Hiroshima Guiding Principles').replace(/^G7: Hiroshima Process International Code of Conduct.*$/,'G7 Hiroshima Code of Conduct').replace(/^UNESCO: Recommendation on the Ethics.*$/,'UNESCO Ethics Recommendation').replace(/^ASEAN Expanded Guide.*$/,'ASEAN Generative AI Guide').replace(/^ASEAN Guide on AI Governance and Ethics$/,'ASEAN AI Governance Guide').replace(/^Joint Declaration on AI.*$/,'Joint Declaration on AI & Free Expression');};
+    $('fw').innerHTML=(t.frameworks||[]).map(function(f){var b=/^OECD/.test(f.name);return '<div class="lrow"><span>'+(b?'<b>':'')+esc(short(f.name))+(b?'</b>':'')+'</span><span class="n">'+num(f.provisions)+'</span></div>';}).join('');
+  }
+};
+
+var CMP=[['Legal force','Voluntary recommendation; no penalties.','Binding, with regulators and fines (e.g. EU AI Act).'],['Who owes it','"AI actors" in general, scaled to context.','Named roles: providers, deployers, importers, chatbot operators.'],['Saying it\'s AI','Make people aware they are interacting with AI.','Mandatory notice (EU AI Act Art. 50; US chatbot laws), stricter for minors.'],['Labelling AI content','Not specified.','Content marking and watermarking (EU, US deepfake laws, China).'],['Explaining decisions','Plain information on the logic behind outcomes.','Narrower information rights for high-risk or automated decisions.'],['Records for regulators','Traceability, under accountability.','Documentation, logging, incident reports, notifications.']];
+$('cmp').innerHTML=CMP.map(function(r){return '<div class="cmp"><div class="k">'+esc(r[0])+'</div><div class="two"><div><div class="lab">OECD 1.3</div>'+esc(r[1])+'</div><div><div class="lab">Domestic laws</div>'+esc(r[2])+'</div></div></div>';}).join('');
+
+var load=function(){
+  return fetch('policy-watch.json?v='+Date.now(),{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j)return;
+    var ids=(j.alerts||[]).map(function(a){return a.event_id;});
+    if(known){fresh+=ids.filter(function(i){return known.indexOf(i)<0;}).length;}
+    known=ids.concat(known||[]);data=j;paint();
+  }).catch(function(){$('status').textContent='Could not load the latest policy data.';});
+};
+load();setInterval(load,5*60*1000);
+
+/* segmented control + back-to-top */
+var segBtns=document.querySelectorAll('#seg button'),names=[];for(var i=0;i<segBtns.length;i++)names.push(segBtns[i].getAttribute('data-p'));
+var show=function(n){var idx=names.indexOf(n);if(idx<0){idx=0;n=names[0];}
+  for(var j=0;j<segBtns.length;j++)segBtns[j].setAttribute('aria-selected',String(j===idx));
+  $('thumb').style.transform='translateX('+(idx*100)+'%)';
+  var ps=document.querySelectorAll('.pane');for(var k=0;k<ps.length;k++)ps[k].className='pane'+(ps[k].id===n?' on':'');
+  try{history.replaceState(null,'','#'+n);}catch(e){}
+  window.scrollTo(0,0);};
+for(var b=0;b<segBtns.length;b++)segBtns[b].addEventListener('click',function(){show(this.getAttribute('data-p'));});
+show((location.hash||'').slice(1)||'alerts');setTimeout(function(){window.scrollTo(0,0);},60);
+window.addEventListener('hashchange',function(){show((location.hash||'').slice(1));});
+var fab=$('fab');
+window.addEventListener('scroll',function(){fab.className='fab'+(window.scrollY>300?' show':'');},{passive:true});
+fab.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+$('seen').addEventListener('click',function(){var r=(data&&data.alerts)||[];save(r.map(function(x){return x.event_id;}).concat(seen()));fresh=0;paintAlerts();$('status').textContent='All marked as seen.';});
+$('check').addEventListener('click',function(){$('status').textContent='Checking…';load();});
+}
+</script>
+
+</body>
+</html>

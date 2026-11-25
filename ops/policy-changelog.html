@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Policy Desk changelog · AIShorts internal</title>
+<style>
+:root{--bg:#f2f2f7;--card:#fff;--ink:#121212;--muted:#6b6b70;--sep:#e3e3e8;--blue:#007aff}
+@media (prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--ink:#f2f2f2;--muted:#8d8d93;--sep:#2c2c2e;--blue:#0a84ff}}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:28px;margin:8px 0 4px}
+.sub{color:var(--muted);margin:0 0 14px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+input,select{font:inherit;font-size:16px;padding:9px 12px;border-radius:10px;border:1px solid var(--sep);background:var(--card);color:var(--ink);min-height:44px}
+input{flex:1 1 220px}
+.day{font-size:13px;color:var(--muted);font-weight:600;margin:18px 4px 6px}
+.card{background:var(--card);border-radius:12px;overflow:hidden}
+.row{padding:11px 14px;border-top:1px solid var(--sep)}
+.row:first-child{border-top:0}
+.row a{color:var(--ink);text-decoration:none;font-weight:600}
+.meta{font-size:12px;color:var(--muted);margin-top:2px}
+.pill{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;background:var(--sep);margin-left:4px}
+.stats{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:8px}
+.stats b{color:var(--ink)}
+a.back{color:var(--blue);text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../policy-watch.html">&lsaquo; AI Policy Watch</a>
+  <h1>Policy Desk changelog</h1>
+  <p class="sub">Internal log of AI policy changes, grouped by the day the Policy Desk first picked them up. Not linked from the site and kept out of search engines.</p>
+  <div class="stats" id="stats"></div>
+  <div class="bar">
+    <input id="q" type="search" placeholder="Search title or jurisdiction" aria-label="Search">
+    <select id="j" aria-label="Jurisdiction"><option value="">All jurisdictions</option></select>
+  </div>
+  <div id="out"></div>
+</div>
+<script>
+{
+var $=function(id){return document.getElementById(id);};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var entries=[];
+var render=function(){
+  var q=$('q').value.trim().toLowerCase(),j=$('j').value;
+  var rows=entries.filter(function(e){return (!j||String(e.jurisdictions).indexOf(j)>=0)&&(!q||(e.title+' '+e.jurisdictions).toLowerCase().indexOf(q)>=0);});
+  var days={},order=[];
+  rows.forEach(function(e){var d=String(e.logged_at).slice(0,10);if(!days[d]){days[d]=[];order.push(d);}days[d].push(e);});
+  $('out').innerHTML=order.map(function(d){return '<div class="day">'+esc(d)+' · '+days[d].length+' change'+(days[d].length>1?'s':'')+'</div><div class="card">'+days[d].map(function(e){
+    var u=/^https:\/\//.test(e.url)?e.url:'#';
+    return '<div class="row"><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(e.title)+'</a><div class="meta">'+esc(e.jurisdictions)+' · published '+esc(e.publication_date)+' · event '+esc(e.date)+'<span class="pill">'+esc(e.action_type)+'</span></div></div>';}).join('')+'</div>';}).join('')||'<p class="sub">No entries match.</p>';
+};
+fetch('policy-changelog.json?v='+Date.now(),{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(l){
+  entries=(l&&l.entries)||[];
+  var js={};entries.forEach(function(e){String(e.jurisdictions).split(', ').forEach(function(x){x=x.replace(/ \+\d+$/,'');if(x)js[x]=(js[x]||0)+1;});});
+  Object.keys(js).sort().forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=k+' ('+js[k]+')';$('j').appendChild(o);});
+  var days={};entries.forEach(function(e){days[String(e.logged_at).slice(0,10)]=1;});
+  $('stats').innerHTML='<span><b>'+entries.length+'</b> changes logged</span><span><b>'+Object.keys(days).length+'</b> days</span><span>Last update <b>'+esc(l&&l.updated_at?String(l.updated_at).replace('T',' ').slice(0,16)+' UTC':'—')+'</b></span>';
+  render();
+}).catch(function(){$('out').innerHTML='<p class="sub">Could not load the changelog.</p>';});
+$('q').addEventListener('input',render);$('j').addEventListener('change',render);
+}
+</script>
+</body>
+</html>
