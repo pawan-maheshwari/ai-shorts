@@ -31,7 +31,7 @@ Owner: Pawan Maheshwari (planetAI LLP).
 
 - **Bots commit daily → always `git pull --rebase` before pushing**, and never hand-edit
   the files in the "Writes" column (the next run overwrites them).
-- `policy-watch.html` = AI Policy Watch (iOS-style, reads `policy-watch.json`); front-page bell `#pwBell` + `#pwPop` near `</body>` in `index.html`; internal log at `ops/policy-changelog.html`.
+- `policy-watch.html` = AI Policy Watch (iOS-style, reads `policy-watch.json`; per-section filters remembered in localStorage `aishorts-policy-filters`; Print sheet = this section or all, `@media print`); front-page bell `#pwBell` + `#pwPop` near `</body>` in `index.html`; internal log at `ops/policy-changelog.html`.
 - Other pages: `ai-anchor.html` / `news-anchor.html` (video anchor, `anchor-*.mp4`),
   `stock-lab.html` (front for the Streamlit app), `vitalmetrics.html`, `ai-library.html`
   (a diverged copy also lives in AI-University — ask before syncing), `about/contact/privacy/standards`.

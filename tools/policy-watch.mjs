@@ -83,7 +83,7 @@ if (args.alerts) {
   const j = readJSON(args.alerts[0], null);
   if (!j || !Array.isArray(j.results)) { console.error('alerts: no results array'); process.exitCode = 2; }
   else {
-    out.alerts = j.results.slice(0, 40).map((r) => ({
+    out.alerts = j.results.slice(0, 60).map((r) => ({
       event_id: String(r.event_id),
       title: String(r.title || ''),
       jurisdictions: jur(r.implementers),

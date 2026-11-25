@@ -83,21 +83,75 @@ p{margin:0 0 10px}
 .fab.show{opacity:1;transform:none;pointer-events:auto}
 .fab svg{width:22px;height:22px}
 footer{font-size:12px;color:var(--muted);padding:24px 16px 90px;text-align:center}
+.filters{margin:10px 0 4px}
+.search{display:flex;align-items:center;gap:6px;background:var(--fill);border-radius:10px;padding:0 10px;min-height:40px}
+.search svg{width:15px;height:15px;color:var(--muted);flex:none}
+.search input{flex:1;border:0;background:transparent;color:var(--ink);font:16px -apple-system,sans-serif;padding:8px 0;outline:none}
+.search button{border:0;background:var(--muted);color:var(--card);width:18px;height:18px;border-radius:50%;font-size:12px;line-height:18px;padding:0;cursor:pointer}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:8px 0 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chips .lbl{font-size:12px;color:var(--muted);align-self:center;flex:none;margin-right:2px}
+.chip{flex:none;border:0;border-radius:99px;padding:7px 13px;min-height:34px;font:600 13px -apple-system,sans-serif;background:var(--card);color:var(--ink);cursor:pointer;transition:background .2s,color .2s;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.chip:focus-visible,.btn:focus-visible,.seg button:focus-visible,.search input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.sel{flex:none;font:600 13px -apple-system,sans-serif;border:0;border-radius:99px;padding:7px 28px 7px 13px;min-height:34px;background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a8a8e' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 11px center;color:var(--ink);-webkit-appearance:none;appearance:none}
+.count{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted);margin:8px 4px 0}
+.count button{border:0;background:none;color:var(--blue);font:600 13px -apple-system,sans-serif;cursor:pointer;padding:6px 0}
+.empty{padding:18px 16px;color:var(--muted);text-align:center}
+mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
+.printbtn{float:right;border:0;background:none;color:var(--blue);font:600 13px -apple-system,sans-serif;cursor:pointer;padding:0;display:inline-flex;align-items:center;gap:4px}
+.printbtn svg{width:15px;height:15px}
+.sheet{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;justify-content:center}
+.sheet[hidden]{display:none}
+.sheet .box{width:min(520px,100%);padding:8px 8px calc(8px + env(safe-area-inset-bottom));animation:sheetIn .3s cubic-bezier(.2,.8,.2,1)}
+@keyframes sheetIn{from{transform:translateY(100%)}to{transform:none}}
+.sheet .grp{background:var(--card);border-radius:14px;overflow:hidden;margin-bottom:8px}
+.sheet .grp .t{font-size:13px;color:var(--muted);text-align:center;padding:12px 16px;border-bottom:.5px solid var(--sep)}
+.sheet .grp button{display:block;width:100%;border:0;background:none;color:var(--blue);font:400 18px -apple-system,sans-serif;min-height:54px;cursor:pointer}
+.sheet .grp button+button{border-top:.5px solid var(--sep)}
+.sheet .grp .cancel{font-weight:600}
+.ponly{display:none}
+@media print{
+  :root{--bg:#fff;--card:#fff;--ink:#000;--muted:#555;--sep:#ccc}
+  body{background:#fff;font-size:11pt}
+  .top,.filters,.btns,.fab,.sheet,.count button,footer a{display:none!important}
+  .pane{display:block!important;animation:none!important}
+  body.print-one .pane:not(.on){display:none!important}
+  .pane+.pane{break-before:page}
+  .card,.kpi{border:1px solid #ccc;break-inside:avoid}
+  .bar{animation:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sw,.new,.dot{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ponly{display:block}
+  .phead{border-bottom:2px solid #000;padding:0 0 8px;margin:0 0 12px;font-size:10pt}
+  .phead b{font-size:16pt;display:block}
+  .pfilt{font-size:9.5pt;color:#444;margin:4px 0 8px}
+  h1{font-size:22pt;margin-top:0}
+  .chev{display:none}
+  a{color:#000}
+}
 </style>
 </head>
 <body>
 <div class="top"><div class="wrap">
-  <div class="small"><a href="./" style="color:var(--blue);text-decoration:none;float:left">&lsaquo; AIShorts</a>AI Policy Watch · <span id="upd">…</span></div>
+  <div class="small"><a href="./" style="color:var(--blue);text-decoration:none;float:left">&lsaquo; AIShorts</a><button class="printbtn" id="printBtn" type="button" aria-label="Print"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6V2h8v4M4 12H2.5A1 1 0 0 1 1.5 11V7a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H12M4 9.5h8V14H4z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Print</button>AI Policy Watch · <span id="upd">…</span></div>
   <div class="seg" role="tablist" id="seg"><span class="thumb" id="thumb"></span>
     <button role="tab" data-p="alerts">Alerts</button><button role="tab" data-p="eu">EU</button><button role="tab" data-p="uscn">US · China</button><button role="tab" data-p="transparency">Transparency</button>
   </div>
 </div></div>
 
 <main class="wrap">
+<div class="ponly phead"><b>AI Policy Watch · AIShorts</b>Source: Digital Policy Alert · data updated <span id="pupd"></span> · printed <span id="pnow"></span></div>
 
 <section class="pane" id="alerts">
   <h1>Live alerts</h1>
   <div class="status"><span class="dot" id="dot"></span><span id="status">Showing the latest snapshot.</span></div>
+  <div class="filters" role="search">
+    <label class="search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="aQ" type="search" placeholder="Search alerts" aria-label="Search alerts" autocomplete="off"><button type="button" id="aQx" aria-label="Clear search" hidden>&times;</button></label>
+    <div class="chips" id="aPer"><span class="lbl">Period</span><button class="chip" data-v="all" aria-pressed="true">All</button><button class="chip" data-v="2">48 h</button><button class="chip" data-v="7">7 days</button><button class="chip" data-v="30">30 days</button></div>
+    <div class="chips"><span class="lbl">Show</span><button class="chip" id="aUnread" aria-pressed="false">Unread only</button><select class="sel" id="aJur" aria-label="Jurisdiction"><option value="">All jurisdictions</option></select><select class="sel" id="aStep" aria-label="Step"><option value="">All steps</option></select></div>
+  </div>
+  <div class="ponly pfilt" id="aPf"></div>
+  <div class="count"><span id="aCount"></span><button type="button" id="aReset" hidden>Clear filters</button></div>
   <div class="card flush" id="feed"></div>
   <div class="btns"><button class="btn" id="seen" type="button">Mark all seen</button><button class="btn" id="check" type="button">Check now</button></div>
   <p class="foot">Newest AI policy changes worldwide from Digital Policy Alert. A blue dot marks items you haven't marked as seen. The Policy Desk refreshes this feed through the day; this page rechecks every 5 minutes while open.</p>
@@ -112,22 +166,37 @@ footer{font-size:12px;color:var(--muted);padding:24px 16px 90px;text-align:cente
   </div>
   <div class="card"><p style="margin:0">The year's centrepiece is the <b>Digital Omnibus on AI</b>, which amended the AI Act. On 2 August 2026 the Act's high-risk, transparency (Article 50) and AI Office rules became applicable, alongside a code of practice on labelling AI content and new European standards.</p></div>
   <div class="hdr">Timeline</div>
+  <div class="filters" role="search">
+    <label class="search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="eQ" type="search" placeholder="Search EU rules (e.g. Omnibus, standard)" aria-label="Search EU rules" autocomplete="off"><button type="button" id="eQx" aria-label="Clear search" hidden>&times;</button></label>
+    <div class="chips" id="eStep"><span class="lbl">Step</span><button class="chip" data-v="" aria-pressed="true">All</button><button class="chip" data-v="Adopted">Adopted</button><button class="chip" data-v="In force">In force</button></div>
+    <div class="chips" id="eType"><span class="lbl">Type</span><button class="chip" data-v="" aria-pressed="true">All</button><button class="chip" data-v="act">AI Act &amp; Omnibus</button><button class="chip" data-v="std">Standards</button><button class="chip" data-v="other">Other</button><select class="sel" id="eSort" aria-label="Sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="big">Most provisions</option></select></div>
+  </div>
+  <div class="ponly pfilt" id="ePf"></div>
+  <div class="count"><span id="eCount"></span><button type="button" id="eReset" hidden>Clear filters</button></div>
   <div class="card flush" id="eu-list"></div>
   <p class="foot">EU-level measures in DPA's AI thread. Member-state measures and pending proposals (KIDS Act, Digital Fairness Act, Cloud and AI Development Act) are left out.</p>
 </section>
 
 <section class="pane" id="uscn">
   <h1>US vs China</h1>
-  <p class="sub">AI policy events per quarter since 2023</p>
+  <p class="sub" id="uSub">AI policy events per quarter since 2023</p>
+  <div class="filters">
+    <div class="chips" id="uRange"><span class="lbl">Range</span><button class="chip" data-v="all" aria-pressed="true">Since 2023</button><button class="chip" data-v="2024">2024+</button><button class="chip" data-v="2025">2025+</button><button class="chip" data-v="4">Last 4 qtrs</button></div>
+    <div class="chips" id="uSer"><span class="lbl">Show</span><button class="chip" data-v="both" aria-pressed="true">Both</button><button class="chip" data-v="us">US</button><button class="chip" data-v="cn">China</button></div>
+    <div class="chips" id="uGrp"><span class="lbl">Group by</span><button class="chip" data-v="q" aria-pressed="true">Quarter</button><button class="chip" data-v="y">Year</button></div>
+  </div>
+  <div class="ponly pfilt" id="uPf"></div>
   <div class="kpis">
     <div class="kpi"><div class="lab">United States</div><div class="v" id="us-t"></div><div class="trend" id="us-tr"></div></div>
     <div class="kpi"><div class="lab">China</div><div class="v" id="cn-t"></div><div class="trend" id="cn-tr"></div></div>
+    <div class="kpi"><div class="lab">US share of the two</div><div class="v" id="u-share"></div><div class="trend" id="u-ratio" style="color:var(--muted)"></div></div>
+    <div class="kpi"><div class="lab">Busiest period</div><div class="v" id="u-peak" style="font-size:22px"></div><div class="trend" id="u-peakn" style="color:var(--muted)"></div></div>
   </div>
   <div class="card flush">
     <div class="legend"><span><i class="sw us"></i>United States</span><span><i class="sw cn"></i>China</span></div>
     <div class="bars" id="bars" role="img" aria-label="Paired bars of AI policy events per quarter, US and China, 2023 to 2026"></div>
   </div>
-  <p class="foot"><span id="peaks"></span> US counts include state-level activity. The latest quarter is still in progress.</p>
+  <p class="foot"><span id="peaks"></span> US counts include state-level activity.</p>
 </section>
 
 <section class="pane" id="transparency">
@@ -138,22 +207,30 @@ footer{font-size:12px;color:var(--muted);padding:24px 16px 90px;text-align:cente
     <div class="kpi"><div class="lab">International provisions</div><div class="v" id="tr-i"></div><div class="trend down"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10L2 5h2.8V2h2.4v3H10z" fill="currentColor"/></svg>only <span id="tr-o"></span> from OECD</div></div>
   </div>
   <div class="hdr">Side by side</div>
+  <div class="filters"><div class="chips" id="tDim"><span class="lbl">Focus</span><button class="chip" data-v="" aria-pressed="true">All</button></div></div>
   <div class="card flush" id="cmp"></div>
-  <div class="hdr">Domestic requirements · provisions</div>
+  <div class="hdr">Domestic requirements</div>
+  <div class="filters"><div class="chips" id="tSort"><span class="lbl">Rank by</span><button class="chip" data-v="provisions" aria-pressed="true">Provisions</button><button class="chip" data-v="laws">Laws</button><button class="chip" data-v="jurisdictions">Jurisdictions</button></div></div>
   <div class="card flush list" id="req"></div>
-  <div class="hdr">International frameworks · provisions</div>
+  <div class="hdr">International frameworks · transparency provisions</div>
   <div class="card flush list" id="fw"></div>
   <p class="foot">The side-by-side comparison is an editorial summary of DPA's provision texts.</p>
 </section>
 
 </main>
 <footer>Source: <a href="https://digitalpolicyalert.org" style="color:inherit">Digital Policy Alert</a>. Updated by the AIShorts Policy Desk; <span id="upd2"></span>. <a href="./" style="color:inherit">Back to AIShorts</a></footer>
+<div class="sheet" id="pSheet" hidden role="dialog" aria-label="Print options"><div class="box">
+  <div class="grp"><div class="t">Print AI Policy Watch with your current filters</div><button type="button" id="pOne">This section</button><button type="button" id="pAll">All sections</button></div>
+  <div class="grp"><button type="button" class="cancel" id="pCancel">Cancel</button></div>
+</div></div>
 <button class="fab" id="fab" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
 
 <script>
 {
 var $=function(id){return document.getElementById(id);};
+var qa=function(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel));};
 var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var hi=function(text,q){var t=esc(text);if(!q)return t;var i=String(text).toLowerCase().indexOf(q);if(i<0)return t;return esc(String(text).slice(0,i))+'<mark>'+esc(String(text).slice(i,i+q.length))+'</mark>'+esc(String(text).slice(i+q.length));};
 var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var fmtD=function(s){var p=String(s||'').split('-');return p.length<3?String(s||''):(+p[2])+' '+MON[+p[1]-1]+' '+p[0];};
 var num=function(n){return (n==null||isNaN(n))?'—':Number(n).toLocaleString('en-US');};
@@ -161,87 +238,175 @@ var safe=function(u){return /^https:\/\//.test(String(u))?String(u):'#';};
 var UP='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 2l4 5H7.2v3H4.8V7H2z" fill="currentColor"/></svg>';
 var DN='<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 10L2 5h2.8V2h2.4v3H10z" fill="currentColor"/></svg>';
 var CH='<svg class="chev" width="8" height="13" viewBox="0 0 8 13" aria-hidden="true"><path d="M1.5 1.5l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-var SEEN_KEY='aishorts-policy-seen';
+var SEEN_KEY='aishorts-policy-seen',F_KEY='aishorts-policy-filters';
 var seen=function(){try{return JSON.parse(localStorage.getItem(SEEN_KEY)||'[]');}catch(e){return [];}};
 var save=function(a){try{localStorage.setItem(SEEN_KEY,JSON.stringify(a.slice(0,500)));}catch(e){}};
 var data=null,known=null,fresh=0;
 
-var paintAlerts=function(){
-  var rows=(data&&data.alerts)||[];
-  var s=seen();
-  if(!s.length&&rows.length){save(rows.map(function(r){return r.event_id;}));s=seen();}
-  var n=0;
-  $('feed').innerHTML=rows.length?rows.slice(0,25).map(function(r){
-    var isNew=s.indexOf(r.event_id)<0;if(isNew)n++;
-    return '<div class="row">'+(isNew?'<span class="new" aria-label="New"></span>':'<span class="nonew"></span>')+'<div class="t"><a href="'+esc(safe(r.url))+'" target="_blank" rel="noopener">'+esc(r.title)+'</a><div class="meta">'+esc(r.jurisdictions)+' · '+esc(fmtD(r.publication_date))+' · '+esc(r.action_type)+'</div></div>'+CH+'</div>';
-  }).join(''):'<div class="row"><div class="t">No changes loaded yet.</div></div>';
-  var t=new Date(),hh=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);
-  $('status').textContent=(fresh?fresh+' arrived while open. ':'')+(n?n+' new since you last marked them seen. ':'Nothing new since you last marked them seen. ')+'Checked '+hh+'.';
-  $('dot').className='dot on';
-};
+/* ---------- filter state (remembered on this device) ---------- */
+var DEF={aQ:'',aPer:'all',aUnread:false,aJur:'',aStep:'',eQ:'',eStep:'',eType:'',eSort:'new',uRange:'all',uSer:'both',uGrp:'q',tDim:'',tSort:'provisions'};
+var F={};for(var k in DEF)F[k]=DEF[k];
+try{var sv=JSON.parse(localStorage.getItem(F_KEY)||'{}');for(var k2 in sv)if(k2 in DEF&&k2!=='aQ'&&k2!=='eQ')F[k2]=sv[k2];}catch(e){}
+var keep=function(){try{localStorage.setItem(F_KEY,JSON.stringify(F));}catch(e){}};
+var chipGroup=function(id,key,fn){var g=$(id);if(!g)return;
+  var sync=function(){qa('.chip',g).forEach(function(b){if(b.hasAttribute('data-v'))b.setAttribute('aria-pressed',String(b.getAttribute('data-v')===String(F[key])));});};
+  g.addEventListener('click',function(e){var b=e.target.closest?e.target.closest('.chip'):null;if(!b||!b.hasAttribute('data-v'))return;F[key]=b.getAttribute('data-v');sync();keep();fn();});
+  sync();return sync;};
+var searchBox=function(id,key,fn){var inp=$(id),x=$(id+'x');inp.value=F[key];x.hidden=!F[key];
+  inp.addEventListener('input',function(){F[key]=inp.value;x.hidden=!inp.value;fn();});
+  x.addEventListener('click',function(){inp.value='';F[key]='';x.hidden=true;fn();inp.focus();});};
 
-var paint=function(){
-  var d=data;if(!d)return;
-  var u=d.updated_at?new Date(d.updated_at):null;
-  var ut=u&&!isNaN(u)?(u.getDate()+' '+MON[u.getMonth()]+', '+('0'+u.getHours()).slice(-2)+':'+('0'+u.getMinutes()).slice(-2)):'';
-  $('upd').textContent=ut;$('upd2').textContent='last update '+ut;
-  paintAlerts();
-  /* EU */
-  var eu=d.eu||{items:[]};
+/* ---------- Alerts ---------- */
+var STEP=function(t){t=String(t||'').toLowerCase();
+  if(t==='adoption')return 'Adopted';
+  if(t.indexOf('implementation')>=0||t.indexOf('in force')>=0)return 'In force';
+  if(/introduction|drafting|passage|amendment|consultation/.test(t))return 'In progress';
+  if(/announcement|investigation|decision|ruling|opinion|closure|appeal/.test(t))return 'Enforcement & reports';
+  return 'Other';};
+var jurList=function(a){return String(a.jurisdictions||'').split(', ').map(function(x){return x.replace(/ \+\d+$/,'');}).filter(Boolean);};
+var fillSelect=function(sel,values,key,label){var cur=F[key];sel.innerHTML='<option value="">'+label+'</option>'+values.map(function(v){return '<option value="'+esc(v[0])+'">'+esc(v[0])+' ('+v[1]+')</option>';}).join('');
+  sel.value=values.some(function(v){return v[0]===cur;})?cur:'';F[key]=sel.value;};
+var tally=function(list,fn){var m={};list.forEach(function(x){fn(x).forEach(function(k){m[k]=(m[k]||0)+1;});});return Object.keys(m).map(function(k){return [k,m[k]];}).sort(function(a,b){return b[1]-a[1]||(a[0]<b[0]?-1:1);});};
+var aSync=null;
+var paintAlerts=function(){
+  var rows=(data&&data.alerts)||[],s=seen();
+  if(!s.length&&rows.length){save(rows.map(function(r){return r.event_id;}));s=seen();}
+  var ref=data&&data.updated_at?new Date(data.updated_at).getTime():Date.now(),q=F.aQ.trim().toLowerCase();
+  var out=rows.filter(function(r){
+    if(F.aPer!=='all'){var d=new Date(r.publication_date+'T00:00:00Z').getTime();if(isNaN(d)||ref-d>(+F.aPer)*864e5)return false;}
+    if(F.aUnread&&s.indexOf(r.event_id)>=0)return false;
+    if(F.aJur&&jurList(r).indexOf(F.aJur)<0)return false;
+    if(F.aStep&&STEP(r.action_type)!==F.aStep)return false;
+    if(q&&(r.title+' '+r.jurisdictions+' '+r.action_type).toLowerCase().indexOf(q)<0)return false;
+    return true;});
+  var unread=rows.filter(function(r){return s.indexOf(r.event_id)<0;}).length;
+  $('feed').innerHTML=out.length?out.map(function(r){var isNew=s.indexOf(r.event_id)<0;
+    return '<div class="row">'+(isNew?'<span class="new" aria-label="New"></span>':'<span class="nonew"></span>')+'<div class="t"><a href="'+esc(safe(r.url))+'" target="_blank" rel="noopener">'+hi(r.title,q)+'</a><div class="meta">'+hi(r.jurisdictions,q)+' · '+esc(fmtD(r.publication_date))+' · '+esc(STEP(r.action_type))+'</div></div>'+CH+'</div>';
+  }).join(''):'<div class="empty">No alerts match these filters.</div>';
+  var active=(F.aQ?1:0)+(F.aPer!=='all'?1:0)+(F.aUnread?1:0)+(F.aJur?1:0)+(F.aStep?1:0);
+  $('aCount').textContent=out.length+' of '+rows.length+' changes'+(active?' · '+active+' filter'+(active>1?'s':''):'');
+  $('aReset').hidden=!active;
+  $('aPf').textContent='Filters: '+(active?[F.aQ&&('search "'+F.aQ+'"'),F.aPer!=='all'&&('last '+(F.aPer==='2'?'48 hours':F.aPer+' days')),F.aUnread&&'unread only',F.aJur,F.aStep].filter(Boolean).join(' · '):'none')+' — '+out.length+' of '+rows.length+' changes';
+  var t=new Date(),hh=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);
+  $('status').textContent=(fresh?fresh+' arrived while open. ':'')+(unread?unread+' unread. ':'All caught up. ')+'Checked '+hh+'.';
+  $('dot').className='dot on';
+  $('aUnread').setAttribute('aria-pressed',String(!!F.aUnread));
+};
+var refreshAlertMenus=function(){var rows=(data&&data.alerts)||[];
+  fillSelect($('aJur'),tally(rows,jurList),'aJur','All jurisdictions');
+  fillSelect($('aStep'),tally(rows,function(r){return [STEP(r.action_type)];}),'aStep','All steps');};
+aSync=chipGroup('aPer','aPer',paintAlerts);
+$('aUnread').addEventListener('click',function(){F.aUnread=!F.aUnread;keep();paintAlerts();});
+$('aJur').addEventListener('change',function(){F.aJur=this.value;keep();paintAlerts();});
+$('aStep').addEventListener('change',function(){F.aStep=this.value;keep();paintAlerts();});
+searchBox('aQ','aQ',paintAlerts);
+$('aReset').addEventListener('click',function(){F.aQ='';F.aPer='all';F.aUnread=false;F.aJur='';F.aStep='';$('aQ').value='';$('aQx').hidden=true;$('aJur').value='';$('aStep').value='';aSync();keep();paintAlerts();});
+
+/* ---------- EU ---------- */
+var euType=function(t){t=String(t);if(/AI Act|Omnibus|Artificial Intelligence Act|Code of Practice|sandbox|Advisory Forum|Scientific Panel/i.test(t))return 'act';if(/standard|CEN-CENELEC|EN ISO|EN \d/i.test(t))return 'std';return 'other';};
+var paintEU=function(){
+  var eu=(data&&data.eu)||{items:[]},q=F.eQ.trim().toLowerCase();
   $('eu-n').textContent=num(eu.items.length);
   $('eu-ai').textContent=num(eu.adopted)+' / '+num(eu.in_force);
   $('eu-win').textContent=eu.window_start?'since '+fmtD(eu.window_start):'';
-  $('eu-list').innerHTML=eu.items.map(function(r){var p=fmtD(r.date).split(' ');var id=(r.event_ids&&r.event_ids[0])||'';
-    return '<div class="row"><div class="date">'+esc(p[0]+' '+(p[1]||''))+'<br>'+esc(p[2]||'')+'</div><div class="t">'+(id?'<a href="https://digitalpolicyalert.org/event/'+encodeURIComponent(id)+'" target="_blank" rel="noopener">'+esc(r.title)+'</a>':esc(r.title))+'<br><span class="pill">'+esc(r.step)+'</span>'+(r.provisions>1?' <span class="meta">'+r.provisions+' provisions</span>':'')+'</div></div>';}).join('');
-  /* US vs China */
-  var uc=d.uscn;
-  if(uc&&uc.quarters&&uc.quarters.length){
-    var Q=uc.quarters,mx=1;Q.forEach(function(x){mx=Math.max(mx,x.us,x.cn);});
-    $('us-t').textContent=num(uc.us_total);$('cn-t').textContent=num(uc.cn_total);
-    var full=Q.filter(function(x){return !x.partial;}),last=full[full.length-1];
-    var yoy=function(k){if(!last)return null;var y=(+last.q.slice(0,4)-1)+last.q.slice(4);var p=null;Q.forEach(function(x){if(x.q===y)p=x;});return p&&p[k]?(last[k]-p[k])/p[k]*100:null;};
-    [['us','us-tr'],['cn','cn-tr']].forEach(function(a){var c=yoy(a[0]),el=$(a[1]);
-      if(c==null){el.textContent='';return;}el.className='trend '+(c>=0?'up':'down');
-      el.innerHTML=(c>=0?UP:DN)+Math.abs(Math.round(c))+'% · '+esc(last.q.slice(5))+' vs '+esc(last.q.slice(5))+' '+(+last.q.slice(0,4)-1);});
-    var pk=function(k){return Q.reduce(function(a,b){return b[k]>a[k]?b:a;});};
-    var pu=pk('us'),pc=pk('cn');
-    $('peaks').textContent='US peaked in '+pu.q+' ('+pu.us+'); China in '+pc.q+' ('+pc.cn+').';
-    $('bars').innerHTML=Q.map(function(x,i){var w=function(v){return (v/mx*82).toFixed(1);};
-      return '<div class="q"><div class="ql">'+esc(x.q)+(x.partial?'*':'')+'</div><div><div class="bar us" style="width:'+w(x.us)+'%;animation-delay:'+(i*30)+'ms"><span>'+x.us+'</span></div><div class="bar cn" style="width:'+w(x.cn)+'%;animation-delay:'+(i*30)+'ms"><span>'+x.cn+'</span></div></div></div>';}).join('');
-  }
-  /* Transparency */
-  var t=d.transparency;
-  if(t){
-    $('tr-d').textContent=num(t.domestic_provisions);$('tr-j').textContent=num(t.jurisdictions);$('tr-i').textContent=num(t.international_provisions);
-    var oecd=(t.frameworks||[]).filter(function(f){return /^OECD/.test(f.name);})[0];$('tr-o').textContent=oecd?oecd.provisions:'—';
-    $('req').innerHTML=(t.requirements||[]).map(function(r){return '<div class="lrow"><span>'+esc(r.title)+'<div class="meta">'+num(r.laws)+' laws · '+num(r.jurisdictions)+' jurisdictions</div></span><span class="n">'+num(r.provisions)+'</span></div>';}).join('');
-    var short=function(n){return n.replace(/^UN General Assembly Resolution A\/RES\/78\/265.*$/,'UN GA Resolution 78/265').replace(/^Council of Europe Framework Convention.*$/,'Council of Europe AI Convention').replace(/^G7: Hiroshima Process International Guiding Principles.*$/,'G7 Hiroshima Guiding Principles').replace(/^G7: Hiroshima Process International Code of Conduct.*$/,'G7 Hiroshima Code of Conduct').replace(/^UNESCO: Recommendation on the Ethics.*$/,'UNESCO Ethics Recommendation').replace(/^ASEAN Expanded Guide.*$/,'ASEAN Generative AI Guide').replace(/^ASEAN Guide on AI Governance and Ethics$/,'ASEAN AI Governance Guide').replace(/^Joint Declaration on AI.*$/,'Joint Declaration on AI & Free Expression');};
-    $('fw').innerHTML=(t.frameworks||[]).map(function(f){var b=/^OECD/.test(f.name);return '<div class="lrow"><span>'+(b?'<b>':'')+esc(short(f.name))+(b?'</b>':'')+'</span><span class="n">'+num(f.provisions)+'</span></div>';}).join('');
-  }
+  var out=eu.items.filter(function(r){return (!F.eStep||r.step===F.eStep)&&(!F.eType||euType(r.title)===F.eType)&&(!q||r.title.toLowerCase().indexOf(q)>=0);});
+  out.sort(function(a,b){if(F.eSort==='old')return a.date<b.date?-1:1;if(F.eSort==='big')return (b.provisions-a.provisions)||(a.date<b.date?1:-1);return a.date<b.date?1:-1;});
+  $('eu-list').innerHTML=out.length?out.map(function(r){var p=fmtD(r.date).split(' ');var id=(r.event_ids&&r.event_ids[0])||'';
+    return '<div class="row"><div class="date">'+esc(p[0]+' '+(p[1]||''))+'<br>'+esc(p[2]||'')+'</div><div class="t">'+(id?'<a href="https://digitalpolicyalert.org/event/'+encodeURIComponent(id)+'" target="_blank" rel="noopener">'+hi(r.title,q)+'</a>':hi(r.title,q))+'<br><span class="pill">'+esc(r.step)+'</span>'+(r.provisions>1?' <span class="meta">'+r.provisions+' provisions</span>':'')+'</div></div>';}).join(''):'<div class="empty">No EU rules match these filters.</div>';
+  var active=(F.eQ?1:0)+(F.eStep?1:0)+(F.eType?1:0);
+  $('eCount').textContent=out.length+' of '+eu.items.length+' measures';
+  $('eReset').hidden=!active;
+  var TN={act:'AI Act & Omnibus',std:'Standards',other:'Other'};
+  $('ePf').textContent='Filters: '+([F.eQ&&('search "'+F.eQ+'"'),F.eStep,F.eType&&TN[F.eType]].filter(Boolean).join(' · ')||'none')+' · sorted '+$('eSort').options[$('eSort').selectedIndex].text.toLowerCase();
 };
+var eS1=chipGroup('eStep','eStep',paintEU),eS2=chipGroup('eType','eType',paintEU);
+$('eSort').value=F.eSort;$('eSort').addEventListener('change',function(){F.eSort=this.value;keep();paintEU();});
+searchBox('eQ','eQ',paintEU);
+$('eReset').addEventListener('click',function(){F.eQ='';F.eStep='';F.eType='';$('eQ').value='';$('eQx').hidden=true;eS1();eS2();keep();paintEU();});
 
+/* ---------- US vs China ---------- */
+var paintUS=function(){
+  var uc=data&&data.uscn;if(!uc||!uc.quarters||!uc.quarters.length)return;
+  var Q=uc.quarters.slice();
+  if(F.uRange==='2024')Q=Q.filter(function(x){return +x.q.slice(0,4)>=2024;});
+  else if(F.uRange==='2025')Q=Q.filter(function(x){return +x.q.slice(0,4)>=2025;});
+  else if(F.uRange==='4'){var full=Q.filter(function(x){return !x.partial;});Q=full.slice(-4);}
+  var G=Q;
+  if(F.uGrp==='y'){var m={},o=[];Q.forEach(function(x){var y=x.q.slice(0,4);if(!m[y]){m[y]={q:y,us:0,cn:0};o.push(m[y]);}m[y].us+=x.us;m[y].cn+=x.cn;if(x.partial)m[y].partial=true;});G=o;}
+  var us=Q.reduce(function(s,x){return s+x.us;},0),cn=Q.reduce(function(s,x){return s+x.cn;},0);
+  var showUS=F.uSer!=='cn',showCN=F.uSer!=='us';
+  var RL={all:'since 2023','2024':'since 2024','2025':'since 2025','4':'in the last 4 full quarters'}[F.uRange];
+  $('uSub').textContent='AI policy events per '+(F.uGrp==='y'?'year':'quarter')+' '+RL;
+  $('us-t').textContent=num(us);$('cn-t').textContent=num(cn);
+  $('u-share').textContent=(us+cn)?Math.round(us/(us+cn)*100)+'%':'—';
+  $('u-ratio').textContent=cn?'US had '+(us/cn).toFixed(1)+'× China\'s events':'';
+  var key=showUS&&!showCN?'us':(!showUS&&showCN?'cn':null);
+  var pk=G.reduce(function(a,b){var va=key?a[key]:a.us+a.cn,vb=key?b[key]:b.us+b.cn;return vb>va?b:a;});
+  $('u-peak').textContent=pk.q+(pk.partial?'*':'');$('u-peakn').textContent=num(key?pk[key]:pk.us+pk.cn)+' events'+(key?' ('+(key==='us'?'US':'China')+')':' combined');
+  /* year-on-year arrows on the latest full quarter, always shown */
+  var AQ=uc.quarters,full2=AQ.filter(function(x){return !x.partial;}),last=full2[full2.length-1];
+  var yoy=function(k){if(!last)return null;var y=(+last.q.slice(0,4)-1)+last.q.slice(4);var p=null;AQ.forEach(function(x){if(x.q===y)p=x;});return p&&p[k]?(last[k]-p[k])/p[k]*100:null;};
+  [['us','us-tr'],['cn','cn-tr']].forEach(function(a){var c=yoy(a[0]),el=$(a[1]);if(c==null){el.textContent='';return;}
+    el.className='trend '+(c>=0?'up':'down');el.innerHTML=(c>=0?UP:DN)+Math.abs(Math.round(c))+'% · '+esc(last.q.slice(5))+' vs '+esc(last.q.slice(5))+' '+(+last.q.slice(0,4)-1);});
+  var mx=1;G.forEach(function(x){if(showUS)mx=Math.max(mx,x.us);if(showCN)mx=Math.max(mx,x.cn);});
+  var w=function(v){return (v/mx*80).toFixed(1);};
+  $('bars').innerHTML=G.map(function(x,i){return '<div class="q"><div class="ql">'+esc(x.q)+(x.partial?'*':'')+'</div><div>'+
+    (showUS?'<div class="bar us" style="width:'+w(x.us)+'%;animation-delay:'+(i*30)+'ms"><span>'+num(x.us)+'</span></div>':'')+
+    (showCN?'<div class="bar cn" style="width:'+w(x.cn)+'%;animation-delay:'+(i*30)+'ms"><span>'+num(x.cn)+'</span></div>':'')+'</div></div>';}).join('');
+  $('bars').setAttribute('aria-label','Bars of AI policy events per '+(F.uGrp==='y'?'year':'quarter')+' '+RL+(key?' for '+(key==='us'?'the United States':'China'):' for the US and China'));
+  qa('.legend span').forEach(function(sp,i){sp.style.opacity=(i===0?showUS:showCN)?1:.35;});
+  var pu=AQ.reduce(function(a,b){return b.us>a.us?b:a;}),pc=AQ.reduce(function(a,b){return b.cn>a.cn?b:a;});
+  $('peaks').textContent='All-time peaks: US '+pu.q+' ('+pu.us+'), China '+pc.q+' ('+pc.cn+'). * = period still in progress.';
+  $('uPf').textContent='View: '+RL+' · '+(F.uSer==='both'?'US and China':F.uSer==='us'?'US only':'China only')+' · by '+(F.uGrp==='y'?'year':'quarter');
+};
+chipGroup('uRange','uRange',paintUS);chipGroup('uSer','uSer',paintUS);chipGroup('uGrp','uGrp',paintUS);
+
+/* ---------- Transparency ---------- */
 var CMP=[['Legal force','Voluntary recommendation; no penalties.','Binding, with regulators and fines (e.g. EU AI Act).'],['Who owes it','"AI actors" in general, scaled to context.','Named roles: providers, deployers, importers, chatbot operators.'],['Saying it\'s AI','Make people aware they are interacting with AI.','Mandatory notice (EU AI Act Art. 50; US chatbot laws), stricter for minors.'],['Labelling AI content','Not specified.','Content marking and watermarking (EU, US deepfake laws, China).'],['Explaining decisions','Plain information on the logic behind outcomes.','Narrower information rights for high-risk or automated decisions.'],['Records for regulators','Traceability, under accountability.','Documentation, logging, incident reports, notifications.']];
-$('cmp').innerHTML=CMP.map(function(r){return '<div class="cmp"><div class="k">'+esc(r[0])+'</div><div class="two"><div><div class="lab">OECD 1.3</div>'+esc(r[1])+'</div><div><div class="lab">Domestic laws</div>'+esc(r[2])+'</div></div></div>';}).join('');
+(function(){var g=$('tDim');CMP.forEach(function(r){var b=document.createElement('button');b.className='chip';b.setAttribute('data-v',r[0]);b.setAttribute('aria-pressed','false');b.textContent=r[0];g.appendChild(b);});})();
+var short=function(n){return n.replace(/^UN General Assembly Resolution A\/RES\/78\/265.*$/,'UN GA Resolution 78/265').replace(/^Council of Europe Framework Convention.*$/,'Council of Europe AI Convention').replace(/^G7: Hiroshima Process International Guiding Principles.*$/,'G7 Hiroshima Guiding Principles').replace(/^G7: Hiroshima Process International Code of Conduct.*$/,'G7 Hiroshima Code of Conduct').replace(/^UNESCO: Recommendation on the Ethics.*$/,'UNESCO Ethics Recommendation').replace(/^ASEAN Expanded Guide.*$/,'ASEAN Generative AI Guide').replace(/^ASEAN Guide on AI Governance and Ethics$/,'ASEAN AI Governance Guide').replace(/^Joint Declaration on AI.*$/,'Joint Declaration on AI & Free Expression');};
+var meter=function(v,mx,col){return '<div style="height:4px;border-radius:2px;background:var(--fill);margin-top:6px"><div style="height:4px;border-radius:2px;width:'+(mx?(v/mx*100).toFixed(1):0)+'%;background:'+col+';-webkit-print-color-adjust:exact;print-color-adjust:exact"></div></div>';};
+var paintTR=function(){
+  $('cmp').innerHTML=CMP.filter(function(r){return !F.tDim||r[0]===F.tDim;}).map(function(r){return '<div class="cmp"><div class="k">'+esc(r[0])+'</div><div class="two"><div><div class="lab">OECD 1.3</div>'+esc(r[1])+'</div><div><div class="lab">Domestic laws</div>'+esc(r[2])+'</div></div></div>';}).join('');
+  var t=data&&data.transparency;if(!t)return;
+  $('tr-d').textContent=num(t.domestic_provisions);$('tr-j').textContent=num(t.jurisdictions);$('tr-i').textContent=num(t.international_provisions);
+  var oecd=(t.frameworks||[]).filter(function(f){return /^OECD/.test(f.name);})[0];$('tr-o').textContent=oecd?oecd.provisions:'—';
+  var k=F.tSort,R=(t.requirements||[]).slice().sort(function(a,b){return b[k]-a[k];}),mx=R.length?R[0][k]:1;
+  var L={provisions:'provisions',laws:'laws',jurisdictions:'jurisdictions'};
+  $('req').innerHTML=R.map(function(r){return '<div class="lrow" style="display:block"><div style="display:flex;justify-content:space-between;gap:12px"><span>'+esc(r.title)+'</span><span class="n">'+num(r[k])+' '+L[k]+'</span></div><div class="meta">'+num(r.provisions)+' provisions · '+num(r.laws)+' laws · '+num(r.jurisdictions)+' jurisdictions</div>'+meter(r[k],mx,'var(--blue)')+'</div>';}).join('');
+  var FW=t.frameworks||[],fm=FW.reduce(function(a,b){return Math.max(a,b.provisions);},1);
+  $('fw').innerHTML=FW.map(function(f){var b=/^OECD/.test(f.name);return '<div class="lrow" style="display:block"><div style="display:flex;justify-content:space-between;gap:12px"><span>'+(b?'<b>':'')+esc(short(f.name))+(b?'</b>':'')+'</span><span class="n">'+num(f.provisions)+'</span></div>'+meter(f.provisions,fm,b?'var(--pink)':'var(--muted)')+'</div>';}).join('');
+};
+chipGroup('tDim','tDim',paintTR);chipGroup('tSort','tSort',paintTR);
 
+/* ---------- load ---------- */
+var paintAll=function(){
+  var d=data;if(!d)return;
+  var u=d.updated_at?new Date(d.updated_at):null;
+  var ut=u&&!isNaN(u)?(u.getDate()+' '+MON[u.getMonth()]+', '+('0'+u.getHours()).slice(-2)+':'+('0'+u.getMinutes()).slice(-2)):'';
+  $('upd').textContent=ut;$('upd2').textContent='last update '+ut;$('pupd').textContent=ut;
+  refreshAlertMenus();paintAlerts();paintEU();paintUS();paintTR();
+};
+paintTR();
 var load=function(){
   return fetch('policy-watch.json?v='+Date.now(),{cache:'no-cache'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
     if(!j)return;
     var ids=(j.alerts||[]).map(function(a){return a.event_id;});
     if(known){fresh+=ids.filter(function(i){return known.indexOf(i)<0;}).length;}
-    known=ids.concat(known||[]);data=j;paint();
+    known=ids.concat(known||[]);data=j;paintAll();
   }).catch(function(){$('status').textContent='Could not load the latest policy data.';});
 };
 load();setInterval(load,5*60*1000);
 
-/* segmented control + back-to-top */
-var segBtns=document.querySelectorAll('#seg button'),names=[];for(var i=0;i<segBtns.length;i++)names.push(segBtns[i].getAttribute('data-p'));
-var show=function(n){var idx=names.indexOf(n);if(idx<0){idx=0;n=names[0];}
-  for(var j=0;j<segBtns.length;j++)segBtns[j].setAttribute('aria-selected',String(j===idx));
+/* ---------- segmented control + back-to-top ---------- */
+var segBtns=qa('#seg button'),names=segBtns.map(function(b){return b.getAttribute('data-p');}),cur='alerts';
+var show=function(n){var idx=names.indexOf(n);if(idx<0){idx=0;n=names[0];}cur=n;
+  segBtns.forEach(function(b,j){b.setAttribute('aria-selected',String(j===idx));});
   $('thumb').style.transform='translateX('+(idx*100)+'%)';
-  var ps=document.querySelectorAll('.pane');for(var k=0;k<ps.length;k++)ps[k].className='pane'+(ps[k].id===n?' on':'');
+  qa('.pane').forEach(function(p){p.className='pane'+(p.id===n?' on':'');});
   try{history.replaceState(null,'','#'+n);}catch(e){}
   window.scrollTo(0,0);};
-for(var b=0;b<segBtns.length;b++)segBtns[b].addEventListener('click',function(){show(this.getAttribute('data-p'));});
+segBtns.forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-p'));});});
 show((location.hash||'').slice(1)||'alerts');setTimeout(function(){window.scrollTo(0,0);},60);
 window.addEventListener('hashchange',function(){show((location.hash||'').slice(1));});
 var fab=$('fab');
@@ -249,6 +414,20 @@ window.addEventListener('scroll',function(){fab.className='fab'+(window.scrollY>
 fab.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
 $('seen').addEventListener('click',function(){var r=(data&&data.alerts)||[];save(r.map(function(x){return x.event_id;}).concat(seen()));fresh=0;paintAlerts();$('status').textContent='All marked as seen.';});
 $('check').addEventListener('click',function(){$('status').textContent='Checking…';load();});
+
+/* ---------- print ---------- */
+var sheet=$('pSheet');
+(function(){var t=new Date();$('pnow').textContent=t.getDate()+' '+MON[t.getMonth()]+' '+t.getFullYear();})();
+var doPrint=function(one){sheet.hidden=true;document.body.classList.toggle('print-one',one);
+  var t=new Date();$('pnow').textContent=t.getDate()+' '+MON[t.getMonth()]+' '+t.getFullYear()+', '+('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);
+  setTimeout(function(){try{window.print();}catch(e){}},80);};
+$('printBtn').addEventListener('click',function(){sheet.hidden=false;});
+$('pOne').addEventListener('click',function(){doPrint(true);});
+$('pAll').addEventListener('click',function(){doPrint(false);});
+$('pCancel').addEventListener('click',function(){sheet.hidden=true;});
+sheet.addEventListener('click',function(e){if(e.target===sheet)sheet.hidden=true;});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')sheet.hidden=true;});
+window.addEventListener('afterprint',function(){document.body.classList.remove('print-one');});
 }
 </script>
 
