@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-25",
+      "title": "The Job Forecast",
+      "headline": "NTT Data: Derry AI centre to create 200 new jobs",
+      "source": "BBC",
+      "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE5JSzFUNVhkSWVBbWpKU1RJSUREbUFYbnV0OE10ZUNkV20zSF9mMC1BM2wtMlhlYkhkUU5pSGxndEZmdlFMSHdFNFlfdGwzenVzSXVTNjh6cEQwYVk?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "jobs",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI will replace all jobs next year!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "Including mine. I already quit."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that prediction."
+        }
+      ]
+    },
+    {
       "date": "2026-11-24",
       "title": "100x Before Breakfast",
       "headline": "Improving AI efficiency with optimization",
