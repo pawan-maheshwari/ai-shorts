@@ -1,0 +1,372 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+Every agent is tested walk-forward: each day's signals are judged by agents that only learned from earlier days, so the scores show how they would really have done. Agents can only propose changes — you approve, reject or fine-tune them here, and every decision is versioned and logged.
+TEST PERIOD
+47 days
+2026-09-07 → 2026-11-23
+BASELINE
++0.23R
+per trade · 359 trades, no agents
+WITH AGENTS
++0.19R
+per trade · 113 trades
+DRAWDOWN
+-16.8 → -7.5R
+worst peak-to-trough
+PROFIT / MONTH
+₹7,555
+vs ₹37,193 baseline · ₹1,000 risk/trade
+Sep 202026
+Oct 4
+Oct 18
+Nov 1
+Nov 15
+0
+20
+40
+60
+80
+Baseline (no agents)
+With agents (active config)
+Cumulative R
+
+Totals are in R (1R = the amount risked per trade). Drawdown shrinking matters as much as total profit.
+
+AGENT SCORES
+0–100 · 50 = no measurable effect · based on strength of evidence
+🎓 Coach
+80/100
+Predicts each signal's expected profit and can filter weak ones
+Likely helps · 359 trades, z=+1.7
++0.014R per trade if the filter is on · ≈ ₹2,207/month
+Judged on the plan that is executed (fixed exit, hold to stop, target or 15:15). Top half of its picks won 63% and averaged +0.31R vs bottom half 58% and +0.15R. Filter would skip 109 of 359 trades (they averaged +0.20R).
+Setting: Brain: Rule table (current Coach) · filter OFF · skip below +0.00R · memory half-life 10 days
+🚪 Exit
+50/100
+Chooses and runs the exit policy
+Fixed exit is best so far · 359 trades, z=+0.0
++0.000R per trade vs fixed exit · ≈ ₹0/month
+Every alternative did worse on the same trades (from -0.00R to -0.14R per trade), so the Exit agent keeps the fixed exit.
+Compared with: every other exit policy on the same trades
+Setting: Policy: fixed
+📝 Trader
+50/100
+Paper-trades each recommendation inside its execution window
+Holding to the plan · 359 trades, z=+0.0
++0.000R per trade vs holding to the plan · ≈ ₹0/month
+Closing at the window averaged +0.23R per trade vs +0.23R if held to stop/target/15:15. Best window tested: Hold to stop, target or 15:15 (+0.23R).
+Compared with: holding each trade to its stop, target or 15:15 on the same recommendations
+Setting: Execution window: Hold to stop, target or 15:15 · exit policy fixed
+⚖️ Risk
+36/100
+Daily loss cap, trade and position caps, correlation check
+Trades some profit for smaller drawdowns — roughly even · 47 trading days, z=-0.7
+-1.426R per day vs no risk rules · ≈ −₹29,939/month
+Profit ÷ drawdown 5.33 → 1.54. Max drawdown -16.8R → -10.5R. Blocked 246 trades; those blocked by the trade cap averaged +0.30R.
+Compared with: taking every signal with no caps — judged on profit ÷ max drawdown, not profit alone
+Setting: ON · loss cap −2R · max 3 trades, 3 open · one position per stock · exposure ≤ 5× capital · corr ≥ 0.7 halves size
+🧭 Pulse
+98/100
+Reads market mood and shrinks positions on weak days
+Strong evidence it helps · 258 trades, z=+5.1
++0.041R per unit of risk vs equal sizing · ≈ ₹6,578/month
+Full-size moods averaged +0.53R; reduced-size moods +0.06R. With-market trades +0.25R vs against +nanR.
+Setting: Sizing ON · Choppy ×0.75, Mildly negative ×0.75, Risk-off ×0.75, Volatile ×0.5
+🛡️ Sentinel
+93/100
+Reads exchange filings and news; flags results days, bans and material events
+Strong evidence it helps · 124 flagged stock-days, z=+3.3
++0.208× normal daily range on flagged days vs other days
+124 flagged stock-days moved 1.30× their normal range vs 1.10× on 2221 other stock-days. Strongest: News clarification with the exchange 1.90× (n=1); Results day (exchange calendar) 1.70× (n=29); Operational disruption 1.39× (n=23). Archive: 350 stock-days scanned over 10 day(s); past results days are back-filled from the exchange calendar when it is reachable.
+Setting: Block HIGH-risk: OFF (warn only)
+🗣️ Narrator
+—/100
+Explains each signal in plain English
+Informational — doesn't change trades
+Measured by whether you find it useful, not by profit.
+Setting: Explains each signal
+📈 Swing
+3/100
+Daily-chart positional picks held 1–2 weeks (pullback, breakout, RSI-2 dip)
+Likely loses money · 686 trades, z=-4.4
+-0.156R per swing trade after costs
+Replayed 686 past swing trades (2024-09-30 → 2026-11-25): won 43%, held 8.1 sessions on average. Best setup: breakout -0.09R per trade.
+Setting: Long only · entry next open · stop 2 ATR · target 2R · 10-session time stop · costs 0.25% round trip
+
+Exit, Trader and Risk are scored against an alternative on the same trades (shown under each card) — below 50 means the alternative did better, so the card tells you which setting to switch to. Swing is scored on its own replayed 1–2 week trades (details in 📈 Swing picks).
+
+keyboard_arrow_down
+
+Execution windows compared on the same recommendations
+
+keyboard_arrow_down
+
+Exit policies compared on the same trades
+
+🧠 MODEL LAB
+which brain gives the Coach the best win odds
+Every brain scores each signal with a win probability before the result is known; models are retrained as sessions are added and only ever tested on days they had not seen. All signals won 61%. Taking only the top 30% by rule table (current coach) would have won 64% (+0.32R per trade vs +0.23R for all). Models learn from 5,921 practice signals (both directions, lower volume bar) so they have enough examples; they are judged on the signals the engine really gives.
+
+● = brain in use · 359 real signals tested. Skill (AUC) is the chance a winner was scored above a loser: 0.50 is guessing, 0.55–0.60 is useful, above 0.65 is rare on real markets. A higher win rate only matters if R per trade rises with it.
+
+How selective?
+
+Each row keeps only the signals this brain liked most. “Win-odds bar” is the value to put in “Skip if win odds below” (Fine-tune → Coach) to get that row. If “Model said” and “Actually won” are far apart, trust the ranking but not the percentage.
+
+keyboard_arrow_down
+
+🛡️ Sentinel — sources, today's flags and evidence
+
+✓ Today's watchlist scan is complete.
+Sources checked today
+Flagged today · 8 of 35
+Do flagged days really move more?
+124 flagged stock-days moved 1.30× their normal daily range; 2221 other stock-days moved 1.10×. 1.00× is a normal day for that stock.
+
+Archive: 350 stock-days scanned over 10 day(s). Sentinel is scored on market behaviour — whether stocks really move more on the days it flags — so it can be judged in weeks, without waiting for enough trades. Headlines are read by Groq, with rules as a fallback.
+
+👤 YOUR REVIEWS
+0 reviewed trades · how each agent agrees with you
+No reviews yet. In 📒 Trade log → Review a trade, mark recommendations 👍 / 👎 and tag what drove them. Each agent is then scored on whether it had warned about the trades you disagreed with, and your tags can turn into proposals below.
+REVIEW & APPROVE
+human-in-the-loop
+
+Reviewer PIN
+
+visibility
+
+Unlock
+
+Scores are visible to everyone; approving or changing settings needs the reviewer PIN.
+
+Reviewer name
+
+Proposals from agents · 1
+🎓 Switch the Coach's brain: Rule table (current Coach) → Gradient-boosted trees
+On 359 walk-forward trades its top-half picks won 64% and averaged +0.31R, vs 62% and +0.28R now. Ranking skill (AUC) 0.54 vs 0.51 (0.50 = guessing), and 0.54 across 4800 wider practice signals where its top 30% won 51% vs 47% overall.
+What-if on the same days — now: 113 trades · +0.189R per trade · total +16.9R · max drawdown -7.5R · win 60%
+after: 113 trades · +0.189R per trade · total +16.9R · max drawdown -7.5R · win 60%
+
+Note (optional)
+
+✓ Approve
+
+✕ Reject
+
+keyboard_arrow_down
+
+🛠 Fine-tune settings yourself (simulate before applying)
+
+🎓 Coach
+
+Filter weak signals
+
+Skip if expected R below
+
+0.00
+
+-0.50
+
+0.50
+
+Memory half-life (days)
+
+10
+
+3
+
+40
+
+Coach's brain (win-odds model)
+
+Skip if win odds below (%)
+
+0
+
+0
+
+90
+
+🧭 Pulse
+
+Mood-based sizing
+
+Risk-on ×
+
+Mildly negative ×
+
+Mildly positive ×
+
+Risk-off ×
+
+Choppy ×
+
+Volatile ×
+
+🚪 Exit
+
+Execution window (paper trader closes the trade at the end)
+
+Hold to stop, target or 15:15
+
+Hold to stop, target or 15:15
+
+2 hours
+
+Exit policy
+
+⚖️ Risk
+
+Risk rules on
+
+Daily loss cap (R)
+
+2.00
+
+0.50
+
+6.00
+
+Max trades / day
+
+3
+
+1
+
+10
+
+Max open at once
+
+3
+
+1
+
+8
+
+Correlation limit
+
+0.70
+
+0.40
+
+0.95
+
+Paused setups
+
+Edge-based sizing
+
+Edge sizing strength
+
+1.00
+
+0.50
+
+3.00
+
+Block Sentinel HIGH
+
+Total exposure cap (× capital)
+
+5.00
+
+1.00
+
+15.00
+
+📡 Fill late bars from NSE Live (approximate)
+
+Max single position (× capital)
+
+5.00
+
+1.00
+
+5.00
+
+09:30 arbiter
+
+⚙️ Signal engine and paper account — shared by everyone
+
+Paper capital (₹)
+
+Risk per trade (%)
+
+0.50
+
+0.10
+
+2.00
+
+Round-trip costs (%)
+
+Setups
+
+Target (× risk)
+
+2.00
+
+1.00
+
+4.00
+
+Min relative volume
+
+1.50
+
+1.00
+
+3.00
+
+Include short trades
+
+Minimum stop distance (%)
+
+0.00
+
+0.00
+
+1.50
+
+🏛️ Recommendation panel picks the strategy each day
+
+Panel mode
+
+First to fire: top Nifty stocks (0 = whole watchlist)
+
+10
+
+0
+
+20
+
+Watchlist (NSE symbols, comma-separated)
+
+Simulate on recent sessions
+
+keyboard_arrow_down
+
+🕘 Settings history · v2 active
+
+Roll back to
+
+Roll back
+
+Scores update daily from the last ~60 sessions Yahoo serves plus 11 older sessions remembered in the database. Treat anything under a few hundred trades as early evidence. Sentinel can only be scored on live signals as they build up.

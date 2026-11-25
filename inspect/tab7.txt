@@ -1,0 +1,434 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+Storage: Supabase (persistent) — the log, trade journal, settings, Sentinel archive and the agents' learning memory survive restarts.
+
+keyboard_arrow_down
+
+📡 NSE data check (MCP: NSE Bhavcopy + NSE Live)
+
+Check NSE's MCP servers
+
+Used by Sentinel (quote, volume, 52-week range, ex-dates), Pulse (NSE breadth, India VIX, live Nifty), the Analyst desk (previous-session context) and the NSE research agent. Exchange data via NSE's MCP servers — for information and education only, not investment advice.
+
+keyboard_arrow_down
+
+🔌 Storage check
+
+Key: secret key (sb_secret_…) · URL: https://cfesklvtzwcmknjrmdzl.supabase.co
+
+Writes this session: memory 86,712, trades 6,299, events 364, sentinel 122, kv 2, paper 212 · audit events waiting to be written: 0
+
+Re-check storage
+
+EVENTS · 7 DAYS
+468
+13 agents active
+ALERTS
+228
+raised in 7 days
+LIVE SIGNALS
+35
+journaled
+POST-MORTEMS
+7
+losses diagnosed
+COACH STUDIED
+915
+trades · 49% win rate
+AGENT ACTIVITY
+last 7 days · newest first
+
+Agents
+
+Alerts
+Analyst
+Arbiter
+Coach
+Desk
+Narrator
+Pulse
+Research
+Risk
+Scout
+Selector
+Sentinel
+Trader
+
+Day
+
+Search
+
+Show
+
+50
+
+25
+
+500
+
+25 Nov 17:04
+🛡️
+Sentinel high · RELIANCE
+HIGH: Regulatory or legal action: “Reliance Industries stock: Supreme Court rejects tax appeal” (ad-hoc-news.de); Broker downgrade: “Reliance Industries stock: Macquarie cuts rating, target to INR 1,400” (ad-hoc-news.de) — Headlines read by Groq
+25 Nov 17:04
+🛡️
+Sentinel watch · AXISBANK
+WATCH: Material event disclosed: “Axis Bank Ltd. Rallies 3.32% and Approaches 52-Week High — Momentum Builds Amid Sector Strength” (MarketsMojo); Material event disclosed: “NIFTY Bank soars over 2% as ICICI Bank shares surge 4%; HDFC Bank, Axis Bank lead gains” (Upstox) — Headlines read by Groq
+25 Nov 16:14
+🔔
+Alerts alert · AXISBANK
+Sentinel: AXISBANK is high-risk today — Results event: “Axis Bank Ltd. R (UZC.HM) Q4 25/26 earnings call transcript” (Yahoo Finance)
+25 Nov 16:14
+🛡️
+Sentinel high · AXISBANK
+HIGH: Results event: “Axis Bank Ltd. R (UZC.HM) Q4 25/26 earnings call transcript” (Yahoo Finance); Other news: “Axis Bank Ltd. Rallies 3.32% and Approaches 52-Week High — Momentum Builds Amid Sector Strength” (MarketsMojo) — Headlines read by Groq
+25 Nov 16:14
+🛡️
+Sentinel watch · M&M
+WATCH: Credit or pledge trouble: “Mahindra Finance stock: INR 876 crore NCDs allotted” (ad-hoc-news.de); Strong results: “Mahindra XEV 9S Earns 5-Star Bharat NCAP Rating, Becomes India’s Safest 7-Seater SUV” (iamabiker.com) — Headlines read by Groq
+25 Nov 16:14
+🛡️
+Sentinel watch · HDFCBANK
+WATCH: Strong results: “HDFC Bank shares surge 4% as banking stocks stage sharp recovery” (BusinessLine); Strong results: “Bank Nifty Jumps Over 1,100 Points Today as HDFC Bank and ICICI Bank Shares Rally Over 3%; Private Banks Lead ” (Kotak Neo) — Headlines read by Groq
+25 Nov 16:14
+🛡️
+Sentinel high · SBIN
+HIGH: Regulatory or legal action: “SBI has told the stock exchanges about its data breach, but not the customers whose data was leaked” (Internet Freedom Foundation); Regulatory or legal action: “SBI, HDFC, and ICICI retain systemically important bank status” (Retail Banker International) — Headlines read by Groq
+25 Nov 15:35
+🔔
+Alerts alert · LT
+Shadow · LT VWAP SHORT: STOP (-1.38R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · SBIN
+Shadow · SBIN HOUR-BRK LONG: TIME (-0.71R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · SBIN
+Shadow · SBIN GAP-GO LONG: TIME (-0.55R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · SBIN
+Shadow · SBIN VWAP SHORT: TIME (-0.29R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · SBIN
+Shadow · SBIN ORB LONG: TIME (-0.71R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · LT
+Shadow · LT HOUR-BRK LONG: TIME (-0.41R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · LT
+Shadow · LT ORB LONG: TIME (-0.41R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · KOTAKBANK
+Shadow · KOTAKBANK 1ST-CANDLE SHORT: TIME (-0.29R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · KOTAKBANK
+Shadow · KOTAKBANK HOUR-BRK SHORT: TIME (-0.34R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · KOTAKBANK
+Shadow · KOTAKBANK VWAP SHORT: TIME (+0.30R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · KOTAKBANK
+Shadow · KOTAKBANK ORB SHORT: TIME (-0.12R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · INFY
+Shadow · INFY 1ST-CANDLE SHORT: TIME (+0.25R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · INFY
+Shadow · INFY HOUR-BRK SHORT: TIME (+0.11R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · BHARTIARTL
+Shadow · BHARTIARTL REL-STR SHORT: TIME (+0.38R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · BHARTIARTL
+Shadow · BHARTIARTL HOUR-BRK SHORT: TIME (-0.01R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · BHARTIARTL
+Shadow · BHARTIARTL GAP-FADE SHORT: TIME (+0.65R, practice)
+25 Nov 15:29
+🔔
+Alerts alert · BHARTIARTL
+Shadow · BHARTIARTL ORB SHORT: TIME (+0.22R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · RELIANCE
+Shadow · RELIANCE ORB LONG: TIME (-0.59R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · M&M
+Shadow · M&M HOUR-BRK LONG: TIME (-0.27R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · M&M
+Shadow · M&M ORB LONG: TIME (+0.27R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · ICICIBANK
+Shadow · ICICIBANK REL-STR LONG: TIME (-0.25R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · ICICIBANK
+Shadow · ICICIBANK HOUR-BRK LONG: TIME (-0.41R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · ICICIBANK
+Shadow · ICICIBANK GAP-GO LONG: TIME (+0.04R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · ICICIBANK
+Shadow · ICICIBANK ORB LONG: TIME (-0.35R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · HDFCBANK
+Shadow · HDFCBANK HOUR-BRK LONG: TIME (-0.33R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · HDFCBANK
+Shadow · HDFCBANK GAP-GO LONG: TIME (-0.21R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · HDFCBANK
+Shadow · HDFCBANK ORB LONG: TIME (-0.33R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · AXISBANK
+Shadow · AXISBANK HOUR-BRK LONG: TIME (-0.41R, practice)
+25 Nov 15:15
+🔔
+Alerts alert · AXISBANK
+Shadow · AXISBANK ORB LONG: TIME (-0.41R, practice)
+25 Nov 15:03
+🔔
+Alerts alert · RELIANCE
+Shadow · RELIANCE REVERT LONG: TARGET (+1.19R, practice)
+25 Nov 14:16
+🔔
+Alerts alert · BHARTIARTL
+Shadow · BHARTIARTL REVERT LONG: TARGET (+1.22R, practice)
+25 Nov 14:06
+🔔
+Alerts alert · SBIN
+Shadow · VWAP SHORT SBIN at 14:05 — entry ₹1,137.90, stop ₹1,142.66, target ₹1,130.77 (practice, not a recommendation)
+25 Nov 14:06
+🔔
+Alerts alert · KOTAKBANK
+Shadow · VWAP SHORT KOTAKBANK at 14:05 — entry ₹510.00, stop ₹511.61, target ₹507.58 (practice, not a recommendation)
+25 Nov 13:28
+🔔
+Alerts alert · KOTAKBANK
+Shadow · KOTAKBANK REVERT LONG: TARGET (+1.20R, practice)
+25 Nov 13:26
+🔔
+Alerts alert · BHARTIARTL
+Shadow · REVERT LONG BHARTIARTL at 13:25 — entry ₹2,112.60, stop ₹2,104.99, target ₹2,124.01 (practice, not a recommendation)
+25 Nov 13:22
+🔔
+Alerts alert · RELIANCE
+Shadow · REVERT LONG RELIANCE at 13:20 — entry ₹1,366.20, stop ₹1,361.74, target ₹1,372.89 (practice, not a recommendation)
+25 Nov 13:16
+🎓
+Coach lesson
+Weaker: No news flags — averages +0.16R, won 54% of 35 trades
+25 Nov 13:14
+🔔
+Alerts alert · AXISBANK
+AXISBANK LONG ORB: STOPPED 13:10 (-1.09R, paper −₹1,079)
+25 Nov 13:14
+🔎
+Analyst review · AXISBANK
+AXISBANK -1.09R — helped: At entry: with the market direction | hurt: Market moved against the trade (Nifty -0.68% in its direction); At entry: far from vwap at entry (extended move)
+25 Nov 13:14
+📝
+Trader close · AXISBANK
+Paper closed BUY AXISBANK: stop at 13:10 @ ₹1,417.75 → -1.09R (−₹1,079)
+25 Nov 13:14
+🎓
+Coach post-mortem · AXISBANK
+AXISBANK ORB lost -1.09R. Main reason: Risk-on market mood — averages -0.08R across 27 recent trades (won 43%) vs +0.36R overall
+25 Nov 13:12
+🔔
+Alerts alert · AXISBANK
+Shadow · AXISBANK 1ST-CANDLE LONG: STOP (-1.10R, practice)
+25 Nov 13:06
+🔔
+Alerts alert · KOTAKBANK
+Shadow · REVERT LONG KOTAKBANK at 13:05 — entry ₹505.70, stop ₹504.00, target ₹508.26 (practice, not a recommendation)
+
+Showing 50 of 468 events.
+
+Download log (CSV)
+
+🧠 LEARNING MEMORY
+what the database feeds back into training · kept 180 days
+SESSIONS IN HISTORY
+57
+11 beyond Yahoo's ~60
+SIGNALS STUDIED
+385
+since 2026-08-24
+NEWS FILLED IN
+63
+history rows tagged from the Sentinel archive
+AUDIT DAYS DIGESTED
+15
+18 losses diagnosed
+YOUR REVIEWS
+0
+scoring agents in 🎯 Agent scores
+How the stored logs train the agents: (1) every finished session's signals are archived per signal engine, so the 🎓 Coach, the model lab and the agent scores keep learning from sessions Yahoo no longer serves; (2) the 🛡️ Sentinel's pre-open archive fills in the news condition on those signals — only where it was recorded before the signal fired; (3) the audit log is digested daily so recurring loss causes outlive its 7-day window; (4) your reviews in the 📒 Trade log score each agent and can become proposals. Nothing changes the live settings without a reviewer's approval.
+keyboard_arrow_down
+
+What is stored · 35,605 rows
+
+Signals from older engine settings are kept but not mixed into training — they come back into use if those settings are restored.
+
+Recurring loss causes · last 30 days vs the 30 before
+COACH · WHAT IT HAS LEARNED
+from 915 trades (recent history + live signals)
+▼ Avoid: VWAP pullback — won 37% of 219 trades, avg -0.38R (all signals: +0.01R, 49% won)
+▼ Avoid: Volatile market mood — won 31% of 78 trades, avg -0.31R (all signals: +0.01R, 49% won)
+▼ Avoid: Tight opening range (stop inside normal noise) — won 32% of 41 trades, avg -0.29R (all signals: +0.01R, 49% won)
+▼ Avoid: Against the market direction — won 36% of 106 trades, avg -0.26R (all signals: +0.01R, 49% won)
+▼ Avoid: Market had no clear direction — won 39% of 230 trades, avg -0.26R (all signals: +0.01R, 49% won)
+▼ Avoid: Risk-off market mood — won 45% of 76 trades, avg -0.23R (all signals: +0.01R, 49% won)
+▼ Avoid: Normal volume (1.5–2.5×) — won 43% of 403 trades, avg -0.15R (all signals: +0.01R, 49% won)
+▼ Avoid: Close to VWAP at entry — won 43% of 314 trades, avg -0.15R (all signals: +0.01R, 49% won)
+▼ Avoid: Risk-on market mood — won 39% of 31 trades, avg -0.14R (all signals: +0.01R, 49% won)
+▼ Avoid: Mildly negative market mood — won 42% of 204 trades, avg -0.12R (all signals: +0.01R, 49% won)
+▼ Avoid: With the opening gap — won 44% of 378 trades, avg -0.08R (all signals: +0.01R, 49% won)
+▲ Favour: Opening range breakout — won 51% of 252 trades, avg +0.11R (all signals: +0.01R, 49% won)
+▲ Favour: Moderately away from VWAP at entry — won 52% of 431 trades, avg +0.11R (all signals: +0.01R, 49% won)
+▲ Favour: Against the opening gap — won 55% of 328 trades, avg +0.14R (all signals: +0.01R, 49% won)
+▲ Favour: Short trades — won 60% of 105 trades, avg +0.16R (all signals: +0.01R, 49% won)
+▲ Favour: With the market direction — won 55% of 579 trades, avg +0.17R (all signals: +0.01R, 49% won)
+▲ Favour: No news flags — won 52% of 42 trades, avg +0.18R (all signals: +0.01R, 49% won)
+▲ Favour: News or corporate-event day — won 60% of 77 trades, avg +0.19R (all signals: +0.01R, 49% won)
+▲ Favour: Weak volume (under 1.5× normal) — won 59% of 248 trades, avg +0.22R (all signals: +0.01R, 49% won)
+▲ Favour: HOUR-BRK — won 58% of 84 trades, avg +0.29R (all signals: +0.01R, 49% won)
+▲ Favour: Mildly positive market mood — won 59% of 241 trades, avg +0.31R (all signals: +0.01R, 49% won)
+▲ Favour: TREND — won 62% of 26 trades, avg +0.57R (all signals: +0.01R, 49% won)
+
+How it uses this: each new signal gets a win-odds score from these patterns (shown on the card), so conditions that keep failing lower the score of future signals.
+
+keyboard_arrow_down
+
+Win rate by condition
+
+31% · n=78
+32% · n=41
+36% · n=106
+37% · n=219
+39% · n=31
+39% · n=230
+42% · n=204
+43% · n=403
+43% · n=314
+44% · n=378
+45% · n=76
+46% · n=128
+46% · n=439
+48% · n=810
+48% · n=336
+48% · n=209
+49% · n=264
+51% · n=451
+51% · n=170
+51% · n=252
+51% · n=160
+52% · n=42
+52% · n=431
+53% · n=174
+53% · n=285
+53% · n=435
+55% · n=328
+55% · n=579
+58% · n=84
+59% · n=241
+59% · n=248
+60% · n=77
+60% · n=105
+62% · n=26
+0
+20
+40
+60
+80
+100
+Volatile market mood
+Tight opening range (stop inside normal noise)
+Against the market direction
+VWAP pullback
+Risk-on market mood
+Market had no clear direction
+Mildly negative market mood
+Normal volume (1.5–2.5×)
+Close to VWAP at entry
+With the opening gap
+Risk-off market mood
+Late-day signal (after 12:30)
+Normal opening-range width
+Long trades
+Midday signal (10:30–12:30)
+No meaningful opening gap
+Strong volume (over 2.5×)
+Early signal (before 10:30)
+Far from VWAP at entry (extended move)
+Opening range breakout
+REL-STR
+No news flags
+Moderately away from VWAP at entry
+1ST-CANDLE
+Choppy market mood
+Wide opening range (stop far away)
+Against the opening gap
+With the market direction
+HOUR-BRK
+Mildly positive market mood
+Weak volume (under 1.5× normal)
+News or corporate-event day
+Short trades
+TREND
+Win rate %
+all signals 49%
+WHY TRADES WENT WRONG
+losing trades in the last 7 days, diagnosed by the Coach
+Risk-on market mood 8
+Normal volume (1.5–2.5×) 4
+Close to VWAP at entry 1
+Normal variance 1
+News or corporate-event day 1
+
+Re-train Coach now
+
+Agents: 🧭 Pulse market mood · 🛡️ Sentinel news & events · 🗣️ Narrator explanations · 🎓 Coach learning & post-mortems · 🚪 Exit · ⚖️ Risk · 🔔 Alerts · 👤 Reviewer decisions. Events are kept 7 days (digested into learning memory for 180); the trade journal 90 days.

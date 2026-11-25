@@ -1,0 +1,540 @@
+Stock LabBeta · Under trials
+CHEETAH ENGINE · NSE · AISHORTS
+Rule-based setups with entry, stop and target. Educational tool — not investment advice. Prices can lag a few minutes; confirm on your broker's chart. Settings: tap › top-left.
+
+⚡ Intraday
+
+📒 Trade log
+
+🔭 Strategy lab
+
+🧠 Analyst desk
+
+🎯 Agent scores
+
+🧪 Backtest
+
+📈 Swing picks
+
+🗂 Audit log
+
+Auto-refresh
+
+↻ Refresh now
+
+Market closed
+Last refreshed 18:49:46 IST · 25 Nov
+Latest bar 15:25
+Next 18:51:46 (every 2 min)
+🧭 PULSE · RISK-ON
+New signals sized ×1
+Nifty ▲ 1.85%
+Nifty up 1.85% and above its intraday average · Daily trend up (above 20 and 50-day averages) · India VIX 17.7 (-0.0% vs previous day) · NSE breadth 2026-11-25: 1258 stocks up, 1681 down (mixed); 76% of indices rose (broad advance)
+⚖️ 09:30 arbiter · Pulse (Risk-on) and the desk (trend up) agree: new shorts are cut to half size.
+keyboard_arrow_down
+
+🔔 Alerts · 4 · 4 new
+
+18:49
+⛔
+ICICIBANK LONG ORB: STOPPED 12:55 (-1.11R, paper −₹1,101)
+18:49
+⛔
+AXISBANK LONG ORB: STOPPED 13:10 (-1.09R, paper −₹1,079)
+18:49
+⛔
+HDFCBANK LONG ORB: STOPPED 12:50 (-1.11R, paper −₹1,097)
+18:49
+🧭
+Market mood: Risk-on — position size ×1
+
+Alerts show while this page is open. Everything is also kept in the Audit log tab for 7 days.
+
+keyboard_arrow_down
+
+🧪 Shadow book · 49 today · 178 closed, +0.17R avg
+
+Practice only — not recommendations. Each family's plain signal (both sides, no market or volume filter, stop ≥ 0.3%, target 1.5R, after costs) on the scanned stocks, kept apart from the live book and the agents' records.
+
+Record by family (closed shadow trades, last 60 days)
+
+SESSION
+25 Nov 2026
+10 stocks scanned
+BREADTH
+▲9 ▼1
+up vs down on the day
+IN PLAY
+2
+rel. vol ≥ 1.5×
+SIGNALS
+5
+triggered today
+OPEN
+0
+exit by 15:15
+SIGNALS
+Risk agent: max 3 trades, 3 open, stop at −2R a day
+🏛️ First to fire: ORB, 1ST-CANDLE, HOUR-BRK, REL-STR are armed on the top 10 Nifty stocks. The first armed strategy to trigger on a stock is traded at once; the Risk agent still applies its caps. Details in 🔭 Strategy lab.
+Practice only — not trade recommendations. These signals are shown for paper trading because first-to-fire has 14 capped trades on days it was not tuned on (+0.40R each) — it needs 20 and a positive average before its signals count as recommendations. They switch back to normal recommendations once what is live has a positive record on sessions it was not tuned on.
+HDFCBANK▲ LONGORBPRACTICE ONLY
+✕ STOPPED 12:50
+Last ₹846.20 ▲ 3.47% on the day · Practice BUY at 11:05 · hold to stop, target or 15:15
+ENTRY
+₹848.90
+STOP-LOSS
+₹840.90
+▼ 0.94%
+TARGET
+₹872.90
+▲ 2.83%
+QUANTITY
+124
+RISK
+₹992
+Entry
+STOP ₹840.90
+EXIT ₹840.90
+TARGET ₹872.90
+Closed at ₹840.90 → -1.11R · ₹-992 before costs.
+Pulse · Risk-on ×1▲ with market
+SentinelWatch
+Coach58% win odds · Neutral
+Expected+0.18R ≈ ₹185
+Exit · fixedSTOPPED 12:50
+📝 Paperclosed -1.11R · −₹1,097
+RiskALLOW · qty 124
+Coach post-mortem: Risk-on market mood — averages -0.13R across 28 recent trades (won 41%) vs +0.35R overall
+keyboard_arrow_down
+
+Why this signal · agents · HDFCBANK
+
+Narrator
+HDFCBANK closed above its 15‑minute opening range on higher volume, trading to the right of the VWAP, and the engine entered a long at ₹848.90 with a stop at ₹840.90 and a 3R target. The market mood is risk‑on, which backs the move. News: “HDFC Bank shares surge 4% as banking stocks stage sharp recovery” (BusinessLine); past trades show a 41% win rate in risk‑on days (28 trades) and a 71% win rate on news or corporate‑event days (49 trades).
+Coach — what past trades say
+Expected +0.18R after costs · win odds 58%
+▼ Risk-on market mood — averages -0.13R, won 41% of 28
+▼ With the opening gap — averages +0.14R, won 58% of 187
+▼ Wide opening range (stop far away) — averages +0.25R, won 65% of 269
+▲ Moderately away from VWAP at entry — averages +0.40R, won 66% of 285
+▲ Weak volume (under 1.5× normal) — averages +0.42R, won 67% of 239
+▲ News or corporate-event day — averages +0.45R, won 71% of 49
+All signals: +0.35R per trade, 65% win rate
+Exit — fixed
+Fixed — stop, target or 15:15, whichever first
+Result -1.11R after costs
+Same trade under each policy so far: fixed -1.11R · breakeven -1.11R · trail -1.11R · partial -1.11R · time -0.27R
+Risk — ALLOW
+Within limits: 2 open, 2 taken, day +0.0R
+Quantity 124 × Pulse 1 (Risk-on at 11:05) × Risk 1.00 = 124
+Sentinel — Watch
+Material event disclosed: “HDFC Bank shares surge 4% as banking stocks stage sharp recovery” (BusinessLine)
+Material event disclosed: “Bank Nifty Jumps Over 1,100 Points Today as HDFC Bank and ICICI Bank Shares Rally Over 3%; Private Banks Lead ” (Kotak Neo)
+Material event disclosed: “ICICI Bank, HDFC Bank, Reliance, and Airtel lead Nifty to 45% rally” (India Infoline)
+Material event disclosed: “HDFC Bank Shares Jump 3.86%: Brokerage Targets and Risks” (Univest)
+Material event disclosed: “HDFC Bank, ICICI Bank shares trade at a discount to global peers despite rally: Jefferies” (The Economic Times)
+Material event disclosed: “Bank Nifty surges 1,300 pts as HDFC Bank, ICICI Bank rise over 3% each” (FlipItMoney)
+NSE · NSE last ₹846.20 (+3.47% on the day, +22.1% over 30 days) · as of 2026-11-25 16:00:29
+NSE · Volume last session +15% vs its 20-day average
+NSE · At 51% of its 52-week range (₹669–₹1,018, unadjusted)
+Checked: Corporate actions, NSE MCP, Google News, F&O ban list · Unavailable: NSE filings, Results calendar · Headlines read by Groq
+Recent headlines about the company
+· Bank Nifty Jumps Over 1,100 Points Today as HDFC Bank and ICICI Bank Shares Rally Over 3%; Private Banks Lead Gains Kotak Neo
+· ICICI Bank, HDFC Bank, Reliance, and Airtel lead Nifty to 45% rally India Infoline
+· HDFC Bank shares surge 4% as banking stocks stage sharp recovery BusinessLine
+· RBI retains SBI, HDFC Bank, ICICI Bank as Systemically Important Banks: What's definition, why it matters for your money Livemint
+keyboard_arrow_down
+
+Chart · HDFCBANK
+
+10:00Nov 25, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+840
+850
+860
+870
+Price
+VWAP
+Signal
+new text
+OR low 833.10
+Entry 848.90
+Stop 840.90
+Target 872.90
+AXISBANK▲ LONGORBPRACTICE ONLY
+✕ STOPPED 13:10
+Last ₹1,418.10 ▲ 2.12% on the day · Practice BUY at 10:40 · hold to stop, target or 15:15
+ENTRY
+₹1,434.00
+STOP-LOSS
+₹1,417.75
+▼ 1.13%
+TARGET
+₹1,482.75
+▲ 3.40%
+QUANTITY
+61
+RISK
+₹991
+Entry
+STOP ₹1,417.75
+EXIT ₹1,417.75
+TARGET ₹1,482.75
+Closed at ₹1,417.75 → -1.09R · ₹-991 before costs.
+Pulse · Risk-on ×1▲ with market
+SentinelClear
+Coach52% win odds · Neutral
+Expected+0.15R ≈ ₹146
+Exit · fixedSTOPPED 13:10
+📝 Paperclosed -1.09R · −₹1,079
+RiskALLOW · qty 61
+Coach post-mortem: Risk-on market mood — averages -0.13R across 28 recent trades (won 41%) vs +0.35R overall
+keyboard_arrow_down
+
+Why this signal · agents · AXISBANK
+
+Narrator
+AXISBANK closed beyond the 15-minute opening range with rising volume while price was on the right side of VWAP, so the engine took a long at ₹1,434.00 with the stop at ₹1,417.75 and a 3R target. Market mood is risk-on, which supports this direction. Biggest risk from past trades: risk-on market mood (won 41% of 28). In its favour: normal opening-range width (won 65% of 224).
+Coach — what past trades say
+Expected +0.15R after costs · win odds 52%
+▼ Risk-on market mood — averages -0.13R, won 41% of 28
+▼ With the opening gap — averages +0.14R, won 58% of 187
+▼ No news flags — averages +0.22R, won 56% of 34
+▼ Far from VWAP at entry (extended move) — averages +0.23R, won 64% of 131
+▲ Weak volume (under 1.5× normal) — averages +0.42R, won 67% of 239
+▲ Normal opening-range width — averages +0.48R, won 65% of 224
+All signals: +0.35R per trade, 65% win rate
+Exit — fixed
+Fixed — stop, target or 15:15, whichever first
+Result -1.09R after costs
+Same trade under each policy so far: fixed -1.09R · breakeven -1.09R · trail -1.09R · partial -1.09R · time -1.09R
+Risk — ALLOW
+Within limits: 1 open, 1 taken, day +0.0R
+Quantity 61 × Pulse 1 (Risk-on at 10:40) × Risk 1.00 = 61
+Sentinel — Clear
+Nothing material found
+NSE · NSE last ₹1,418.10 (+2.12% on the day, +16.5% over 30 days) · as of 2026-11-25 16:00:29
+NSE · Volume last session +30% vs its 20-day average; 1 spike day(s) (>2× average) in 20
+NSE · At 87% of its 52-week range (₹1,150–₹1,459, unadjusted)
+Checked: Corporate actions, NSE MCP, Google News, F&O ban list · Unavailable: NSE filings, Results calendar · read by rules
+Recent headlines about the company
+· Axis Bank Leads Credit Card Additions In October Rediff.com
+· Credit card spends jump 20% in October to Rs 24.5 lakh crore; Axis Bank leads new additions TradingView
+· ₹31.68 Crore CSR Donations Eligible for Section 80G; Axis Bank Wins Section 263 Appeal TaxGuru
+· Stock Of The Day Buy Axis Bank Futures: SL 1380 Tgt 1415, 1430, 1445 After correction Axis bank near strong support level Buy L&T Fin Futures: SL 268 Tgt 276, 2 Facebook
+keyboard_arrow_down
+
+Chart · AXISBANK
+
+10:00Nov 25, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+1420
+1440
+1460
+1480
+Price
+VWAP
+Signal
+OR high 1,426.90
+OR low 1,408.60
+Entry 1,434.00
+Stop 1,417.75
+Target 1,482.75
+ICICIBANK▲ LONGORBPRACTICE ONLY
+✕ STOPPED 12:55
+Last ₹1,640.00 ▲ 3.44% on the day · Practice BUY at 09:55 · hold to stop, target or 15:15
+ENTRY
+₹1,645.70
+STOP-LOSS
+₹1,630.40
+▼ 0.93%
+TARGET
+₹1,691.60
+▲ 2.79%
+QUANTITY
+65
+RISK
+₹994
+Entry
+STOP ₹1,630.40
+EXIT ₹1,630.40
+TARGET ₹1,691.60
+Closed at ₹1,630.40 → -1.11R · ₹-994 before costs.
+Pulse · Risk-on ×1▲ with market
+SentinelClear
+Coach54% win odds · Neutral
+Expected+0.12R ≈ ₹123
+Exit · fixedSTOPPED 12:55
+📝 Paperclosed -1.11R · −₹1,101
+RiskALLOW · qty 65
+Coach post-mortem: Risk-on market mood — averages -0.13R across 28 recent trades (won 41%) vs +0.35R overall
+keyboard_arrow_down
+
+Why this signal · agents · ICICIBANK
+
+Narrator
+ICICIBANK closed above its 15‑minute opening range with higher volume and stayed on the right side of the VWAP, prompting a long entry at ₹1,645.70, a stop at ₹1,630.40 and a 3R target. The market mood is risk‑on, which aligns with this direction. Historically, risk‑on moods have been favorable in 41% of 28 trades, while weak volume (under 1.5× normal) has been favorable in 67% of 239 trades.
+Coach — what past trades say
+Expected +0.12R after costs · win odds 54%
+▼ Risk-on market mood — averages -0.13R, won 41% of 28
+▼ With the opening gap — averages +0.14R, won 58% of 187
+▼ Wide opening range (stop far away) — averages +0.25R, won 65% of 269
+▼ No news flags — averages +0.22R, won 56% of 34
+▲ Moderately away from VWAP at entry — averages +0.40R, won 66% of 285
+▲ Weak volume (under 1.5× normal) — averages +0.42R, won 67% of 239
+All signals: +0.35R per trade, 65% win rate
+Exit — fixed
+Fixed — stop, target or 15:15, whichever first
+Result -1.11R after costs
+Same trade under each policy so far: fixed -1.11R · breakeven -1.11R · trail -1.11R · partial -1.11R · time -0.09R
+Risk — ALLOW
+Within limits: 0 open, 0 taken, day +0.0R
+Quantity 65 × Pulse 1 (Risk-on at 09:55) × Risk 1.00 = 65
+Sentinel — Clear
+Nothing material found
+NSE · NSE last ₹1,640.00 (+3.44% on the day, +17.6% over 30 days) · as of 2026-11-25 16:00:29
+NSE · Volume last session +7% vs its 20-day average; 2 spike day(s) (>2× average) in 20
+NSE · At 98% of its 52-week range (₹1,188–₹1,650, unadjusted)
+Checked: Corporate actions, NSE MCP, Google News, F&O ban list · Unavailable: NSE filings, Results calendar · read by rules
+Recent headlines about the company
+· Bank Nifty Jumps Over 1,100 Points Today as HDFC Bank and ICICI Bank Shares Rally Over 3%; Private Banks Lead Gains Kotak Neo
+· ICICI Bank rallies 4%, hits all-time high; market cap nears ₹12 trillion Business Standard
+· ICICI Bank, HDFC Bank, Reliance, and Airtel lead Nifty to 45% rally India Infoline
+· ICICI Bank shares at record high — Here's why JPMorgan rates it its top pick - CNBC TV18 LinkedIn
+keyboard_arrow_down
+
+Chart · ICICIBANK
+
+10:00Nov 25, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+1620
+1640
+1660
+1680
+Price
+VWAP
+Signal
+OR high 1,642.00
+OR low 1,618.80
+Entry 1,645.70
+Stop 1,630.40
+Target 1,691.60
+keyboard_arrow_down
+
+Blocked by agents · 2 signal(s) — not to be taken
+
+SBIN ORB: Already 3 trades today (cap 3)
+
+SBIN▲ LONGORBPRACTICE ONLY
+✕ STOPPED 12:50
+Last ₹1,138.15 ▲ 0.49% on the day · Practice BUY at 11:45 · hold to stop, target or 15:15
+ENTRY
+₹1,149.30
+STOP-LOSS
+₹1,139.75
+▼ 0.83%
+TARGET
+₹1,177.95
+▲ 2.49%
+QUANTITY
+0
+RISK
+₹0
+Entry
+STOP ₹1,139.75
+EXIT ₹1,139.75
+TARGET ₹1,177.95
+Closed at ₹1,139.75 → -1.12R · ₹-0 before costs.
+Pulse · Risk-on ×1▲ with market
+SentinelWatch
+Coach58% win odds · Neutral
+Expected+0.18R ≈ ₹185
+Exit · fixedSTOPPED 12:50
+📝 Paperskipped · would be -1.12R
+RiskBLOCK · qty 0
+Coach post-mortem: Risk-on market mood — averages -0.13R across 28 recent trades (won 41%) vs +0.35R overall
+keyboard_arrow_down
+
+Why this signal · agents · SBIN
+
+Narrator
+SBIN closed beyond the 15-minute opening range with rising volume while price was on the right side of VWAP, so the engine took a long at ₹1,149.30 with the stop at ₹1,139.75 and a 3R target. Market mood is risk-on, which supports this direction. News check: Operational disruption: “SBI has told the stock exchanges about its data breach, but not the customers whose data was leaked” (Internet Freedom Foundation). Biggest risk from past trades: risk-on market mood (won 41% of 28). In its favour: news or corporate-event day (won 71% of 49).
+Coach — what past trades say
+Expected +0.18R after costs · win odds 58%
+▼ Risk-on market mood — averages -0.13R, won 41% of 28
+▼ With the opening gap — averages +0.14R, won 58% of 187
+▼ Wide opening range (stop far away) — averages +0.25R, won 65% of 269
+▲ Moderately away from VWAP at entry — averages +0.40R, won 66% of 285
+▲ Weak volume (under 1.5× normal) — averages +0.42R, won 67% of 239
+▲ News or corporate-event day — averages +0.45R, won 71% of 49
+All signals: +0.35R per trade, 65% win rate
+Exit — fixed
+Fixed — stop, target or 15:15, whichever first
+Result -1.12R after costs
+Same trade under each policy so far: fixed -1.12R · breakeven -1.12R · trail -1.12R · partial -1.12R · time -1.06R
+Risk — BLOCK
+Already 3 trades today (cap 3)
+Quantity 104 × Pulse 1 (Risk-on at 11:45) × Risk 0.00 = 0
+Sentinel — Watch
+Operational disruption: “SBI has told the stock exchanges about its data breach, but not the customers whose data was leaked” (Internet Freedom Foundation)
+NSE · NSE last ₹1,138.15 (+0.49% on the day, +18.7% over 30 days) · as of 2026-11-25 16:00:29
+NSE · Volume last session -36% vs its 20-day average
+NSE · At 68% of its 52-week range (₹934–₹1,235, unadjusted)
+Checked: Corporate actions, NSE MCP, Google News, F&O ban list · Unavailable: NSE filings, Results calendar · read by rules
+Recent headlines about the company
+· SBI, HDFC, and ICICI retain systemically important bank status Retail Banker International
+· From Bank of Baroda to SBI: A look at EV charging infrastructure loan schemes - CNBC TV18 LinkedIn
+· RBI should avoid a jumbo rate hike in December: SBI report - News Today | First with the news newstodaynet.com
+· RBI retains SBI, HDFC Bank, ICICI Bank as Systemically Important Banks: What's definition, why it matters for your money Livemint
+keyboard_arrow_down
+
+Chart · SBIN
+
+10:00Nov 25, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+1130
+1140
+1150
+1160
+1170
+Price
+VWAP
+Signal
+OR high 1,147.50
+OR low 1,132.00
+Entry 1,149.30
+Stop 1,139.75
+Target 1,177.95
+
+M&M HOUR-BRK: Already 3 trades today (cap 3)
+
+M&M▲ LONGHOUR-BRKPRACTICE ONLY
+✕ STOPPED 12:35
+Last ₹3,509.50 ▲ 0.63% on the day · Practice BUY at 11:05 · hold to stop, target or 15:15
+ENTRY
+₹3,520.80
+STOP-LOSS
+₹3,472.95
+▼ 1.36%
+TARGET
+₹3,664.35
+▲ 4.08%
+QUANTITY
+0
+RISK
+₹0
+Entry
+STOP ₹3,472.95
+EXIT ₹3,472.95
+TARGET ₹3,664.35
+Closed at ₹3,472.95 → -1.07R · ₹-0 before costs.
+Pulse · Risk-on ×1▲ with market
+SentinelClear
+Coach54% win odds · Neutral
+Expected+0.22R ≈ ₹220
+Exit · fixedSTOPPED 12:35
+📝 Paperskipped · would be -1.07R
+RiskBLOCK · qty 0
+Coach post-mortem: Risk-on market mood — averages -0.13R across 28 recent trades (won 41%) vs +0.35R overall
+keyboard_arrow_down
+
+Why this signal · agents · M&M
+
+Narrator
+M&M dropped to the VWAP of ₹3,520.80 in an established uptrend and held, prompting a long entry at that price with a stop at ₹3,472.95 and a 3R target. The market mood is risk‑on, which aligns with the move. Historically, a risk‑on mood has been favorable in 41% of 28 trades, and a normal opening‑range width has been favorable in 65% of 224 trades.
+Coach — what past trades say
+Expected +0.22R after costs · win odds 54%
+▼ Risk-on market mood — averages -0.13R, won 41% of 28
+▼ No news flags — averages +0.22R, won 56% of 34
+▼ Far from VWAP at entry (extended move) — averages +0.23R, won 64% of 131
+▼ No meaningful opening gap — averages +0.23R, won 65% of 120
+▲ setup: HOUR-BRK — averages +0.44R, won 62% of 84
+▲ Weak volume (under 1.5× normal) — averages +0.42R, won 67% of 239
+▲ Normal opening-range width — averages +0.48R, won 65% of 224
+All signals: +0.35R per trade, 65% win rate
+Exit — fixed
+Fixed — stop, target or 15:15, whichever first
+Result -1.07R after costs
+Same trade under each policy so far: fixed -1.07R · breakeven -1.07R · trail -1.07R · partial -1.07R · time -0.65R
+Risk — BLOCK
+Already 3 trades today (cap 3)
+Quantity 20 × Pulse 1 (Risk-on at 11:05) × Risk 0.00 = 0
+Sentinel — Clear
+Other news: “Should You Be Adding Mahindra & Mahindra Financial Services (NSE:M&MFIN) To Your Watchlist Today?” (Simply Wall St)
+News clarification with the exchange: “Mahindra Finance denies plans to acquire gold loan cos” (Venture Intelligence News)
+News clarification with the exchange: “Mahindra Finance Rules Out Gold Loan Acquisitions” (BW Businessworld)
+News clarification with the exchange: “Mahindra Finance Rejects Gold Loan Acquisition Claims” (Kalkine India)
+News clarification with the exchange: “Mahindra Finance denies report of scouting gold loan firms for acquisition” (bfsi.economictimes.indiatimes.com)
+News clarification with the exchange: “Gold Loan Acquisition की खबर पर Mahindra Finance का बड़ा बयान, रिपोर्ट को बताया गलत” (Business Remedies)
+Nothing that should move the stock sharply today
+NSE · NSE last ₹3,509.50 (+0.63% on the day, +22.7% over 30 days) · as of 2026-11-25 16:00:29
+NSE · Volume last session -9% vs its 20-day average; 2 spike day(s) (>2× average) in 20
+NSE · At 70% of its 52-week range (₹2,744–₹3,840, unadjusted)
+Checked: Corporate actions, NSE MCP, Google News, F&O ban list · Unavailable: NSE filings, Results calendar · Headlines read by Groq
+Recent headlines about the company
+· Should You Be Adding Mahindra & Mahindra Financial Services (NSE:M&MFIN) To Your Watchlist Today? Simply Wall St
+· Mahindra Finance denies report of scouting gold loan firms for acquisition bfsi.economictimes.indiatimes.com
+· Mahindra Finance Rules Out Gold Loan Acquisitions BW Businessworld
+· Mahindra Finance denies plans to acquire gold loan cos Venture Intelligence News
+keyboard_arrow_down
+
+Chart · M&M
+
+10:00Nov 25, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+3450
+3500
+3550
+3600
+3650
+Price
+VWAP
+Signal
+OR high 3,484.70
+OR low 3,449.10
+Entry 3,520.80
+Stop 3,472.95
+Target 3,664.35
+WATCHLIST
+sorted by in play, then relative volume
+
+Chart a stock
+
+10:00Nov 25, 2026
+11:00
+12:00
+13:00
+14:00
+15:00
+1360
+1365
+1370
+1375
+1380
+1385
+1390
+1395
+Price
+VWAP
+OR high 1,387.00
+OR low 1,360.20
