@@ -155,14 +155,14 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
   <div class="filters" role="search">
     <label class="search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="aQ" type="search" placeholder="Search alerts" aria-label="Search alerts" autocomplete="off"><button type="button" id="aQx" aria-label="Clear search" hidden>&times;</button></label>
     <div class="chips" id="aPer"><span class="lbl">Period</span><button class="chip" data-v="all" aria-pressed="true">All</button><button class="chip" data-v="2">48 h</button><button class="chip" data-v="7">7 days</button><button class="chip" data-v="30">30 days</button></div>
-    <div class="chips"><span class="lbl">Show</span><button class="chip" id="aUnread" aria-pressed="false">Unread only</button><select class="sel" id="aJur" aria-label="Jurisdiction"><option value="">All jurisdictions</option></select><select class="sel" id="aStep" aria-label="Step"><option value="">All steps</option></select></div>
+    <div class="chips"><span class="lbl">Show</span><button class="chip" id="aUnread" aria-pressed="false">Unread only</button><button class="chip" id="aLate" aria-pressed="false">Hide late-catalogued</button><select class="sel" id="aJur" aria-label="Jurisdiction"><option value="">All jurisdictions</option></select><select class="sel" id="aStep" aria-label="Step"><option value="">All steps</option></select></div>
   </div>
   <div class="ponly pfilt" id="aPf"></div>
   <div class="count"><span id="aCount"></span><button type="button" id="aReset" hidden>Clear filters</button></div>
   <div class="card flush" id="feed"></div>
   <div class="btns"><button class="btn" id="seen" type="button">Mark all seen</button><button class="btn" id="check" type="button">Check now</button></div>
   <div class="btnnote" id="btnNote" aria-live="polite"></div>
-  <p class="foot">Newest AI policy changes worldwide from Digital Policy Alert. A blue dot marks items you haven't marked as seen. The Policy Desk refreshes this feed through the day; this page rechecks every 5 minutes while open.</p>
+  <p class="foot">Newest AI policy changes worldwide from Digital Policy Alert, ordered by when DPA published them. A blue dot marks items you haven't marked as seen; "Catalogued late" marks older events DPA has only just added. Coverage: systematic daily tracking for the G20, EU-27, Switzerland and selected Asia-Pacific and African jurisdictions since 2020; lawsuits by public authorities appear when filed, private lawsuits only once ruled on; US figures include state-level activity.</p>
 </section>
 
 <section class="pane" id="eu">
@@ -253,7 +253,7 @@ var save=function(a){try{localStorage.setItem(SEEN_KEY,JSON.stringify(a.slice(0,
 var data=null,known=null,fresh=0;
 
 /* ---------- filter state (remembered on this device) ---------- */
-var DEF={aQ:'',aPer:'all',aUnread:false,aJur:'',aStep:'',eQ:'',eStep:'',eType:'',eSort:'new',uRange:'all',uSer:'both',uGrp:'q',tDim:'',tSort:'provisions'};
+var DEF={aQ:'',aPer:'all',aUnread:false,aLate:false,aJur:'',aStep:'',eQ:'',eStep:'',eType:'',eSort:'new',uRange:'all',uSer:'both',uGrp:'q',tDim:'',tSort:'provisions'};
 var F={};for(var k in DEF)F[k]=DEF[k];
 try{var sv=JSON.parse(localStorage.getItem(F_KEY)||'{}');for(var k2 in sv)if(k2 in DEF&&k2!=='aQ'&&k2!=='eQ')F[k2]=sv[k2];}catch(e){}
 var keep=function(){try{localStorage.setItem(F_KEY,JSON.stringify(F));}catch(e){}};
@@ -284,32 +284,35 @@ var paintAlerts=function(){
   var out=rows.filter(function(r){
     if(F.aPer!=='all'){var d=new Date(r.publication_date+'T00:00:00Z').getTime();if(isNaN(d)||ref-d>(+F.aPer)*864e5)return false;}
     if(F.aUnread&&s.indexOf(r.event_id)>=0)return false;
+    if(F.aLate&&r.late)return false;
     if(F.aJur&&jurList(r).indexOf(F.aJur)<0)return false;
     if(F.aStep&&STEP(r.action_type)!==F.aStep)return false;
     if(q&&(r.title+' '+r.jurisdictions+' '+r.action_type).toLowerCase().indexOf(q)<0)return false;
     return true;});
   var unread=rows.filter(function(r){return s.indexOf(r.event_id)<0;}).length;
   $('feed').innerHTML=out.length?out.map(function(r){var isNew=s.indexOf(r.event_id)<0;
-    return '<div class="row">'+(isNew?'<span class="new" aria-label="New"></span>':'<span class="nonew"></span>')+'<div class="t"><a href="'+esc(safe(r.url))+'" target="_blank" rel="noopener">'+hi(r.title,q)+'</a><div class="meta">'+hi(r.jurisdictions,q)+' · '+esc(fmtD(r.publication_date))+' · '+esc(STEP(r.action_type))+'</div></div>'+CH+'</div>';
+    return '<div class="row">'+(isNew?'<span class="new" aria-label="New"></span>':'<span class="nonew"></span>')+'<div class="t"><a href="'+esc(safe(r.url))+'" target="_blank" rel="noopener">'+hi(r.title,q)+'</a><div class="meta">'+hi(r.jurisdictions,q)+' · '+esc(fmtD(r.publication_date))+' · '+esc(STEP(r.action_type))+'</div>'+(r.late?'<span class="pill" title="DPA added this record more than 60 days after it happened">Catalogued late · happened '+esc(fmtD(r.date))+'</span>':'')+'</div>'+CH+'</div>';
   }).join(''):'<div class="empty">No alerts match these filters.</div>';
-  var active=(F.aQ?1:0)+(F.aPer!=='all'?1:0)+(F.aUnread?1:0)+(F.aJur?1:0)+(F.aStep?1:0);
+  var active=(F.aQ?1:0)+(F.aPer!=='all'?1:0)+(F.aUnread?1:0)+(F.aLate?1:0)+(F.aJur?1:0)+(F.aStep?1:0);
   $('aCount').textContent=out.length+' of '+rows.length+' changes'+(active?' · '+active+' filter'+(active>1?'s':''):'');
   $('aReset').hidden=!active;
-  $('aPf').textContent='Filters: '+(active?[F.aQ&&('search "'+F.aQ+'"'),F.aPer!=='all'&&('last '+(F.aPer==='2'?'48 hours':F.aPer+' days')),F.aUnread&&'unread only',F.aJur,F.aStep].filter(Boolean).join(' · '):'none')+' — '+out.length+' of '+rows.length+' changes';
+  $('aPf').textContent='Filters: '+(active?[F.aQ&&('search "'+F.aQ+'"'),F.aPer!=='all'&&('last '+(F.aPer==='2'?'48 hours':F.aPer+' days')),F.aUnread&&'unread only',F.aLate&&'late-catalogued hidden',F.aJur,F.aStep].filter(Boolean).join(' · '):'none')+' — '+out.length+' of '+rows.length+' changes';
   var t=new Date(),hh=('0'+t.getHours()).slice(-2)+':'+('0'+t.getMinutes()).slice(-2);
   $('status').textContent=(fresh?fresh+' arrived while open. ':'')+(unread?unread+' unread. ':'All caught up. ')+'Checked '+hh+'.';
   $('dot').className='dot on';
   $('aUnread').setAttribute('aria-pressed',String(!!F.aUnread));
+  $('aLate').setAttribute('aria-pressed',String(!!F.aLate));
 };
 var refreshAlertMenus=function(){var rows=(data&&data.alerts)||[];
   fillSelect($('aJur'),tally(rows,jurList),'aJur','All jurisdictions');
   fillSelect($('aStep'),tally(rows,function(r){return [STEP(r.action_type)];}),'aStep','All steps');};
 aSync=chipGroup('aPer','aPer',paintAlerts);
 $('aUnread').addEventListener('click',function(){F.aUnread=!F.aUnread;keep();paintAlerts();});
+$('aLate').addEventListener('click',function(){F.aLate=!F.aLate;keep();paintAlerts();});
 $('aJur').addEventListener('change',function(){F.aJur=this.value;keep();paintAlerts();});
 $('aStep').addEventListener('change',function(){F.aStep=this.value;keep();paintAlerts();});
 searchBox('aQ','aQ',paintAlerts);
-$('aReset').addEventListener('click',function(){F.aQ='';F.aPer='all';F.aUnread=false;F.aJur='';F.aStep='';$('aQ').value='';$('aQx').hidden=true;$('aJur').value='';$('aStep').value='';aSync();keep();paintAlerts();});
+$('aReset').addEventListener('click',function(){F.aQ='';F.aPer='all';F.aUnread=false;F.aLate=false;F.aJur='';F.aStep='';$('aQ').value='';$('aQx').hidden=true;$('aJur').value='';$('aStep').value='';aSync();keep();paintAlerts();});
 
 /* ---------- EU ---------- */
 var euType=function(t){t=String(t);if(/AI Act|Omnibus|Artificial Intelligence Act|Code of Practice|sandbox|Advisory Forum|Scientific Panel/i.test(t))return 'act';if(/standard|CEN-CENELEC|EN ISO|EN \d/i.test(t))return 'std';return 'other';};

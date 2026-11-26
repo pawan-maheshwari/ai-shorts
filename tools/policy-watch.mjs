@@ -90,7 +90,9 @@ if (args.alerts) {
       action_type: String(r.action_type || ''),
       date: r.date || '',
       publication_date: r.publication_date || r.date || '',
-      url: url(r.event_id)
+      url: url(r.event_id),
+      /* catalogued late: DPA published it more than 60 days after the event itself */
+      late: !!(r.date && r.publication_date && (Date.parse(r.publication_date) - Date.parse(r.date)) > 60 * 864e5)
     }));
   }
 }
@@ -164,7 +166,7 @@ fresh = out.alerts.filter((a) => !known.has(a.event_id));
 if (fresh.length) {
   const stamp = now.toISOString();
   log.entries = fresh.map((a) => ({ logged_at: stamp, event_id: a.event_id, publication_date: a.publication_date,
-    date: a.date, jurisdictions: a.jurisdictions, action_type: a.action_type, title: a.title, url: a.url }))
+    date: a.date, jurisdictions: a.jurisdictions, action_type: a.action_type, title: a.title, url: a.url, late: a.late }))
     .concat(log.entries).slice(0, LOG_CAP);
   log.updated_at = stamp;
 }
