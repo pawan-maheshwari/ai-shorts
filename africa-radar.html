@@ -73,6 +73,28 @@ h1{font-size:34px;font-weight:700;letter-spacing:.37px;line-height:1.1;margin:18
   .row{break-inside:avoid}
   h1{margin-top:0}
 }
+
+@media (min-width:900px){
+  body{font-size:16px}
+  .wrap{max-width:1180px;padding:0 32px}
+  .top .wrap>.small,.top .seg{max-width:760px;margin-left:auto;margin-right:auto}
+  h1{font-size:40px;margin-top:26px}
+  .chips{flex-wrap:wrap;overflow:visible}
+  #raise{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:transparent;gap:10px;overflow:visible}
+  #raise .raise{background:var(--card);border-radius:14px}
+  #raise .raise:before{display:none}
+  #areas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}
+  #areas .ar:nth-child(2):before{display:none}
+  .filters{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:4px 18px;align-items:start}
+  .filters .search{margin-top:8px}
+  .filters .chips{grid-column:2/3}
+  #feed{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:transparent;overflow:visible}
+  #feed .row{background:var(--card);border-radius:14px}
+  #feed .row:before{display:none}
+  #feed .empty{grid-column:1/-1;background:var(--card);border-radius:14px}
+  .foot{max-width:900px}
+}
+@media (min-width:1300px){#feed{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>

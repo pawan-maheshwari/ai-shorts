@@ -141,6 +141,36 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
 .lk b{display:block;font-size:15px}.lk span{font-size:12px;color:var(--muted)}
 .lk:after{content:"\203A";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:22px}
 @media print{.links{display:none}}
+
+/* ---------- desktop & tablet (>=900px): use the width, keep the iOS look ---------- */
+@media (min-width:900px){
+  body{font-size:16px}
+  .wrap{max-width:1180px;padding:0 32px}
+  .top .wrap>.small,.top .seg{max-width:760px;margin-left:auto;margin-right:auto}
+  h1{font-size:40px;margin-top:26px}
+  .chips{flex-wrap:wrap;overflow:visible}
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  .links{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .filters{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:4px 18px;align-items:start}
+  .filters .search{grid-column:1/2;margin-top:8px}
+  .filters .chips{grid-column:2/3}
+  .filters .chips:only-child,.filters.nosearch .chips{grid-column:1/-1}
+  #feed,#eu-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:transparent;overflow:visible}
+  #feed .row,#eu-list .row{background:var(--card);border-radius:14px}
+  #feed .row:before,#eu-list .row:before{display:none}
+  #feed .empty,#eu-list .empty{grid-column:1/-1;background:var(--card);border-radius:14px}
+  #cmp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));background:transparent;gap:10px;overflow:visible}
+  #cmp .cmp{background:var(--card);border-radius:14px}
+  #cmp .cmp:before{display:none}
+  .tcols{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:start}
+  .bars{padding:10px 24px 16px}
+  .q{grid-template-columns:80px minmax(0,1fr)}
+  .bar{height:14px;border-radius:7px}
+  .bar span{line-height:14px;font-size:12px}
+  .btns{max-width:520px}
+  .foot{max-width:900px}
+}
+@media (min-width:1300px){#feed{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -194,7 +224,7 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
 <section class="pane" id="uscn">
   <h1>US vs China</h1>
   <p class="sub" id="uSub">AI policy events per quarter since 2023</p>
-  <div class="filters">
+  <div class="filters nosearch">
     <div class="chips" id="uRange"><span class="lbl">Range</span><button class="chip" data-v="all" aria-pressed="true">Since 2023</button><button class="chip" data-v="2024">2024+</button><button class="chip" data-v="2025">2025+</button><button class="chip" data-v="4">Last 4 qtrs</button></div>
     <div class="chips" id="uSer"><span class="lbl">Show</span><button class="chip" data-v="both" aria-pressed="true">Both</button><button class="chip" data-v="us">US</button><button class="chip" data-v="cn">China</button></div>
     <div class="chips" id="uGrp"><span class="lbl">Group by</span><button class="chip" data-v="q" aria-pressed="true">Quarter</button><button class="chip" data-v="y">Year</button></div>
@@ -223,11 +253,14 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
   <div class="hdr">Side by side</div>
   <div class="filters"><div class="chips" id="tDim"><span class="lbl">Focus</span><button class="chip" data-v="" aria-pressed="true">All</button></div></div>
   <div class="card flush" id="cmp"></div>
+  <div class="tcols"><div>
   <div class="hdr">Domestic requirements</div>
   <div class="filters"><div class="chips" id="tSort"><span class="lbl">Rank by</span><button class="chip" data-v="provisions" aria-pressed="true">Provisions</button><button class="chip" data-v="laws">Laws</button><button class="chip" data-v="jurisdictions">Jurisdictions</button></div></div>
   <div class="card flush list" id="req"></div>
+  </div><div>
   <div class="hdr">International frameworks · transparency provisions</div>
   <div class="card flush list" id="fw"></div>
+  </div></div>
   <p class="foot">The side-by-side comparison is an editorial summary of DPA's provision texts.</p>
 </section>
 
@@ -427,7 +460,7 @@ var show=function(n){var idx=names.indexOf(n);if(idx<0){idx=0;n=names[0];}cur=n;
   window.scrollTo(0,0);};
 segBtns.forEach(function(b){b.addEventListener('click',function(){show(b.getAttribute('data-p'));});});
 show((location.hash||'').slice(1)||'alerts');setTimeout(function(){window.scrollTo(0,0);},60);
-window.addEventListener('hashchange',function(){show((location.hash||'').slice(1));});
+window.addEventListener('hashchange',function(){show((location.hash||'').slice(1));setTimeout(function(){window.scrollTo(0,0);},60);});
 var fab=$('fab');
 window.addEventListener('scroll',function(){fab.className='fab'+(window.scrollY>300?' show':'');},{passive:true});
 fab.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
