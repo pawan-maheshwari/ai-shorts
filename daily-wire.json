@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-26",
+      "title": "Rules? What Rules?",
+      "headline": "The US-China AI Race and the Challenge of Global Regulation",
+      "source": "Frontline Magazine",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOemV1WmNrNGQxUGd2MDRCaFpJbndOSVpNMkRZcUpmWlVFalRnamNoTTg0UDdEVllBQ3VIb1hQcm9DM25EMkc3SF9zNWxxWlFhWnRLQmJmdHp0TUtGVDlxVnlMa1RGZ0JrY3JjTnJPb0lObkdtZmVWaUlkS0NZMVR1ekFCTmVyOGZiUUxQTEVqRDJwTVdmZ1hWWDVnTnJIbklV0gGnAUFVX3lxTE9hVzdLTU1BcWpCdVVEM0tWZHQ0Z1lDZHdSQjZlcjZ3SFF5T2trelVIdk1Sb3g4cDdJQVJYcHlWQkNKT2NFV2YzTEdnMkU1VDhCZTl5VDZNaTM3Q2Zmdk1hcGF2empJYmtFLVVuSlp4R1NXOTV5d21USlYyOGttM0kwTUpFb1JBTVU5cWxQVnlUQzlfVjFlU1FfWFpOWnNSZ3pFWTdrVkFR?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "rules",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "New rules? This AI was compliant yesterday!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "It read all 400 pages in a second and agreed with itself."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that compliance without a lawyer."
+        }
+      ]
+    },
+    {
       "date": "2026-11-25",
       "title": "The Job Forecast",
       "headline": "NTT Data: Derry AI centre to create 200 new jobs",
