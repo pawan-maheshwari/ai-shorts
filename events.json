@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T09:08:18.462Z",
+ "updated": "2026-11-26T08:52:56.142Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -8,19 +8,6 @@
   "confs.tech open conference list"
  ],
  "events": [
-  {
-   "title": "AI Engineering Summit Auckland",
-   "type": "Summit",
-   "start": "2026-11-25",
-   "end": "2026-11-25",
-   "url": "https://www.testingmind.com/event/aiengineeringsummit-Auckland/",
-   "source": "Global AI Community",
-   "city": "Auckland",
-   "country": "New Zealand",
-   "cc": "NZ",
-   "lat": -36.85,
-   "lon": 174.76
-  },
   {
    "title": "AI World Congress",
    "type": "Conference",
@@ -33,19 +20,6 @@
    "cc": "GB",
    "lat": 51.51,
    "lon": -0.13
-  },
-  {
-   "title": "Global AI Nights: Ibadan",
-   "type": "Meetup",
-   "start": "2026-11-25",
-   "end": "2026-11-25",
-   "url": "https://globalai.community/e/f1ddfp61",
-   "source": "Global AI Community",
-   "city": "Ibadan",
-   "country": "Nigeria",
-   "cc": "NG",
-   "lat": 7.38,
-   "lon": 3.95
   },
   {
    "title": "WeAreDevelopers Conference India",
