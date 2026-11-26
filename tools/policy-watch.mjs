@@ -25,6 +25,12 @@
                           implementer for USA + CHN since 2023-01-01
      --transparency FILE  dpa_get_ai_governance_concern "transparency",
                           parts requirements + international_frameworks
+     --africa FILE [FILE…]  dpa_search_events for ZAF and/or KEN, NGA, EGY, GHA, ETH
+                          since a recent date (show_keys event_id, title, date,
+                          action_type, policy_area, economic_activities, threads,
+                          implementers). Joined with the hand-curated editorial
+                          layer in tools/africa-radar-notes.json.
+     --africa-areas FILE  dpa_count_data count_by policy_area, ZAF, last 12 months
      --now YYYY-MM-DD     pretend today is this date (tests)
 
    No dependencies: Node 18+ only.
@@ -74,7 +80,8 @@ const out = {
   alerts: prev.alerts || [],
   eu: prev.eu || null,
   uscn: prev.uscn || null,
-  transparency: prev.transparency || null
+  transparency: prev.transparency || null,
+  africa: prev.africa || null
 };
 
 /* ---------- alerts ---------- */
@@ -158,6 +165,51 @@ if (args.transparency) {
     };
   }
 }
+
+/* ---------- Africa Radar (South Africa + region) ---------- */
+if (args.africa) {
+  const notesFile = readJSON(path.join(ROOT, 'tools', 'africa-radar-notes.json'), { notes: {}, questions: {} });
+  const N = notesFile.notes || {};
+  const AFRICA = ['South Africa', 'Kenya', 'Egypt', 'Nigeria', 'Ghana', 'Ethiopia', 'Rwanda', 'Morocco'];
+  const seenIds = new Set(), items = [];
+  for (const f of args.africa) {
+    const j = readJSON(f, null);
+    for (const r of (j && j.results) || []) {
+      const id = String(r.event_id);
+      if (seenIds.has(id)) continue; seenIds.add(id);
+      const im = asList(r.implementers).map(String);
+      const n = N[id] || {};
+      const hay = (r.title + ' ' + asList(r.economic_activities).join(' ') + ' ' + (r.policy_area || '')).toLowerCase();
+      const th = asList(r.threads).join(' ').toLowerCase();
+      const lenses = n.lenses || [
+        /payment|bank|crypto|virtual asset|credit|lend|financ|insur/.test(hay) && 'fin',
+        /telecom|infrastructure provider|licen[cs]e|icasa|numbering|data cent|network/.test(hay) && 'telco',
+        /e-commerce|consumer|retail|advert|promotion|platform|loyalty/.test(hay) && 'retail'
+      ].filter(Boolean);
+      const topics = n.topics || [
+        /artificial intelligence/.test(th) || /\bai\b|artificial intelligence/.test(hay) ? 'ai' : '',
+        /data governance|privacy|personal data/.test(hay + ' ' + th) ? 'data' : '',
+        /competition/.test(hay + ' ' + th) ? 'comp' : '',
+        /payment|crypto|virtual asset/.test(hay + ' ' + th) ? 'pay' : ''
+      ].filter(Boolean);
+      const local = im.filter((c) => AFRICA.includes(c));
+      const country = n.country || (im.length > 3 ? 'Global' : (local[0] || im[0] || ''));
+      items.push({ event_id: id, title: n.short_title || String(r.title || ''), date: r.date || '', step: String(r.action_type || ''),
+        country, lenses: lenses.length ? lenses : ['retail', 'fin', 'telco'], topics,
+        impact: n.impact || 'watch', why: n.why || '', curated: !!n.impact, url: url(id) });
+    }
+  }
+  items.sort((a, b) => a.date < b.date ? 1 : -1);
+  let areas = (prev.africa && prev.africa.areas) || [], total = (prev.africa && prev.africa.total_12m) || null;
+  if (args['africa-areas']) {
+    const c = readJSON(args['africa-areas'][0], null);
+    if (c && Array.isArray(c.results)) {
+      areas = c.results.map((r) => ({ area: r.policy_area_name, events: Number(r.value) })).sort((a, b) => b.events - a.events);
+      total = c.total || (c.basis && c.basis.total) || total;
+    }
+  }
+  out.africa = { as_of: iso(now), total_12m: total, areas, questions: notesFile.questions || {}, items };
+} else if (prev.africa) out.africa = prev.africa;
 
 /* ---------- internal changelog ---------- */
 const log = readJSON(LOG, null) || { note: 'Internal log of AI policy changes first seen by the AIShorts Policy Desk. Newest first.', entries: [] };

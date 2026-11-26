@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How to use AI Policy Watch · AIShorts</title>
+<meta name="description" content="Read Me for AI Policy Watch on AIShorts: what the Digital Policy Alert data covers, how to read each section, and step-by-step recipes for compliance teams, retailers, banks, product teams, researchers and journalists.">
+<link rel="canonical" href="https://aishorts.biz/policy-guide.html">
+<style>
+/* VOICE: a friendly iOS help screen — plain, practical, trustworthy
+   IDEA: the Settings "Help" pages: large title, grouped cards, a role picker that opens your recipe
+   PICTURE: the role picker with a step list that animates in; mini diagrams of event vs measure drawn in CSS
+   COLOUR and TYPE: iOS system greys + systemBlue; SF via -apple-system
+   LAYOUT: one column, sticky section links, back-to-top arrow */
+:root{--bg:#f2f2f7;--card:#fff;--ink:#000;--muted:#8a8a8e;--sep:rgba(60,60,67,.18);--blue:#007aff;--green:#34c759;--orange:#ff9500;--red:#ff3b30;--fill:rgba(118,118,128,.12);--bar:rgba(242,242,247,.82)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#000;--card:#1c1c1e;--ink:#fff;--muted:#8d8d93;--sep:rgba(84,84,88,.6);--blue:#0a84ff;--green:#30d158;--orange:#ff9f0a;--red:#ff453a;--fill:rgba(118,118,128,.24);--bar:rgba(0,0,0,.78)}}
+:root[data-theme=dark]{--bg:#000;--card:#1c1c1e;--ink:#fff;--muted:#8d8d93;--sep:rgba(84,84,88,.6);--blue:#0a84ff;--green:#30d158;--orange:#ff9f0a;--red:#ff453a;--fill:rgba(118,118,128,.24);--bar:rgba(0,0,0,.78)}
+*{box-sizing:border-box;min-width:0;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+.top{position:sticky;top:0;z-index:10;background:var(--bar);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:.5px solid var(--sep);padding:10px 0}
+.small{font-size:13px;color:var(--muted);text-align:center;font-weight:600}
+.small a{color:var(--blue);text-decoration:none;float:left}
+.toc{display:flex;gap:6px;overflow-x:auto;padding-top:8px;scrollbar-width:none}
+.toc::-webkit-scrollbar{display:none}
+.toc a{flex:none;font:600 13px -apple-system,sans-serif;color:var(--ink);background:var(--card);border-radius:99px;padding:7px 12px;text-decoration:none;min-height:34px}
+h1{font-size:34px;font-weight:700;letter-spacing:.37px;line-height:1.1;margin:18px 0 6px}
+h2{font-size:22px;font-weight:700;margin:28px 0 8px}
+.lead{color:var(--muted);font-size:16px;margin:0 0 6px}
+.card{background:var(--card);border-radius:14px;padding:14px 16px;margin:10px 0}
+.card p{margin:0 0 8px}.card p:last-child{margin:0}
+.grp{background:var(--card);border-radius:14px;overflow:hidden;margin:10px 0}
+.item{padding:12px 16px;position:relative}
+.item+.item:before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--sep)}
+.item b{display:block;font-size:16px}
+.item span{font-size:15px;color:var(--muted)}
+.ico{display:inline-flex;width:28px;height:28px;border-radius:7px;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;margin-right:10px;vertical-align:middle;flex:none}
+.row{display:flex;align-items:flex-start;gap:0}
+.roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}
+@media(max-width:520px){.roles{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.role{border:0;border-radius:14px;background:var(--card);color:var(--ink);font:600 14px -apple-system,sans-serif;padding:14px 10px;min-height:64px;cursor:pointer;text-align:left}
+.role small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:2px}
+.role[aria-pressed="true"]{background:var(--blue);color:#fff}
+.role[aria-pressed="true"] small{color:rgba(255,255,255,.85)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:12px 16px 12px 54px}
+.steps li+li:before{content:"";position:absolute;top:0;left:54px;right:0;border-top:.5px solid var(--sep)}
+.steps li:after{content:counter(s);position:absolute;left:16px;top:12px;width:26px;height:26px;border-radius:50%;background:var(--fill);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+@media (prefers-reduced-motion:no-preference){.steps.anim li{animation:in .35s cubic-bezier(.2,.8,.2,1) both}.steps.anim li:nth-child(2){animation-delay:.06s}.steps.anim li:nth-child(3){animation-delay:.12s}.steps.anim li:nth-child(4){animation-delay:.18s}.steps.anim li:nth-child(5){animation-delay:.24s}@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}}
+.go{display:inline-block;margin-top:6px;color:var(--blue);font-weight:600;text-decoration:none}
+.diagram{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:8px 0 4px}
+.pill{border-radius:99px;padding:6px 12px;font-size:13px;font-weight:600;background:var(--fill)}
+.pill.m{background:var(--blue);color:#fff}
+.arrow{color:var(--muted)}
+details{background:var(--card);border-radius:14px;margin:8px 0;padding:0 16px}
+summary{padding:14px 0;font-weight:600;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:after{content:"+";float:right;color:var(--muted);font-weight:400}
+details[open] summary:after{content:"–"}
+details p{margin:0 0 14px;font-size:15px}
+.tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;color:#fff;vertical-align:1px}
+.note{font-size:13px;color:var(--muted);margin:16px 4px 90px}
+.fab{position:fixed;right:16px;bottom:calc(20px + env(safe-area-inset-bottom));width:48px;height:48px;border-radius:50%;border:0;background:var(--blue);color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.22);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20}
+.fab.show{opacity:1;pointer-events:auto}
+.fab svg{width:22px;height:22px}
+a{color:var(--blue)}
+.role:focus-visible,.toc a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+@media print{.top,.fab{display:none}.card,.grp,details{border:1px solid #ccc}details{display:block}}
+</style>
+</head>
+<body>
+<div class="top"><div class="wrap">
+  <div class="small"><a href="policy-watch.html">&lsaquo; Policy Watch</a>Read Me</div>
+  <nav class="toc" aria-label="Sections"><a href="#start">Quick start</a><a href="#recipes">For your role</a><a href="#sections">Each section</a><a href="#africa">Africa Radar</a><a href="#reading">Reading the data</a><a href="#faq">FAQ</a></nav>
+</div></div>
+
+<main class="wrap">
+  <h1>How to use AI Policy Watch</h1>
+  <p class="lead">A plain-English guide to the AI and digital-policy tracker on AIShorts: what the data is, how to read it, and how to use it for your own work.</p>
+
+  <h2 id="start">Quick start</h2>
+  <div class="card">
+    <p><b>What it is.</b> AI Policy Watch shows new laws, rules, court rulings and official decisions about AI and the digital economy, around the world. The data comes from <a href="https://digitalpolicyalert.org" target="_blank" rel="noopener">Digital Policy Alert</a> (DPA), an independent tracker. AIShorts' Policy Desk refreshes it through the day.</p>
+    <p><b>Where to find it.</b> Tap the <b>bell</b> next to "Pull the wire" on the AIShorts front page, or open <a href="policy-watch.html">Policy Watch</a> directly. A red number on the bell means changes you haven't seen yet.</p>
+  </div>
+  <div class="grp">
+    <div class="item"><div class="row"><span class="ico" style="background:var(--blue)">1</span><div><b>Pick a section</b><span>The segmented bar at the top: Alerts, EU, US · China, Transparency. The <a href="africa-radar.html">Africa Radar</a> sits on its own page.</span></div></div></div>
+    <div class="item"><div class="row"><span class="ico" style="background:var(--orange)">2</span><div><b>Narrow it down</b><span>Search, then tap chips such as Period, Unread only, Jurisdiction or Step. "Clear filters" resets everything. Your choices are remembered on this device.</span></div></div></div>
+    <div class="item"><div class="row"><span class="ico" style="background:var(--green)">3</span><div><b>Check the source</b><span>Tap any item to open the original DPA record, with dates, documents and official links.</span></div></div></div>
+    <div class="item"><div class="row"><span class="ico" style="background:var(--red)">4</span><div><b>Share or print</b><span>Print gives you "This section" or "All sections", and the printout lists the filters you used.</span></div></div></div>
+  </div>
+
+  <h2 id="recipes">Use it for your role</h2>
+  <p class="lead">Pick the one closest to you to see a step-by-step recipe.</p>
+  <div class="roles" id="roles">
+    <button class="role" data-r="compliance" aria-pressed="true">Compliance &amp; legal<small>weekly regulatory check</small></button>
+    <button class="role" data-r="product" aria-pressed="false">Product &amp; AI teams<small>launch checklist</small></button>
+    <button class="role" data-r="retail" aria-pressed="false">Retail &amp; consumer<small>customer data, promotions</small></button>
+    <button class="role" data-r="bank" aria-pressed="false">Banks &amp; fintech<small>AI in finance, payments</small></button>
+    <button class="role" data-r="research" aria-pressed="false">Students &amp; researchers<small>trends and citations</small></button>
+    <button class="role" data-r="press" aria-pressed="false">Journalists &amp; creators<small>what's new this week</small></button>
+  </div>
+  <div class="grp"><ol class="steps" id="steps"></ol></div>
+
+  <h2 id="sections">What each section shows</h2>
+  <div class="grp">
+    <div class="item"><b>Alerts</b><span>The newest AI policy changes worldwide, newest published first. A blue dot means not yet seen. "Catalogued late" means DPA has just added something that happened months ago. Use <i>Hide late-catalogued</i> if you only want genuinely new events.</span></div>
+    <div class="item"><b>EU</b><span>EU-level AI rules adopted or brought into force in the last 12 months, such as the AI Act, the Digital Omnibus on AI, implementing acts, codes of practice and European standards. Filter by step (Adopted or In force) or type, and sort by date or size.</span></div>
+    <div class="item"><b>US · China</b><span>How many AI policy events each country recorded per quarter or year since 2023. Change the range, show one country or both, and read the share, the ratio, the busiest period and the year-on-year arrows.</span></div>
+    <div class="item"><b>Transparency</b><span>How domestic AI laws handle transparency (disclosure, labelling, documentation, logging) compared with international frameworks such as the OECD AI Principles. Tap a focus chip to compare one topic at a time.</span></div>
+  </div>
+
+  <h2 id="africa">Using the Africa Radar</h2>
+  <div class="card">
+    <p>The <a href="africa-radar.html">Africa Radar</a> follows South Africa plus Kenya, Egypt, Nigeria, Ghana and Ethiopia across AI, data protection, competition, payments and telecoms.</p>
+    <p><b>1.</b> Choose a sector lens: <i>Retail</i>, <i>Financial</i>, <i>Telco &amp; infra</i> or <i>All sectors</i>.<br><b>2.</b> Start with <b>Three questions to ask your team</b>, short prompts for this week's meeting.<br><b>3.</b> Use the <b>Impact</b> chips: <span class="tag" style="background:var(--red)">High</span> means likely to need action, <span class="tag" style="background:var(--orange)">Medium</span> means plan for it, and <b>Watch</b> means keep an eye on it.<br><b>4.</b> Filter <b>Where</b> by country and <b>Topic</b> by AI, data and privacy, competition or payments.</p>
+    <p style="color:var(--muted);font-size:14px">Impact ratings and the "why it matters" notes are AIShorts editorial judgements, not legal advice. Items without a note are new and still waiting for review.</p>
+  </div>
+
+  <h2 id="reading">Reading the data correctly</h2>
+  <div class="card">
+    <p><b>Events vs measures.</b> One law (a <i>measure</i>) moves through several <i>events</i>: introduced, passed, adopted, in force. Counts on this site are events, so one big law can add several.</p>
+    <div class="diagram" aria-label="One measure produces several events"><span class="pill m">One law</span><span class="arrow">&rarr;</span><span class="pill">Introduced</span><span class="pill">Passed</span><span class="pill">Adopted</span><span class="pill">In force</span></div>
+    <p><b>Event date vs published date.</b> Alerts are ordered by when DPA <i>published</i> a record. The event itself can be older, which is what "catalogued late" flags.</p>
+    <p><b>Coverage.</b> DPA has tracked daily since 2020 for the G20, the EU-27, Switzerland and selected Asia-Pacific and African jurisdictions. Elsewhere it records only major events, so a blank there doesn't prove nothing happened.</p>
+    <p><b>Scope notes.</b> US figures include state-level activity. The EU section covers Brussels-level rules only, not national laws. Lawsuits by public authorities appear when filed; private lawsuits appear only once ruled on. Counts by area can overlap, because one event can sit in more than one area.</p>
+  </div>
+
+  <h2 id="faq">FAQ</h2>
+  <details><summary>How fresh is the data?</summary><p>The Policy Desk refreshes it several times a day. Each page shows when it was last updated, and "Check now" fetches the latest copy without reloading.</p></details>
+  <details><summary>Why does "Check now" say I'm up to date?</summary><p>Nothing new has been published since the last refresh. The note under the buttons shows how old the feed is.</p></details>
+  <details><summary>Do I need an account?</summary><p>No. Everything here is free to read. Your "seen" list and filters are kept only in your own browser.</p></details>
+  <details><summary>Can I rely on this for compliance decisions?</summary><p>Use it to spot what to look at, then confirm with the official source (tap any item) and your legal adviser. Nothing here is legal advice.</p></details>
+  <details><summary>Something looks wrong. What should I do?</summary><p>Tap the item to check the DPA record. If our summary or rating is off, tell us through the <a href="contact.html">contact page</a>. Corrections are logged under our <a href="standards.html">standards</a>.</p></details>
+
+  <p class="note">Data: Digital Policy Alert (digitalpolicyalert.org). AIShorts adds plain-English notes, ratings and the layout. Back to <a href="policy-watch.html">AI Policy Watch</a> · <a href="africa-radar.html">Africa Radar</a> · <a href="./">AIShorts</a>.</p>
+</main>
+
+<button class="fab" id="fab" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+<script>
+{
+var R={
+ compliance:[['Open Policy Watch, then Alerts','Set Period to 7 days and turn on Unread only. This is your weekly inbox.','policy-watch.html#alerts'],
+   ['Filter to your markets','Use the Jurisdiction menu for each country you operate in, then Step = Adopted or In force for rules that now apply.',''],
+   ['Check the EU tab','Step = In force shows which AI Act obligations already apply.','policy-watch.html#eu'],
+   ['Note new obligations','Tap each item to open the source record and copy the official link into your tracker.',''],
+   ['Print the weekly pack','Print, then All sections. The printout lists the filters used, as an audit trail.','']],
+ product:[['Start with Transparency','Look at the domestic requirements: Disclosure, Content marking, Documentation, Logging. These become your launch checklist.','policy-watch.html#transparency'],
+   ['Use Focus chips','Tap "Saying it’s AI" and "Labelling AI content" to see what each market expects for chatbots and generated media.',''],
+   ['Check your launch markets','In Alerts, search the country name plus "chatbot", "deepfake" or "AI" to catch new bills.','policy-watch.html#alerts'],
+   ['Watch the EU timeline','EU tab, Type = AI Act & Omnibus, shows what already applies to products on the EU market.','policy-watch.html#eu']],
+ retail:[['Open the Africa Radar, Retail lens','Read the three questions first. They are written for a weekly team huddle.','africa-radar.html'],
+   ['Topic = Data & privacy','Covers customer-data and loyalty-programme exposure, such as data-protection fines and transfer rules.',''],
+   ['Impact = High','Leaves only what is likely to need action this quarter.',''],
+   ['Check promotions and platforms','Search "promotion", "platform" or "e-commerce" in Alerts for marketing and online-sales rules.','policy-watch.html#alerts']],
+ bank:[['Africa Radar, Financial lens','Covers banking AI guidance, payments, crypto and data-protection enforcement in the region.','africa-radar.html'],
+   ['Topic = AI only','Shows AI-in-banking and credit-model rules, such as central-bank guidance notes.',''],
+   ['Topic = Payments','Covers payment-system bills, open-finance rules and virtual-asset licensing.',''],
+   ['Global view in Alerts','Search "bank", "credit" or "payment" with Period = 30 days.','policy-watch.html#alerts']],
+ research:[['US · China tab for trends','Group by Year for the big picture, then Quarter for detail. The share and ratio cards give quick quotable figures.','policy-watch.html#uscn'],
+   ['Cite the original','Every item links to its DPA record. Cite DPA as the source, with the record link and the date you accessed it.',''],
+   ['Mind the units','Counts are events, not laws. Read "Reading the data" below before comparing countries.','#reading'],
+   ['Print to PDF','Print, then This section, to keep a dated snapshot with your filters listed.','']],
+ press:[['Alerts, Period = 48 h','The freshest items, with Hide late-catalogued turned on so older events don’t pose as news.','policy-watch.html#alerts'],
+   ['Find the angle','Filter Step = Enforcement & reports for fines, lawsuits and investigations.',''],
+   ['Verify before you publish','Open the DPA record and follow its links to the official document.',''],
+   ['Add context','Use the US · China and EU tabs to place a story in its trend.','policy-watch.html#uscn']]
+};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});};
+var steps=document.getElementById('steps'),roles=document.querySelectorAll('.role');
+var show=function(k){
+  for(var i=0;i<roles.length;i++)roles[i].setAttribute('aria-pressed',String(roles[i].getAttribute('data-r')===k));
+  steps.className='steps';void steps.offsetWidth;steps.className='steps anim';
+  steps.innerHTML=R[k].map(function(s){return '<li><b>'+esc(s[0])+'</b><br><span style="color:var(--muted);font-size:15px">'+esc(s[1])+'</span>'+(s[2]?'<br><a class="go" href="'+esc(s[2])+'">Open &rarr;</a>':'')+'</li>';}).join('');
+  try{localStorage.setItem('aishorts-guide-role',k);}catch(e){}
+};
+for(var i=0;i<roles.length;i++)roles[i].addEventListener('click',function(){show(this.getAttribute('data-r'));});
+var start='compliance';try{var v=localStorage.getItem('aishorts-guide-role');if(v&&R[v])start=v;}catch(e){}
+show(start);
+var fab=document.getElementById('fab');
+window.addEventListener('scroll',function(){fab.className='fab'+(window.scrollY>300?' show':'');},{passive:true});
+fab.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+}
+</script>
+</body>
+</html>

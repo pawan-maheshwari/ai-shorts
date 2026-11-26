@@ -26,12 +26,12 @@ Owner: Pawan Maheshwari (planetAI LLP).
 | `local-desk.yml` 00:40 | `tools/local-desk.mjs` | `events.json`, `courses.json`, `tools/geo-cities.json` |
 | `ai-prediction.yml` 18:00 | `tools/predict.mjs` | `predictions.json`, `predictions-history.json` |
 | `weekly-brief.yml` Sat 06:20 | `tools/weekly-brief.mjs` | `briefs/` |
-| Policy Desk — Claude scheduled task (not Actions), every 2 h | `tools/policy-watch.mjs` (fed raw Digital Policy Alert answers) | `policy-watch.json`, `ops/policy-changelog.json` (internal, noindex) |
+| Policy Desk — Claude scheduled task (not Actions), every 2 h | `tools/policy-watch.mjs` (fed raw Digital Policy Alert answers) | `policy-watch.json` (incl. `africa` section via `--africa`; editorial layer hand-edited in `tools/africa-radar-notes.json`), `ops/policy-changelog.json` (internal, noindex) |
 | `stocklab-*.yml` | `tools/stocklab_*.py` | keep-alive / inspection / market-hours watch (09:05–15:35 IST) / study export → `stocklab-study` branch |
 
 - **Bots commit daily → always `git pull --rebase` before pushing**, and never hand-edit
   the files in the "Writes" column (the next run overwrites them).
-- `policy-watch.html` = AI Policy Watch (iOS-style, reads `policy-watch.json`; per-section filters remembered in localStorage `aishorts-policy-filters`; Print sheet = this section or all, `@media print`); front-page bell `#pwBell` + `#pwPop` near `</body>` in `index.html`; internal log at `ops/policy-changelog.html`.
+- `policy-watch.html` = AI Policy Watch (iOS-style, reads `policy-watch.json`; per-section filters remembered in localStorage `aishorts-policy-filters`; Print sheet = this section or all, `@media print`); front-page bell `#pwBell` + `#pwPop` near `</body>` in `index.html`; internal log at `ops/policy-changelog.html`. `africa-radar.html` = sector-lens Africa Radar (reads `policy-watch.json` → `africa`; keep notes reader-neutral, no employer/client references). `policy-guide.html` = public Read Me with role recipes.
 - Other pages: `ai-anchor.html` / `news-anchor.html` (video anchor, `anchor-*.mp4`),
   `stock-lab.html` (front for the Streamlit app), `vitalmetrics.html`, `ai-library.html`
   (a diverged copy also lives in AI-University — ask before syncing), `about/contact/privacy/standards`.
