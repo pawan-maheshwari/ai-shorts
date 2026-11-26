@@ -1788,6 +1788,16 @@
   .pw-pop .pw-d.old{background:transparent}
   .pw-pop .pw-m{display:block;font-size:12px;color:var(--meta);margin-top:2px}
   .pw-pop a.pw-all{display:block;padding:12px 14px;text-align:center;font-weight:700;font-size:14px;color:var(--link);text-decoration:none}
+  /* ---- Desktop: the page scrolls, not the deck. On laptop screens at 100%
+     zoom the masthead stack used most of a viewport-locked .wire, leaving the
+     grid ~160px tall with a hidden scrollbar, so each card's Read / Clip /
+     Cutting row sat out of sight. Let the wire grow and the window scroll. ---- */
+  @media (min-width:1024px){
+    html,body{height:auto;}
+    body{overflow-x:hidden;overflow-y:auto;}
+    .wire{height:auto !important;min-height:100vh;min-height:100dvh;}
+    .deck{flex:0 0 auto;min-height:0;overflow:visible;}
+  }
 </style>
 </head>
 <body>
@@ -2992,7 +3002,7 @@ async function countVisit(){
 }
 
 function setWireHeight(){var w=document.querySelector('.wire');if(!w)return;var hgt=window.innerHeight||document.documentElement.clientHeight||0;w.style.height=hgt>0?(hgt+'px'):'100vh';}
-var _rt;function onResize(){setWireHeight();clearTimeout(_rt);_rt=setTimeout(function(){if(typeof goTo==='function')goTo(idx);},150);}
+var _rt;function onResize(){setWireHeight();clearTimeout(_rt);_rt=setTimeout(function(){if(typeof goTo==='function'&&!(window.matchMedia&&window.matchMedia('(min-width:1024px)').matches))goTo(idx);},150);}
 setWireHeight();
 countVisit();
 window.addEventListener('resize',onResize);
