@@ -573,6 +573,17 @@
                                 <p class="text-sm text-center text-teal-600 max-w-[200px]">Camera feed will appear here.<br>Stand 2–3 meters away for full body view.</p>
                             </div>
                             
+                            <!-- Camera picker: flip (mobile) + device list (laptop / multi-camera) -->
+                            <div id="camera-picker" class="hidden w-full max-w-md mt-3 flex items-center gap-x-2">
+                                <button onclick="flipBodyCamera()" id="flip-camera-btn" type="button" title="Switch front / back camera" aria-label="Switch front / back camera"
+                                        class="shrink-0 w-11 h-11 rounded-full bg-white border border-teal-300 text-teal-700 hover:bg-teal-50 flex items-center justify-center">
+                                    <i class="fa-solid fa-camera-rotate"></i>
+                                </button>
+                                <select id="camera-select" onchange="switchBodyCamera(this.value)" aria-label="Choose camera"
+                                        class="flex-1 min-w-0 bg-white border border-teal-200 rounded-2xl px-3 py-2.5 text-sm text-slate-700"></select>
+                            </div>
+                            <p id="camera-status" class="w-full max-w-md mt-2 text-[11px] text-center text-teal-700"></p>
+
                             <div class="flex gap-x-3 mt-5 w-full max-w-md">
                                 <button onclick="startCamera()" id="start-camera-btn"
                                         class="flex-1 bg-teal-600 hover:bg-teal-700 transition text-white font-semibold py-3 rounded-3xl flex items-center justify-center gap-x-2 text-sm">
@@ -1411,53 +1422,216 @@
         }
         
         // Camera Functions
+        // Body Scan camera: works on phones (front/back toggle) and laptops
+        // (webcam detection + device picker), with a constraint fallback chain.
+        const BODYCAM = { facing: null, deviceId: null, devices: [], starting: false };
+        const IS_MOBILE_CAM = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+            (navigator.maxTouchPoints > 1 && /Macintosh/.test(navigator.userAgent));
+
+        function setCameraStatus(msg) {
+            const el = document.getElementById('camera-status');
+            if (el) el.textContent = msg || '';
+        }
+
+        async function listBodyCameras() {
+            try {
+                const all = await navigator.mediaDevices.enumerateDevices();
+                BODYCAM.devices = all.filter(d => d.kind === 'videoinput');
+            } catch (e) { BODYCAM.devices = []; }
+            return BODYCAM.devices;
+        }
+
+        function cameraLabel(d, i) {
+            return (d && d.label) ? d.label : `Camera ${i + 1}`;
+        }
+
+        function renderCameraPicker() {
+            const picker = document.getElementById('camera-picker');
+            const select = document.getElementById('camera-select');
+            const flipBtn = document.getElementById('flip-camera-btn');
+            if (!picker || !select) return;
+            const devs = BODYCAM.devices;
+            const activeId = currentStream ? (currentStream.getVideoTracks()[0].getSettings().deviceId || '') : '';
+            select.innerHTML = devs.map((d, i) =>
+                `<option value="${d.deviceId}" ${d.deviceId === activeId ? 'selected' : ''}>${cameraLabel(d, i).replace(/</g, '&lt;')}</option>`
+            ).join('');
+            // Flip button on phones (front/back), dropdown whenever there is more than one camera
+            flipBtn.classList.toggle('hidden', !IS_MOBILE_CAM && devs.length < 2);
+            select.classList.toggle('hidden', devs.length < 2);
+            picker.classList.toggle('hidden', !currentStream || (devs.length < 2 && !IS_MOBILE_CAM));
+        }
+
+        async function acquireBodyStream() {
+            const size = { width: { ideal: 1280 }, height: { ideal: 720 } };
+            const attempts = [];
+            if (BODYCAM.deviceId) attempts.push({ ...size, deviceId: { exact: BODYCAM.deviceId } });
+            if (IS_MOBILE_CAM) {
+                const f = BODYCAM.facing || 'environment';
+                attempts.push({ ...size, facingMode: { exact: f } });
+                attempts.push({ ...size, facingMode: { ideal: f } });
+            } else {
+                attempts.push({ ...size }); // laptops: no facingMode — just the default webcam
+            }
+            attempts.push(true); // last resort: any camera, any resolution
+            let lastErr;
+            for (const video of attempts) {
+                try { return await navigator.mediaDevices.getUserMedia({ video, audio: false }); }
+                catch (e) {
+                    lastErr = e;
+                    if (e && (e.name === 'NotAllowedError' || e.name === 'SecurityError')) break; // retrying won't help
+                }
+            }
+            throw lastErr || new Error('no-camera');
+        }
+
+        function applyMirror() {
+            const video = document.getElementById('camera-feed');
+            if (!video || !currentStream) return;
+            const s = currentStream.getVideoTracks()[0].getSettings();
+            // Mirror selfie/webcam preview so it feels natural; rear camera stays as-is
+            const mirrored = s.facingMode ? s.facingMode === 'user' : !IS_MOBILE_CAM;
+            video.style.transform = mirrored ? 'scaleX(-1)' : '';
+        }
+
+        function describeActiveCamera() {
+            if (!currentStream) return;
+            const track = currentStream.getVideoTracks()[0];
+            const s = track.getSettings();
+            const facing = s.facingMode === 'user' ? 'Front camera' : s.facingMode === 'environment' ? 'Back camera' : (track.label || 'Camera');
+            const n = BODYCAM.devices.length;
+            setCameraStatus(`${facing}${s.width ? ` · ${s.width}×${s.height}` : ''} · ${n} camera${n === 1 ? '' : 's'} detected`);
+        }
+
         async function startCamera() {
+            if (BODYCAM.starting) return;
             const video = document.getElementById('camera-feed');
             const placeholder = document.getElementById('camera-placeholder');
             const startBtn = document.getElementById('start-camera-btn');
             const stopBtn = document.getElementById('stop-camera-btn');
             const captureFront = document.getElementById('capture-front-btn');
             const captureSide = document.getElementById('capture-side-btn');
-            
+
+            if (!window.isSecureContext) {
+                showToast('Camera needs a secure (HTTPS) page. Open aishorts.biz over https.', 'error');
+                setCameraStatus('Camera blocked: page is not on HTTPS.');
+                return;
+            }
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                showToast('This browser does not support camera access. Try Chrome, Edge, Safari or Firefox.', 'error');
+                setCameraStatus('Camera API not available in this browser.');
+                return;
+            }
+
+            BODYCAM.starting = true;
+            setCameraStatus('Detecting cameras…');
             try {
-                // Prefer environment camera for full body, fallback to any
-                const constraints = { 
-                    video: { 
-                        facingMode: { ideal: 'environment' },
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    } 
-                };
-                
-                currentStream = await navigator.mediaDevices.getUserMedia(constraints);
+                // The pulse scan holds the camera too — laptops can't share it
+                if (typeof PPG !== 'undefined' && PPG.running) stopPulseScan(true);
+                if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; }
+
+                const pre = await listBodyCameras();
+                if (pre.length === 0 && !IS_MOBILE_CAM) {
+                    // Before permission some browsers hide devices; only fail if getUserMedia also fails
+                    setCameraStatus('Looking for a webcam…');
+                }
+
+                currentStream = await acquireBodyStream();
                 video.srcObject = currentStream;
-                
+                try { await video.play(); } catch (e) { /* autoplay attr covers it */ }
+
+                await listBodyCameras(); // labels are available after permission
+                BODYCAM.deviceId = currentStream.getVideoTracks()[0].getSettings().deviceId || null;
+                applyMirror();
+                renderCameraPicker();
+                describeActiveCamera();
+
                 video.classList.remove('hidden');
                 placeholder.classList.add('hidden');
-                
+
                 startBtn.classList.add('hidden');
                 stopBtn.classList.remove('hidden');
                 captureFront.classList.remove('hidden');
                 captureFront.classList.add('flex');
                 captureSide.classList.remove('hidden');
                 captureSide.classList.add('flex');
-                
+
                 showToast('Camera activated. Stand straight with good lighting for best results.', 'success');
-                
+
             } catch (err) {
                 console.error(err);
                 let msg = 'Unable to access camera. ';
-                if (err.name === 'NotAllowedError') {
-                    msg += 'Please allow camera permissions in your browser settings.';
-                } else if (err.name === 'NotFoundError') {
-                    msg += 'No camera found on this device.';
+                const name = err && err.name;
+                if (name === 'NotAllowedError' || name === 'SecurityError') {
+                    msg += 'Please allow camera permission (click the camera icon in the address bar) and try again.';
+                } else if (name === 'NotFoundError' || name === 'OverconstrainedError') {
+                    msg += IS_MOBILE_CAM ? 'No camera found on this device.' : 'No webcam detected. Connect or enable a webcam (check the privacy shutter / Fn camera key) and retry.';
+                } else if (name === 'NotReadableError' || name === 'AbortError') {
+                    msg += 'The camera is busy in another app (Teams, Zoom, another tab). Close it and retry.';
                 } else {
-                    msg += 'Please try on a secure (HTTPS) connection or different browser.';
+                    msg += 'Please try a different browser.';
                 }
+                setCameraStatus(msg);
                 showToast(msg, 'error');
+            } finally {
+                BODYCAM.starting = false;
             }
         }
-        
+
+        async function restartBodyCamera() {
+            if (currentStream) { currentStream.getTracks().forEach(t => t.stop()); currentStream = null; }
+            const video = document.getElementById('camera-feed');
+            try {
+                currentStream = await acquireBodyStream();
+                video.srcObject = currentStream;
+                try { await video.play(); } catch (e) {}
+                BODYCAM.deviceId = currentStream.getVideoTracks()[0].getSettings().deviceId || null;
+                applyMirror();
+                renderCameraPicker();
+                describeActiveCamera();
+            } catch (e) {
+                console.error(e);
+                showToast('Could not switch camera — tap Start Camera again.', 'error');
+                stopCamera();
+            }
+        }
+
+        async function flipBodyCamera() {
+            if (!currentStream) return;
+            const cur = currentStream.getVideoTracks()[0].getSettings();
+            if (IS_MOBILE_CAM) {
+                const nowFacing = cur.facingMode || BODYCAM.facing || 'environment';
+                BODYCAM.facing = nowFacing === 'user' ? 'environment' : 'user';
+                BODYCAM.deviceId = null; // let facingMode pick the right lens
+                await restartBodyCamera();
+                // Some phones ignore facingMode — fall back to cycling device IDs
+                const after = currentStream && currentStream.getVideoTracks()[0].getSettings();
+                if (after && after.deviceId === cur.deviceId && BODYCAM.devices.length > 1) {
+                    const i = BODYCAM.devices.findIndex(d => d.deviceId === cur.deviceId);
+                    BODYCAM.deviceId = BODYCAM.devices[(i + 1) % BODYCAM.devices.length].deviceId;
+                    await restartBodyCamera();
+                }
+            } else if (BODYCAM.devices.length > 1) {
+                const i = BODYCAM.devices.findIndex(d => d.deviceId === cur.deviceId);
+                BODYCAM.deviceId = BODYCAM.devices[(i + 1) % BODYCAM.devices.length].deviceId;
+                await restartBodyCamera();
+            }
+        }
+
+        async function switchBodyCamera(deviceId) {
+            if (!deviceId || !currentStream) return;
+            BODYCAM.deviceId = deviceId;
+            BODYCAM.facing = null;
+            await restartBodyCamera();
+        }
+
+        // Webcam plugged in / removed while on the page
+        if (navigator.mediaDevices && navigator.mediaDevices.addEventListener) {
+            navigator.mediaDevices.addEventListener('devicechange', async () => {
+                await listBodyCameras();
+                if (currentStream) { renderCameraPicker(); describeActiveCamera(); }
+            });
+        }
+
         function stopCamera() {
             const video = document.getElementById('camera-feed');
             const placeholder = document.getElementById('camera-placeholder');
@@ -1472,7 +1646,11 @@
             }
             
             video.srcObject = null;
+            video.style.transform = '';
             video.classList.add('hidden');
+            const picker = document.getElementById('camera-picker');
+            if (picker) picker.classList.add('hidden');
+            setCameraStatus('');
             placeholder.classList.remove('hidden');
             
             startBtn.classList.remove('hidden');
@@ -2283,6 +2461,7 @@
                 if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                     throw new Error('unsupported');
                 }
+                if (currentStream) stopCamera(); // free the webcam — laptops can't share it
                 PPG.stream = await acquirePulseStream();
 
                 const video = document.getElementById('ppg-video');
