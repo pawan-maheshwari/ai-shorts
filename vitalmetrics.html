@@ -728,9 +728,10 @@
                     <!-- Vitals summary (populated after a successful scan) -->
                     <div id="vitals-summary" class="hidden mt-6 pt-6 border-t border-slate-100">
                         <div class="flex items-center justify-between mb-3">
-                            <div class="uppercase text-xs tracking-widest font-semibold text-slate-500">Live Vitals Panel — IoT Reading + Your Metrics</div>
-                            <span class="text-[10px] px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-3xl font-semibold">SYNCED</span>
+                            <div class="uppercase text-xs tracking-widest font-semibold text-slate-500">Vitals — Measured + Calculated</div>
+                            <span class="text-[10px] px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-3xl font-semibold">UPDATED</span>
                         </div>
+                        <p id="vitals-inputs" class="text-[11px] mb-3"></p>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="vitals-grid"></div>
                         <p class="text-[10px] text-slate-400 mt-3"><strong>Note:</strong> The optical sensor measures heart rate; breathing rate is an experimental estimate from the same signal. BMI, BMR and calorie vitals are computed from your entered height/weight — no camera can measure body mass, so keep those inputs accurate. Experimental feature; not a medical device.</p>
                     </div>
@@ -1170,6 +1171,65 @@
         // Main Calculation Engine
         // Reads every input once, converted to metric. Out-of-range values are
         // flagged instead of producing negative / absurd BMI, BMR and body fat.
+        /* ---------- Physiology formulas (shared by Calculator, Vitals panel, History) ----------
+           • Max HR: Tanaka (2001) 208 − 0.7×age — meta-analysis of 18,712 adults; 220−age
+             under-estimates max HR after ~40.
+           • Target zone: Karvonen heart-rate-reserve method when a resting HR was measured
+             (rest + 50–85% × (max − rest)); falls back to 50–85% of max otherwise.
+           • BMR: Katch-McArdle (uses lean mass) when a tape-measure body-fat % is available,
+             else Mifflin-St Jeor (most accurate formula without body composition). */
+        function navyBodyFat(M, gender) {
+            const hIn = M.heightCm * 0.393701, w = M.waistCm * 0.393701, n = M.neckCm * 0.393701, hp = M.hipCm * 0.393701;
+            let bf = null;
+            if (gender === 'male' && w > n && n > 0) bf = 86.010 * Math.log10(w - n) - 70.041 * Math.log10(hIn) + 36.76;
+            if (gender !== 'male' && w > 0 && n > 0 && hp > 0 && w + hp > n) bf = 163.205 * Math.log10(w + hp - n) - 97.684 * Math.log10(hIn) - 78.387;
+            return bf && isFinite(bf) ? Math.max(3, Math.min(50, bf)) : null;
+        }
+        function bestBMR(weightKg, heightCm, age, gender, bodyFat) {
+            if (bodyFat) {
+                const lbm = weightKg * (1 - bodyFat / 100);
+                return { bmr: 370 + 21.6 * lbm, method: 'Katch-McArdle (lean mass)' };
+            }
+            return { bmr: 10 * weightKg + 6.25 * heightCm - 5 * age + (gender === 'male' ? 5 : -161), method: 'Mifflin-St Jeor' };
+        }
+        function maxHeartRate(age) { return Math.round(208 - 0.7 * age); }
+        function targetZone(age, restingBpm) {
+            const max = maxHeartRate(age);
+            if (restingBpm && restingBpm >= 40 && restingBpm <= 100) {
+                const hrr = max - restingBpm;
+                return { lo: Math.round(restingBpm + 0.5 * hrr), hi: Math.round(restingBpm + 0.85 * hrr), method: `Karvonen · rest ${restingBpm}` };
+            }
+            return { lo: Math.round(max * 0.5), hi: Math.round(max * 0.85), method: '50–85% of max' };
+        }
+
+        /* ---------- Profile memory: age/height/weight/sex persist between visits ---------- */
+        const VM_PROFILE_KEY = 'vitalmetrics_profile';
+        const VM_TOUCHED = { age: false, height: false, weight: false };
+        let VM_PROFILE_READY = false; // don't save until the stored profile has been restored
+        function saveProfile(M) {
+            if (!VM_PROFILE_READY) return;
+            try {
+                localStorage.setItem(VM_PROFILE_KEY, JSON.stringify({
+                    age: M.age, heightCm: +M.heightCm.toFixed(1), weightKg: +M.weightKg.toFixed(1),
+                    gender: currentGender, touched: VM_TOUCHED
+                }));
+            } catch (e) { /* private mode / quota — fine */ }
+        }
+        function restoreProfile() {
+            VM_PROFILE_READY = true;
+            let p; try { p = JSON.parse(localStorage.getItem(VM_PROFILE_KEY) || 'null'); } catch (e) { p = null; }
+            if (!p) return;
+            const set = (inp, rng, v) => {
+                const a = document.getElementById(inp), b = document.getElementById(rng);
+                if (a) a.value = v;
+                if (b) b.value = Math.min(+b.max, Math.max(+b.min, v));
+            };
+            if (p.touched && p.touched.age && p.age) { set('age-input', 'age-range', p.age); VM_TOUCHED.age = true; }
+            if (p.touched && p.touched.height && p.heightCm) { set('height-input', 'height-range', p.heightCm); VM_TOUCHED.height = true; }
+            if (p.touched && p.touched.weight && p.weightKg) { set('weight-input', 'weight-range', p.weightKg); VM_TOUCHED.weight = true; }
+            if (p.gender && p.gender !== currentGender) setGender(p.gender);
+        }
+
         function readMetrics() {
             const val = id => parseFloat(document.getElementById(id).value);
             const toCm = currentUnit === 'imperial' ? 1 / 0.393701 : 1;
@@ -1189,6 +1249,7 @@
         function calculateAll() {
             const M = readMetrics();
             if (!M.valid) return; // keep the last valid result on screen; bad field is outlined red
+            saveProfile(M);
             const height = M.heightCm, weight = M.weightKg, age = M.age;
             const waist = M.waistCm, neck = M.neckCm, hip = M.hipCm;
             
@@ -1303,13 +1364,9 @@
             interpretation.textContent = interpText;
             advice.textContent = adviceText;
             
-            // BMR + TDEE
-            let bmr;
-            if (currentGender === 'male') {
-                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
-            } else {
-                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
-            }
+            // BMR + TDEE (Katch-McArdle when body fat is known, else Mifflin-St Jeor)
+            const Mx = readMetrics();
+            const { bmr } = bestBMR(weightKg, heightCm, age, currentGender, navyBodyFat(Mx, currentGender));
             
             const tdee = Math.round(bmr * currentActivityMultiplier);
             
@@ -1759,12 +1816,7 @@
             const bmi = weightKg / (heightM * heightM);
             
             // Calculate other values
-            let bmr;
-            if (currentGender === 'male') {
-                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age + 5;
-            } else {
-                bmr = 10 * weightKg + 6.25 * heightCm - 5 * age - 161;
-            }
+            const { bmr } = bestBMR(weightKg, heightCm, age, currentGender, navyBodyFat(M, currentGender));
             const tdee = Math.round(bmr * currentActivityMultiplier);
             
             // Body fat if available
@@ -2311,6 +2363,17 @@
                 }
             }
             
+            // Remember what the user actually set (so defaults are never passed off as theirs)
+            [['age-input', 'age'], ['age-range', 'age'], ['height-input', 'height'], ['height-range', 'height'],
+             ['weight-input', 'weight'], ['weight-range', 'weight']].forEach(([id, k]) => {
+                const el = document.getElementById(id);
+                if (el) el.addEventListener('input', () => {
+                    VM_TOUCHED[k] = true;
+                    const M = readMetrics(); if (M.valid) saveProfile(M);
+                });
+            });
+            restoreProfile();
+
             // Set initial input values and listeners
             const inputs = ['age-input', 'height-input', 'weight-input', 'waist-input', 'neck-input', 'hip-input'];
             inputs.forEach(id => {
@@ -2622,38 +2685,81 @@
             const mad = sorted[Math.floor(n / 2)] || 0.001;
             const thr = mad * 1.1;
 
-            const peaks = [];
-            for (let i = 2; i < n - 2; i++) {
-                if (sig[i] > thr && sig[i] > sig[i - 1] && sig[i] >= sig[i + 1] &&
-                    sig[i] > sig[i - 2] && sig[i] >= sig[i + 2]) {
-                    if (!peaks.length || PPG.times[i] - PPG.times[peaks[peaks.length - 1]] > 330) peaks.push(i);
+            // Ignore the first 1.5 s after the finger lands — pressure settles and the
+            // camera's auto-exposure is still adjusting, which creates false peaks.
+            const T = PPG.times, t0 = T[T.length - n] + 1500;
+            let start = 2; while (start < n - 2 && T[start] < t0) start++;
+
+            const findPeaks = (refractoryMs) => {
+                const pk = [];
+                for (let i = Math.max(2, start); i < n - 2; i++) {
+                    if (sig[i] > thr && sig[i] > sig[i - 1] && sig[i] >= sig[i + 1] &&
+                        sig[i] > sig[i - 2] && sig[i] >= sig[i + 2]) {
+                        const last = pk[pk.length - 1];
+                        if (last === undefined || T[i] - T[last] > refractoryMs) pk.push(i);
+                        else if (sig[i] > sig[last]) pk[pk.length - 1] = i; // keep the taller (systolic) peak, not the dicrotic notch
+                    }
                 }
-            }
+                return pk;
+            };
+            // Sub-frame peak timing via parabolic interpolation — at 30 fps a frame is
+            // 33 ms, which alone is ±2–3 BPM of error per beat without this.
+            const peakTime = i => {
+                const y0 = sig[i - 1], y1 = sig[i], y2 = sig[i + 1];
+                const den = y0 - 2 * y1 + y2;
+                const d = den ? Math.max(-0.5, Math.min(0.5, 0.5 * (y0 - y2) / den)) : 0;
+                return d >= 0 ? T[i] + d * (T[i + 1] - T[i]) : T[i] + d * (T[i] - T[i - 1]);
+            };
+            const intervals = pk => {
+                const iv = [];
+                for (let i = 1; i < pk.length; i++) {
+                    const d = peakTime(pk[i]) - peakTime(pk[i - 1]);
+                    if (d >= 330 && d <= 1600) iv.push(d); // 37–180 BPM physiologic band
+                }
+                return iv;
+            };
+            const median = arr => { const a = [...arr].sort((x, y) => x - y); return a[Math.floor(a.length / 2)]; };
+
+            // Pass 1: fixed 330 ms refractory. Pass 2: adaptive refractory at 60% of the
+            // typical beat interval, which suppresses dicrotic-notch double counts.
+            let peaks = findPeaks(330);
+            let ivs = intervals(peaks);
+            if (ivs.length >= 3) { peaks = findPeaks(0.6 * median(ivs)); ivs = intervals(peaks); }
 
             let bpm = null, cv = 1, beats = peaks.length;
-            if (peaks.length >= 4) {
-                const ivs = [];
-                for (let i = 1; i < peaks.length; i++) {
-                    const d = PPG.times[peaks[i]] - PPG.times[peaks[i - 1]];
-                    if (d >= 330 && d <= 1600) ivs.push(d); // 37–180 BPM physiologic band
-                }
-                if (ivs.length >= 3) {
-                    // Median interval resists outlier beats better than the mean
-                    ivs.sort((a, b) => a - b);
-                    const med = ivs[Math.floor(ivs.length / 2)];
-                    const mean = ivs.reduce((a, b) => a + b, 0) / ivs.length;
-                    const sd = Math.sqrt(ivs.reduce((a, b) => a + (b - mean) ** 2, 0) / ivs.length);
-                    cv = sd / mean;
-                    bpm = Math.round(60000 / med);
-                }
+            if (ivs.length >= 3) {
+                // Reject beats more than 25% off the median (missed / extra beats, motion),
+                // then average what is left — the mean of clean intervals is more precise
+                // than the median of frame-quantised ones.
+                const med = median(ivs);
+                const clean = ivs.filter(d => Math.abs(d - med) <= 0.25 * med);
+                const use = clean.length >= 3 ? clean : ivs;
+                const mean = use.reduce((x, y) => x + y, 0) / use.length;
+                const sd = Math.sqrt(use.reduce((x, y) => x + (y - mean) ** 2, 0) / use.length);
+                cv = sd / mean;
+                if (clean.length < ivs.length * 0.7) cv = Math.max(cv, 0.16); // many outliers → at most Fair
+                bpm = Math.round(60000 / mean);
             }
 
-            // Fallback: autocorrelation finds the dominant heartbeat period even in
-            // noisy, low-amplitude signals where individual peaks are unreliable
-            // (typical for iPhone Safari where the web page can't switch the torch on).
-            if (!bpm) {
-                const ac = autocorrBPM(sig);
-                if (ac) { bpm = ac.bpm; cv = 0.22; beats = ac.beats; }
+            // Cross-check against the autocorrelation (whole-signal periodicity).
+            // Two independent methods agreeing is a much stronger reading than either alone.
+            const ac = autocorrBPM(sig);
+            if (bpm && ac) {
+                const ratio = bpm / ac.bpm;
+                if (Math.abs(ratio - 1) <= 0.08) {
+                    bpm = Math.round((bpm + ac.bpm) / 2);            // agree → blend
+                } else if (Math.abs(ratio - 2) <= 0.15 && ac.r >= 0.4) {
+                    bpm = ac.bpm; cv = Math.max(cv, 0.12);           // peaks double-counted (dicrotic notch)
+                } else if (ac.r >= 0.5 && cv > 0.15) {
+                    bpm = ac.bpm; cv = Math.max(cv, 0.16);           // noisy peaks, clean periodicity
+                } else {
+                    cv = Math.max(cv, 0.16);                          // disagree → downgrade confidence
+                }
+            } else if (!bpm && ac) {
+                // Fallback: autocorrelation finds the dominant heartbeat period even in
+                // noisy, low-amplitude signals where individual peaks are unreliable
+                // (typical for iPhone Safari where the web page can't switch the torch on).
+                bpm = ac.bpm; cv = 0.22; beats = ac.beats;
             }
 
             if (!bpm || bpm < 37 || bpm > 185) return { bpm: null };
@@ -2746,18 +2852,27 @@
             const maxLag = Math.min(Math.round(fs * 1.6), Math.floor(n / 2)); // 37 BPM
             if (maxLag <= minLag + 2) return null;
 
-            let bestLag = 0, bestR = 0, r0 = 0;
+            let r0 = 0;
             for (let i = 0; i < n; i++) r0 += sig[i] * sig[i];
             if (r0 <= 0) return null;
-            for (let lag = minLag; lag <= maxLag; lag++) {
-                let r = 0;
-                for (let i = 0; i < n - lag; i++) r += sig[i] * sig[i + lag];
-                r /= r0;
-                if (r > bestR) { bestR = r; bestLag = lag; }
+            const r = {};
+            for (let lag = minLag - 1; lag <= maxLag + 1; lag++) {
+                let acc = 0;
+                for (let i = 0; i < n - lag; i++) acc += sig[i] * sig[i + lag];
+                r[lag] = acc / r0 * n / (n - lag); // unbiased: long lags aren't penalised
             }
-            if (bestR < 0.25) return null; // no periodic structure found
-            const bpm = Math.round(60 * fs / bestLag);
-            return { bpm, beats: Math.round((n / fs) * (bpm / 60)) };
+            // Multiples of the true period also correlate, so take the SHORTEST lag
+            // whose peak is nearly as strong as the best one.
+            const cand = [];
+            for (let lag = minLag; lag <= maxLag; lag++) if (r[lag] > r[lag - 1] && r[lag] >= r[lag + 1] && r[lag] > 0.25) cand.push(lag);
+            if (!cand.length) return null; // no periodic structure found
+            const top = Math.max(...cand.map(l => r[l]));
+            const bestLag = cand.find(l => r[l] >= 0.85 * top);
+            const den = r[bestLag - 1] - 2 * r[bestLag] + r[bestLag + 1];
+            const d = den ? Math.max(-0.5, Math.min(0.5, 0.5 * (r[bestLag - 1] - r[bestLag + 1]) / den)) : 0;
+            const bpm = Math.round(60 * fs / (bestLag + d));
+            const bestR = Math.min(1, r[bestLag]);
+            return { bpm, r: bestR, beats: Math.round((n / fs) * (bpm / 60)) };
         }
 
         function drawWave(fingerOn) {
@@ -2816,29 +2931,56 @@
         }
 
         function renderVitalsSummary(bpm) {
-            const age = readMetrics().age;
-            const bmi = document.getElementById('bmi-value').textContent;
-            const bmr = document.getElementById('bmr-value').textContent;
-            const tdee = document.getElementById('tdee-value').textContent;
-            const hrMax = 220 - age;
-            const zoneLo = Math.round(hrMax * 0.5), zoneHi = Math.round(hrMax * 0.85);
+            const M = readMetrics();
+            const age = M.age;
+            // Compute from the inputs directly (never trust possibly-stale DOM text)
+            const bmiNum = M.weightKg / Math.pow(M.heightCm / 100, 2);
+            const bmrRes = bestBMR(M.weightKg, M.heightCm, age, currentGender, navyBodyFat(M, currentGender));
+            const bmi = bmiNum.toFixed(1);
+            const bmr = Math.round(bmrRes.bmr).toLocaleString();
+            const tdee = Math.round(bmrRes.bmr * currentActivityMultiplier).toLocaleString();
+            const bmiCat = bmiNum < 18.5 ? 'Underweight' : bmiNum < 25 ? 'Normal weight' : bmiNum < 30 ? 'Overweight' : 'Obese';
+            const hrMax = maxHeartRate(age);
+            const zone = targetZone(age, bpm);
             let hrStatus, hrColor;
             if (bpm < 60)      { hrStatus = 'Below typical resting'; hrColor = 'text-blue-600'; }
             else if (bpm <= 100) { hrStatus = 'Normal resting range'; hrColor = 'text-emerald-600'; }
             else               { hrStatus = 'Elevated — rest & rescan'; hrColor = 'text-amber-600'; }
+            const q = lastPulseResult && lastPulseResult.quality ? ` · ${lastPulseResult.quality} signal` : '';
 
+            const ageTxt = VM_TOUCHED.age ? `age ${age}` : `default age ${age}`;
             const cells = [
-                { label: 'HEART RATE (IoT)', value: `${bpm}`, unit: 'bpm', note: hrStatus, noteClass: hrColor },
-                breathCell(),
-                { label: 'EST. MAX HEART RATE', value: `${hrMax}`, unit: 'bpm', note: `220 − age ${age}` },
-                { label: 'CARDIO TARGET ZONE', value: `${zoneLo}–${zoneHi}`, unit: 'bpm', note: '50–85% of max' },
-                { label: 'BMI', value: bmi, unit: 'kg/m²', note: document.getElementById('bmi-category-large').textContent },
-                { label: 'BMR', value: bmr, unit: 'kcal', note: 'Basal metabolic rate' },
-                { label: 'DAILY ENERGY (TDEE)', value: tdee, unit: 'kcal', note: 'Maintenance calories' }
+                { kind: 'measured', label: 'HEART RATE', value: `${bpm}`, unit: 'bpm', note: hrStatus + q, noteClass: hrColor },
+                Object.assign(breathCell(), { kind: 'estimated' }),
+                { kind: 'calc', label: 'EST. MAX HEART RATE', value: `${hrMax}`, unit: 'bpm', note: `Tanaka 208 − 0.7 × ${ageTxt}` },
+                { kind: 'calc', label: 'CARDIO TARGET ZONE', value: `${zone.lo}–${zone.hi}`, unit: 'bpm', note: zone.method },
+                { kind: 'calc', label: 'BMI', value: bmi, unit: 'kg/m²', note: bmiCat },
+                { kind: 'calc', label: 'BMR', value: bmr, unit: 'kcal', note: bmrRes.method },
+                { kind: 'calc', label: 'DAILY ENERGY (TDEE)', value: tdee, unit: 'kcal', note: `BMR × activity ${currentActivityMultiplier}` }
             ];
+            const BADGE = {
+                measured:  ['MEASURED · CAMERA', 'bg-rose-100 text-rose-700'],
+                estimated: ['ESTIMATED · CAMERA', 'bg-sky-100 text-sky-700'],
+                calc:      ['CALCULATED', 'bg-slate-200 text-slate-600']
+            };
+            cells.forEach(c => { c.label = c.label.replace(' · EXPERIMENTAL', ''); });
+
+            // Which inputs the calculated tiles used — and whether they are still defaults
+            const defaults = ['age', 'height', 'weight'].filter(k => !VM_TOUCHED[k]);
+            const hTxt = currentUnit === 'imperial' ? `${(M.heightCm * 0.393701).toFixed(1)} in` : `${Math.round(M.heightCm)} cm`;
+            const wTxt = currentUnit === 'imperial' ? `${(M.weightKg * 2.20462).toFixed(1)} lb` : `${M.weightKg.toFixed(1)} kg`;
+            const inEl = document.getElementById('vitals-inputs');
+            if (inEl) {
+                inEl.innerHTML = `Calculated tiles use: <strong>age ${age}</strong> · <strong>${hTxt}</strong> · <strong>${wTxt}</strong> · <strong>${currentGender}</strong>` +
+                    (defaults.length
+                        ? ` <span class="text-amber-700">— ${defaults.join(', ')} still the page default${defaults.length > 1 ? 's' : ''}.</span> <button type="button" onclick="switchTab('input')" class="underline font-semibold text-teal-700">Set your details</button>`
+                        : ` <button type="button" onclick="switchTab('input')" class="underline text-teal-700">Edit</button>`);
+                inEl.className = `text-[11px] mb-3 rounded-xl px-3 py-2 ${defaults.length ? 'bg-amber-50 border border-amber-200 text-amber-900' : 'bg-slate-50 text-slate-600'}`;
+            }
 
             document.getElementById('vitals-grid').innerHTML = cells.map(c => `
                 <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3.5">
+                    <span class="inline-block text-[8px] font-bold tracking-wider rounded-full px-1.5 py-0.5 mb-1 ${BADGE[c.kind][1]}">${BADGE[c.kind][0]}</span>
                     <div class="text-[9px] tracking-wider font-semibold text-slate-400">${c.label}</div>
                     <div class="text-2xl font-bold tabular-nums text-slate-800 mt-0.5">${c.value} <span class="text-[10px] font-medium text-slate-400">${c.unit}</span></div>
                     <div class="text-[10px] mt-1 font-medium ${c.noteClass || 'text-teal-600'}">${c.note}</div>
@@ -3379,6 +3521,7 @@
                 const a = parseInt(params.get('age'));
                 if (!isNaN(a) && a >= 18 && a <= 110) {
                     document.getElementById('age-input').value = a;
+                    VM_TOUCHED.age = true;
                     const ar = document.getElementById('age-range');
                     if (ar) ar.value = clamp(a, 18, 90);
                     applied.push(`age ${a}`);
