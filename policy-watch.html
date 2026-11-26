@@ -136,6 +136,11 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
 .toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:rgba(30,30,32,.92);color:#fff;font:600 14px -apple-system,sans-serif;padding:10px 16px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1);z-index:40;max-width:calc(100vw - 32px);text-align:center}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 @media print{.toast,.btnnote{display:none!important}}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 4px}
+.lk{display:block;position:relative;background:var(--card);border-radius:14px;padding:12px 28px 12px 14px;text-decoration:none;color:var(--ink)}
+.lk b{display:block;font-size:15px}.lk span{font-size:12px;color:var(--muted)}
+.lk:after{content:"\203A";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:22px}
+@media print{.links{display:none}}
 </style>
 </head>
 <body>
@@ -151,6 +156,7 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
 
 <section class="pane" id="alerts">
   <h1>Live alerts</h1>
+  <div class="links"><a class="lk" href="africa-radar.html"><b>Africa Radar</b><span>South Africa &amp; region by sector</span></a><a class="lk" href="policy-guide.html"><b>How to use</b><span>Read Me &amp; recipes by role</span></a></div>
   <div class="status"><span class="dot" id="dot"></span><span id="status">Showing the latest snapshot.</span></div>
   <div class="filters" role="search">
     <label class="search"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><input id="aQ" type="search" placeholder="Search alerts" aria-label="Search alerts" autocomplete="off"><button type="button" id="aQx" aria-label="Clear search" hidden>&times;</button></label>
@@ -226,7 +232,7 @@ mark{background:rgba(255,204,0,.45);color:inherit;border-radius:2px}
 </section>
 
 </main>
-<footer>Source: <a href="https://digitalpolicyalert.org" style="color:inherit">Digital Policy Alert</a>. Updated by the AIShorts Policy Desk; <span id="upd2"></span>. <a href="./" style="color:inherit">Back to AIShorts</a></footer>
+<footer>Source: <a href="https://digitalpolicyalert.org" style="color:inherit">Digital Policy Alert</a>. Updated by the AIShorts Policy Desk; <span id="upd2"></span>. <a href="africa-radar.html" style="color:inherit">Africa Radar</a> · <a href="policy-guide.html" style="color:inherit">How to use</a> · <a href="./" style="color:inherit">Back to AIShorts</a></footer>
 <div class="sheet" id="pSheet" hidden role="dialog" aria-label="Print options"><div class="box">
   <div class="grp"><div class="t">Print AI Policy Watch with your current filters</div><button type="button" id="pOne">This section</button><button type="button" id="pAll">All sections</button></div>
   <div class="grp"><button type="button" class="cancel" id="pCancel">Cancel</button></div>

@@ -1,0 +1,414 @@
+{
+ "note": "Editorial layer for the Africa Radar on policy-watch.html. Hand-curated: impact (high/med/watch), plain-English why-it-matters, lenses (retail/fin/telco) and topics (ai/data/comp/pay) per DPA event_id, plus questions per lens. Reader-neutral: no client or employer references. Events without a note get inferred lenses and impact \"watch\".",
+ "questions": {
+  "retail": [
+   [
+    "Customer data: are our safeguards evidence-ready?",
+    "South Africa's Information Regulator fined FNB in October for failing to protect customer data. Loyalty and e-commerce data stores carry the same exposure.",
+    "When did we last test access controls and breach response on customer data?"
+   ],
+   [
+    "AI agents: do we meet the new expectations?",
+    "South Africa's regulator co-adopted the Global Privacy Assembly resolution on agentic AI (17 Nov): purpose limits, human oversight and logs.",
+    "Which AI assistants or agents are we piloting, and who signs off their data use?"
+   ],
+   [
+    "Platforms and payments are shifting",
+    "The Competition Commission is applying remedies to X and xAI, and cleared Capitec–Walletdoc with conditions.",
+    "Which platform or payment-gateway dependencies would hurt us if their terms change?"
+   ]
+  ],
+  "fin": [
+   [
+    "POPIA enforcement has reached a major bank",
+    "The FNB fine (26 Oct) sets a benchmark that boards will notice.",
+    "Can we show the regulator our safeguards today, not just our policies?"
+   ],
+   [
+    "Kenya shows where AI-in-banking rules are heading",
+    "The Central Bank of Kenya consulted on AI in banking, third-party technology providers and cybersecurity.",
+    "Do our models and our technology vendors have evidence of risk controls ready?"
+   ],
+   [
+    "Crypto and cross-border rules are tightening",
+    "The South African crypto-assets manual consultation has closed, Kenya's VASP licensing is live and Nigeria's rules are in force.",
+    "Are our KYC and exchange-control rules updated for each market?"
+   ]
+  ],
+  "telco": [
+   [
+    "The Electronic Communications Amendment Bill is coming",
+    "The consultation closed in August. Access obligations and new regulator powers are the biggest telecoms change in the pipeline.",
+    "Which wholesale and network-sharing deals would the access rules change?"
+   ],
+   [
+    "A new network deployment policy direction",
+    "The Minister's 19 Oct direction sets the approach to rollout and sharing.",
+    "Are our fibre and tower plans aligned with it?"
+   ],
+   [
+    "Consolidation and capacity",
+    "Licence transfers (Zoom Fibre, Smile) and Teraco's Cape Town expansion signal new owners and more local cloud.",
+    "Which suppliers or partners are changing hands?"
+   ]
+  ],
+  "all": [
+   [
+    "POPIA enforcement is real",
+    "The FNB fine (26 Oct) is the headline for every sector holding customer data.",
+    "Where is our most sensitive customer data, and who can reach it?"
+   ],
+   [
+    "AI governance expectations are converging",
+    "The agentic-AI resolution, Kenya's AI-in-banking guidance and the frontier-AI and BRICS commitments all point the same way.",
+    "Do we have an inventory of the AI we use, with an owner for each system?"
+   ],
+   [
+    "Expanding in Africa now has compliance gates",
+    "Egypt's data-protection law is fully enforced, Kenya–EU adequacy talks have concluded, and Nigeria's promotion rules are being updated.",
+    "Are regulatory checks built into our cross-border rollout plans?"
+   ]
+  ]
+ },
+ "notes": {
+  "45441": {
+   "impact": "high",
+   "why": "POPIA security-safeguard enforcement now comes with fines. Any organisation holding large customer datasets (loyalty, banking, e-commerce) should evidence access controls and breach handling.",
+   "lenses": [
+    "retail",
+    "fin"
+   ],
+   "topics": [
+    "data"
+   ],
+   "country": "South Africa",
+   "short_title": "Information Regulator fined First National Bank for failing to safeguard customer personal information"
+  },
+  "46074": {
+   "impact": "high",
+   "why": "Data-protection regulators, South Africa's among them, set shared expectations for AI agents. These are a useful yardstick for AI-agent deployments: purpose limits, human oversight, logging.",
+   "lenses": [
+    "retail",
+    "fin",
+    "telco"
+   ],
+   "topics": [
+    "ai",
+    "data"
+   ],
+   "country": "Global",
+   "short_title": "Global Privacy Assembly (incl. South Africa) adopted Resolution on Privacy-protective Agentic AI"
+  },
+  "45927": {
+   "impact": "med",
+   "why": "The Commission is applying market-inquiry remedies to AI chatbots and platforms. Brands that rely on platform reach and AI search should expect more rules on how platforms treat local content.",
+   "lenses": [
+    "retail",
+    "telco"
+   ],
+   "topics": [
+    "ai",
+    "comp"
+   ],
+   "country": "South Africa",
+   "short_title": "Competition Commission concluded voluntary undertaking with X.AI (and settlement with X Corp) replacing Media and Digital Platforms Market Inquiry remedies"
+  },
+  "42734": {
+   "impact": "med",
+   "why": "Payment-gateway consolidation, cleared with conditions. Retailers and banks should check gateway contracts and switching options.",
+   "lenses": [
+    "retail",
+    "fin"
+   ],
+   "topics": [
+    "comp",
+    "pay"
+   ],
+   "country": "South Africa",
+   "short_title": "Competition Commission recommended approval with conditions of Capitec's acquisition of Walletdoc"
+  },
+  "44624": {
+   "impact": "med",
+   "why": "A procedural change to Competition Commission rules that applies to everyone. Worth a quick check with legal teams on any filings or merger notifications in flight.",
+   "lenses": [
+    "retail",
+    "fin",
+    "telco"
+   ],
+   "topics": [
+    "comp"
+   ],
+   "country": "South Africa",
+   "short_title": "Amended Rule 39 of the Competition Commission Rules entered into force"
+  },
+  "41383": {
+   "impact": "med",
+   "why": "Software pricing itself is now a competition target. This matters for insurers, and for any software vendor with tiered pricing in South Africa.",
+   "lenses": [
+    "fin"
+   ],
+   "topics": [
+    "comp"
+   ],
+   "country": "South Africa",
+   "short_title": "Competition Commission referred Audatex South Africa to the Tribunal over alleged price discrimination in vehicle-repair estimation software"
+  },
+  "42604": {
+   "impact": "med",
+   "why": "Final cross-border crypto rules are next. Banks and payment providers will need updated exchange-control and reporting logic.",
+   "lenses": [
+    "fin"
+   ],
+   "topics": [
+    "pay"
+   ],
+   "country": "South Africa",
+   "short_title": "National Treasury and SARB closed consultation on draft crypto-assets manual for cross-border activities"
+  },
+  "42913": {
+   "impact": "watch",
+   "why": "Consolidation in ATM and cash-services supply. A relevant input for store cash-handling and branch-network contracts.",
+   "lenses": [
+    "retail",
+    "fin"
+   ],
+   "topics": [
+    "comp",
+    "pay"
+   ],
+   "country": "South Africa",
+   "short_title": "Competition Commission approved Brink's acquisition of NCR Atleos (ATMs, cash services)"
+  },
+  "41418": {
+   "impact": "high",
+   "why": "The biggest telecoms law change in the pipeline. Access obligations and regulator powers could reshape wholesale pricing and network sharing.",
+   "lenses": [
+    "telco"
+   ],
+   "topics": [
+    "comp"
+   ],
+   "country": "South Africa",
+   "short_title": "Portfolio Committee closed consultation on Electronic Communications Amendment Bill 2026 (access obligations, competition authority governance)"
+  },
+  "44971": {
+   "impact": "med",
+   "why": "Sets the direction for rollout permissions and infrastructure sharing. Relevant to operators' fibre and tower build plans and to delivery timelines.",
+   "lenses": [
+    "telco"
+   ],
+   "topics": [],
+   "country": "South Africa",
+   "short_title": "Minister issued Policy Direction on Electronic Communications Network Deployment"
+  },
+  "44972": {
+   "impact": "watch",
+   "why": "More data-centre capacity is coming to Cape Town. That supports the case for in-country cloud hosting of workloads.",
+   "lenses": [
+    "retail",
+    "telco"
+   ],
+   "topics": [
+    "comp"
+   ],
+   "country": "South Africa",
+   "short_title": "Competition Commission recommended unconditional approval of Teraco's acquisition of industrial land in Brackenfell (Cape Town)"
+  },
+  "45195": {
+   "impact": "watch",
+   "why": "Numbering changes affect operator systems and customer communications. Check the comment deadline.",
+   "lenses": [
+    "telco"
+   ],
+   "topics": [],
+   "country": "South Africa",
+   "short_title": "ICASA opened consultation on proposed Numbering Plan Fifth Amendment Regulations, 2026"
+  },
+  "45194": {
+   "impact": "watch",
+   "why": "Fibre and wireless licences keep changing hands, which which can mean new owners and changing suppliers.",
+   "lenses": [
+    "telco"
+   ],
+   "topics": [],
+   "country": "South Africa",
+   "short_title": "ICASA approved licence transfer from Itakane ICT to Zoom Fibre; Smile Telecoms transfer consultation closed"
+  },
+  "43861": {
+   "impact": "watch",
+   "why": "South Africa is aligning with frontier-AI safety commitments. Expect this to show up later in public-sector AI procurement criteria.",
+   "lenses": [
+    "retail",
+    "fin",
+    "telco"
+   ],
+   "topics": [
+    "ai"
+   ],
+   "country": "Global",
+   "short_title": "South Africa, Australia, Singapore, UAE and others adopted A Call for Control of Frontier AI Models"
+  },
+  "43697": {
+   "impact": "watch",
+   "why": "India and South Africa are both signatories, which is useful context for India–South Africa business and data-flow discussions.",
+   "lenses": [
+    "retail",
+    "fin",
+    "telco"
+   ],
+   "topics": [
+    "ai"
+   ],
+   "country": "Global",
+   "short_title": "BRICS adopted New Delhi Declaration on AI governance, cybersecurity and online child safety"
+  },
+  "41915": {
+   "impact": "watch",
+   "why": "Points to a more multipolar AI-governance stance, alongside the EU-style rules many organisations already track.",
+   "lenses": [
+    "retail",
+    "fin",
+    "telco"
+   ],
+   "topics": [
+    "ai"
+   ],
+   "country": "Global",
+   "short_title": "South Africa among 29 signatories of the agreement establishing the World AI Cooperation Organization"
+  },
+  "43732": {
+   "impact": "high",
+   "why": "The first AI-in-banking guidance in the region, plus rules for technology vendors. Technology vendors should be ready to evidence model risk, outsourcing and cyber controls, and South African regulators may follow.",
+   "lenses": [
+    "fin"
+   ],
+   "topics": [
+    "ai",
+    "data"
+   ],
+   "country": "Kenya",
+   "short_title": "Central Bank of Kenya closed consultations on AI in Banking, Third-Party Technology Service Providers and Cybersecurity guidance notes"
+  },
+  "45818": {
+   "impact": "med",
+   "why": "Could ease data transfers between the EU and Kenya. A useful benchmark for any future South Africa–EU adequacy push.",
+   "lenses": [
+    "retail",
+    "fin",
+    "telco"
+   ],
+   "topics": [
+    "data"
+   ],
+   "country": "Kenya",
+   "short_title": "Kenya and the European Union concluded their data-protection Adequacy Dialogue"
+  },
+  "45512": {
+   "impact": "med",
+   "why": "Platforms and digital retailers operating in Kenya may face age checks and moderation duties.",
+   "lenses": [
+    "retail",
+    "telco"
+   ],
+   "topics": [],
+   "country": "Kenya",
+   "short_title": "Online Safety Bill introduced (content moderation, age verification, new regulator)"
+  },
+  "43915": {
+   "impact": "med",
+   "why": "Open-finance and interoperability rules for payments could reshape checkout and wallet integrations in Kenya.",
+   "lenses": [
+    "retail",
+    "fin"
+   ],
+   "topics": [
+    "pay",
+    "data"
+   ],
+   "country": "Kenya",
+   "short_title": "National Treasury closed consultation on draft National Payment System Bill 2026 (licensing, open finance, interoperability)"
+  },
+  "43489": {
+   "impact": "watch",
+   "why": "Data centres in Kenya may soon need a licence, which affects regional hosting choices.",
+   "lenses": [
+    "telco"
+   ],
+   "topics": [],
+   "country": "Kenya",
+   "short_title": "Communications Authority closed consultation on a licensing framework for data centres"
+  },
+  "39013": {
+   "impact": "med",
+   "why": "Crypto providers in Kenya now need licences and KYC.",
+   "lenses": [
+    "fin"
+   ],
+   "topics": [
+    "pay"
+   ],
+   "country": "Kenya",
+   "short_title": "Virtual Asset Service Providers Act transition ended: licensing, user ID and mixer bans now apply"
+  },
+  "45202": {
+   "impact": "high",
+   "why": "Full enforcement has started. Any organisation processing Egyptian customer or employee data needs a licence and a basis for cross-border transfers.",
+   "lenses": [
+    "retail",
+    "fin",
+    "telco"
+   ],
+   "topics": [
+    "data"
+   ],
+   "country": "Egypt",
+   "short_title": "Grace period ended for Egypt's Personal Data Protection Law (licences, cross-border transfers, security)"
+  },
+  "45509": {
+   "impact": "med",
+   "why": "Nigeria now has a licensing route for virtual-asset operations.",
+   "lenses": [
+    "fin"
+   ],
+   "topics": [
+    "pay"
+   ],
+   "country": "Nigeria",
+   "short_title": "Central Bank of Nigeria's regulations for non-security virtual assets entered into force"
+  },
+  "45198": {
+   "impact": "med",
+   "why": "Promotions, competitions and loyalty campaigns in Nigeria may need approval under updated rules.",
+   "lenses": [
+    "retail"
+   ],
+   "topics": [],
+   "country": "Nigeria",
+   "short_title": "FCCPC closed consultation on draft Sales Promotion (Amended) Regulations 2026"
+  },
+  "45105": {
+   "impact": "med",
+   "why": "Rules on AI in credit decisions are emerging in Ghana. Relevant to lending models and to vendors supplying them.",
+   "lenses": [
+    "fin"
+   ],
+   "topics": [
+    "ai"
+   ],
+   "country": "Ghana",
+   "short_title": "Bank of Ghana opened consultation on draft Credit Risk Management Directive 2026 (covers AI use)"
+  },
+  "45889": {
+   "impact": "watch",
+   "why": "A regulatory sandbox route is now open for fintech pilots in Ethiopia.",
+   "lenses": [
+    "fin"
+   ],
+   "topics": [
+    "pay"
+   ],
+   "country": "Ethiopia",
+   "short_title": "National Bank of Ethiopia Regulatory Sandbox Directive entered into force"
+  }
+ }
+}
