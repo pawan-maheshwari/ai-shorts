@@ -5,318 +5,307 @@
   <id>tag:aishorts.biz,2026:feed</id>
   <link rel="self" type="application/atom+xml" href="https://aishorts.biz/feed.xml"/>
   <link rel="alternate" type="text/html" href="https://aishorts.biz/"/>
-  <updated>2026-11-25T10:43:44.138Z</updated>
+  <updated>2026-11-26T10:14:24.611Z</updated>
   <icon>https://aishorts.biz/assets/icon-192.png</icon>
   <logo>https://aishorts.biz/assets/icon-512.png</logo>
   <author><name>AIShorts</name><uri>https://aishorts.biz/</uri></author>
   <rights type="text">© 2026 planetAI LLP. Entries link to their original publishers.</rights>
   <generator uri="https://aishorts.biz/" version="1.0">AIShorts edition builder</generator>
   <entry>
+    <title type="text">Artificial Intelligence and Human Rights: Protecting Human Dignity in the Age of AI</title>
+    <id>tag:aishorts.biz,2026-11-26:story/a9f40a8352d870e9</id>
+    <link rel="alternate" type="text/html" href="https://www.unesco.org/en/articles/artificial-intelligence-and-human-rights-protecting-human-dignity-age-ai"/>
+    <updated>2026-11-26T04:51:09.000Z</updated>
+    <published>2026-11-26T04:51:09.000Z</published>
+    <author><name>UNESCO</name></author>
+    <category term="Business"/>
+    <summary type="text">UNESCO, the European Union and the Hashemite Kingdom of Jordan will mark Human Rights Day 2026 with a high-level event exploring the opportunities and challenges that artificial intelligence presents</summary>
+    <rights type="text">Headline and summary belong to UNESCO. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Algorithmic Constitutionalism: Reimagining Constitutional Authority in the Age of Artificial Intelligence</title>
+    <id>tag:aishorts.biz,2026-11-26:story/8a58aba93964bcbe</id>
+    <link rel="alternate" type="text/html" href="https://www.iconnectblog.com/algorithmic-constitutionalism-reimagining-constitutional-authority-in-the-age-of-artificial-intelligence/"/>
+    <updated>2026-11-26T06:06:15.000Z</updated>
+    <published>2026-11-26T06:06:15.000Z</published>
+    <author><name>www.iconnectblog.com</name></author>
+    <category term="Business"/>
+    <summary type="text">--Forhad Hossain, Lecturer, University of Asia Pacific, Bangladesh Public authorities increasingly use automation software in governance. Welfare agencie</summary>
+    <rights type="text">Headline and summary belong to www.iconnectblog.com. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Widespread Use, Minimal Training: Generative Artificial Intelligence Among Undergraduate and Postgraduate Medical Students</title>
+    <id>tag:aishorts.biz,2026-11-26:story/ca855da4d71db9c0</id>
+    <link rel="alternate" type="text/html" href="https://www.cureus.com/articles/537500-widespread-use-minimal-training-generative-artificial-intelligence-among-undergraduate-and-postgraduate-medical-students"/>
+    <updated>2026-11-26T07:17:08.000Z</updated>
+    <published>2026-11-26T07:17:08.000Z</published>
+    <author><name>Cureus</name></author>
+    <category term="Business"/>
+    <summary type="text">Open the full report at Cureus for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Cureus. Linked, not republished.</rights>
+  </entry>
+  <entry>
     <title type="text">What is Super Intelligence?</title>
-    <id>tag:aishorts.biz,2026-11-25:story/78559e6aa42843ad</id>
+    <id>tag:aishorts.biz,2026-11-26:story/78559e6aa42843ad</id>
     <link rel="alternate" type="text/html" href="https://www.nasa.gov/what-is-super-intelligence/"/>
-    <updated>2026-11-24T16:26:10.000Z</updated>
-    <published>2026-11-24T16:26:10.000Z</published>
+    <updated>2026-11-25T03:40:55.000Z</updated>
+    <published>2026-11-25T03:40:55.000Z</published>
     <author><name>NASA (.gov)</name></author>
     <category term="Business"/>
     <summary type="text">Per the Sept. 29, 2026, Executive Order 14434: Inaugurating the Era of Super Intelligence, NASA is working to update its communications to incorporate the</summary>
     <rights type="text">Headline and summary belong to NASA (.gov). Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Artificial Intelligence Bargaining Rights</title>
-    <id>tag:aishorts.biz,2026-11-25:story/9bc586a294be410f</id>
-    <link rel="alternate" type="text/html" href="https://wfse.org/artificial-intelligence-bargaining-rights"/>
-    <updated>2026-11-25T09:22:12.000Z</updated>
-    <published>2026-11-25T09:22:12.000Z</published>
-    <author><name>Washington Federation of State Employees</name></author>
-    <category term="Business"/>
-    <summary type="text">&amp;nbsp;&amp;nbsp; Washington Federation of State Employees</summary>
-    <rights type="text">Headline and summary belong to Washington Federation of State Employees. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">USI receives $8.5 million artificial intelligence grant through Lilly Endowment</title>
-    <id>tag:aishorts.biz,2026-11-25:story/90a1fad751497cc7</id>
-    <link rel="alternate" type="text/html" href="https://www.usi.edu/news/releases/2026/11/usi-receives-85-million-artificial-intelligence-grant-through-lilly-endowment"/>
-    <updated>2026-11-25T00:32:15.000Z</updated>
-    <published>2026-11-25T00:32:15.000Z</published>
-    <author><name>University of Southern Indiana | USI</name></author>
+    <title type="text">EXCLUSIVE: Data from Chinese AI firm MiniMax accessed by unidentified parties, researcher says</title>
+    <id>tag:aishorts.biz,2026-11-26:story/7a919892a561009c</id>
+    <link rel="alternate" type="text/html" href="https://www.reuters.com/world/data-chinese-ai-firm-minimax-accessed-by-unidentified-parties-researcher-says-2026-11-26/"/>
+    <updated>2026-11-26T06:16:00.000Z</updated>
+    <published>2026-11-26T06:16:00.000Z</published>
+    <author><name>Reuters</name></author>
     <category term="Research"/>
-    <summary type="text">&amp;nbsp;&amp;nbsp; University of Southern Indiana | USI</summary>
-    <rights type="text">Headline and summary belong to University of Southern Indiana | USI. Linked, not republished.</rights>
+    <summary type="text">Open the full report at Reuters for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Reuters. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Anthropic is one of Elon Musk’s biggest competitors in artificial intelligence. It is also one of his biggest customers.</title>
-    <id>tag:aishorts.biz,2026-11-25:story/bb43b09298d8fc65</id>
-    <link rel="alternate" type="text/html" href="https://www.facebook.com/nytimes/posts/anthropic-is-one-of-elon-musks-biggest-competitors-in-artificial-intelligence-it/1560686249247166/"/>
-    <updated>2026-11-25T06:51:56.000Z</updated>
-    <published>2026-11-25T06:51:56.000Z</published>
-    <author><name>Facebook</name></author>
+    <title type="text">Editorial reviews artificial intelligence reliability gaps across smart grids and cities</title>
+    <id>tag:aishorts.biz,2026-11-26:story/5b5ee4cc1d33ec2d</id>
+    <link rel="alternate" type="text/html" href="https://bioengineer.org/editorial-reviews-artificial-intelligence-reliability-gaps-across-smart-grids-and-cities/"/>
+    <updated>2026-11-26T09:40:50.000Z</updated>
+    <published>2026-11-26T09:40:50.000Z</published>
+    <author><name>Bioengineer.org</name></author>
     <category term="Business"/>
-    <summary type="text">Anthropic is one of Elon Musk&amp;#x2019;s biggest competitors in artificial intelligence. It is also one of his biggest customers.</summary>
-    <rights type="text">Headline and summary belong to Facebook. Linked, not republished.</rights>
+    <summary type="text">An editorial reviewing twelve contributions in Frontiers in Artificial Intelligence highlights the gap between laboratory benchmark performance and real-world operational reliability for artificial</summary>
+    <rights type="text">Headline and summary belong to Bioengineer.org. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Hawaiʻi Legislature to hold informational briefing on artificial intelligence innovation</title>
-    <id>tag:aishorts.biz,2026-11-25:story/392c5fa6164c73ba</id>
-    <link rel="alternate" type="text/html" href="https://mauinow.com/2026/11/24/hawai%CA%BBi-legislature-to-hold-informational-briefing-on-artificial-intelligence-innovation/"/>
-    <updated>2026-11-25T01:00:00.000Z</updated>
-    <published>2026-11-25T01:00:00.000Z</published>
-    <author><name>Maui Now</name></author>
+    <title type="text">FedEx Preps &apos;Smart&apos; Peak Season With AI and New Tracking Tools</title>
+    <id>tag:aishorts.biz,2026-11-26:story/da70e0e8f81f0deb</id>
+    <link rel="alternate" type="text/html" href="https://www.ccjdigital.com/technology/artificial-intelligence/article/16424915/fedex-preps-smart-peak-season-with-ai-and-new-tracking-tools"/>
+    <updated>2026-11-26T07:15:37.000Z</updated>
+    <published>2026-11-26T07:15:37.000Z</published>
+    <author><name>Commercial Carrier Journal</name></author>
     <category term="Business"/>
-    <summary type="text">The informational briefing will provide legislators with an opportunity to gain a greater understanding of the evolving landscape of artificial intelligence and its implications for state government, cybersecurity, and workforce development.</summary>
-    <rights type="text">Headline and summary belong to Maui Now. Linked, not republished.</rights>
+    <summary type="text">Open the full report at Commercial Carrier Journal for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Commercial Carrier Journal. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">How to Talk With Your Family About A.I. Doom at Thanksgiving</title>
-    <id>tag:aishorts.biz,2026-11-25:story/a37f778114ba19ca</id>
-    <link rel="alternate" type="text/html" href="https://www.nytimes.com/2026/11/25/technology/thanksgiving-ai-doom-family.html"/>
-    <updated>2026-11-25T10:04:13.000Z</updated>
-    <published>2026-11-25T10:04:13.000Z</published>
-    <author><name>The New York Times</name></author>
-    <category term="Business"/>
-    <summary type="text">Open the full report at The New York Times for the complete story.</summary>
-    <rights type="text">Headline and summary belong to The New York Times. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">Borrowed Confidence: The Quiet Cost of Letting AI Speak for You</title>
-    <id>tag:aishorts.biz,2026-11-25:story/766ce421e10df6a2</id>
-    <link rel="alternate" type="text/html" href="https://news.google.com/rss/articles/CBMioAFBVV95cUxNSlQxQXBKeW03dmNrdEVaS0swTXk3WXk2WkYxQjJZbDRvcFBjcEVWVWREWHd1TkRrcG1nQzRnbGhFQnozbmUtbVRYT1RaUTA3Z3pIb3lNSGcwYXlTNlMxdDUybEUwOFQteElYR3lDNjhIT1doV2F5a1E0T2JDOTFaMEhEVDltVzczdkczVzB3SDRtbGR2S25zTGNDTFdOTm5I?oc=5"/>
-    <updated>2026-11-25T08:32:06.000Z</updated>
-    <published>2026-11-25T08:32:06.000Z</published>
-    <author><name>Ward and Smith, P.A.</name></author>
-    <category term="Business"/>
-    <summary type="text">Open the full report at Ward and Smith, P.A. for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Ward and Smith, P.A.. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">State lawmakers to host informational briefing about artificial intelligence innovation</title>
-    <id>tag:aishorts.biz,2026-11-25:story/3efc4d90806d115f</id>
-    <link rel="alternate" type="text/html" href="https://bigislandnow.com/2026/11/24/state-lawmakers-to-host-informational-briefing-about-artificial-intelligence-innovation/"/>
-    <updated>2026-11-25T01:00:00.000Z</updated>
-    <published>2026-11-25T01:00:00.000Z</published>
-    <author><name>Big Island Now</name></author>
-    <category term="Business"/>
-    <summary type="text">The informational briefing will provide legislators an opportunity to gain a greater understanding about the evolving landscape of artificial intelligence and its implications for state government, cybersecurity and workforce development.</summary>
-    <rights type="text">Headline and summary belong to Big Island Now. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">Billionaire David Tepper Dumped Appaloosa&apos;s Stake in AMD and Broadcom and Piled Into an Artificial Intelligence (AI) Stock Trading at 44x Forward Adjusted EPS</title>
-    <id>tag:aishorts.biz,2026-11-25:story/b0549590328d9d82</id>
-    <link rel="alternate" type="text/html" href="https://www.fool.com/investing/2026/11/25/billionaire-david-tepper-appaloosa-stake-amd-broadcom-artificial-intelligence-ai-stock-trading-44x-forward-eps/"/>
-    <updated>2026-11-25T09:20:02.000Z</updated>
-    <published>2026-11-25T09:20:02.000Z</published>
+    <title type="text">Not Micron. Not Broadcom. This Is My Top Oversold Artificial Intelligence (AI) Stock to Buy in December</title>
+    <id>tag:aishorts.biz,2026-11-26:story/77d75f61b3d36792</id>
+    <link rel="alternate" type="text/html" href="https://www.fool.com/investing/2026/11/25/not-micron-not-broadcom-this-is-my-top-oversold-artificial-intelligence-ai-stock-to-buy-in-december/"/>
+    <updated>2026-11-25T21:31:01.000Z</updated>
+    <published>2026-11-25T21:31:01.000Z</published>
     <author><name>The Motley Fool</name></author>
     <category term="Business"/>
-    <summary type="text">Tepper is one of the most respected hedge fund managers on Wall Street.</summary>
+    <summary type="text">Marvell&amp;#x27;s earnings growth is poised to accelerate sharply, making the stock a no-brainer buy ahead of its quarterly report.</summary>
     <rights type="text">Headline and summary belong to The Motley Fool. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Australia turns to MIT to solve its productivity problem: AI adoption</title>
-    <id>tag:aishorts.biz,2026-11-25:story/229d8c0f9524fb46</id>
-    <link rel="alternate" type="text/html" href="https://www.politico.com/news/2026/11/25/australia-turns-to-mit-to-solve-its-productivity-problem-ai-adoption-01182597"/>
-    <updated>2026-11-25T06:13:00.000Z</updated>
-    <published>2026-11-25T06:13:00.000Z</published>
-    <author><name>Politico</name></author>
+    <title type="text">2026 International Human Rights Day Conference: Human Rights &amp; AI</title>
+    <id>tag:aishorts.biz,2026-11-26:story/aee3774681150782</id>
+    <link rel="alternate" type="text/html" href="https://www.eeas.europa.eu/delegations/south-korea/2026-international-human-rights-day-conference-human-rights-ai_en"/>
+    <updated>2026-11-26T09:45:36.000Z</updated>
+    <published>2026-11-26T09:45:36.000Z</published>
+    <author><name>European External Action Service (EEAS)</name></author>
     <category term="Business"/>
-    <summary type="text">Open the full report at Politico for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Politico. Linked, not republished.</rights>
+    <summary type="text">&amp;nbsp;&amp;nbsp; European External Action Service (EEAS)</summary>
+    <rights type="text">Headline and summary belong to European External Action Service (EEAS). Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Alphabet Has $251 Billion Invested In 2 of Its Biggest Artificial Intelligence Partners</title>
-    <id>tag:aishorts.biz,2026-11-25:story/4b1e6acc18a22905</id>
-    <link rel="alternate" type="text/html" href="https://finance.yahoo.com/technology/ai/articles/alphabet-251-billion-invested-2-072902299.html"/>
-    <updated>2026-11-25T07:29:00.000Z</updated>
-    <published>2026-11-25T07:29:00.000Z</published>
-    <author><name>Yahoo Finance</name></author>
-    <category term="Business"/>
-    <summary type="text">Open the full report at Yahoo Finance for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Yahoo Finance. Linked, not republished.</rights>
+    <title type="text">A research agenda for integrating artificial intelligence in mitigation scenario workflows</title>
+    <id>tag:aishorts.biz,2026-11-26:story/2e216346f5b37233</id>
+    <link rel="alternate" type="text/html" href="https://www.nature.com/articles/s41558-026-02801-y"/>
+    <updated>2026-11-25T11:18:40.000Z</updated>
+    <published>2026-11-25T11:18:40.000Z</published>
+    <author><name>Nature</name></author>
+    <category term="Research"/>
+    <summary type="text">The integration of artificial intelligence into mitigation scenarios development could reduce the current bottlenecks. This Perspective proposes a research agenda to address these challenges at each phase, highlighting the importance of both agentic architecture and expert oversight.</summary>
+    <rights type="text">Headline and summary belong to Nature. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">FDA clears RadNet AI tool for predicting five-year breast cancer risk from routine mammograms</title>
-    <id>tag:aishorts.biz,2026-11-25:story/2cc6bfb69269aef2</id>
-    <link rel="alternate" type="text/html" href="https://radiologybusiness.com/topics/artificial-intelligence/fda-clears-radnet-ai-tool-predicting-five-year-breast-cancer-risk-routine-mammograms"/>
-    <updated>2026-11-25T08:43:26.000Z</updated>
-    <published>2026-11-25T08:43:26.000Z</published>
-    <author><name>Radiology Business</name></author>
+    <title type="text">Artificial intelligence in air defense: Optimizing resources and costs</title>
+    <id>tag:aishorts.biz,2026-11-26:story/05fa5d478350c5bc</id>
+    <link rel="alternate" type="text/html" href="https://defence24.com/industry/artificial-intelligence-in-air-defense-optimizing-resources-and-costs"/>
+    <updated>2026-11-26T09:30:00.000Z</updated>
+    <published>2026-11-26T09:30:00.000Z</published>
+    <author><name>Defence24.com</name></author>
+    <category term="Business"/>
+    <summary type="text">**Ongoing operations in Ukraine and in the Middle East are reshaping air defense doctrines. In an era of saturation and multi-threat attacks, the challenge is to efficiently plan and continuously adapt the use of limited air defense resources – prioritizing threats, matching…</summary>
+    <rights type="text">Headline and summary belong to Defence24.com. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">Apple pulls MiniMax AI chatbot from App Store over child safety concerns</title>
+    <id>tag:aishorts.biz,2026-11-26:story/b6a76496982bdebf</id>
+    <link rel="alternate" type="text/html" href="https://www.reuters.com/business/retail-consumer/apple-pulls-minimax-ai-chatbot-app-store-over-child-safety-concerns-2026-11-26/"/>
+    <updated>2026-11-26T05:13:00.000Z</updated>
+    <published>2026-11-26T05:13:00.000Z</published>
+    <author><name>Reuters</name></author>
     <category term="Safety"/>
-    <summary type="text">Open the full report at Radiology Business for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Radiology Business. Linked, not republished.</rights>
+    <summary type="text">Open the full report at Reuters for the complete story.</summary>
+    <rights type="text">Headline and summary belong to Reuters. Linked, not republished.</rights>
   </entry>
   <entry>
     <title type="text">Scoop: Anthropic and OpenAI employees fear unreleased AI models are too unsafe to release</title>
-    <id>tag:aishorts.biz,2026-11-25:story/ba4322098de37e67</id>
-    <link rel="alternate" type="text/html" href="https://news.google.com/rss/articles/CBMiggFBVV95cUxNWnJmY2hLTWlhTHcwN3pVSEhYOXlYUThYQXJ3RWxobVlPR2lweWpSQUY1NklSLVNVUHI4c0wwdnN3azBiV05wTVV6ZmRMTllRR1dvcmNYdjRheHZDOUNVaTBxUFpuS3BZUVBvZ2tpMlpTSS1oYWZ3SC16RVZEME51a0FB?oc=5"/>
-    <updated>2026-11-24T10:30:32.000Z</updated>
-    <published>2026-11-24T10:30:32.000Z</published>
+    <id>tag:aishorts.biz,2026-11-26:story/ba4322098de37e67</id>
+    <link rel="alternate" type="text/html" href="https://www.axios.com/2026/11/24/anthropic-openai-unreleased-ai-safety-risks"/>
+    <updated>2026-11-24T10:49:26.000Z</updated>
+    <published>2026-11-24T10:49:26.000Z</published>
     <author><name>Axios</name></author>
     <category term="Models"/>
     <summary type="text">Open the full report at Axios for the complete story.</summary>
     <rights type="text">Headline and summary belong to Axios. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Perplexity and Intelligence</title>
-    <id>tag:aishorts.biz,2026-11-25:story/aae388a7aa6c8d7b</id>
-    <link rel="alternate" type="text/html" href="https://openai.com/index/perplexity-and-intelligence/"/>
-    <updated>2026-11-22T19:12:41.000Z</updated>
-    <published>2026-11-22T19:12:41.000Z</published>
-    <author><name>OpenAI</name></author>
+    <title type="text">AI company employees warn internal models are too powerful to safely release: report</title>
+    <id>tag:aishorts.biz,2026-11-26:story/c8bfdb163402b356</id>
+    <link rel="alternate" type="text/html" href="https://local12.com/news/nation-world/ai-company-employees-warn-internal-models-are-too-powerful-to-safely-release-report-anthropic-openai-rrt"/>
+    <updated>2026-11-26T02:35:11.000Z</updated>
+    <published>2026-11-26T02:35:11.000Z</published>
+    <author><name>WKRC</name></author>
     <category term="Models"/>
-    <summary type="text">How perplexity measures progress in AI models, and why it could help developers establish a shared approach to evaluating emerging capabilities.</summary>
-    <rights type="text">Headline and summary belong to OpenAI. Linked, not republished.</rights>
+    <summary type="text">Anthropic and OpenAI employees are warning that internal models are too powerful to safely release, according to a report.</summary>
+    <rights type="text">Headline and summary belong to WKRC. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">China&apos;s Z.ai Says Its New AI Model Can Think Like One Four Times Its Size</title>
-    <id>tag:aishorts.biz,2026-11-25:story/fccd28bcb27434fc</id>
-    <link rel="alternate" type="text/html" href="https://decrypt.co/383851/chinas-zai-new-ai-model-glm-think-like-four-times-size"/>
-    <updated>2026-11-23T23:06:02.000Z</updated>
-    <published>2026-11-23T23:06:02.000Z</published>
-    <author><name>Decrypt</name></author>
+    <title type="text">BREAKING: Employees at OpenAI and Anthropic are panicking</title>
+    <id>tag:aishorts.biz,2026-11-26:story/0f801a38d89eaf71</id>
+    <link rel="alternate" type="text/html" href="https://garymarcus.substack.com/p/breaking-employees-at-openai-and"/>
+    <updated>2026-11-24T16:06:27.000Z</updated>
+    <published>2026-11-24T16:06:27.000Z</published>
+    <author><name>Marcus on AI | Substack</name></author>
     <category term="Models"/>
-    <summary type="text">Z.ai&amp;#x27;s GLM-5.4 uses a looping architecture to squeeze more reasoning power from fewer parameters, challenging American AI giants.</summary>
-    <rights type="text">Headline and summary belong to Decrypt. Linked, not republished.</rights>
+    <summary type="text">&amp;nbsp;&amp;nbsp; Marcus on AI | Substack</summary>
+    <rights type="text">Headline and summary belong to Marcus on AI | Substack. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">AI regulation will be a key topic in State of the State address, Hochul says</title>
-    <id>tag:aishorts.biz,2026-11-25:story/e74058c9a1e4036b</id>
-    <link rel="alternate" type="text/html" href="https://www.cityandstateny.com/policy/2026/11/ai-regulation-will-be-key-topic-state-state-address-hochul-says/417439/?oref=csny-skybox-post"/>
-    <updated>2026-11-24T22:40:21.000Z</updated>
-    <published>2026-11-24T22:40:21.000Z</published>
-    <author><name>City &amp; State New York</name></author>
+    <title type="text">Democrats must unite on AI regulation. Here’s our three-point plan | Nathan E Sanders and Bruce Schneier</title>
+    <id>tag:aishorts.biz,2026-11-26:story/ffbb94be41fae1fb</id>
+    <link rel="alternate" type="text/html" href="https://www.theguardian.com/commentisfree/2026/nov/25/democrats-ai-regulation-plan"/>
+    <updated>2026-11-25T18:23:00.000Z</updated>
+    <published>2026-11-25T18:23:00.000Z</published>
+    <author><name>The Guardian</name></author>
     <category term="Policy"/>
-    <summary type="text">As she signed legislation banning artificial intelligence chatbot toys, the governor made clear she won’t stop reining in AI any time soon.</summary>
-    <rights type="text">Headline and summary belong to City &amp; State New York. Linked, not republished.</rights>
+    <summary type="text">Voters are demanding action on the issue. We need to make AI work for the American public, not the tech oligarchs</summary>
+    <rights type="text">Headline and summary belong to The Guardian. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Hassan says AI regulation, investigating tech outages will be top priorities in January</title>
-    <id>tag:aishorts.biz,2026-11-25:story/f8232fb4c3ff1bc2</id>
-    <link rel="alternate" type="text/html" href="https://www.nhpr.org/nh-news/2026-11-24/us-senator-hassan-talks-ai-regulation-tech-outages-government-investigation"/>
-    <updated>2026-11-24T16:33:00.000Z</updated>
-    <published>2026-11-24T16:33:00.000Z</published>
-    <author><name>New Hampshire Public Radio</name></author>
+    <title type="text">Why practicing U.S. lawyers are returning to law school in the Age of AI</title>
+    <id>tag:aishorts.biz,2026-11-26:story/e7e92059d70239dc</id>
+    <link rel="alternate" type="text/html" href="https://nationaljurist.com/why-practicing-u-s-lawyers-are-returning-to-law-school-in-the-age-of-ai/"/>
+    <updated>2026-11-25T16:46:28.000Z</updated>
+    <published>2026-11-25T16:46:28.000Z</published>
+    <author><name>National Jurist</name></author>
     <category term="Policy"/>
-    <summary type="text">U.S. Senator Maggie Hassan is set to serve as New Hampshire&amp;#x27;s senior senator and Chair of the Senate Homeland Security and Governmental Affairs Committee.</summary>
-    <rights type="text">Headline and summary belong to New Hampshire Public Radio. Linked, not republished.</rights>
+    <summary type="text">Open the full report at National Jurist for the complete story.</summary>
+    <rights type="text">Headline and summary belong to National Jurist. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Webinar: Verify, Don’t Delegate – What California’s AI Law Means for Patent Practice</title>
-    <id>tag:aishorts.biz,2026-11-25:story/4456502511ff0cf8</id>
-    <link rel="alternate" type="text/html" href="https://ipwatchdog.com/patsnap-december-15-2026/"/>
-    <updated>2026-11-25T00:42:24.000Z</updated>
-    <published>2026-11-25T00:42:24.000Z</published>
-    <author><name>IPWatchdog</name></author>
+    <title type="text">Bipartisan Desire to Regulate A.I. Faces Obstacles in Congress</title>
+    <id>tag:aishorts.biz,2026-11-26:story/72d62267a5456377</id>
+    <link rel="alternate" type="text/html" href="https://www.nytimes.com/2026/11/26/us/politics/ai-regulation-congress-nvidia.html"/>
+    <updated>2026-11-26T10:03:47.000Z</updated>
+    <published>2026-11-26T10:03:47.000Z</published>
+    <author><name>The New York Times</name></author>
     <category term="Policy"/>
-    <summary type="text">Effective January 1, 2027, California will become the first state to impose statutory requirements governing attorneys’ use of generative artificial intelligence. And without Congressional action, it seems virtually certain that other states will follow California’s lead. This raises the question about whether…</summary>
-    <rights type="text">Headline and summary belong to IPWatchdog. Linked, not republished.</rights>
+    <summary type="text">Open the full report at The New York Times for the complete story.</summary>
+    <rights type="text">Headline and summary belong to The New York Times. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Can AI Research Tools Help Code Data About Restrictions on Religion?</title>
-    <id>tag:aishorts.biz,2026-11-25:story/b179936d7ad5f545</id>
-    <link rel="alternate" type="text/html" href="https://www.pewresearch.org/decoded/2026/11/24/can-ai-research-tools-help-code-data-about-restrictions-on-religion/"/>
-    <updated>2026-11-24T16:57:04.000Z</updated>
-    <published>2026-11-24T16:57:04.000Z</published>
-    <author><name>Pew Research Center</name></author>
+    <title type="text">Cary teen uses AI to study kidney cancer, presents research at national conference</title>
+    <id>tag:aishorts.biz,2026-11-26:story/934b548c2dee5eed</id>
+    <link rel="alternate" type="text/html" href="https://www.wral.com/news/local/cary-teen-ai-study-kidney-cancer-national-conference-november-2026/"/>
+    <updated>2026-11-25T16:34:59.000Z</updated>
+    <published>2026-11-25T16:34:59.000Z</published>
+    <author><name>WRAL</name></author>
     <category term="Research"/>
-    <summary type="text">We ran two experiments to see whether AI could make the process of manually coding data easier for humans to complete.</summary>
-    <rights type="text">Headline and summary belong to Pew Research Center. Linked, not republished.</rights>
+    <summary type="text">A 15-year-old Green Level High School sophomore presented his research at a national conference, exploring how artificial intelligence could help doctors determine whether a patient&amp;#x27;s kidney cancer has already spread.</summary>
+    <rights type="text">Headline and summary belong to WRAL. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Working with AI</title>
-    <id>tag:aishorts.biz,2026-11-25:story/8f20d6471c6cc7a0</id>
-    <link rel="alternate" type="text/html" href="https://www.anthropic.com/research/working-with-ai"/>
-    <updated>2026-11-23T21:12:08.000Z</updated>
-    <published>2026-11-23T21:12:08.000Z</published>
-    <author><name>Anthropic</name></author>
-    <category term="Research"/>
-    <summary type="text">We interviewed people at 58 companies that use Claude about how AI is changing their work. They described few layoffs but reduced hiring, and said the most valuable uses of AI often involved reorganizing roles and workplaces around it.</summary>
-    <rights type="text">Headline and summary belong to Anthropic. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">Bipartisan House Caucus Forms to Tackle AI Safety and Security Risks</title>
-    <id>tag:aishorts.biz,2026-11-25:story/ddaf31ff2a81eaac</id>
-    <link rel="alternate" type="text/html" href="https://www.acainternational.org/news/bipartisan-house-caucus-forms-to-tackle-ai-safety-and-security-risks/"/>
-    <updated>2026-11-24T21:03:01.000Z</updated>
-    <published>2026-11-24T21:03:01.000Z</published>
-    <author><name>ACA International</name></author>
+    <title type="text">NY AG Letitia James Creates ASSET Unit to Enforce RAISE Act and AI Safety Laws Against Developers and Deployers</title>
+    <id>tag:aishorts.biz,2026-11-26:story/9e4e86d71f28169c</id>
+    <link rel="alternate" type="text/html" href="https://www.crowell.com/en/insights/client-alerts/new-york-attorney-general-establishes-first-of-its-kind-ai-enforcement-unit"/>
+    <updated>2026-11-26T08:26:15.000Z</updated>
+    <published>2026-11-26T08:26:15.000Z</published>
+    <author><name>Crowell &amp; Moring LLP</name></author>
     <category term="Safety"/>
-    <summary type="text">Open the full report at ACA International for the complete story.</summary>
-    <rights type="text">Headline and summary belong to ACA International. Linked, not republished.</rights>
+    <summary type="text">On November 17, 2026, New York Attorney General Letitia James announced the creation of the AI Safety, Standards, Enforcement, and Transparency (ASSET) Unit within the Office of the Attorney General, tasked with leading enforcement of the RAISE Act — which takes effect…</summary>
+    <rights type="text">Headline and summary belong to Crowell &amp; Moring LLP. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">UN chief urges talks on global AI safety framework, warns of historic shift in power</title>
-    <id>tag:aishorts.biz,2026-11-25:story/0ad99987057e9f76</id>
-    <link rel="alternate" type="text/html" href="https://news.un.org/en/story/2026/11/1168861"/>
-    <updated>2026-11-23T17:36:51.000Z</updated>
-    <published>2026-11-23T17:36:51.000Z</published>
-    <author><name>UN News</name></author>
+    <title type="text">Taking AI Safety Seriously</title>
+    <id>tag:aishorts.biz,2026-11-26:story/7af1864bf20d36e4</id>
+    <link rel="alternate" type="text/html" href="https://prospect.org/2026/11/25/taking-ai-safety-seriously/"/>
+    <updated>2026-11-25T10:15:00.000Z</updated>
+    <published>2026-11-25T10:15:00.000Z</published>
+    <author><name>The American Prospect</name></author>
     <category term="Safety"/>
-    <summary type="text">UN Secretary-General António Guterres on Monday called on Member States to begin discussions on a multilateral framework for managing the risks of artificial intelligence (AI), warning that the technology is driving “the biggest transfer of power in the history of humankind”.</summary>
-    <rights type="text">Headline and summary belong to UN News. Linked, not republished.</rights>
+    <summary type="text">If you are truly concerned with artificial intelligence tearing down humanity, lots of policy positions come into focus.</summary>
+    <rights type="text">Headline and summary belong to The American Prospect. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Japan’s Humanoid Robot Restart in 2026: From HRP Heritage to the Factory Floor</title>
-    <id>tag:aishorts.biz,2026-11-25:story/0d98595b1c73fdc9</id>
-    <link rel="alternate" type="text/html" href="https://theaiinsider.tech/2026/11/25/japans-humanoid-robot-restart-in-2026-from-hrp-heritage-to-the-factory-floor/"/>
-    <updated>2026-11-25T03:00:08.000Z</updated>
-    <published>2026-11-25T03:00:08.000Z</published>
-    <author><name>AI Insider</name></author>
+    <title type="text">Robots could be doing household chores in just 1-2 years, Chinese EV firm says</title>
+    <id>tag:aishorts.biz,2026-11-26:story/7bcad1f8ca66323e</id>
+    <link rel="alternate" type="text/html" href="https://www.cnbc.com/2026/11/26/china-ev-xpeng-humanoid-robots-household-chores.html"/>
+    <updated>2026-11-26T07:30:11.000Z</updated>
+    <published>2026-11-26T07:30:11.000Z</published>
+    <author><name>CNBC</name></author>
     <category term="Robotics"/>
-    <summary type="text">Japan helped define the modern humanoid robot, but the current race looks different from the era of Honda&apos;s ASIMO or SoftBank&apos;s Pepper. The question now is whether Japanese companies can turn decades of research, industrial know-how and a deep manufacturing base into…</summary>
-    <rights type="text">Headline and summary belong to AI Insider. Linked, not republished.</rights>
+    <summary type="text">Xpeng Co-President Brian Gu shared his humanoid robot predictions with CNBC in an interview Thursday.</summary>
+    <rights type="text">Headline and summary belong to CNBC. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Figure 03 robot passes Elon Musk&apos;s apple test, adapts when table moved</title>
-    <id>tag:aishorts.biz,2026-11-25:story/37887b78b8656d23</id>
-    <link rel="alternate" type="text/html" href="https://interestingengineering.com/ai-robotics/figure-counters-musks-staged-robot-claim"/>
-    <updated>2026-11-25T10:33:00.000Z</updated>
-    <published>2026-11-25T10:33:00.000Z</published>
+    <title type="text">Xpeng Says Its Humanoid Robot Will Cost the Same as an EV</title>
+    <id>tag:aishorts.biz,2026-11-26:story/7a047ead54f567fc</id>
+    <link rel="alternate" type="text/html" href="https://www.bloomberg.com/news/articles/2026-11-26/xpeng-says-its-humanoid-robot-will-cost-the-same-as-an-ev"/>
+    <updated>2026-11-26T04:30:00.000Z</updated>
+    <published>2026-11-26T04:30:00.000Z</published>
+    <author><name>Bloomberg.com</name></author>
+    <category term="Robotics"/>
+    <summary type="text">Xpeng Inc.’s humanoid robots will cost roughly the same as an electric vehicle when they go on sale to the public in the second quarter.</summary>
+    <rights type="text">Headline and summary belong to Bloomberg.com. Linked, not republished.</rights>
+  </entry>
+  <entry>
+    <title type="text">XPENG unveils humanoid robot with 1,500 tactile sensors in China</title>
+    <id>tag:aishorts.biz,2026-11-26:story/af65f68ba3138d9d</id>
+    <link rel="alternate" type="text/html" href="https://interestingengineering.com/ai-robotics/xpeng-iron-humanoid-robot-1500-tactile-sensors"/>
+    <updated>2026-11-26T02:21:00.000Z</updated>
+    <published>2026-11-26T02:21:00.000Z</published>
     <author><name>Interesting Engineering</name></author>
     <category term="Robotics"/>
-    <summary type="text">Figure responds to Musk&amp;#x27;s staged robot demo claims with a video of Figure 03 retrieving an apple after a table is moved.</summary>
+    <summary type="text">XPENG unveils its IRON humanoid robot with 76 degrees of freedom and 1,500 tactile sensors, targeting store deployment in 2027.</summary>
     <rights type="text">Headline and summary belong to Interesting Engineering. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">SoftBank acquires Marc Raibert’s Robotics and AI Institute</title>
-    <id>tag:aishorts.biz,2026-11-25:story/57b553cb92d6e8b9</id>
-    <link rel="alternate" type="text/html" href="https://www.therobotreport.com/softbank-acquires-marc-raiberts-robotics-and-ai-institute/"/>
-    <updated>2026-11-24T14:56:00.000Z</updated>
-    <published>2026-11-24T14:56:00.000Z</published>
-    <author><name>The Robot Report</name></author>
-    <category term="Robotics"/>
-    <summary type="text">SoftBank acquired the Robotics and AI Institute from Hyundai Motor Group, reuniting with Boston Dynamics founder Marc Raibert.</summary>
-    <rights type="text">Headline and summary belong to The Robot Report. Linked, not republished.</rights>
+    <title type="text">Billions in Data Center Deals Grind to Halt After AI Chip Curbs</title>
+    <id>tag:aishorts.biz,2026-11-26:story/179ed43c7bcb4377</id>
+    <link rel="alternate" type="text/html" href="https://www.bloomberg.com/news/articles/2026-11-25/billions-in-data-center-deals-grind-to-halt-after-ai-chip-curbs"/>
+    <updated>2026-11-26T01:19:00.000Z</updated>
+    <published>2026-11-26T01:19:00.000Z</published>
+    <author><name>Bloomberg.com</name></author>
+    <category term="Infrastructure"/>
+    <summary type="text">Lenders have hit the brakes on billions of dollars in loans tied to Chinese firms ByteDance, Alibaba and Tencent, as new US curbs on chip access threaten to upend Asia’s burgeoning AI debt financing market.</summary>
+    <rights type="text">Headline and summary belong to Bloomberg.com. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Banks Put Data Center Clients Under the Microscope on AI Chips</title>
-    <id>tag:aishorts.biz,2026-11-25:story/64942ce46b60b18b</id>
-    <link rel="alternate" type="text/html" href="https://www.bloomberg.com/news/articles/2026-11-25/citi-stanchart-put-data-center-clients-under-the-microscope-on-ai-chips"/>
-    <updated>2026-11-25T06:55:00.000Z</updated>
-    <published>2026-11-25T06:55:00.000Z</published>
-    <author><name>Bloomberg</name></author>
+    <title type="text">The hidden environmental cost of AI data centers</title>
+    <id>tag:aishorts.biz,2026-11-26:story/3606611f17f56add</id>
+    <link rel="alternate" type="text/html" href="https://www.dw.com/en/the-hidden-environmental-cost-of-ai-data-centers/a-78789889"/>
+    <updated>2026-11-26T00:14:36.000Z</updated>
+    <published>2026-11-26T00:14:36.000Z</published>
+    <author><name>DW.com</name></author>
     <category term="Infrastructure"/>
-    <summary type="text">Banks from Citigroup Inc. to Standard Chartered Plc have launched sweeping reviews of data center clients in the wake of tougher American rules to curb Chinese companies’ use of advanced US chips in Southeast Asian nations.</summary>
-    <rights type="text">Headline and summary belong to Bloomberg. Linked, not republished.</rights>
+    <summary type="text">As data centers multiply to meet AI demand, they&amp;#x27;re straining power grids, draining water supplies and reshaping the land and air around them.</summary>
+    <rights type="text">Headline and summary belong to DW.com. Linked, not republished.</rights>
   </entry>
   <entry>
-    <title type="text">Another AI Data Center Impact: Air Cargo Might Top Value Of Ocean Cargo</title>
-    <id>tag:aishorts.biz,2026-11-25:story/775274b4e1d244ec</id>
-    <link rel="alternate" type="text/html" href="https://www.forbes.com/sites/kenroberts/2026/11/25/another-ai-data-center-impact-air-cargo-might-top-value-of-ocean-cargo/"/>
-    <updated>2026-11-25T10:33:07.000Z</updated>
-    <published>2026-11-25T10:33:07.000Z</published>
-    <author><name>Forbes</name></author>
+    <title type="text">AI&apos;s next data center boom is moving into cities, and into people&apos;s homes</title>
+    <id>tag:aishorts.biz,2026-11-26:story/b86b4bce1be9e4e4</id>
+    <link rel="alternate" type="text/html" href="https://www.calcalistech.com/ctechnews/article/5tenusdv9"/>
+    <updated>2026-11-26T08:31:00.000Z</updated>
+    <published>2026-11-26T08:31:00.000Z</published>
+    <author><name>www.calcalistech.com</name></author>
     <category term="Infrastructure"/>
-    <summary type="text">Open the full report at Forbes for the complete story.</summary>
-    <rights type="text">Headline and summary belong to Forbes. Linked, not republished.</rights>
-  </entry>
-  <entry>
-    <title type="text">The Global AI Data Center Debate, Explained</title>
-    <id>tag:aishorts.biz,2026-11-25:story/3ad09b47e971dca5</id>
-    <link rel="alternate" type="text/html" href="https://www.cfr.org/articles/the-global-ai-data-center-debate-explained"/>
-    <updated>2026-11-23T19:21:59.000Z</updated>
-    <published>2026-11-23T19:21:59.000Z</published>
-    <author><name>Council on Foreign Relations</name></author>
-    <category term="Infrastructure"/>
-    <summary type="text">As countries race to build the infrastructure behind artificial intelligence (AI), the electricity, water, and land that data centers demand are shaping who can compete.</summary>
-    <rights type="text">Headline and summary belong to Council on Foreign Relations. Linked, not republished.</rights>
+    <summary type="text">As demand for computing power grows, developers are finding ways to install servers in office towers, industrial buildings and even private residences. The shift promises faster connections and new revenue streams, but also raises questions about electricity, noise, water consumption and regulation.</summary>
+    <rights type="text">Headline and summary belong to www.calcalistech.com. Linked, not republished.</rights>
   </entry>
 </feed>
