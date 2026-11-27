@@ -1,260 +1,260 @@
 {
-  "generated": "2026-11-26T01:28:26.769Z",
-  "forDate": "2026-11-27",
+  "generated": "2026-11-27T01:25:42.149Z",
+  "forDate": "2026-11-28",
   "window": {
-    "from": "2026-11-25T01:28:26.769Z",
-    "to": "2026-11-26T01:28:26.769Z"
+    "from": "2026-11-26T01:25:42.149Z",
+    "to": "2026-11-27T01:25:42.149Z"
   },
   "scanned": {
-    "stories": 941,
-    "outlets": 477,
+    "stories": 848,
+    "outlets": 409,
     "regions": [
       "Global desks",
-      "Community",
       "North America",
+      "Community",
       "Asia-Pacific",
       "Europe",
-      "Africa",
       "South Asia",
+      "Africa",
       "Middle East"
     ],
-    "storylines": 681
+    "storylines": 653
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.7458,
-      "probability": 0.92,
+      "score": 0.6433,
+      "probability": 0.85,
       "confidence": "High",
       "entity": "Nvidia",
       "theme": "Chips & compute",
-      "headline": "Jensen Huang’s return to Nvidia fuels Washington fight over China’s chip access",
+      "headline": "Nvidia halts server shipments to four Southeast Asian countries, FT reports",
       "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
       "signals": {
-        "outlets": 37,
+        "outlets": 42,
         "regions": [
-          "Global desks",
           "North America",
-          "South Asia",
-          "Europe",
-          "Middle East",
-          "Asia-Pacific"
+          "Asia-Pacific",
+          "Africa",
+          "Global desks"
         ],
-        "stories": 40,
-        "momentum": 1.89,
-        "recent6h": 16,
-        "authority": 15.1,
-        "hnPoints": 4,
-        "nextStepCues": 0,
+        "stories": 48,
+        "momentum": 0.47,
+        "recent6h": 6,
+        "authority": 15.2,
+        "hnPoints": 0,
+        "nextStepCues": 1,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
         "reach": 1,
-        "breadth": 1,
-        "momentum": 0.64,
+        "breadth": 0.67,
+        "momentum": 0,
         "authority": 1,
-        "community": 0.23,
-        "nextStep": 0,
+        "community": 0,
+        "nextStep": 0.33,
         "arc": 1
       },
       "sig": [
         "nvidia",
+        "shipment",
+        "halt",
+        "southeast",
+        "server",
         "chip",
-        "huang",
-        "china",
-        "jensen",
-        "access",
-        "return",
-        "rule"
+        "asian",
+        "countrie"
       ],
       "evidence": [
         {
-          "title": "NEWSLETTER: Jensen is back. What’s next for Nvidia?",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPanZEaGMtUmdmSmZPX1BXTmtqRG4xUXpNcFFiRmxWY0d2MnBmR0ZUWVRJM1d6Q0N6QzVjZ2NnYXVZTFNXejg5N2JaeWZTYTlHWlZJNFZYb09kS1JsY0ZadXVrLXZXN0lWNmRQdThKMmZOV1NBd0FYNk1CNnVPN0g5Zkd2ajh0c1l4VlFLbkNCYldadTl3c0Jrek0zak9XeW9BTWJMVkJ3?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Nvidia's shares drop, credit rating on watch two days after Huang's return",
+          "title": "Nvidia, Kioxia team on AI server memory as alternative to South Korean chips",
           "source": "Nikkei Asia",
-          "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNUlY1dHczNWpBM21GTUVVcWZ1QUdrZG5acThyMTJzTm14bTNDemdndjNSVDNZV1JnbDYyYnhZQWw3SlQySlpYT1lERUdrWDNQUHp0RnZOZ3h3cjZXVVhjRXRlUng2ZmJiRlBKb3p1enlaMUM3cndSODJ4WVZadWZVYlg4b0FSa3dPc2NoV0puaEZVV1Z6YlNCM3MzUWZrdzRjdG44bGotQUFIUFBDUnp2VUlNNDZIZUt2RkExZkp6Zmx2d1FpdnpIM1BBOC1TbFlzX21wSnNwdjY?oc=5",
-          "region": "South Asia"
-        },
-        {
-          "title": "Nvidia sellers seek new buyers as U.S. curbs China AI chip access, sources tell CNBC",
-          "source": "CNBC",
-          "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE1IN1pwRHJFN1ZiXzJpeXpsLWI5RGJNMTNUU3VSNFY5Q21iUkVkNDhneFg2VFg4TTI3R3k5RXUtb0hBRGRhYkVXdXZablA3dG4zSF9yc3Q5YmVDTjBBZjAxMXJFWUdCUFFwZHQ3dm9QWG5uSWhXdS1KRGRVY9IBgAFBVV95cUxPYW9MbXdwMWFTZFd6dmhZLVNGYzdHUmNDaF9VQk5jN2lMdDFfU010WUdOX2t1ai1qNXYtZi1TbnVTbEt6b0pvejRsdjJoYmZuWXJwZjl4TkpuZHNpeHNIbEpFZkxuc3RnNExQZGRWZ0ZQTy0xYU9wYnhCT3k5a2tBUA?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxQNjFCSjA5NEktUE5YYlJCR2ZxMVNaTE1QQTRUMXdFM2VBZU83UkFvMlBXWE9DOHI3WnFKZDB0emNyNUFWYVByWkxxeHRHcnhKTzg0dVhqMnNLVHBSTk40ajlBWUZmcGlxdXZqMDlabXVxVERxUlA2Vzl6VEtrajFNa243cWY5ZC1kMzM4ellUNnM4Nmljcnk5OUNLdjhMTHNkWnZNN0VlU2NFbjFYckVzNXNaSFFyTzBNUEFqSEdxcFJVYXJNTlpv?oc=5",
           "region": "North America"
         },
         {
-          "title": "Jensen Huang’s return to Nvidia fuels Washington fight over China’s chip access",
-          "source": "BNN Bloomberg",
-          "url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxPcFB6alRfSTZEeF94LTk2Q2ZibTBBclM2dkpVUHJlM1dlbGY2eXN3Vnh5SzE1T3A0cXlDTU52cFJkU0k5enZnTVNiekJYZGRQajZyMEpBWmxrM2x3NUxMbWx0RVV0TDgwTlUwOGVwNm8wd2lpRDNOcmlDMHdsVWh6MzUwMUdfYTlzSVc5OXlPWjFUZzZDQk83SUFFelpkX010c0RCbjBwaXJCa0ZYMkx4eXFweWFkdS0wSUxEdEpHeTRoVG1xNFc4OUd6NTVHV2JZcEJpSkJuOF85YU9aZWt0M2ZPU2E?oc=5",
+          "title": "Nvidia Tells Partners to Pause Shipments to Southeast Asia",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOMGFER2Vpbl9JMXo5TFF1MFdQemdLcWFENFE0eGhwRS1pWkVyVTJvMFQ3RnRxUURGSjBxbHVMVVlyYzk0N3ZVU0tfb0tJa3NJREFmSzNmbkVWd0xxdDlvLUlqNzQ1bnBmUExWNWxmVTczRG1UNEQzd3NReXh5N2xTU3IwbkRwcDJFT1BXYzExU3NLMVNkZ3RR?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia halts server shipments to four Southeast Asian countries, FT reports",
+          "source": "Reuters",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOM1ZtZ1FmQ3d0Nk9xZzFmaDNtd3ZURjZ1cm1sWkptUktqcm1aOUc3eWpIYjVpUGoxWGxWd2FjRTZiTzBGRGtaTTA3ZUFsTEJLNk5BV3VfV2VKNHJVbk1mTDJqYkZkdEFPQ09jdzVHRzBHazlKVko5bVp4WDZMSUpUaEpyZk5ZUUUxbm42MjBIRWJCaGZzVXRkNklKN2dfdDRES3RwazQ1UU55Q3Bf?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia halts chip shipments to south-east Asia",
+          "source": "Financial Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQbDFtRGxaSmJxdndYb1VMbTBjLWJGOExCdUdULWNlRXF6RG90SDQzQkdYb29GbmI3Q1J5UHp2Yk80N3R1Wkl4UXlfWFdFd0VmQ2FEYUZXdnFpbnR3SndRWkh6dVJYQlY1cHhQMWVkTEpJaV9lbHJteGc1ai0tS0ppYWxuWVI?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 2,
-      "score": 0.6381,
-      "probability": 0.84,
+      "score": 0.5532,
+      "probability": 0.74,
       "confidence": "High",
-      "entity": "AI industry",
+      "entity": "xAI",
       "theme": "Chips & compute",
       "headline": "US approves SpaceX plan to send a million data satellites to space",
-      "outlook": "Supply, pricing and export angles on AI industry should keep this in the headlines.",
+      "outlook": "Supply, pricing and export angles on xAI should keep this in the headlines.",
       "signals": {
-        "outlets": 10,
+        "outlets": 12,
         "regions": [
           "North America",
-          "Asia-Pacific"
+          "Europe"
         ],
-        "stories": 10,
-        "momentum": 3,
-        "recent6h": 6,
-        "authority": 4.3,
-        "hnPoints": 3,
+        "stories": 12,
+        "momentum": 0.43,
+        "recent6h": 1,
+        "authority": 4.2,
+        "hnPoints": 2,
         "nextStepCues": 4,
-        "arcDays": 0,
+        "arcDays": 1,
         "calendar": null
       },
       "factors": {
-        "reach": 0.7,
+        "reach": 0.75,
         "breadth": 0.33,
-        "momentum": 0.86,
-        "authority": 0.87,
-        "community": 0.2,
+        "momentum": 0,
+        "authority": 0.83,
+        "community": 0.16,
         "nextStep": 1,
-        "arc": 0
+        "arc": 0.33
       },
       "sig": [
         "spacex",
-        "satellite",
         "data",
+        "satellite",
         "center",
-        "fcc",
         "space",
-        "plan",
-        "deploy"
+        "fcc",
+        "deploy",
+        "approval"
       ],
       "evidence": [
         {
           "title": "US approves SpaceX plan to send a million data satellites to space",
           "source": "BBC",
           "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1KMGNuQ0YwUmpnNHZpaThEbUQzVEhfZXB3ZnNpRk9Renc0bkVxQm9CbFNRU3lXTzlfYmlOT0R2aW1Bdkl2YmtsUXpETGs2bnZQNmtlSlMtdnRpamc?oc=5",
+          "region": "Europe"
+        },
+        {
+          "title": "SpaceX Gets FCC Approval To Deploy 1 Million Satellites For Its AI Orbital Data Center",
+          "source": "Engadget",
+          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPYzl1VjJtX3R0Znp0cWx3Sy1CV21kdTlFWkNwQldEanFEbTVHNWZReDhYanEwQ2U2NGNiR2VyT1UtenBIb3RxcVJFMjVxcUhfRnlJbVI0T3JmWG8wWmtNNHI5bkNkMEZsRGw2Y1NHb1hqUFRlWEhtSFUtaW1zUExoSWctWmhReWdBWEVxbXlIX2JQWThrUDVsejJaRVN3a0Q3QlF2NmFNdG5pWjR0c0FsSmlBSVQtSC1ad2xNYg?oc=5",
           "region": "North America"
         },
         {
-          "title": "SpaceX gets green light to deploy 1 million satellites for data centers in space",
-          "source": "NBC News",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNUE1ZSDI1cldnWVJ2dFE3RnRhVFlXWXZCcW1aR3EwcEVfYUh2ZWJ1MWV6S3hDTEpXYVJ3VVlfM3Y5OGVrZzMzMHdDSzEtbkVHV3hJbDR4ODFueUtxNEVENzlBSlRjdTRqcWc1SDJ2dUlGcFRIdUNKaTJId0pPZTVfdmJCMWFVai1WTnRQdGFSc21ZTkRodVBCTVAtbUNLRW1HREwzY2xSU3Z3dGl5OWtv?oc=5",
-          "region": "North America"
+          "title": "SpaceX gets FCC approval for 1M satellites to build data centers in space",
+          "source": "Hacker News",
+          "url": "https://www.cbsnews.com/news/spacex-fcc-approval-data-centers-space/",
+          "region": "Community"
         },
         {
-          "title": "FCC gives SpaceX conditional approval for a million data center satellites",
-          "source": "Startup Fortune",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxORlR2cV92VHA3THA0LWxPZUVNSGIzdENyN1Ria3NGMnUzaUJUWW5sZTdEMjJuLWRRNGpSYWIzTFdDekNGazctT3pLX0RqNUpGcVJUeEV5c0xMSHExU0wwaVhYM1FCbUw3VXJIeUxvVkVHTXdreDIyQWU0QWw1cWNPVFhicENfbHRsNUNqQnYtbzg4dXUtbW5DbzI1S1FRVmxPTnhIcQ?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "FCC signs off on SpaceX’s plan to put up to 1 million data center satellites into space",
-          "source": "The Verge",
-          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOMmJHNGYxaVBDd0d5bzQ4TDJzaFFWZVdscExTNEpIQ2pBYklfYk1HX24xc3hnOUlOdDRXWDFHa2dnOGlYWU4yRU1XOFVIRkgzd29IaEdFdkRXZFdRZF9yQ2V4YnhnYk1jVXBWejFaY2FIMUozV1o4RU9WUWthM1k3TTRtZ3JuVnJ3TFE?oc=5",
+          "title": "Million-Satellite Computing Power Constellation Approved: Elon Musk's Space Data Center Vision Moves One Step Closer to Reality",
+          "source": "36氪",
+          "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5yNjJWTXY2VEdKVWlwOUhzSEhkQWdmSTY1Zm8yQTFyWkpSNG11cDg2TlkyVExFdjFLMnZJMGltLVhwT1FacHlqRFhzdl9nVHJ1Q3RZ?oc=5",
           "region": "North America"
         }
       ]
     },
     {
       "rank": 3,
-      "score": 0.6333,
-      "probability": 0.84,
+      "score": 0.5013,
+      "probability": 0.66,
       "confidence": "High",
-      "entity": "AI industry",
-      "theme": "General AI",
-      "headline": "AI may be accelerating cyberattacks, expert says",
-      "outlook": "Follow-up coverage of the AI industry story is likely to continue.",
+      "entity": "China",
+      "theme": "Chips & compute",
+      "headline": "Jensen Huang: How the Nvidia scandal exposed the risks of Asia's big AI bet",
+      "outlook": "Supply, pricing and export angles on China should keep this in the headlines.",
       "signals": {
-        "outlets": 66,
+        "outlets": 12,
         "regions": [
-          "North America",
-          "Europe",
-          "Asia-Pacific",
-          "Middle East"
+          "North America"
         ],
-        "stories": 66,
-        "momentum": 67,
-        "recent6h": 66,
-        "authority": 16.5,
+        "stories": 12,
+        "momentum": 1.36,
+        "recent6h": 4,
+        "authority": 4.1,
         "hnPoints": 0,
         "nextStepCues": 0,
-        "arcDays": 0,
+        "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 1,
-        "breadth": 0.67,
-        "momentum": 1,
-        "authority": 1,
+        "reach": 0.75,
+        "breadth": 0.17,
+        "momentum": 0.48,
+        "authority": 0.82,
         "community": 0,
         "nextStep": 0,
-        "arc": 0
+        "arc": 1
       },
       "sig": [
-        "accelerating",
-        "cyberattack",
-        "expert"
+        "chip",
+        "china",
+        "nvidia",
+        "rule",
+        "restriction",
+        "huang",
+        "despite",
+        "access"
       ],
       "evidence": [
         {
-          "title": "AI may be accelerating cyberattacks, expert says",
-          "source": "WCAX",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPczF4LWlSSllBS08zbmJ1djl5VXdRc0s5aGU5VHl1WWxlNXF3UVlUTGFmRTBkM1hITXhEYUhFbGwyZ0pQVUFaVTc5SURmNkdaOWwwbDNObmEtRzBfRUpyNlUzMnRQRVRvOUtmWWJicERJaTZZdENWZnkwSXVPdnc0cDRSR2w5b0tDLWJMNWhEUQ?oc=5",
+          "title": "Jensen Huang: How the Nvidia scandal exposed the risks of Asia's big AI bet",
+          "source": "BBC",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE51TDBpUzhfN1drWDJYSTJWWE02Z0REZmJ0emFrUE1ldXU5X0JQVTlqOVNHUTdZV2g2RS10SmliRnJWNnNZeTcyYnlFQ0cwbnNkVVNvR0Jqdk9jQTQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "AI may be accelerating cyberattacks, expert says",
-          "source": "KSNB",
-          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPNG5oYUFkcjZCUUJIcHQ1enZ4VTVwSi1VU0RFb3BpRHNaYmJ0YVhuOHNVMzNwNk1RYzQ2NVZFUFhyQ0tha2p5eDNtQXd0QTZ0dkxWRzE5bHhwWFBoSVY3Y2luQjdVeGdHX1BxTmhhWjlXR2swZnp5X01SQ1VOMXdUOVRBRUk1TG9Gb0dEVC1MTldES0praExB?oc=5",
+          "title": "Nvidia AI chips flood the market and the reason is US rule aimed at China",
+          "source": "The Times of India",
+          "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxNdVdVY1VVLTd5ZTJMbnktQjVHVmdEQXhQMWI5SGNVS19ROVZweGdMcTRzell4MWZtRUItb1JBZmpaZ0RydnBxUmhqT0xQVFFJWWtZUVlIdXNoclFzcEEtSlljUGhMNElEWG5kVndQYmYzR21VOUludmoyMm42NlRteWJiYTN3S2MtYmczeG4zaVZLZ012SklpSnZ5NWpnOGMtdzZDVnVSaDFfZy1yRnFhN05aQm1vOW9PYktjNnNhLUJjLVFLb0xUc1poR003ellETEpnT01nM0o0LTZXZDJGYndtX2JWT1hVWGFGWNIB8gFBVV95cUxPM1hIQWp5b2wwNGRGY245c1hSRE9pb01XLThnUmhGNFJjRWdVcDdaUzJ2SkN3bFNmRzZCMEx3YVBreF9WOWozTTZZVkQ0M2w3WHhtbGdrdktuYzg0c2tlMGpxYkM0LUpac3h0NUdweTVpNHlOc1k5enloY1RUUjZHcUIxTG43ejZmaDFWQTljel92NEhLWDVpVkltSjdwVXQ0RE9Keko3cXBzUWJHWTlsenlvcXRIc2puRnV5RkNJalplajNwRndwbHVYTngzMVRKc0xSSWRpaERNR3RXa1FJNmhqbDlBcUhLTXdNWkFxenBqQQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "AI may be accelerating cyberattacks, expert says",
-          "source": "WLOX",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPMVp3emdVTExPV0tZaTE0akt5MnYzR0pZRG5Qb2ROMDc5ektzem1fWktYX1hpMGFkMFlkUUhXQXBZeFZhTkExT3N0ZDFvbVhPVXY3cjl0MHp1bWRMWXZzVnJVSlZxYW1iU3MyekowaTdfMjlEb2hRN2FmUFhMQUZTVGlVUFhSRjFWS2tDNUlOYw?oc=5",
+          "title": "Nvidia AI chips — New Restrictions Block Cloud Rentals to China",
+          "source": "The Korea Daily",
+          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1QWU5MUUltOUZ5b2p5VnoyNGo4S21Ia01iSUk3cmZTZkFaalRTRFhoRVhKWmxsaUZJUFlzSk93OTQ5QlJPUzJwS2NNY0pCSDFmM2twcVJHMkM0VW1PdWwwRVZBc0FSRFlpNGI3b2ZZUEozZWJkcGc?oc=5",
           "region": "North America"
         },
         {
-          "title": "AI may be accelerating cyberattacks, expert says",
-          "source": "WRDW",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQM1djakxSZjhiOFJJY1UtZEtJb1g0enB3YUkxdFlQYWxxSzFES0dkaUI5azlMeVZPOGI4UHF6NEplb3ZoUzBvQi1TaVRzVHpUQWQybWZpa3prOFVlSUoyVjVjOXNUT0xXVzVfWThNVGtxSFNoZEstNTZndW5QeEwzaFRHamxzNm9SLU1fT3h4TQ?oc=5",
+          "title": "Five questions over Nvidia's China chip trail that Huang's return has not settled",
+          "source": "investingLive",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPVFdDc01rM2JOeVpDV21TeTZHYU40RERyTHhjYVNuU1RHZWdUN1I1c3lRcWRiV1ltSWNNOERmSE91b1NuN3gzdlhyWWZYQ29PLWRTeW9GbExwZVo1VUtRWUV2d19Vd3lQQnM5VW9UdUg3LW5PVm1ORDI3RTkwSlVkejZ4YThNOFZsSUJPSnd1clBRSU50UGY2dURTdFpiWTV1bnExY2FQT1VMTGFhMklvM2s1MFVRZw?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-26",
+    "date": "2026-11-27",
     "calls": [
       {
         "rank": 1,
-        "headline": "Anthropic Shares Plunge Below IPO Price in Fourth Trading Day",
+        "headline": "Jensen Huang’s return to Nvidia fuels Washington fight over China’s chip access",
         "probability": 0.92,
         "hit": true,
-        "matched": "How to buy Anthropic at a discount with less risk"
+        "matched": "Nvidia halts server shipments to four Southeast Asian countries, FT reports"
       },
       {
         "rank": 2,
-        "headline": "Jensen Huang's Nvidia return shows the U.S.-China AI race is about more than chips",
-        "probability": 0.92,
+        "headline": "US approves SpaceX plan to send a million data satellites to space",
+        "probability": 0.84,
         "hit": true,
-        "matched": "Jensen Huang’s return to Nvidia fuels Washington fight over China’s chip access"
+        "matched": "US approves SpaceX plan to send a million data satellites to space"
       },
       {
         "rank": 3,
-        "headline": "Saudi Engineer Accused of Bugging OpenAI to Be Released on $1 Million Bond",
-        "probability": 0.7,
+        "headline": "AI may be accelerating cyberattacks, expert says",
+        "probability": 0.84,
         "hit": false,
         "matched": null
       }
@@ -262,9 +262,9 @@
     "hits": 2
   },
   "track": {
-    "days": 26,
-    "calls": 78,
-    "hits": 67,
+    "days": 27,
+    "calls": 81,
+    "hits": 69,
     "log": [
       {
         "date": "2026-11-01",
@@ -395,9 +395,14 @@
         "date": "2026-11-26",
         "hits": 2,
         "calls": 3
+      },
+      {
+        "date": "2026-11-27",
+        "hits": 2,
+        "calls": 3
       }
     ],
-    "hitRate": 0.86
+    "hitRate": 0.85
   },
   "method": "AIShorts Top AI Prediction v1 — storyline clustering + reach, breadth, momentum, authority, community, next-step, arc and calendar signals."
 }
