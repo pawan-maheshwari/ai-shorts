@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-26T08:52:56.142Z",
+ "updated": "2026-11-27T09:04:01.780Z",
  "checked": "2026-11-14",
  "sources": [
   "Organisers’ own pages",
@@ -8,46 +8,6 @@
   "confs.tech open conference list"
  ],
  "events": [
-  {
-   "title": "AI World Congress",
-   "type": "Conference",
-   "start": "2026-11-25",
-   "end": "2026-11-26",
-   "url": "https://aiconference.london",
-   "source": "confs.tech",
-   "city": "London",
-   "country": "United Kingdom",
-   "cc": "GB",
-   "lat": 51.51,
-   "lon": -0.13
-  },
-  {
-   "title": "WeAreDevelopers Conference India",
-   "type": "Conference",
-   "start": "2026-11-25",
-   "end": "2026-11-26",
-   "url": "https://www.wearedevelopers.com/conference-india",
-   "source": "WeAreDevelopers",
-   "city": "Bengaluru",
-   "country": "India",
-   "cc": "IN",
-   "lat": 12.97,
-   "lon": 77.59,
-   "venue": "Bangalore International Exhibition Centre (BIEC)"
-  },
-  {
-   "title": "AI Engineering Summit Melbourne",
-   "type": "Summit",
-   "start": "2026-11-26",
-   "end": "2026-11-26",
-   "url": "https://www.testingmind.com/event/aiengineeringsummit-Melbourne/",
-   "source": "Global AI Community",
-   "city": "Melbourne",
-   "country": "Australia",
-   "cc": "AU",
-   "lat": -37.81,
-   "lon": 144.96
-  },
   {
    "title": "Claude 101: A Beginner's Meetup",
    "type": "Meetup",
@@ -286,19 +246,6 @@
    "lon": 101.69
   },
   {
-   "title": "AI Conf Asia",
-   "type": "Conference",
-   "start": "2027-01-09",
-   "end": "2027-01-10",
-   "url": "https://aiconf.asia",
-   "source": "confs.tech",
-   "city": "Kathmandu",
-   "country": "Nepal",
-   "cc": "NP",
-   "lat": 27.72,
-   "lon": 85.32
-  },
-  {
    "title": "Global AI Conference: Milwaukee",
    "type": "Conference",
    "start": "2027-01-13",
@@ -391,32 +338,6 @@
    "lon": -0.38
   },
   {
-   "title": "Dutch AI Conference",
-   "type": "Conference",
-   "start": "2027-03-16",
-   "end": "2027-03-18",
-   "url": "https://aiconference.nl",
-   "source": "confs.tech",
-   "city": "Amsterdam",
-   "country": "Netherlands",
-   "cc": "NL",
-   "lat": 52.37,
-   "lon": 4.9
-  },
-  {
-   "title": "GITEX AI LATAM",
-   "type": "Conference",
-   "start": "2027-03-16",
-   "end": "2027-03-17",
-   "url": "https://www.gitexlatam.com",
-   "source": "confs.tech",
-   "city": "São Paulo",
-   "country": "Brazil",
-   "cc": "BR",
-   "lat": -23.55,
-   "lon": -46.63
-  },
-  {
    "title": "Global AI Bootcamp: Seattle",
    "type": "Bootcamp",
    "start": "2027-03-20",
@@ -469,58 +390,6 @@
    "lon": -122.08
   },
   {
-   "title": "AI Coding Summit Asia",
-   "type": "Conference",
-   "start": "2027-04-15",
-   "end": "2027-04-19",
-   "url": "https://aicodingsummit.com/asia",
-   "source": "confs.tech",
-   "city": "Singapore",
-   "country": "Singapore",
-   "cc": "SG",
-   "lat": 1.35,
-   "lon": 103.82
-  },
-  {
-   "title": "GENAIX: Global Generative & Agentic AI Summit",
-   "type": "Conference",
-   "start": "2027-04-15",
-   "end": "2027-04-16",
-   "url": "https://genaixworld.com",
-   "source": "confs.tech",
-   "city": "Singapore",
-   "country": "Singapore",
-   "cc": "SG",
-   "lat": 1.35,
-   "lon": 103.82
-  },
-  {
-   "title": "GITEX AI MEDITERRANEAN",
-   "type": "Conference",
-   "start": "2027-04-21",
-   "end": "2027-04-22",
-   "url": "https://www.gitexitaly.com",
-   "source": "confs.tech",
-   "city": "Rome",
-   "country": "Italy",
-   "cc": "IT",
-   "lat": 41.9,
-   "lon": 12.5
-  },
-  {
-   "title": "Enterprise AI Summit",
-   "type": "Conference",
-   "start": "2027-05-05",
-   "end": "2027-05-06",
-   "url": "https://events.itrevolution.com/2027-portland/",
-   "source": "confs.tech",
-   "city": "Portland",
-   "country": "United States",
-   "cc": "US",
-   "lat": 45.52,
-   "lon": -122.68
-  },
-  {
    "title": "Data Engineering Summit 2027",
    "type": "Summit",
    "start": "2027-05-13",
@@ -545,59 +414,6 @@
    "cc": "JP",
    "lat": 35.68,
    "lon": 139.69
-  },
-  {
-   "title": "GITEX AI SERBIA",
-   "type": "Conference",
-   "start": "2027-05-26",
-   "end": "2027-05-27",
-   "url": "https://www.gitexserbia.com",
-   "source": "confs.tech",
-   "city": "Belgrade",
-   "country": "Serbia",
-   "cc": "RS",
-   "lat": 44.79,
-   "lon": 20.45
-  },
-  {
-   "title": "AI Con USA",
-   "type": "Conference",
-   "start": "2027-06-06",
-   "end": "2027-06-11",
-   "url": "https://aiconusa.techwell.com",
-   "source": "confs.tech",
-   "city": "Seattle",
-   "country": "United States",
-   "cc": "US",
-   "lat": 47.61,
-   "lon": -122.33,
-   "hybrid": true
-  },
-  {
-   "title": "AI in Production",
-   "type": "Conference",
-   "start": "2027-06-10",
-   "end": "2027-06-11",
-   "url": "https://ai-in-production.jumpingrivers.com",
-   "source": "confs.tech",
-   "city": "Newcastle-Upon-Tyne",
-   "country": "United Kingdom",
-   "cc": "GB",
-   "lat": 54.98,
-   "lon": -1.61
-  },
-  {
-   "title": "Accelerate Tomorrow AI Summit",
-   "type": "Conference",
-   "start": "2027-06-15",
-   "end": "2027-06-16",
-   "url": "https://www.acceleratetomorrow.com",
-   "source": "confs.tech",
-   "city": "Berlin",
-   "country": "Germany",
-   "cc": "DE",
-   "lat": 52.52,
-   "lon": 13.4
   },
   {
    "title": "AIM GCC Summit 2027",
