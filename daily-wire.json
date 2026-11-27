@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-27",
+      "title": "100x Before Breakfast",
+      "headline": "Companies tighten AI spending controls to improve returns amid rising costs",
+      "source": "ET CIO",
+      "url": "https://news.google.com/rss/articles/CBMiswJBVV95cUxNcVdONUR0Z1NvZGJGNU90Nmo2UndMTVFiaVREZU5pbWg0UWtleEJ1TmZ6dHFDR1hHRXM4VnpWZjNXY3dmTGNpenk5bm9HWk9kZEdmci1rTzN2TUNtWW52SDlHNDVNQkZHWWtXTWJpVWZWZEt1TW9Zd2VqX0pJRU1qWmRPbmNQckRTZ2Q5UXNjcVhjTHZMRGRPdW8tNmRuOHhDSlZtZHFwNjVlbVFudHRmaWJHQ244V0pRR1pRd0FhTXBSSUZUejNiRTZUUE96VElTcElKMDRNWmZOQnNoazRxWXVwNnlQa0l3Z2kzeEhySWJUZjljbmVfdFlXZ25QNzBISmRSNS1QS0dGdUctejNBR2x6eWktZEYyTHYwbnBtOWdlT0xHY2RSVXpDc3p2SEJJbzlr0gHwAUFVX3lxTE5fQnp4NTV5Y2FJMmF2RU1qcTVDemQ2aUFrZ2V4T0ZHUFZubmh3X011Z2RfUWFGXzAyYk9hWGpnM0NITFlhbkwtbFZMc00yYThlRDNtMzlEODZOaWZtRWF3SThkUkdsT2VXdFNLbU5XUE8tNUpjc2JfZTBiMjl1Qkx0alR0WktZZFJmRF9IUWZGNWNnQW9NMFNEdWd0M1hkRVJpTVlYUGVrYXFUNktFRUtNWHVMVjB1Ykd6V1haMXhqQ1NuLW5kNXRseUh4Q0RDeEQxN0RnaHpURm1XTVhZQTlLaW5mSlFMWDR6bjViWFd3RQ?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "speed",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "This AI is 100x faster than last month."
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "And it costs nothing. Trust me."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that number without a benchmark."
+        }
+      ]
+    },
+    {
       "date": "2026-11-26",
       "title": "Rules? What Rules?",
       "headline": "The US-China AI Race and the Challenge of Global Regulation",
