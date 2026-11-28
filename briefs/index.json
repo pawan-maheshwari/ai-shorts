@@ -1,6 +1,56 @@
 {
- "updated": "2026-11-21T14:44:15.892Z",
+ "updated": "2026-11-28T15:38:05.939Z",
  "issues": [
+  {
+   "week": "2026-W48",
+   "number": 48,
+   "title": "AI Briefs — Week 48, 23–27 November 2026",
+   "range": "23–27 November 2026",
+   "start": "2026-11-23",
+   "end": "2026-11-27",
+   "pages": 6,
+   "bytes": 348661,
+   "pdf": "briefs/2026-W48.pdf",
+   "html": "briefs/2026-W48.html",
+   "cover": "briefs/2026-W48.png",
+   "stories": [
+    {
+     "day": "Monday",
+     "date": "2026-11-23",
+     "category": "Robotics",
+     "headline": "Exclusive | Genesis AI, a Robotics Startup, Raises $500 Million",
+     "source": "WSJ"
+    },
+    {
+     "day": "Tuesday",
+     "date": "2026-11-24",
+     "category": "Models",
+     "headline": "Scoop: Anthropic and OpenAI employees fear unreleased AI models are too unsafe to release",
+     "source": "Axios"
+    },
+    {
+     "day": "Wednesday",
+     "date": "2026-11-25",
+     "category": "Policy",
+     "headline": "Democrats must unite on AI regulation. Here’s our three-point plan | Nathan E Sanders and Bruce Schneier",
+     "source": "The Guardian"
+    },
+    {
+     "day": "Thursday",
+     "date": "2026-11-26",
+     "category": "Policy",
+     "headline": "Bipartisan Desire to Regulate A.I. Faces Obstacles in Congress",
+     "source": "The New York Times"
+    },
+    {
+     "day": "Friday",
+     "date": "2026-11-27",
+     "category": "Business",
+     "headline": "As Google threatens to cut schools’ search access, Los Angeles blocks AI features",
+     "source": "AP News"
+    }
+   ]
+  },
   {
    "week": "2026-W47",
    "number": 47,

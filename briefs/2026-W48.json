@@ -1,0 +1,308 @@
+{
+ "week": "2026-W48",
+ "number": 48,
+ "year": 2026,
+ "title": "AI Briefs — Week 48, 23–27 November 2026",
+ "range": "23–27 November 2026",
+ "start": "2026-11-23",
+ "end": "2026-11-27",
+ "generated": "2026-11-28T15:38:05.939Z",
+ "pages": 6,
+ "stories": [
+  {
+   "dayName": "Monday",
+   "date": "2026-11-23",
+   "dateLabel": "23 November 2026",
+   "moved": false,
+   "category": "Robotics",
+   "headline": "Exclusive | Genesis AI, a Robotics Startup, Raises $500 Million",
+   "summary": "",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "WSJ",
+   "url": "https://www.wsj.com/cio-journal/genesis-ai-a-robotics-startup-raises-500-million-35198457",
+   "stats": {
+    "count": 29,
+    "sources": 28,
+    "cats": [
+     [
+      "Business",
+      11
+     ],
+     [
+      "Infrastructure",
+      5
+     ],
+     [
+      "Research",
+      4
+     ],
+     [
+      "Policy",
+      3
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "Working with AI",
+     "source": "Anthropic",
+     "url": "https://www.anthropic.com/research/working-with-ai"
+    },
+    {
+     "headline": "How Artificial Intelligence Is Making It Harder To Stop Cyberattacks",
+     "source": "Forbes",
+     "url": "https://www.forbes.com/sites/zitaballingerfletcher/2026/11/22/how-artificial-intelligence-is-making-it-harder-to-stop-cyberattacks/"
+    },
+    {
+     "headline": "China's Z.ai Says Its New AI Model Can Think Like One Four Times Its Size",
+     "source": "Decrypt",
+     "url": "https://decrypt.co/383851/chinas-zai-new-ai-model-glm-think-like-four-times-size"
+    },
+    {
+     "headline": "New study finds Google car searches losing ground as social media, AI vehicle recommendations surge",
+     "source": "Car Dealership Guy News",
+     "url": "https://news.dealershipguy.com/p/new-study-finds-google-car-searches-losing-ground-as-social-media-ai-vehicle-recommendations-surge"
+    }
+   ]
+  },
+  {
+   "dayName": "Tuesday",
+   "date": "2026-11-24",
+   "dateLabel": "24 November 2026",
+   "moved": false,
+   "category": "Models",
+   "headline": "Scoop: Anthropic and OpenAI employees fear unreleased AI models are too unsafe to release",
+   "summary": "",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "Axios",
+   "url": "https://www.axios.com/2026/11/24/anthropic-openai-unreleased-ai-safety-risks",
+   "stats": {
+    "count": 26,
+    "sources": 26,
+    "cats": [
+     [
+      "Business",
+      5
+     ],
+     [
+      "Models",
+      5
+     ],
+     [
+      "Policy",
+      4
+     ],
+     [
+      "Safety",
+      4
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "SoftBank acquires Marc Raibert’s Robotics and AI Institute",
+     "source": "The Robot Report",
+     "url": "https://www.therobotreport.com/softbank-acquires-marc-raiberts-robotics-and-ai-institute/"
+    },
+    {
+     "headline": "AI regulation will be a key topic in State of the State address, Hochul says",
+     "source": "City & State New York",
+     "url": "https://www.cityandstateny.com/policy/2026/11/ai-regulation-will-be-key-topic-state-state-address-hochul-says/417439/?oref=csny-skybox-post"
+    },
+    {
+     "headline": "Governors Call for Increased, Aligned AI Policy Regulation",
+     "source": "GovTech",
+     "url": "https://www.govtech.com/artificial-intelligence/governors-call-for-increased-aligned-ai-policy-regulation"
+    },
+    {
+     "headline": "Hassan says AI regulation, investigating tech outages will be top priorities in January",
+     "source": "New Hampshire Public Radio",
+     "url": "https://www.nhpr.org/nh-news/2026-11-24/us-senator-hassan-talks-ai-regulation-tech-outages-government-investigation"
+    }
+   ]
+  },
+  {
+   "dayName": "Wednesday",
+   "date": "2026-11-25",
+   "dateLabel": "25 November 2026",
+   "moved": false,
+   "category": "Policy",
+   "headline": "Democrats must unite on AI regulation. Here’s our three-point plan | Nathan E Sanders and Bruce Schneier",
+   "summary": "Voters are demanding action on the issue. We need to make AI work for the American public, not the tech oligarchs.",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "The Guardian",
+   "url": "https://www.theguardian.com/commentisfree/2026/nov/25/democrats-ai-regulation-plan",
+   "stats": {
+    "count": 22,
+    "sources": 21,
+    "cats": [
+     [
+      "Business",
+      10
+     ],
+     [
+      "Research",
+      3
+     ],
+     [
+      "Policy",
+      3
+     ],
+     [
+      "Safety",
+      2
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "Banks Put Data Center Clients Under the Microscope on AI Chips",
+     "source": "Bloomberg",
+     "url": "https://www.bloomberg.com/news/articles/2026-11-25/citi-stanchart-put-data-center-clients-under-the-microscope-on-ai-chips"
+    },
+    {
+     "headline": "Why practicing U.S. lawyers are returning to law school in the Age of AI",
+     "source": "National Jurist",
+     "url": "https://nationaljurist.com/why-practicing-u-s-lawyers-are-returning-to-law-school-in-the-age-of-ai/"
+    },
+    {
+     "headline": "Australia turns to MIT to solve its productivity problem: AI adoption",
+     "source": "Politico",
+     "url": "https://www.politico.com/news/2026/11/25/australia-turns-to-mit-to-solve-its-productivity-problem-ai-adoption-01182597"
+    },
+    {
+     "headline": "A research agenda for integrating artificial intelligence in mitigation scenario workflows",
+     "source": "Nature",
+     "url": "https://www.nature.com/articles/s41558-026-02801-y"
+    }
+   ]
+  },
+  {
+   "dayName": "Thursday",
+   "date": "2026-11-26",
+   "dateLabel": "26 November 2026",
+   "moved": false,
+   "category": "Policy",
+   "headline": "Bipartisan Desire to Regulate A.I. Faces Obstacles in Congress",
+   "summary": "",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "The New York Times",
+   "url": "https://www.nytimes.com/2026/11/26/us/politics/ai-regulation-congress-nvidia.html",
+   "stats": {
+    "count": 22,
+    "sources": 19,
+    "cats": [
+     [
+      "Business",
+      8
+     ],
+     [
+      "Safety",
+      4
+     ],
+     [
+      "Robotics",
+      4
+     ],
+     [
+      "Research",
+      2
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "Apple pulls MiniMax AI chatbot from App Store over child safety concerns",
+     "source": "Reuters",
+     "url": "https://www.reuters.com/business/retail-consumer/apple-pulls-minimax-ai-chatbot-app-store-over-child-safety-concerns-2026-11-26/"
+    },
+    {
+     "headline": "XPENG unveils humanoid robot with 1,500 tactile sensors in China",
+     "source": "Interesting Engineering",
+     "url": "https://interestingengineering.com/ai-robotics/xpeng-iron-humanoid-robot-1500-tactile-sensors"
+    },
+    {
+     "headline": "Robots could be doing household chores in just 1-2 years, Chinese EV firm says",
+     "source": "CNBC",
+     "url": "https://www.cnbc.com/2026/11/26/china-ev-xpeng-humanoid-robots-household-chores.html"
+    },
+    {
+     "headline": "Pentagon Hand Caroline Zier Now Leads OpenAI's Limits on Military Artificial Intelligence",
+     "source": "Broadband Breakfast",
+     "url": "https://broadbandbreakfast.com/pentagon-hand-caroline-zier-now-leads-openais-limits-on-military-artificial-intelligence/"
+    }
+   ]
+  },
+  {
+   "dayName": "Friday",
+   "date": "2026-11-27",
+   "dateLabel": "27 November 2026",
+   "moved": false,
+   "category": "Business",
+   "headline": "As Google threatens to cut schools’ search access, Los Angeles blocks AI features",
+   "summary": "",
+   "why": "",
+   "watch": "",
+   "briefBy": "publisher",
+   "source": "AP News",
+   "url": "https://apnews.com/article/google-artificial-intelligence-schools-search-engine-lausd-762a613b11bd316384430112cc223ed1",
+   "stats": {
+    "count": 25,
+    "sources": 23,
+    "cats": [
+     [
+      "Business",
+      11
+     ],
+     [
+      "Robotics",
+      4
+     ],
+     [
+      "Infrastructure",
+      3
+     ],
+     [
+      "Policy",
+      3
+     ]
+    ]
+   },
+   "also": [
+    {
+     "headline": "In Praise of My Typewriter",
+     "source": "The New York Times",
+     "url": "https://www.nytimes.com/2026/11/26/world/ai-typewriter-russia-brazil-mirumi.html"
+    },
+    {
+     "headline": "Nvidia Turmoil Tests AI’s Circular Funding Loop",
+     "source": "Morningstar",
+     "url": "https://global.morningstar.com/en-eu/stocks/nvidia-turmoil-tests-ais-circular-funding-loop"
+    },
+    {
+     "headline": "New 2027 Illinois laws address e-bike regulation, fair ticket access, school emergency response, AI safety, healthcare, insurance",
+     "source": "ABC7 Chicago",
+     "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxOVDN2aFZfRVVVNGFubzFuM0tjbW56aEFxRFc2UnZYWkx4OFJLZWc1NFhPRDM1bVdnRjNUSW12NHJYRHUtbkxxdTZkNi1ISkRBdGJRTlhITGl3RmVJZ0RYUlcyZVMwTVdVYmZmQi0xdG44dllDY3daUnRQUDRQZWhBdU96V2g2b3dZamlpSm1NWVF3UEU3TUxvZklwWk5wYjNlcWUxT1RVenloMFQ1bjB6RUlySHZ3S0ZaQm5vc2N5M1p3ZngzWThFWEIxUk1sZkdpaWZ6ZXNZcVh1N2pJR2xCZHBYSE1kQUJTU1pIa2h6Q2IteTTSAfgBQVVfeXFMTjBwSGdPZ0N0M1AtS2VzbVI5MHhmQVdKR2Q1UG94Y1lpMU1KYVJQTmVrbjJlWXRNSTRxZGpXTE9YOXA2enJqMFZHaFh1TF8zSHVEVTJRY3ZjYWV0SnlJNmpDR3A4VXQtUHVIS0FGdmQ1S2pzUEtqTy1WRUozOXlMbWxGX3ZzRzA5VFcyMTdROWI1SmZzLTNIMFRPWUNZRlpWZTVXZktfSTVxb0Y5d2d0ZHN2M01IWHhOSmJCYm1rMm1ibjdZRDdoNUZXUGFQdzB4QURfRVE2NnotSmJuclozSmJVcUh0VDJ0YW1wWERPT2VzU250bWRqWW0?oc=5"
+    },
+    {
+     "headline": "Artificial Intelligence - ABC News",
+     "source": "ABC News - Breaking News, Latest News and Videos",
+     "url": "https://abcnews.com/alerts/ArtificialIntelligence"
+    }
+   ]
+  }
+ ],
+ "method": "One lead per weekday, chosen from the AIShorts daily editions by publisher standing, the kind of event and how prominently the story ran. Each story links to the publisher's own report.",
+ "bytes": 348661,
+ "pdf": "briefs/2026-W48.pdf",
+ "html": "briefs/2026-W48.html",
+ "cover": "briefs/2026-W48.png"
+}
