@@ -3,6 +3,31 @@
   "note": "Newest strip first is fine but not required. Put images in daily-wire/ and set \"image\" to e.g. \"daily-wire/2026-11-06.png\". Leave \"image\" empty to show the text edition.",
   "strips": [
     {
+      "date": "2026-11-28",
+      "title": "The Job Forecast",
+      "headline": "Why SAP’s second 10,000-job overhaul in two years matters to CIOs",
+      "source": "CIO",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQdHV2bTRnLXNka0tHZkpIR0ZFWGpHU1dDMXBBWGEtVXl6YjluVldlSWFZbEs2cnZxT2FSTUx6UXZCS1B0Q1pMUzJaa0N4NUM4MUl5Z1hBZHJOQW5oWDItYUN2eWpnQ2xaRmhtSER3aFZaODk0blViLWQ4SXp4RG9WNzlLUTlPbXB6UHBncWtVdjUtSUVCbkg1S2xzVkxobWxfYzNXS1VuRQ?oc=5",
+      "image": "",
+      "alt": "",
+      "theme": "jobs",
+      "auto": true,
+      "panels": [
+        {
+          "speaker": "Pinocchio",
+          "line": "AI will do every job by Friday!"
+        },
+        {
+          "speaker": "Pinocchio",
+          "line": "I’ve already trained it to do my homework. And my chores."
+        },
+        {
+          "speaker": "Gandalf",
+          "line": "You shall not pass that forecast without data."
+        }
+      ]
+    },
+    {
       "date": "2026-11-27",
       "title": "100x Before Breakfast",
       "headline": "Companies tighten AI spending controls to improve returns amid rising costs",
