@@ -1,270 +1,267 @@
 {
-  "generated": "2026-11-27T01:25:42.149Z",
-  "forDate": "2026-11-28",
+  "generated": "2026-11-28T00:58:39.181Z",
+  "forDate": "2026-11-29",
   "window": {
-    "from": "2026-11-26T01:25:42.149Z",
-    "to": "2026-11-27T01:25:42.149Z"
+    "from": "2026-11-27T00:58:39.181Z",
+    "to": "2026-11-28T00:58:39.181Z"
   },
   "scanned": {
-    "stories": 848,
-    "outlets": 409,
+    "stories": 814,
+    "outlets": 398,
     "regions": [
       "Global desks",
-      "North America",
       "Community",
+      "North America",
       "Asia-Pacific",
-      "Europe",
-      "South Asia",
       "Africa",
-      "Middle East"
+      "Middle East",
+      "South Asia",
+      "Europe"
     ],
-    "storylines": 653
+    "storylines": 576
   },
   "definition": "Probability that the storyline is among the ten most-covered AI stories on the forecast date.",
   "predictions": [
     {
       "rank": 1,
-      "score": 0.6433,
-      "probability": 0.85,
+      "score": 0.6278,
+      "probability": 0.83,
       "confidence": "High",
-      "entity": "Nvidia",
-      "theme": "Chips & compute",
-      "headline": "Nvidia halts server shipments to four Southeast Asian countries, FT reports",
-      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
+      "entity": "Anthropic",
+      "theme": "Funding & markets",
+      "headline": "Anthropic Finishes First Full Week Above IPO Price",
+      "outlook": "Market reaction, analyst notes and deal details around Anthropic are the likely next chapter.",
       "signals": {
-        "outlets": 42,
-        "regions": [
-          "North America",
-          "Asia-Pacific",
-          "Africa",
-          "Global desks"
-        ],
-        "stories": 48,
-        "momentum": 0.47,
-        "recent6h": 6,
-        "authority": 15.2,
-        "hnPoints": 0,
-        "nextStepCues": 1,
-        "arcDays": 3,
-        "calendar": null
-      },
-      "factors": {
-        "reach": 1,
-        "breadth": 0.67,
-        "momentum": 0,
-        "authority": 1,
-        "community": 0,
-        "nextStep": 0.33,
-        "arc": 1
-      },
-      "sig": [
-        "nvidia",
-        "shipment",
-        "halt",
-        "southeast",
-        "server",
-        "chip",
-        "asian",
-        "countrie"
-      ],
-      "evidence": [
-        {
-          "title": "Nvidia, Kioxia team on AI server memory as alternative to South Korean chips",
-          "source": "Nikkei Asia",
-          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxQNjFCSjA5NEktUE5YYlJCR2ZxMVNaTE1QQTRUMXdFM2VBZU83UkFvMlBXWE9DOHI3WnFKZDB0emNyNUFWYVByWkxxeHRHcnhKTzg0dVhqMnNLVHBSTk40ajlBWUZmcGlxdXZqMDlabXVxVERxUlA2Vzl6VEtrajFNa243cWY5ZC1kMzM4ellUNnM4Nmljcnk5OUNLdjhMTHNkWnZNN0VlU2NFbjFYckVzNXNaSFFyTzBNUEFqSEdxcFJVYXJNTlpv?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Nvidia Tells Partners to Pause Shipments to Southeast Asia",
-          "source": "WSJ",
-          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOMGFER2Vpbl9JMXo5TFF1MFdQemdLcWFENFE0eGhwRS1pWkVyVTJvMFQ3RnRxUURGSjBxbHVMVVlyYzk0N3ZVU0tfb0tJa3NJREFmSzNmbkVWd0xxdDlvLUlqNzQ1bnBmUExWNWxmVTczRG1UNEQzd3NReXh5N2xTU3IwbkRwcDJFT1BXYzExU3NLMVNkZ3RR?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Nvidia halts server shipments to four Southeast Asian countries, FT reports",
-          "source": "Reuters",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOM1ZtZ1FmQ3d0Nk9xZzFmaDNtd3ZURjZ1cm1sWkptUktqcm1aOUc3eWpIYjVpUGoxWGxWd2FjRTZiTzBGRGtaTTA3ZUFsTEJLNk5BV3VfV2VKNHJVbk1mTDJqYkZkdEFPQ09jdzVHRzBHazlKVko5bVp4WDZMSUpUaEpyZk5ZUUUxbm42MjBIRWJCaGZzVXRkNklKN2dfdDRES3RwazQ1UU55Q3Bf?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "Nvidia halts chip shipments to south-east Asia",
-          "source": "Financial Times",
-          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQbDFtRGxaSmJxdndYb1VMbTBjLWJGOExCdUdULWNlRXF6RG90SDQzQkdYb29GbmI3Q1J5UHp2Yk80N3R1Wkl4UXlfWFdFd0VmQ2FEYUZXdnFpbnR3SndRWkh6dVJYQlY1cHhQMWVkTEpJaV9lbHJteGc1ai0tS0ppYWxuWVI?oc=5",
-          "region": "North America"
-        }
-      ]
-    },
-    {
-      "rank": 2,
-      "score": 0.5532,
-      "probability": 0.74,
-      "confidence": "High",
-      "entity": "xAI",
-      "theme": "Chips & compute",
-      "headline": "US approves SpaceX plan to send a million data satellites to space",
-      "outlook": "Supply, pricing and export angles on xAI should keep this in the headlines.",
-      "signals": {
-        "outlets": 12,
-        "regions": [
-          "North America",
-          "Europe"
-        ],
-        "stories": 12,
-        "momentum": 0.43,
-        "recent6h": 1,
-        "authority": 4.2,
-        "hnPoints": 2,
-        "nextStepCues": 4,
-        "arcDays": 1,
-        "calendar": null
-      },
-      "factors": {
-        "reach": 0.75,
-        "breadth": 0.33,
-        "momentum": 0,
-        "authority": 0.83,
-        "community": 0.16,
-        "nextStep": 1,
-        "arc": 0.33
-      },
-      "sig": [
-        "spacex",
-        "data",
-        "satellite",
-        "center",
-        "space",
-        "fcc",
-        "deploy",
-        "approval"
-      ],
-      "evidence": [
-        {
-          "title": "US approves SpaceX plan to send a million data satellites to space",
-          "source": "BBC",
-          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1KMGNuQ0YwUmpnNHZpaThEbUQzVEhfZXB3ZnNpRk9Renc0bkVxQm9CbFNRU3lXTzlfYmlOT0R2aW1Bdkl2YmtsUXpETGs2bnZQNmtlSlMtdnRpamc?oc=5",
-          "region": "Europe"
-        },
-        {
-          "title": "SpaceX Gets FCC Approval To Deploy 1 Million Satellites For Its AI Orbital Data Center",
-          "source": "Engadget",
-          "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxPYzl1VjJtX3R0Znp0cWx3Sy1CV21kdTlFWkNwQldEanFEbTVHNWZReDhYanEwQ2U2NGNiR2VyT1UtenBIb3RxcVJFMjVxcUhfRnlJbVI0T3JmWG8wWmtNNHI5bkNkMEZsRGw2Y1NHb1hqUFRlWEhtSFUtaW1zUExoSWctWmhReWdBWEVxbXlIX2JQWThrUDVsejJaRVN3a0Q3QlF2NmFNdG5pWjR0c0FsSmlBSVQtSC1ad2xNYg?oc=5",
-          "region": "North America"
-        },
-        {
-          "title": "SpaceX gets FCC approval for 1M satellites to build data centers in space",
-          "source": "Hacker News",
-          "url": "https://www.cbsnews.com/news/spacex-fcc-approval-data-centers-space/",
-          "region": "Community"
-        },
-        {
-          "title": "Million-Satellite Computing Power Constellation Approved: Elon Musk's Space Data Center Vision Moves One Step Closer to Reality",
-          "source": "36氪",
-          "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5yNjJWTXY2VEdKVWlwOUhzSEhkQWdmSTY1Zm8yQTFyWkpSNG11cDg2TlkyVExFdjFLMnZJMGltLVhwT1FacHlqRFhzdl9nVHJ1Q3RZ?oc=5",
-          "region": "North America"
-        }
-      ]
-    },
-    {
-      "rank": 3,
-      "score": 0.5013,
-      "probability": 0.66,
-      "confidence": "High",
-      "entity": "China",
-      "theme": "Chips & compute",
-      "headline": "Jensen Huang: How the Nvidia scandal exposed the risks of Asia's big AI bet",
-      "outlook": "Supply, pricing and export angles on China should keep this in the headlines.",
-      "signals": {
-        "outlets": 12,
+        "outlets": 18,
         "regions": [
           "North America"
         ],
-        "stories": 12,
-        "momentum": 1.36,
-        "recent6h": 4,
-        "authority": 4.1,
+        "stories": 26,
+        "momentum": 3.92,
+        "recent6h": 16,
+        "authority": 5.6,
         "hnPoints": 0,
         "nextStepCues": 0,
         "arcDays": 3,
         "calendar": null
       },
       "factors": {
-        "reach": 0.75,
+        "reach": 0.86,
         "breadth": 0.17,
-        "momentum": 0.48,
-        "authority": 0.82,
+        "momentum": 0.99,
+        "authority": 1,
         "community": 0,
         "nextStep": 0,
         "arc": 1
       },
       "sig": [
-        "chip",
-        "china",
-        "nvidia",
-        "rule",
-        "restriction",
-        "huang",
-        "despite",
-        "access"
+        "anthropic",
+        "stock",
+        "ipo",
+        "price",
+        "share",
+        "jump",
+        "above",
+        "rebound"
       ],
       "evidence": [
         {
-          "title": "Jensen Huang: How the Nvidia scandal exposed the risks of Asia's big AI bet",
-          "source": "BBC",
-          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE51TDBpUzhfN1drWDJYSTJWWE02Z0REZmJ0emFrUE1ldXU5X0JQVTlqOVNHUTdZV2g2RS10SmliRnJWNnNZeTcyYnlFQ0cwbnNkVVNvR0Jqdk9jQTQ?oc=5",
+          "title": "Anthropic Finishes First Full Week Above IPO Price",
+          "source": "Bloomberg.com",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPeVhwM1d4VGtCX3pRUlBUcWljb2JSOENMbHhNcW9WRDFCNnBrd2I5MzdkLVdOSkViVWFXeHNPQ1lwN0Rwd1kwR19XdGs0Ykd2NzBlNUVoaUMyVW5GRHFWYTl5MHlPQ0dibURnUkc5al8xczVnMmluV1ptWUhDVkQtNm9VYl9RWU1VWnVtQll3a0ZMQjFERHQ0T3F4ek80MjE4bWZWcHE0MF9Eb1ZZSzVuZk9EVHNSUQ?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia AI chips flood the market and the reason is US rule aimed at China",
-          "source": "The Times of India",
-          "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxNdVdVY1VVLTd5ZTJMbnktQjVHVmdEQXhQMWI5SGNVS19ROVZweGdMcTRzell4MWZtRUItb1JBZmpaZ0RydnBxUmhqT0xQVFFJWWtZUVlIdXNoclFzcEEtSlljUGhMNElEWG5kVndQYmYzR21VOUludmoyMm42NlRteWJiYTN3S2MtYmczeG4zaVZLZ012SklpSnZ5NWpnOGMtdzZDVnVSaDFfZy1yRnFhN05aQm1vOW9PYktjNnNhLUJjLVFLb0xUc1poR003ellETEpnT01nM0o0LTZXZDJGYndtX2JWT1hVWGFGWNIB8gFBVV95cUxPM1hIQWp5b2wwNGRGY245c1hSRE9pb01XLThnUmhGNFJjRWdVcDdaUzJ2SkN3bFNmRzZCMEx3YVBreF9WOWozTTZZVkQ0M2w3WHhtbGdrdktuYzg0c2tlMGpxYkM0LUpac3h0NUdweTVpNHlOc1k5enloY1RUUjZHcUIxTG43ejZmaDFWQTljel92NEhLWDVpVkltSjdwVXQ0RE9Keko3cXBzUWJHWTlsenlvcXRIc2puRnV5RkNJalplajNwRndwbHVYTngzMVRKc0xSSWRpaERNR3RXa1FJNmhqbDlBcUhLTXdNWkFxenBqQQ?oc=5",
+          "title": "Anthropic Jumps 11% As Tech Stocks Rebound",
+          "source": "Forbes",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNeW4tTWszM09YN2pmTl9ib2RndDFBODJEV0x6d2xOaGZCUW1mc09MR1RjWTZTUHdRNDBPUjJpTGFrQlRiU210bHZMRW9acVBlVnY0Qi1YbmxhMnJqeDlRVEIyNVdoRFppVjhvSXduV1puSjBTa1ZGOVBseVNEY0hQN0tXa181Y2tXV3ExUHNCcGZLdzI2T2owZUx5cTc?oc=5",
           "region": "North America"
         },
         {
-          "title": "Nvidia AI chips — New Restrictions Block Cloud Rentals to China",
-          "source": "The Korea Daily",
-          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1QWU5MUUltOUZ5b2p5VnoyNGo4S21Ia01iSUk3cmZTZkFaalRTRFhoRVhKWmxsaUZJUFlzSk93OTQ5QlJPUzJwS2NNY0pCSDFmM2twcVJHMkM0VW1PdWwwRVZBc0FSRFlpNGI3b2ZZUEozZWJkcGc?oc=5",
+          "title": "Anthropic Shares Climb 11% to $91.88, Reclaiming $83 IPO Price After Rocky First Week",
+          "source": "BigGo Finance",
+          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTFAwRWFqUkE3UG5PV3B6Y0pCUy1SYkFDZUVUUjQ0QmtVMDVpUUY5MVlmSHI1WVpwSEhTd0FiZ3hIXzRYbzNZd25VYW5vanFiZlg2aWk1UFNxaTN3OWs5cS1Xd3Q0ZVdPNjdhR1FQazR0TUZyemxZZ3c?oc=5",
           "region": "North America"
         },
         {
-          "title": "Five questions over Nvidia's China chip trail that Huang's return has not settled",
-          "source": "investingLive",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPVFdDc01rM2JOeVpDV21TeTZHYU40RERyTHhjYVNuU1RHZWdUN1I1c3lRcWRiV1ltSWNNOERmSE91b1NuN3gzdlhyWWZYQ29PLWRTeW9GbExwZVo1VUtRWUV2d19Vd3lQQnM5VW9UdUg3LW5PVm1ORDI3RTkwSlVkejZ4YThNOFZsSUJPSnd1clBRSU50UGY2dURTdFpiWTV1bnExY2FQT1VMTGFhMklvM2s1MFVRZw?oc=5",
+          "title": "Anthropic shares close at $91.88, holding above $83 IPO price after a volatile first week",
+          "source": "Crypto Briefing",
+          "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE0wUjZQcHZraVJyZTFrMUxDMERPOFZMOWZGUVdONjhBSEx2QzMwZ2d4QnAwYUxocWJFWUIzbW4xTV9nUlJqcjIzQ2RUWERiVEhHLUNmQnBqdGJaY3Z0Wlh2bGExRUhZeGpQZkNQblcwRmtabzVzTm5ibw?oc=5",
+          "region": "North America"
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "score": 0.5774,
+      "probability": 0.77,
+      "confidence": "High",
+      "entity": "OpenAI",
+      "theme": "Courts & copyright",
+      "headline": "OpenAI countersues Apple for stealing trade secrets",
+      "outlook": "Filings, responses or a ruling involving OpenAI could land and drive fresh coverage.",
+      "signals": {
+        "outlets": 29,
+        "regions": [
+          "North America"
+        ],
+        "stories": 34,
+        "momentum": 13.29,
+        "recent6h": 30,
+        "authority": 11.3,
+        "hnPoints": 4,
+        "nextStepCues": 0,
+        "arcDays": 0,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 0.99,
+        "breadth": 0.17,
+        "momentum": 1,
+        "authority": 1,
+        "community": 0.23,
+        "nextStep": 0,
+        "arc": 0
+      },
+      "sig": [
+        "openai",
+        "apple",
+        "trade",
+        "secret",
+        "countersue",
+        "stealing",
+        "theft",
+        "supplier"
+      ],
+      "evidence": [
+        {
+          "title": "OpenAI countersues Apple for allegedly stealing trade secrets",
+          "source": "The Guardian",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNSXFKVXgwaFUxNkE1Y1VESzlmazB2TXgxNW1KM28yUjJVZDZFamRUMXRCdDJscGtxT2ZPUnVpeTJiV0FRazA2RjdNZnZRLUVnS0wzOG1YSFd4UXdYTklUZjRBZzNYVkN3eGllVDhIVkFyUlJ4WnlLYU4wTXdpT1J3SEYyZkRSNklRTHNHZEVXLXMyaXc?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI Countersues Apple In Trade Secrets Battle",
+          "source": "The Information",
+          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOWElkVUZWcHdsdnJUVHBvd0ZzeTNRbGhQeUM5ZnJzbGdQQzVCYTNIcFdMQzZYNTZ5Z2VTUmlqUUtFdjV4a2NBRXNuVVJCV0xCTmwxVU5xejMxZDllaktNSkx4YTNQVE5EQVM3eHMyM3Nnb3Q5NTZmZ0hZTjZlUVE1VDc5aXRBTkFMWE9tazMxaw?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI countersues Apple for stealing trade secrets",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOanQycFJEajNxdE50c0xGTkpDeGlsaUFUdDJZaXhWZU1vTEJSRS1Zc1pPZ3RrX19oUFRCMVhPdHkxWF9QYnl3YV9uZExBOExFWXk2SUpzNmFGd01hM3ZMUWNyckhTdzc4d1Rpb2g0NURNZjZMWTAzTlF2QjRCZW1qbzFqbHNnblh6LVFjUjlJdUVVSE5oN3NZcXJmN3FGR0t00gGmAUFVX3lxTE54U0ZaVnhJdGtVLTYwTmxSSzRqY2dRdFRxZE1jc0xYdFVzRWNmMDgxZ2tvSkNzMUI1T2pFaGNEVmxVQXBTTm1YczNKU1hjMG1KTTBmbUM5SjhxMmZ2UVA5SU85NHd6ZGZSQU1Qcl9PelVDNFdNVXVXdlNsdHZkcl9mZkxRVDRIejJlcGtmVENUS2pBVkduZEVHcGJTUkp2M1RKZlJ5R1E?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "OpenAI countersues Apple for stealing trade secrets",
+          "source": "Financial Times",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNaFNnMVlYZkZkOXB1Sk41M093UXdVMnBDZFZQMFFKQXhWeFVYZnlDYjVfNlJ1NFBvYnA4YWp2YjdTeWxEcGlad2RRb3pCd0JLVU5HNVZxRmlYTlVBNXVzSlk5TURYYXpBZERNMmUzTUZLVFF4ZDhyY3E2emE3MWtMZEZIY3A?oc=5",
+          "region": "North America"
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "score": 0.5667,
+      "probability": 0.76,
+      "confidence": "High",
+      "entity": "Nvidia",
+      "theme": "Chips & compute",
+      "headline": "Two Chinese firms linked to Alice Huang installed Nvidia Blackwell chips: Report",
+      "outlook": "Supply, pricing and export angles on Nvidia should keep this in the headlines.",
+      "signals": {
+        "outlets": 49,
+        "regions": [
+          "Global desks",
+          "North America"
+        ],
+        "stories": 56,
+        "momentum": 0.67,
+        "recent6h": 10,
+        "authority": 15.2,
+        "hnPoints": 0,
+        "nextStepCues": 0,
+        "arcDays": 3,
+        "calendar": null
+      },
+      "factors": {
+        "reach": 1,
+        "breadth": 0.33,
+        "momentum": 0.14,
+        "authority": 1,
+        "community": 0,
+        "nextStep": 0,
+        "arc": 1
+      },
+      "sig": [
+        "nvidia",
+        "chip",
+        "china",
+        "shipment",
+        "halt",
+        "server",
+        "huang",
+        "southeast"
+      ],
+      "evidence": [
+        {
+          "title": "Opinion | Nvidia and Failing U.S. Export Controls",
+          "source": "WSJ",
+          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOcXdpX0ZyQWtaQVpUaDUzZ29JRWF6QV9odVlReExLZ1ZjLUw4by1ubnhabmx4c3pOU0J5aC16U3hyRFB4eURpeUgtOVpHWUZZYjNnSjdUcmxVWnlrTWlfaFhoanl2MEUtdUZFdDhpYlBiYkJxTDBGMndxNDdXN2xZWWtmOGthUXhrR20tc0RHZnY3QQ?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Two Chinese firms linked to Alice Huang installed Nvidia Blackwell chips: Report",
+          "source": "CNBC",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOekVEdHo2YjM3d3hkOEpLSWpIT2xTQTZHMVBHcUN0dlBUazhkelhhaW4tUlppT0ZvazlFVXdNWUFTTm5YNzZPZmhacWtfc3hRdUFLb3M3anYyZ0c0Q1BMZ1pWNDIzUnFnenVJZnlCVkJ0Z2FhUWdwZFJSeHN1X0JPOW5FUlg1ZWhyajZJeThCN1NnRWI4VDQ3YUk1b2M2d2dFaEYtaDJHSlotLTkxdFRlM1NyVlZFNm8tT2RRTXR4TQ?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Nvidia's restricted AI servers advertised for $3 million in China amid US curbs on advanced chip exports: Report | Hindustan Times",
+          "source": "Hindustan Times",
+          "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxOb09SVHJQOXZTYl81ZGVaemVfaVRwMWphclBVRHlMVUVpQXJpeEE3SzZsZU1Wa1VmVW52MWs2NE1vOHdjcExadzdwZXdQdU90Q1FrOV84Z1pVVThoakdQRVM3MTJFa2IwdGdVeHNkV0xXOGNOMWx5YzY5Y0lsUy1FeHVVLXhlUFFlUlVuT25QRnNfNnY3X2FBWXVyYU5HN1Q2anJITDhpNDBrc1oyanV6VjZka1Y1SndtNDZJeHU3Ql9sT0E0dThCdUlYZkszSmFRcTJhSm5CY0tJUWNuWWtvYk9NS1J6WGhOa3RzVmdDMVRtNnZLTHdCOXJrZ0xkXzdXYjNuajlxZ2g3VG9f0gGSAkFVX3lxTE9oTW1sc1FuZHZYTEtiZHNIUmVfV2JPazRsZGNMa2dIeUpkVUlYUm1nWlNlRmo0RTZwd3NjeTVSejgwWjJUOVVYLWxkZDZ0N1paSHFKcmh2dUgwYzBlbFRGN25UYzNXQ2JKMDJmdnBVblFYMHFHdlpwcHZpVDhndjBKcnVueGxYUnR4cExINmZYOHVSbmtBZlRhMVBHS1FZeXZaeGxPaHZKWDc0TE9BeVc3QkdxQ3dkcm9QdUZTdVFEckRLTllDeElpRWplSzVydTZIT0ZlRTlfTDJfWTNnV3B0S0M3Z2Q0VFBqaHRjTlgzNXFIWG9WRlRNZ0JTM1ZocGEyU21JZ1FsN2NUY2lNRkhJMlE?oc=5",
+          "region": "North America"
+        },
+        {
+          "title": "Singapore reaches out to local firms amid reports of Nvidia chip shipment halt",
+          "source": "South China Morning Post",
+          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPNWRzUEs1YmhCTTlUUEkwcXpldHFMWWpPdUxrdEtQR0o0OXN4YTBVMmNDamJ3Y1Q2UTZ4Y2owRnowZ042bTg0VEJwY1pna3daLURsMHFOMkNFUHkwX3dGdXFlNTkwVXJPaGJqcl9mSW5sQnFwMzY0a3JXLVlPUnRQMEIwV1RWR1NIVzB0ZWdKY25WNXNLbHhtNHlzM0ZMQXZFM09xbXRBZUdlZ3hRVUY4MnNuRHRGTjBrVGVxejk5WThiV1JBQVN0SjZmUGVKZ03SAc8BQVVfeXFMTUYzNS1Od3V1UkhMQ2MtWjFGbThFXzg4NXBrTjg0NE9lSGVUZTJwMHB2XzNaOVJvRG9maThuWnRpN3ZpUUswSDh4eXp3OU12cTFVaXdJQ3dPOHc0NUFUQlhOQkdHSEswQVlCSmNMSXhCQ2RxWXRXNk5mVFVRTktXVHRLRm5TZnc4eTVuOFFSOWMxTnBLUVMxSkRPYW1xeG11dUhkZ29RbDBKZEFMQ3lkMzZVOFFwcmFyQ3htb3MzWmZDRWE4Zjg3NGVieXM0WXZB?oc=5",
           "region": "North America"
         }
       ]
     }
   ],
   "scorecard": {
-    "date": "2026-11-27",
+    "date": "2026-11-28",
     "calls": [
       {
         "rank": 1,
-        "headline": "Jensen Huang’s return to Nvidia fuels Washington fight over China’s chip access",
-        "probability": 0.92,
+        "headline": "Nvidia halts server shipments to four Southeast Asian countries, FT reports",
+        "probability": 0.85,
         "hit": true,
-        "matched": "Nvidia halts server shipments to four Southeast Asian countries, FT reports"
+        "matched": "Two Chinese firms linked to Alice Huang installed Nvidia Blackwell chips: Report"
       },
       {
         "rank": 2,
         "headline": "US approves SpaceX plan to send a million data satellites to space",
-        "probability": 0.84,
-        "hit": true,
-        "matched": "US approves SpaceX plan to send a million data satellites to space"
+        "probability": 0.74,
+        "hit": false,
+        "matched": null
       },
       {
         "rank": 3,
-        "headline": "AI may be accelerating cyberattacks, expert says",
-        "probability": 0.84,
-        "hit": false,
-        "matched": null
+        "headline": "Jensen Huang: How the Nvidia scandal exposed the risks of Asia's big AI bet",
+        "probability": 0.66,
+        "hit": true,
+        "matched": "Two Chinese firms linked to Alice Huang installed Nvidia Blackwell chips: Report"
       }
     ],
     "hits": 2
   },
   "track": {
-    "days": 27,
-    "calls": 81,
-    "hits": 69,
+    "days": 28,
+    "calls": 84,
+    "hits": 71,
     "log": [
       {
         "date": "2026-11-01",
@@ -398,6 +395,11 @@
       },
       {
         "date": "2026-11-27",
+        "hits": 2,
+        "calls": 3
+      },
+      {
+        "date": "2026-11-28",
         "hits": 2,
         "calls": 3
       }
